@@ -1,0 +1,250 @@
+import { updateElo, sampleMatchOutcome, sampleKnockoutWinner, matchOutcomeProbabilities } from "./elo";
+import {
+  computeStandings,
+  summarizeGroups,
+  rankThirdPlaceTeams,
+  qualifyingThirdGroups,
+  isThirdPlaceQualified,
+} from "./groups";
+import { assignThirdPlaceSlots, simulateKnockout } from "./bracket";
+import { TEAMS, TEAM_BY_CODE } from "./teams";
+import type {
+  GroupLetter,
+  GroupMatch,
+  KnockoutMatchDef,
+  MatchPrediction,
+  SimulationResult,
+  SimulationSettings,
+  StoredResults,
+  TeamCode,
+  TeamProbabilities,
+} from "./types";
+
+function mulberry32(seed: number): () => number {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export function buildInitialElos(): Record<TeamCode, number> {
+  return Object.fromEntries(TEAMS.map((t) => [t.code, t.initialElo])) as Record<TeamCode, number>;
+}
+
+export function applyStoredResults(
+  matches: GroupMatch[],
+  stored: StoredResults,
+): GroupMatch[] {
+  return matches.map((m) => {
+    const result = stored.matches[m.id];
+    if (!result) return m;
+    return {
+      ...m,
+      played: true,
+      homeGoals: result.homeGoals,
+      awayGoals: result.awayGoals,
+    };
+  });
+}
+
+export function computeElosFromResults(
+  matches: GroupMatch[],
+  settings: SimulationSettings,
+): Record<TeamCode, number> {
+  const elos = buildInitialElos();
+  const played = [...matches]
+    .filter((m) => m.played && m.homeGoals !== undefined && m.awayGoals !== undefined)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday);
+
+  for (const match of played) {
+    const updated = updateElo(
+      elos[match.home],
+      elos[match.away],
+      match.homeGoals!,
+      match.awayGoals!,
+      settings.kFactor,
+      settings.homeAdvantage,
+    );
+    elos[match.home] = updated.home;
+    elos[match.away] = updated.away;
+  }
+  return elos;
+}
+
+export function runSimulation(
+  groupMatches: GroupMatch[],
+  knockoutDefs: KnockoutMatchDef[],
+  settings: SimulationSettings,
+  seed = 42,
+): SimulationResult {
+  const playedCount = groupMatches.filter((m) => m.played).length;
+  const baseElos = computeElosFromResults(groupMatches, settings);
+  const rng = mulberry32(seed);
+
+  const counts = initCounts();
+
+  for (let i = 0; i < settings.simulations; i++) {
+    const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng);
+    accumulate(counts, sim);
+  }
+
+  return {
+    simulations: settings.simulations,
+    playedMatches: playedCount,
+    probabilities: finalizeProbabilities(counts, settings.simulations),
+  };
+}
+
+function initCounts(): Record<TeamCode, Omit<TeamProbabilities, "code" | "name">> {
+  const empty = {
+    groupWin: 0,
+    advanceFromGroup: 0,
+    roundOf32: 0,
+    roundOf16: 0,
+    quarterFinal: 0,
+    semiFinal: 0,
+    final: 0,
+    champion: 0,
+  };
+  return Object.fromEntries(TEAMS.map((t) => [t.code, { ...empty }])) as Record<
+    TeamCode,
+    Omit<TeamProbabilities, "code" | "name">
+  >;
+}
+
+function simulateOnce(
+  groupMatches: GroupMatch[],
+  knockoutDefs: KnockoutMatchDef[],
+  startElos: Record<TeamCode, number>,
+  settings: SimulationSettings,
+  rng: () => number,
+) {
+  const elos = { ...startElos };
+  const simulatedMatches = groupMatches.map((m) => ({ ...m }));
+
+  for (const match of simulatedMatches) {
+    if (match.played) continue;
+    const outcome = sampleMatchOutcome(
+      elos[match.home],
+      elos[match.away],
+      settings.homeAdvantage,
+      rng,
+    );
+    match.played = true;
+    match.homeGoals = outcome.homeGoals;
+    match.awayGoals = outcome.awayGoals;
+    const updated = updateElo(
+      elos[match.home],
+      elos[match.away],
+      outcome.homeGoals,
+      outcome.awayGoals,
+      settings.kFactor,
+      settings.homeAdvantage,
+    );
+    elos[match.home] = updated.home;
+    elos[match.away] = updated.away;
+  }
+
+  const standings = computeStandings(simulatedMatches);
+  const groups = summarizeGroups(standings);
+  const thirdRanked = rankThirdPlaceTeams(groups);
+  const qualifiedThird = qualifyingThirdGroups(thirdRanked);
+  const thirdAssignments = assignThirdPlaceSlots(thirdRanked, qualifiedThird);
+
+  const groupWinners = Object.fromEntries(
+    groups.map((g) => [g.group, g.winner]),
+  ) as Record<GroupLetter, TeamCode>;
+  const groupRunnersUp = Object.fromEntries(
+    groups.map((g) => [g.group, g.runnerUp]),
+  ) as Record<GroupLetter, TeamCode>;
+
+  const { champion, reached } = simulateKnockout(
+    knockoutDefs,
+    groupWinners,
+    groupRunnersUp,
+    thirdAssignments,
+    elos,
+    rng,
+    sampleKnockoutWinner,
+  );
+
+  return { groups, qualifiedThird, champion, reached };
+}
+
+function accumulate(
+  counts: Record<TeamCode, Omit<TeamProbabilities, "code" | "name">>,
+  sim: ReturnType<typeof simulateOnce>,
+) {
+  for (const group of sim.groups) {
+    counts[group.winner].groupWin += 1;
+    counts[group.winner].advanceFromGroup += 1;
+    counts[group.runnerUp].advanceFromGroup += 1;
+    counts[group.third].advanceFromGroup += isThirdPlaceQualified(group.group, sim.qualifiedThird) ? 1 : 0;
+
+    for (const code of [group.winner, group.runnerUp, group.third]) {
+      if (
+        code === group.winner ||
+        code === group.runnerUp ||
+        isThirdPlaceQualified(group.group, sim.qualifiedThird)
+      ) {
+        counts[code].roundOf32 += 1;
+      }
+    }
+  }
+
+  for (const [team, rounds] of Object.entries(sim.reached) as [TeamCode, Set<string>][]) {
+    if (rounds.has("Round of 16")) counts[team].roundOf16 += 1;
+    if (rounds.has("Quarter-final")) counts[team].quarterFinal += 1;
+    if (rounds.has("Semi-final")) counts[team].semiFinal += 1;
+    if (rounds.has("Final")) counts[team].final += 1;
+  }
+
+  counts[sim.champion].champion += 1;
+}
+
+function finalizeProbabilities(
+  counts: Record<TeamCode, Omit<TeamProbabilities, "code" | "name">>,
+  simulations: number,
+): TeamProbabilities[] {
+  return TEAMS.map((team) => {
+    const c = counts[team.code];
+    const pct = (n: number) => n / simulations;
+    return {
+      code: team.code,
+      name: team.name,
+      groupWin: pct(c.groupWin),
+      advanceFromGroup: pct(c.advanceFromGroup),
+      roundOf32: pct(c.roundOf32),
+      roundOf16: pct(c.roundOf16),
+      quarterFinal: pct(c.quarterFinal),
+      semiFinal: pct(c.semiFinal),
+      final: pct(c.final),
+      champion: pct(c.champion),
+    };
+  }).sort((a, b) => b.champion - a.champion);
+}
+
+export function predictUpcoming(
+  groupMatches: GroupMatch[],
+  elos: Record<TeamCode, number>,
+  settings: SimulationSettings,
+): MatchPrediction[] {
+  return groupMatches
+    .filter((m) => !m.played)
+    .slice(0, 12)
+    .map((m) => {
+      const probs = matchOutcomeProbabilities(elos[m.home], elos[m.away], settings.homeAdvantage);
+      return {
+        id: m.id,
+        home: m.home,
+        away: m.away,
+        homeWin: probs.homeWin,
+        draw: probs.draw,
+        awayWin: probs.awayWin,
+        label: `${TEAM_BY_CODE[m.home].name} vs ${TEAM_BY_CODE[m.away].name}`,
+      };
+    });
+}

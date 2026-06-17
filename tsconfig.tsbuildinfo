@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/data/index.ts","./src/lib/bracket.ts","./src/lib/elo.ts","./src/lib/fixtures.ts","./src/lib/groups.ts","./src/lib/simulate.ts","./src/lib/teams.ts","./src/lib/types.ts","./scripts/generate-baseline.ts","./scripts/test-sim.ts"],"errors":true,"version":"5.9.3"}
