@@ -310,3 +310,45 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.group-card h4 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.9rem;
+  color: #bfdbfe;
+}
+.group-card-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.group-card-header h3 {
+  margin: 0;
+}
+
+.group-view-toggle {
+  display: inline-flex;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  padding: 0.15rem;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.group-view-toggle button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.group-view-toggle button.active {
+  background: rgba(56, 189, 248, 0.18);
+  color: #7dd3fc;
+  opacity: 1;
+}

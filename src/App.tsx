@@ -11,6 +11,7 @@ import {
 } from "./lib/simulate";
 import type { StoredResults, TeamCode, TeamProbabilities } from "./lib/types";
 import { matchOutcomeProbabilities } from "./lib/elo";
+import { computeStandings } from "./lib/groups";
 
 const STORAGE_KEY = "worldcup-predictor-results";
 
@@ -48,12 +49,12 @@ export default function App() {
   const [selectedTeam, setSelectedTeam] = useState<TeamCode | null>(null);
   const [showAllTeams, setShowAllTeams] = useState(false);
   const matches = useMemo(() => applyStoredResults(GROUP_MATCHES, stored), [stored]);
-
+  const currentStandings = useMemo(() => computeStandings(matches), [matches]);
   const current = useMemo(
     () => runSimulation(matches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS),
     [matches],
   );
-
+const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predictions">>({});
   const baselineMap = useMemo(() => {
     const map = new Map<string, TeamProbabilities>();
     for (const row of baselineData.probabilities) {
@@ -172,7 +173,12 @@ const mostLikelyTournamentFinish = selectedTeamRow
       },
     ].sort((a, b) => b.value - a.value)[0]
   : null;    
-
+const setGroupView = (group: string, view: "standings" | "predictions") => {
+  setGroupViews((prev) => ({
+    ...prev,
+    [group]: view,
+  }));
+};
 return (
   <div className="app">
       <header>
@@ -249,43 +255,103 @@ return (
         .map((code) => current.probabilities.find((p) => p.code === code))
         .filter(Boolean) as TeamProbabilities[];
 
+      const activeView = groupViews[group] ?? "standings";
+
       return (
         <div className="group-card" key={group}>
-  <h3>Group {group}</h3>
+          <div className="group-card-header">
+            <h3>Group {group}</h3>
 
-  <div className="table-wrap compact">
-    <table>
-      <thead>
-        <tr>
-          <th>Team</th>
-          <th>1st</th>
-          <th>2nd</th>
-          <th>3rd</th>
-          <th>Adv 3rd</th>
-          <th>Advance</th>
-        </tr>
-      </thead>
-      <tbody>
-        {teams
-          .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
-          .map((row) => (
-            <tr key={row.code}>
-              <td>
-  <button type="button" className="team-link" onClick={() => setSelectedTeam(row.code)}>
-    {row.name}
-  </button>
-</td>
-              <td>{pct(row.groupWin)}</td>
-              <td>{pct(row.groupSecond)}</td>
-              <td>{pct(row.groupThird)}</td>
-              <td>{pct(row.advanceAsThird)}</td>
-              <td className="current">{pct(row.advanceFromGroup)}</td>
-            </tr>
-          ))}
-      </tbody>
-    </table>
-  </div>
-</div>
+            <div className="group-view-toggle">
+              <button
+                type="button"
+                className={activeView === "standings" ? "active" : ""}
+                onClick={() => setGroupView(group, "standings")}
+              >
+                Standings
+              </button>
+              <button
+                type="button"
+                className={activeView === "predictions" ? "active" : ""}
+                onClick={() => setGroupView(group, "predictions")}
+              >
+                Predictions
+              </button>
+            </div>
+          </div>
+
+          {activeView === "standings" ? (
+            <div className="table-wrap compact">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Team</th>
+                    <th>Pts</th>
+                    <th>GF</th>
+                    <th>GA</th>
+                    <th>GD</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentStandings[group].map((row) => (
+                    <tr key={row.team}>
+                      <td>
+                        <button
+                          type="button"
+                          className="team-link"
+                          onClick={() => setSelectedTeam(row.team)}
+                        >
+                          {TEAM_BY_CODE[row.team].name}
+                        </button>
+                      </td>
+                      <td className="current">{row.points}</td>
+                      <td>{row.gf}</td>
+                      <td>{row.ga}</td>
+                      <td>{row.gd}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="table-wrap compact">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Team</th>
+                    <th>1st</th>
+                    <th>2nd</th>
+                    <th>3rd</th>
+                    <th>Adv 3rd</th>
+                    <th>Advance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {teams
+                    .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
+                    .map((row) => (
+                      <tr key={row.code}>
+                        <td>
+                          <button
+                            type="button"
+                            className="team-link"
+                            onClick={() => setSelectedTeam(row.code)}
+                          >
+                            {row.name}
+                          </button>
+                        </td>
+                        <td>{pct(row.groupWin)}</td>
+                        <td>{pct(row.groupSecond)}</td>
+                        <td>{pct(row.groupThird)}</td>
+                        <td>{pct(row.advanceAsThird)}</td>
+                        <td className="current">{pct(row.advanceFromGroup)}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       );
     })}
   </div>
