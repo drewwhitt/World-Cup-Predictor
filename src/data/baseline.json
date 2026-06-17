@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-06-16T17:00:32.406Z",
   "label": "Pre-tournament baseline (no results played)",
-  "simulations": 5000,
+  "simulations": 10000,
   "probabilities": [
     {
       "code": "ARG",

@@ -100,15 +100,18 @@ export function runSimulation(
 
 function initCounts(): Record<TeamCode, Omit<TeamProbabilities, "code" | "name">> {
   const empty = {
-    groupWin: 0,
-    advanceFromGroup: 0,
-    roundOf32: 0,
-    roundOf16: 0,
-    quarterFinal: 0,
-    semiFinal: 0,
-    final: 0,
-    champion: 0,
-  };
+  groupWin: 0,
+  groupSecond: 0,
+  groupThird: 0,
+  advanceFromGroup: 0,
+  advanceAsThird: 0,
+  roundOf32: 0,
+  roundOf16: 0,
+  quarterFinal: 0,
+  semiFinal: 0,
+  final: 0,
+  champion: 0,
+};
   return Object.fromEntries(TEAMS.map((t) => [t.code, { ...empty }])) as Record<
     TeamCode,
     Omit<TeamProbabilities, "code" | "name">
@@ -179,10 +182,19 @@ function accumulate(
   sim: ReturnType<typeof simulateOnce>,
 ) {
   for (const group of sim.groups) {
-    counts[group.winner].groupWin += 1;
-    counts[group.winner].advanceFromGroup += 1;
-    counts[group.runnerUp].advanceFromGroup += 1;
-    counts[group.third].advanceFromGroup += isThirdPlaceQualified(group.group, sim.qualifiedThird) ? 1 : 0;
+    const thirdQualified = isThirdPlaceQualified(group.group, sim.qualifiedThird);
+
+counts[group.winner].groupWin += 1;
+counts[group.runnerUp].groupSecond += 1;
+counts[group.third].groupThird += 1;
+
+counts[group.winner].advanceFromGroup += 1;
+counts[group.runnerUp].advanceFromGroup += 1;
+
+if (thirdQualified) {
+  counts[group.third].advanceFromGroup += 1;
+  counts[group.third].advanceAsThird += 1;
+}
 
     for (const code of [group.winner, group.runnerUp, group.third]) {
       if (
@@ -213,17 +225,20 @@ function finalizeProbabilities(
     const c = counts[team.code];
     const pct = (n: number) => n / simulations;
     return {
-      code: team.code,
-      name: team.name,
-      groupWin: pct(c.groupWin),
-      advanceFromGroup: pct(c.advanceFromGroup),
-      roundOf32: pct(c.roundOf32),
-      roundOf16: pct(c.roundOf16),
-      quarterFinal: pct(c.quarterFinal),
-      semiFinal: pct(c.semiFinal),
-      final: pct(c.final),
-      champion: pct(c.champion),
-    };
+  code: team.code,
+  name: team.name,
+  groupWin: pct(c.groupWin),
+  groupSecond: pct(c.groupSecond),
+  groupThird: pct(c.groupThird),
+  advanceFromGroup: pct(c.advanceFromGroup),
+  advanceAsThird: pct(c.advanceAsThird),
+  roundOf32: pct(c.roundOf32),
+  roundOf16: pct(c.roundOf16),
+  quarterFinal: pct(c.quarterFinal),
+  semiFinal: pct(c.semiFinal),
+  final: pct(c.final),
+  champion: pct(c.champion),
+};
   }).sort((a, b) => b.champion - a.champion);
 }
 

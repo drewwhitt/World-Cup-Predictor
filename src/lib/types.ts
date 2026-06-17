@@ -50,8 +50,13 @@ export interface SimulationSettings {
 export interface TeamProbabilities {
   code: TeamCode;
   name: string;
+
   groupWin: number;
+  groupSecond: number;
+  groupThird: number;
   advanceFromGroup: number;
+  advanceAsThird: number;
+
   roundOf32: number;
   roundOf16: number;
   quarterFinal: number;

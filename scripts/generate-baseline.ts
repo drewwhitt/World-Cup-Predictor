@@ -8,7 +8,7 @@ import { runSimulation } from "../src/lib/simulate";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../src/data/baseline.json");
 
-const settings = { kFactor: 32, homeAdvantage: 65, simulations: 5000 };
+const settings = { kFactor: 32, homeAdvantage: 65, simulations: 10000 };
 const groupMatches = buildGroupFixtures(rawFixtures);
 const knockout = buildKnockoutFixtures(rawFixtures);
 

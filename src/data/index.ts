@@ -7,5 +7,5 @@ export const KNOCKOUT_MATCHES = buildKnockoutFixtures(rawFixtures);
 export const DEFAULT_SETTINGS = {
   kFactor: 32,
   homeAdvantage: 65,
-  simulations: 5000,
+  simulations: 10000,
 };
