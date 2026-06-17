@@ -67,6 +67,7 @@ export interface TeamProbabilities {
 
 export interface SimulationResult {
   probabilities: TeamProbabilities[];
+  knockoutMatchups: KnockoutMatchupProbability[];
   simulations: number;
   playedMatches: number;
 }
@@ -83,4 +84,10 @@ export interface MatchPrediction {
 
 export interface StoredResults {
   matches: Record<string, { homeGoals: number; awayGoals: number }>;
+}
+export interface KnockoutMatchupProbability {
+  round: KnockoutMatchDef["round"];
+  teamA: TeamCode;
+  teamB: TeamCode;
+  probability: number;
 }

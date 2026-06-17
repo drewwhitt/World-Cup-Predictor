@@ -352,3 +352,80 @@ code {
   color: #7dd3fc;
   opacity: 1;
 }
+.bracket-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.bracket-matchup {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.bracket-matchup:last-child {
+  border-bottom: 0;
+}
+
+.bracket-teams {
+  font-weight: 700;
+}
+
+.bracket-prob {
+  color: #38bdf8;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.bracket-card-header {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.75rem;
+}
+.compact-hint {
+  margin: 0;
+  font-size: 0.8rem;
+}
+.scenario-match-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.scenario-match {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.scenario-score-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scenario-score-row input {
+  width: 4rem;
+}
+.success {
+  color: #22c55e;
+}
+
+.error {
+  color: #f87171;
+}

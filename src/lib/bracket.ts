@@ -96,11 +96,15 @@ export function simulateKnockout(
     elos: Record<TeamCode, number>,
     rng: () => number,
   ) => TeamCode,
-): { champion: TeamCode; reached: Partial<Record<TeamCode, Set<string>>> } {
+): {
+  champion: TeamCode;
+  reached: Partial<Record<TeamCode, Set<string>>>;
+  matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>;
+} {
   const winners: Record<string, TeamCode> = {};
   const reached: Partial<Record<TeamCode, Set<string>>> = {};
   let champion: TeamCode | null = null;
-
+  const matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }> = [];
   const track = (team: TeamCode, round: string) => {
     (reached[team] ??= new Set()).add(round);
   };
@@ -109,7 +113,11 @@ export function simulateKnockout(
     const home = resolveSlot(def.homeSlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
     const away = resolveSlot(def.awaySlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
     if (!home || !away) continue;
-
+    matchups.push({
+  round: def.round,
+  home,
+  away,
+});
     track(home, def.round);
     track(away, def.round);
 
@@ -127,7 +135,7 @@ export function simulateKnockout(
   if (!champion) {
     throw new Error("Knockout simulation did not produce a champion — check bracket resolution");
   }
-  return { champion, reached };
+  return { champion, reached, matchups };
 }
 
 function nextRound(round: KnockoutMatchDef["round"]): string {

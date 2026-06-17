@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import baselineData from "./data/baseline.json";
 import seedResults from "./data/results.json";
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "./data";
@@ -12,6 +12,11 @@ import {
 import type { StoredResults, TeamCode, TeamProbabilities } from "./lib/types";
 import { matchOutcomeProbabilities } from "./lib/elo";
 import { computeStandings } from "./lib/groups";
+import {
+  deleteOfficialResult,
+  loadOfficialResults,
+  saveOfficialResult,
+} from "./lib/supabase";
 
 const STORAGE_KEY = "worldcup-predictor-results";
 
@@ -43,17 +48,41 @@ function deltaClass(current: number, baseline: number): string {
 
 export default function App() {
   const [stored, setStored] = useState<StoredResults>(loadResults);
+  const [isLoadingResults, setIsLoadingResults] = useState(true);
   const [selectedMatch, setSelectedMatch] = useState(GROUP_MATCHES[0]?.id ?? "");
   const [homeGoals, setHomeGoals] = useState("0");
   const [awayGoals, setAwayGoals] = useState("0");
   const [selectedTeam, setSelectedTeam] = useState<TeamCode | null>(null);
   const [showAllTeams, setShowAllTeams] = useState(false);
-  const matches = useMemo(() => applyStoredResults(GROUP_MATCHES, stored), [stored]);
-  const currentStandings = useMemo(() => computeStandings(matches), [matches]);
-  const current = useMemo(
-    () => runSimulation(matches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS),
-    [matches],
-  );
+  const [scenarioEnabled, setScenarioEnabled] = useState(false);
+  const [scenarioTeam, setScenarioTeam] = useState<TeamCode | "">("");
+  const [scenarioResults, setScenarioResults] = useState<StoredResults>({ matches: {} });
+  const activeStored = useMemo<StoredResults>(() => {
+  if (!scenarioEnabled) return stored;
+
+  return {
+    matches: {
+      ...stored.matches,
+      ...scenarioResults.matches,
+    },
+  };
+}, [stored, scenarioEnabled, scenarioResults]);
+
+const matches = useMemo(() => applyStoredResults(GROUP_MATCHES, activeStored), [activeStored]);
+
+const officialMatches = useMemo(() => applyStoredResults(GROUP_MATCHES, stored), [stored]);
+
+const currentStandings = useMemo(() => computeStandings(matches), [matches]);
+
+const current = useMemo(
+  () => runSimulation(matches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS),
+  [matches],
+);
+
+const officialCurrent = useMemo(
+  () => runSimulation(officialMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS),
+  [officialMatches],
+);
 const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predictions">>({});
   const baselineMap = useMemo(() => {
     const map = new Map<string, TeamProbabilities>();
@@ -62,7 +91,28 @@ const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predi
     }
     return map;
   }, []);
+  const [openBracketRounds, setOpenBracketRounds] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+  let active = true;
 
+  loadOfficialResults()
+    .then((results) => {
+      if (!active) return;
+
+      setStored(results);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+    })
+    .catch((error) => {
+      console.error("Failed to load official results", error);
+    })
+    .finally(() => {
+      if (active) setIsLoadingResults(false);
+    });
+
+  return () => {
+    active = false;
+  };
+}, []);
   const elos = useMemo(
     () => computeElosFromResults(matches, DEFAULT_SETTINGS),
     [matches],
@@ -72,6 +122,8 @@ const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predi
     () => predictUpcoming(matches, elos, DEFAULT_SETTINGS),
     [matches, elos],
   );
+
+const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   const saveResult = useCallback(() => {
     const match = GROUP_MATCHES.find((m) => m.id === selectedMatch);
@@ -88,6 +140,21 @@ const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predi
     };
     setStored(next);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    setSaveStatus("saving");
+
+saveOfficialResult(selectedMatch, hg, ag)
+  .then(() => {
+    setSaveStatus("saved");
+    setHomeGoals("0");
+    setAwayGoals("0");
+
+    setTimeout(() => setSaveStatus("idle"), 3000);
+  })
+  .catch((error) => {
+    setSaveStatus("error");
+    console.error("Failed to save official result to Supabase", error);
+    alert(`Failed to save to Supabase: ${error.message}`);
+  });
   }, [selectedMatch, homeGoals, awayGoals, stored]);
 
   const clearResult = useCallback(() => {
@@ -95,6 +162,7 @@ const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predi
     delete next.matches[selectedMatch];
     setStored(next);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    void deleteOfficialResult(selectedMatch);
   }, [selectedMatch, stored]);
 
   const resetAll = useCallback(() => {
@@ -102,10 +170,50 @@ const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predi
     setStored(empty);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(empty));
   }, []);
+const scenarioTeamMatches = useMemo(() => {
+  if (!scenarioTeam) return [];
 
-  const playedCount = matches.filter((m) => m.played).length;
+  return GROUP_MATCHES.filter(
+    (m) =>
+      !stored.matches[m.id] &&
+      (m.home === scenarioTeam || m.away === scenarioTeam),
+  ).sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday);
+}, [scenarioTeam, stored]);
+
+const scenarioTeamCurrent = scenarioTeam
+  ? current.probabilities.find((p) => p.code === scenarioTeam)
+  : null;
+
+const scenarioTeamOfficial = scenarioTeam
+  ? officialCurrent.probabilities.find((p) => p.code === scenarioTeam)
+  : null;
+
+const saveScenarioResult = (matchId: string, homeGoalsValue: string, awayGoalsValue: string) => {
+  const hg = Number(homeGoalsValue);
+  const ag = Number(awayGoalsValue);
+
+  if (Number.isNaN(hg) || Number.isNaN(ag) || hg < 0 || ag < 0) return;
+
+  setScenarioResults((prev) => ({
+    matches: {
+      ...prev.matches,
+      [matchId]: {
+        homeGoals: hg,
+        awayGoals: ag,
+      },
+    },
+  }));
+
+  setScenarioEnabled(true);
+};
+
+const resetScenario = () => {
+  setScenarioResults({ matches: {} });
+  setScenarioEnabled(false);
+};
+const playedCount = matches.filter((m) => m.played).length;
 const hasBaseline = baselineData.probabilities.length > 0;
-
+const isAdmin = new URLSearchParams(window.location.search).get("admin") === "true";
 const selectedTeamRow = selectedTeam
   ? current.probabilities.find((p) => p.code === selectedTeam)
   : null;
@@ -179,14 +287,42 @@ const setGroupView = (group: string, view: "standings" | "predictions") => {
     [group]: view,
   }));
 };
+const toggleBracketRound = (round: string) => {
+  setOpenBracketRounds((prev) => ({
+    ...prev,
+    [round]: !prev[round],
+  }));
+};
+
+const recordableMatches = useMemo(
+  () =>
+    [...GROUP_MATCHES].sort(
+      (a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday,
+    ),
+  [],
+);
+
 return (
   <div className="app">
       <header>
         <h1>World Cup 2026 Predictor</h1>
         <p className="subtitle">
           Elo ratings + Monte Carlo simulation · {playedCount} group matches recorded
+          {isAdmin ? " · Admin mode" : ""}
         </p>
       </header>
+
+      {isAdmin && (
+        <div className="banner">
+          Admin Mode Enabled
+        </div>
+      )}
+
+      {isLoadingResults && (
+  <div className="banner">
+    Loading official results...
+  </div>
+)}
 
       {!hasBaseline && (
         <div className="banner">
@@ -356,14 +492,195 @@ return (
     })}
   </div>
 </section>
+<section className="panel">
+  <h2>Projected knockout bracket</h2>
+  <p className="hint">
+    Most common knockout matchups from the Monte Carlo simulation. These update as group results are recorded.
+  </p>
 
-      <div className="grid">
+  <div className="bracket-grid">
+    {(["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"] as const).map(
+      (round) => {
+        const matchups = current.knockoutMatchups
+          .filter((m) => m.round === round)
+          .slice(0, round === "Round of 32" ? 8 : 5);
+
+       const isOpen = openBracketRounds[round] ?? false;
+const visibleMatchups = isOpen ? matchups.slice(0, 6) : [];
+
+return (
+  <div className="mini-card bracket-card" key={round}>
+    <button
+      type="button"
+      className="bracket-card-header"
+      onClick={() => toggleBracketRound(round)}
+    >
+      <span>{round}</span>
+      <span>{isOpen ? "−" : "+"}</span>
+    </button>
+
+{!isOpen && (
+  <p className="hint compact-hint">
+    Click to view top projected matchups
+  </p>
+)}
+
+    {visibleMatchups.map((m) => (
+      <div
+        className="bracket-matchup"
+        key={`${m.round}-${m.teamA}-${m.teamB}`}
+      >
+        <span className="bracket-teams">
+          {TEAM_BY_CODE[m.teamA].name} vs {TEAM_BY_CODE[m.teamB].name}
+        </span>
+
+        <span className="bracket-prob">
+          {pct(m.probability)}
+        </span>
+      </div>
+    ))}
+
+    {matchups.length === 0 && (
+      <p className="hint">No projected matchups yet.</p>
+    )}
+  </div>
+);
+      },
+    )}
+  </div>
+</section>
+
+<div className="grid">
+  <section className="panel">
+    <h2>Try a scenario</h2>
+
+    <p className="hint">
+      Test hypothetical future results without changing the official saved scores.
+    </p>
+
+    <label>
+      Team
+      <select
+        value={scenarioTeam}
+        onChange={(e) => setScenarioTeam(e.target.value as TeamCode)}
+      >
+        <option value="">Select a team...</option>
+
+        {current.probabilities
+          .slice()
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((team) => (
+            <option key={team.code} value={team.code}>
+              {team.name}
+            </option>
+          ))}
+      </select>
+    </label>
+
+    {scenarioTeam && scenarioTeamOfficial && scenarioTeamCurrent && (
+      <div className="mini-card">
+        <h3>{TEAM_BY_CODE[scenarioTeam].name} scenario impact</h3>
+
+        <div className="metric-row">
+          <span>Advance</span>
+          <strong>
+            {pct(scenarioTeamOfficial.advanceFromGroup)} →{" "}
+            {pct(scenarioTeamCurrent.advanceFromGroup)}
+          </strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Reach Round of 16</span>
+          <strong>
+            {pct(scenarioTeamOfficial.roundOf16)} → {pct(scenarioTeamCurrent.roundOf16)}
+          </strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Reach Quarter-final</span>
+          <strong>
+            {pct(scenarioTeamOfficial.quarterFinal)} →{" "}
+            {pct(scenarioTeamCurrent.quarterFinal)}
+          </strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Win World Cup</span>
+          <strong>
+            {pct(scenarioTeamOfficial.champion)} → {pct(scenarioTeamCurrent.champion)}
+          </strong>
+        </div>
+      </div>
+    )}
+
+    <div className="scenario-match-list">
+      {scenarioTeamMatches.map((match) => {
+        const saved = scenarioResults.matches[match.id];
+
+        return (
+          <ScenarioMatchInput
+            key={match.id}
+            match={match}
+            saved={saved}
+            onSave={saveScenarioResult}
+          />
+        );
+      })}
+    </div>
+{scenarioTeam && scenarioTeamMatches.length === 0 && (
+  <div className="mini-card">
+    <h3>Scenario complete</h3>
+    <p>
+      All remaining group matches for {TEAM_BY_CODE[scenarioTeam].name} have already been played.
+    </p>
+    <p className="hint">
+      Select another team to continue exploring scenarios.
+    </p>
+  </div>
+)}
+    <div className="actions">
+      <button type="button" className="secondary" onClick={resetScenario}>
+        Reset scenario
+      </button>
+    </div>
+  </section>
+
+  <section className="panel">
+    <h2>Next match predictions</h2>
+    <p className="hint">Elo win/draw/loss for upcoming unplayed fixtures.</p>
+
+    <ul className="predictions">
+      {upcoming.map((p) => (
+        <li key={p.id}>
+          <span className="match-label">
+            {new Date(
+              GROUP_MATCHES.find((m) => m.id === p.id)?.date ?? "",
+            ).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}
+            {" · "}
+            {p.label}
+          </span>
+
+          <span className="probs">
+            H {pct(p.homeWin)} · D {pct(p.draw)} · A {pct(p.awayWin)}
+          </span>
+        </li>
+      ))}
+
+      {upcoming.length === 0 && <li>All group matches recorded.</li>}
+    </ul>
+  </section>
+</div>
+
+      {isAdmin && (  
         <section className="panel">
           <h2>Record a result</h2>
           <label>
             Match
             <select value={selectedMatch} onChange={(e) => setSelectedMatch(e.target.value)}>
-              {GROUP_MATCHES.map((m) => (
+              {recordableMatches.map((m) => (
                 <option key={m.id} value={m.id}>
                   {TEAM_BY_CODE[m.home].name} vs {TEAM_BY_CODE[m.away].name}
                   {stored.matches[m.id] ? " ✓" : ""}
@@ -403,34 +720,13 @@ return (
               Reset all
             </button>
           </div>
-        </section>
 
-        <section className="panel">
-          <h2>Next match predictions</h2>
-          <p className="hint">Elo win/draw/loss for upcoming unplayed fixtures.</p>
-          <ul className="predictions">
-            {upcoming.map((p) => (
-              <li key={p.id}>
-                <span className="match-label">
-  {new Date(
-  GROUP_MATCHES.find((m) => m.id === p.id)?.date ?? ""
-).toLocaleDateString("en-US", {
-  month: "short",
-  day: "numeric",
-})}
-{" · "}
-{p.label}
-</span>
-                <span className="probs">
-                  H {pct(p.homeWin)} · D {pct(p.draw)} · A {pct(p.awayWin)}
-                </span>
-              </li>
-            ))}
-            {upcoming.length === 0 && <li>All group matches recorded.</li>}
-          </ul>
-        </section>
-      </div>
+{saveStatus === "saving" && <p className="hint">Saving official result...</p>}
+{saveStatus === "saved" && <p className="hint success">Saved to Supabase.</p>}
+{saveStatus === "error" && <p className="hint error">Save failed. Check console.</p>}
 
+        </section>
+      )}
       <footer>
         <p>
           Baseline: {baselineData.label} ({baselineData.generatedAt.slice(0, 10)}) ·{" "}
@@ -555,6 +851,53 @@ return (
     </aside>
   </div>
 )}
+    </div>
+  );
+}
+function ScenarioMatchInput({
+  match,
+  saved,
+  onSave,
+}: {
+  match: (typeof GROUP_MATCHES)[number];
+  saved?: { homeGoals: number; awayGoals: number };
+  onSave: (matchId: string, homeGoals: string, awayGoals: string) => void;
+}) {
+  const [home, setHome] = useState(saved?.homeGoals?.toString() ?? "");
+  const [away, setAway] = useState(saved?.awayGoals?.toString() ?? "");
+
+  return (
+    <div className="scenario-match">
+      <div>
+        <strong>
+          {TEAM_BY_CODE[match.home].name} vs {TEAM_BY_CODE[match.away].name}
+        </strong>
+        <p className="hint">
+          {new Date(match.date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })}
+        </p>
+      </div>
+
+      <div className="scenario-score-row">
+        <input
+          type="number"
+          min={0}
+          value={home}
+          onChange={(e) => setHome(e.target.value)}
+        />
+        <span>–</span>
+        <input
+          type="number"
+          min={0}
+          value={away}
+          onChange={(e) => setAway(e.target.value)}
+        />
+        <button type="button" onClick={() => onSave(match.id, home, away)}>
+          Apply
+        </button>
+      </div>
     </div>
   );
 }

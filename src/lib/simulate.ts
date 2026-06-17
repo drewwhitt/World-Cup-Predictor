@@ -18,6 +18,7 @@ import type {
   StoredResults,
   TeamCode,
   TeamProbabilities,
+  KnockoutMatchupProbability,
 } from "./types";
 
 function mulberry32(seed: number): () => number {
@@ -85,17 +86,19 @@ export function runSimulation(
   const rng = mulberry32(seed);
 
   const counts = initCounts();
-
+  const matchupCounts = new Map<string, number>();
   for (let i = 0; i < settings.simulations; i++) {
     const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng);
     accumulate(counts, sim);
+    accumulateMatchups(matchupCounts, sim.matchups);
   }
 
   return {
-    simulations: settings.simulations,
-    playedMatches: playedCount,
-    probabilities: finalizeProbabilities(counts, settings.simulations),
-  };
+  simulations: settings.simulations,
+  playedMatches: playedCount,
+  probabilities: finalizeProbabilities(counts, settings.simulations),
+  knockoutMatchups: finalizeMatchups(matchupCounts, settings.simulations),
+};
 }
 
 function initCounts(): Record<TeamCode, Omit<TeamProbabilities, "code" | "name">> {
@@ -164,7 +167,7 @@ function simulateOnce(
     groups.map((g) => [g.group, g.runnerUp]),
   ) as Record<GroupLetter, TeamCode>;
 
-  const { champion, reached } = simulateKnockout(
+  const { champion, reached, matchups } = simulateKnockout(
     knockoutDefs,
     groupWinners,
     groupRunnersUp,
@@ -174,7 +177,7 @@ function simulateOnce(
     sampleKnockoutWinner,
   );
 
-  return { groups, qualifiedThird, champion, reached };
+  return { groups, qualifiedThird, champion, reached, matchups };
 }
 
 function accumulate(
@@ -240,6 +243,47 @@ function finalizeProbabilities(
   champion: pct(c.champion),
 };
   }).sort((a, b) => b.champion - a.champion);
+}
+
+function matchupKey(
+  round: KnockoutMatchDef["round"],
+  teamA: TeamCode,
+  teamB: TeamCode,
+): string {
+  const [a, b] = [teamA, teamB].sort();
+  return `${round}|${a}|${b}`;
+}
+
+function accumulateMatchups(
+  matchupCounts: Map<string, number>,
+  matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>,
+) {
+  for (const matchup of matchups) {
+    const key = matchupKey(matchup.round, matchup.home, matchup.away);
+    matchupCounts.set(key, (matchupCounts.get(key) ?? 0) + 1);
+  }
+}
+
+function finalizeMatchups(
+  matchupCounts: Map<string, number>,
+  simulations: number,
+): KnockoutMatchupProbability[] {
+  return Array.from(matchupCounts.entries())
+    .map(([key, count]) => {
+      const [round, teamA, teamB] = key.split("|") as [
+        KnockoutMatchDef["round"],
+        TeamCode,
+        TeamCode,
+      ];
+
+      return {
+        round,
+        teamA,
+        teamB,
+        probability: count / simulations,
+      };
+    })
+    .sort((a, b) => b.probability - a.probability);
 }
 
 export function predictUpcoming(
