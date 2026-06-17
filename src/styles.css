@@ -199,3 +199,28 @@ code {
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
 }
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1rem;
+}
+
+.group-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.group-card h3 {
+  margin-top: 0;
+}
+
+.table-wrap.compact table {
+  font-size: 0.85rem;
+}
+
+.table-wrap.compact th,
+.table-wrap.compact td {
+  padding: 0.5rem;
+}

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import baselineData from "./data/baseline.json";
 import seedResults from "./data/results.json";
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "./data";
-import { TEAM_BY_CODE } from "./lib/teams";
+import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "./lib/teams";
 import {
   applyStoredResults,
   computeElosFromResults,
@@ -159,6 +159,55 @@ export default function App() {
           </table>
         </div>
       </section>
+      <section className="panel">
+  <h2>Group outlook</h2>
+  <p className="hint">
+    Odds are based on the current recorded results plus simulated remaining matches.
+    Top two teams advance automatically. Eight of twelve third-place teams also advance.
+  </p>
+
+  <div className="groups-grid">
+    {(Object.keys(TEAMS_BY_GROUP) as Array<keyof typeof TEAMS_BY_GROUP>).map((group) => {
+      const teams = TEAMS_BY_GROUP[group]
+        .map((code) => current.probabilities.find((p) => p.code === code))
+        .filter(Boolean) as TeamProbabilities[];
+
+      return (
+        <div className="group-card" key={group}>
+          <h3>Group {group}</h3>
+          <div className="table-wrap compact">
+            <table>
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>1st</th>
+                  <th>2nd</th>
+                  <th>3rd</th>
+                  <th>Adv 3rd</th>
+                  <th>Advance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {teams
+                  .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
+                  .map((row) => (
+                    <tr key={row.code}>
+                      <td>{row.name}</td>
+                      <td>{pct(row.groupWin)}</td>
+                      <td>{pct(row.groupSecond)}</td>
+                      <td>{pct(row.groupThird)}</td>
+                      <td>{pct(row.advanceAsThird)}</td>
+                      <td className="current">{pct(row.advanceFromGroup)}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
 
       <div className="grid">
         <section className="panel">
