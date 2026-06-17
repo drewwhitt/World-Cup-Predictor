@@ -247,10 +247,11 @@ export function predictUpcoming(
   elos: Record<TeamCode, number>,
   settings: SimulationSettings,
 ): MatchPrediction[] {
-  return groupMatches
-    .filter((m) => !m.played)
-    .slice(0, 12)
-    .map((m) => {
+  return [...groupMatches]
+  .filter((m) => !m.played)
+  .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday)
+  .slice(0, 8)
+  .map((m) => {
       const probs = matchOutcomeProbabilities(elos[m.home], elos[m.away], settings.homeAdvantage);
       return {
         id: m.id,

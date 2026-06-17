@@ -9,7 +9,8 @@ import {
   predictUpcoming,
   runSimulation,
 } from "./lib/simulate";
-import type { StoredResults, TeamProbabilities } from "./lib/types";
+import type { StoredResults, TeamCode, TeamProbabilities } from "./lib/types";
+import { matchOutcomeProbabilities } from "./lib/elo";
 
 const STORAGE_KEY = "worldcup-predictor-results";
 
@@ -44,7 +45,8 @@ export default function App() {
   const [selectedMatch, setSelectedMatch] = useState(GROUP_MATCHES[0]?.id ?? "");
   const [homeGoals, setHomeGoals] = useState("0");
   const [awayGoals, setAwayGoals] = useState("0");
-
+  const [selectedTeam, setSelectedTeam] = useState<TeamCode | null>(null);
+  const [showAllTeams, setShowAllTeams] = useState(false);
   const matches = useMemo(() => applyStoredResults(GROUP_MATCHES, stored), [stored]);
 
   const current = useMemo(
@@ -101,10 +103,78 @@ export default function App() {
   }, []);
 
   const playedCount = matches.filter((m) => m.played).length;
-  const hasBaseline = baselineData.probabilities.length > 0;
+const hasBaseline = baselineData.probabilities.length > 0;
 
-  return (
-    <div className="app">
+const selectedTeamRow = selectedTeam
+  ? current.probabilities.find((p) => p.code === selectedTeam)
+  : null;
+const selectedTeamRank = selectedTeam
+
+  ? current.probabilities.findIndex((p) => p.code === selectedTeam) + 1
+  : null;
+const selectedTeamBaseline = selectedTeam ? baselineMap.get(selectedTeam) : null;
+const selectedTeamMatches = selectedTeam
+  ? matches
+      .filter((m) => !m.played && (m.home === selectedTeam || m.away === selectedTeam))
+      .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday)
+      .map((m) => {
+        const probs = matchOutcomeProbabilities(
+          elos[m.home],
+          elos[m.away],
+          DEFAULT_SETTINGS.homeAdvantage,
+        );
+        const teamIsHome = m.home === selectedTeam;
+        return {
+          id: m.id,
+          label: `${TEAM_BY_CODE[m.home].name} vs ${TEAM_BY_CODE[m.away].name}`,
+          win: teamIsHome ? probs.homeWin : probs.awayWin,
+          draw: probs.draw,
+          loss: teamIsHome ? probs.awayWin : probs.homeWin,
+        };
+      })
+  : [];
+const mostLikelyGroupFinish = selectedTeamRow
+  ? [
+      { label: "1st Place", value: selectedTeamRow.groupWin },
+      { label: "2nd Place", value: selectedTeamRow.groupSecond },
+      { label: "3rd Place", value: selectedTeamRow.groupThird },
+    ].sort((a, b) => b.value - a.value)[0]
+  : null;
+const mostLikelyTournamentFinish = selectedTeamRow
+  ? [
+      {
+        label: "World Cup Champion",
+        value: selectedTeamRow.champion,
+      },
+      {
+        label: "Final",
+        value: selectedTeamRow.final - selectedTeamRow.champion,
+      },
+      {
+        label: "Semi-final",
+        value: selectedTeamRow.semiFinal - selectedTeamRow.final,
+      },
+      {
+        label: "Quarter-final",
+        value: selectedTeamRow.quarterFinal - selectedTeamRow.semiFinal,
+      },
+      {
+        label: "Round of 16",
+        value: selectedTeamRow.roundOf16 - selectedTeamRow.quarterFinal,
+      },
+      {
+        label: "Round of 32",
+        value: selectedTeamRow.roundOf32 - selectedTeamRow.roundOf16,
+      },
+      {
+        label: "Group Stage",
+        value: 1 - selectedTeamRow.roundOf32,
+      },
+    ].sort((a, b) => b.value - a.value)[0]
+  : null;    
+
+return (
+  <div className="app">
       <header>
         <h1>World Cup 2026 Predictor</h1>
         <p className="subtitle">
@@ -139,11 +209,15 @@ export default function App() {
               </tr>
             </thead>
             <tbody>
-              {current.probabilities.slice(0, 20).map((row) => {
+              {current.probabilities.slice(0, showAllTeams ? 48 : 15).map((row) => {
                 const base = baselineMap.get(row.code);
                 return (
                   <tr key={row.code}>
-                    <td>{row.name}</td>
+                    <td>
+  <button type="button" className="team-link" onClick={() => setSelectedTeam(row.code)}>
+    {row.name}
+  </button>
+</td>
                     <td>{TEAM_BY_CODE[row.code].group}</td>
                     <td>{base ? pct(base.champion) : "—"}</td>
                     <td className="current">{pct(row.champion)}</td>
@@ -158,6 +232,9 @@ export default function App() {
             </tbody>
           </table>
         </div>
+        <button type="button" className="secondary" onClick={() => setShowAllTeams((v) => !v)}>
+  {showAllTeams ? "Show top 15" : "Show all 48 teams"}
+</button>
       </section>
       <section className="panel">
   <h2>Group outlook</h2>
@@ -174,36 +251,41 @@ export default function App() {
 
       return (
         <div className="group-card" key={group}>
-          <h3>Group {group}</h3>
-          <div className="table-wrap compact">
-            <table>
-              <thead>
-                <tr>
-                  <th>Team</th>
-                  <th>1st</th>
-                  <th>2nd</th>
-                  <th>3rd</th>
-                  <th>Adv 3rd</th>
-                  <th>Advance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teams
-                  .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
-                  .map((row) => (
-                    <tr key={row.code}>
-                      <td>{row.name}</td>
-                      <td>{pct(row.groupWin)}</td>
-                      <td>{pct(row.groupSecond)}</td>
-                      <td>{pct(row.groupThird)}</td>
-                      <td>{pct(row.advanceAsThird)}</td>
-                      <td className="current">{pct(row.advanceFromGroup)}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+  <h3>Group {group}</h3>
+
+  <div className="table-wrap compact">
+    <table>
+      <thead>
+        <tr>
+          <th>Team</th>
+          <th>1st</th>
+          <th>2nd</th>
+          <th>3rd</th>
+          <th>Adv 3rd</th>
+          <th>Advance</th>
+        </tr>
+      </thead>
+      <tbody>
+        {teams
+          .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
+          .map((row) => (
+            <tr key={row.code}>
+              <td>
+  <button type="button" className="team-link" onClick={() => setSelectedTeam(row.code)}>
+    {row.name}
+  </button>
+</td>
+              <td>{pct(row.groupWin)}</td>
+              <td>{pct(row.groupSecond)}</td>
+              <td>{pct(row.groupThird)}</td>
+              <td>{pct(row.advanceAsThird)}</td>
+              <td className="current">{pct(row.advanceFromGroup)}</td>
+            </tr>
+          ))}
+      </tbody>
+    </table>
+  </div>
+</div>
       );
     })}
   </div>
@@ -263,7 +345,16 @@ export default function App() {
           <ul className="predictions">
             {upcoming.map((p) => (
               <li key={p.id}>
-                <span className="match-label">{p.label}</span>
+                <span className="match-label">
+  {new Date(
+  GROUP_MATCHES.find((m) => m.id === p.id)?.date ?? ""
+).toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+})}
+{" · "}
+{p.label}
+</span>
                 <span className="probs">
                   H {pct(p.homeWin)} · D {pct(p.draw)} · A {pct(p.awayWin)}
                 </span>
@@ -280,6 +371,124 @@ export default function App() {
           {DEFAULT_SETTINGS.simulations.toLocaleString()} simulations per run
         </p>
       </footer>
+      {selectedTeamRow && selectedTeam && (
+  <div className="drawer-backdrop" onClick={() => setSelectedTeam(null)}>
+    <aside className="team-drawer" onClick={(e) => e.stopPropagation()}>
+      <div className="drawer-header">
+        <div>
+          <h2>{selectedTeamRow.name}</h2>
+          <p className="hint">
+            Group {TEAM_BY_CODE[selectedTeam].group} · Current Elo: {Math.round(elos[selectedTeam])} · Predicted #{selectedTeamRank}
+          </p>
+        </div>
+
+        <button type="button" className="secondary" onClick={() => setSelectedTeam(null)}>
+          Close
+        </button>
+      </div>
+
+<div className="mini-card">
+        <h3>Summary</h3>
+
+  <div className="metric-row">
+    <span>Predicted Rank</span>
+    <strong>#{selectedTeamRank} of 48</strong>
+  </div>
+
+  <div className="metric-row">
+    <span>Most Likely Group Finish</span>
+    <strong>
+      {mostLikelyGroupFinish?.label} ({pct(mostLikelyGroupFinish?.value ?? 0)})
+    </strong>
+  </div>
+
+  <div className="metric-row">
+    <span>Most Likely Tournament Finish</span>
+    <strong>
+      {mostLikelyTournamentFinish?.label} ({pct(mostLikelyTournamentFinish?.value ?? 0)})
+    </strong>
+  </div>
+
+  <div className="metric-row">
+    <span>Win World Cup</span>
+    <strong>{pct(selectedTeamRow.champion)}</strong>
+  </div>
+</div>
+
+      <div className="mini-card">
+        <h3>Before tournament</h3>
+        <div className="metric-row">
+          <span>Group Win</span>
+          <strong>{selectedTeamBaseline ? pct(selectedTeamBaseline.groupWin) : "—"}</strong>
+        </div>
+        <div className="metric-row">
+          <span>Advance</span>
+          <strong>{selectedTeamBaseline ? pct(selectedTeamBaseline.advanceFromGroup) : "—"}</strong>
+        </div>
+        <div className="metric-row">
+          <span>Champion</span>
+          <strong>{selectedTeamBaseline ? pct(selectedTeamBaseline.champion) : "—"}</strong>
+        </div>
+      </div>
+
+      <div className="mini-card">
+        <h3>Current group outlook</h3>
+        <div className="metric-row"><span>Group Win</span><strong>{pct(selectedTeamRow.groupWin)}</strong></div>
+        <div className="metric-row"><span>Finish 2nd</span><strong>{pct(selectedTeamRow.groupSecond)}</strong></div>
+        <div className="metric-row"><span>Finish 3rd</span><strong>{pct(selectedTeamRow.groupThird)}</strong></div>
+        <div className="metric-row"><span>Advance as 3rd</span><strong>{pct(selectedTeamRow.advanceAsThird)}</strong></div>
+        <div className="metric-row"><span>Advance</span><strong>{pct(selectedTeamRow.advanceFromGroup)}</strong></div>
+      </div>
+
+      <div className="mini-card">
+        <h3>Tournament Path</h3>
+        <div className="metric-row">
+  <span>Reach Round of 32</span>
+  <strong>{pct(selectedTeamRow.roundOf32)}</strong>
+</div>
+
+<div className="metric-row">
+  <span>Reach Round of 16</span>
+  <strong>{pct(selectedTeamRow.roundOf16)}</strong>
+</div>
+
+<div className="metric-row">
+  <span>Reach Quarter-final</span>
+  <strong>{pct(selectedTeamRow.quarterFinal)}</strong>
+</div>
+
+<div className="metric-row">
+  <span>Reach Semi-final</span>
+  <strong>{pct(selectedTeamRow.semiFinal)}</strong>
+</div>
+
+<div className="metric-row">
+  <span>Reach Final</span>
+  <strong>{pct(selectedTeamRow.final)}</strong>
+</div>
+
+<div className="metric-row">
+  <span>Win World Cup</span>
+  <strong>{pct(selectedTeamRow.champion)}</strong>
+</div>
+</div>
+      <div className="mini-card">
+        <h3>Upcoming matches</h3>
+        <ul className="predictions drawer-predictions">
+          {selectedTeamMatches.map((m) => (
+            <li key={m.id}>
+              <span className="match-label">{m.label}</span>
+              <span className="probs">
+                Win {pct(m.win)} · Draw {pct(m.draw)} · Loss {pct(m.loss)}
+              </span>
+            </li>
+          ))}
+          {selectedTeamMatches.length === 0 && <li>No remaining group matches.</li>}
+        </ul>
+      </div>
+    </aside>
+  </div>
+)}
     </div>
   );
 }
