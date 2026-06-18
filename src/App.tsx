@@ -809,9 +809,7 @@ return (
   <div className="metric-row">
     <span>Most Likely Group Finish</span>
     <strong>
-  {mostLikelyGroupFinish
-    ? `${mostLikelyGroupFinish.label} · ${pct(mostLikelyGroupFinish.value)}`
-    : "—"}
+  {mostLikelyGroupFinish?.label ?? "—"}
 </strong>
   </div>
 
