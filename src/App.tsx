@@ -270,38 +270,7 @@ const mostLikelyGroupFinish = selectedTeamRow
       { label: "3rd Place", value: selectedTeamRow.groupThird },
     ].sort((a, b) => b.value - a.value)[0]
   : null;
-const mostLikelyTournamentFinish = selectedTeamRow
-  ? [
-      {
-        label: "World Cup Champion",
-        value: selectedTeamRow.champion,
-      },
-      {
-        label: "Final",
-        value: selectedTeamRow.final - selectedTeamRow.champion,
-      },
-      {
-        label: "Semi-final",
-        value: selectedTeamRow.semiFinal - selectedTeamRow.final,
-      },
-      {
-        label: "Quarter-final",
-        value: selectedTeamRow.quarterFinal - selectedTeamRow.semiFinal,
-      },
-      {
-        label: "Round of 16",
-        value: selectedTeamRow.roundOf16 - selectedTeamRow.quarterFinal,
-      },
-      {
-        label: "Round of 32",
-        value: selectedTeamRow.roundOf32 - selectedTeamRow.roundOf16,
-      },
-      {
-        label: "Group Stage",
-        value: 1 - selectedTeamRow.roundOf32,
-      },
-    ].sort((a, b) => b.value - a.value)[0]
-  : null;    
+   
 const setGroupView = (group: string, view: "standings" | "predictions") => {
   setGroupViews((prev) => ({
     ...prev,
@@ -520,11 +489,11 @@ return (
                     <thead>
                       <tr>
                         <th>Team</th>
-                        <th>1st</th>
-                        <th>2nd</th>
-                        <th>3rd</th>
-                        <th>Adv 3rd</th>
-                        <th>Advance</th>
+<th>1st</th>
+<th>2nd</th>
+<th className="mobile-hide">3rd</th>
+<th className="mobile-hide">Adv 3rd</th>
+<th>Adv</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -542,10 +511,10 @@ return (
                               </button>
                             </td>
                             <td>{pct(row.groupWin)}</td>
-                            <td>{pct(row.groupSecond)}</td>
-                            <td>{pct(row.groupThird)}</td>
-                            <td>{pct(row.advanceAsThird)}</td>
-                            <td className="current">{pct(row.advanceFromGroup)}</td>
+<td>{pct(row.groupSecond)}</td>
+<td className="mobile-hide">{pct(row.groupThird)}</td>
+<td className="mobile-hide">{pct(row.advanceAsThird)}</td>
+<td className="current">{pct(row.advanceFromGroup)}</td>
                           </tr>
                         ))}
                     </tbody>
@@ -833,22 +802,17 @@ return (
         <h3>Summary</h3>
 
   <div className="metric-row">
-    <span>Predicted Rank</span>
-    <strong>#{selectedTeamRank} of 48</strong>
+    <span>Power Ranking</span>
+    <strong>{selectedTeamRank} of 48</strong>
   </div>
 
   <div className="metric-row">
     <span>Most Likely Group Finish</span>
     <strong>
-      {mostLikelyGroupFinish?.label} ({pct(mostLikelyGroupFinish?.value ?? 0)})
-    </strong>
-  </div>
-
-  <div className="metric-row">
-    <span>Most Likely Tournament Finish</span>
-    <strong>
-      {mostLikelyTournamentFinish?.label} ({pct(mostLikelyTournamentFinish?.value ?? 0)})
-    </strong>
+  {mostLikelyGroupFinish
+    ? `${mostLikelyGroupFinish.label} · ${pct(mostLikelyGroupFinish.value)}`
+    : "—"}
+</strong>
   </div>
 
   <div className="metric-row">

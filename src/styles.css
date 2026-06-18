@@ -487,3 +487,29 @@ code {
     max-width: 100%;
   }
 }
+@media (max-width: 640px) {
+  .mobile-hide {
+    display: none;
+  }
+
+  .group-card .compact table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .group-card .compact th,
+  .group-card .compact td {
+    font-size: 0.85rem;
+    padding: 10px 6px;
+  }
+
+  .group-card .compact th:first-child,
+  .group-card .compact td:first-child {
+    width: 45%;
+  }
+
+  .group-card .compact th:not(:first-child),
+  .group-card .compact td:not(:first-child) {
+    text-align: center;
+  }
+}
