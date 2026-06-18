@@ -288,9 +288,17 @@ code {
 .metric-row {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 0.55rem 0;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  align-items: center;
+  gap: 12px;
+}
+
+.metric-row span {
+  flex: 1;
+}
+
+.metric-row strong {
+  flex: 0 0 140px;
+  text-align: right;
 }
 
 .metric-row:last-child {
@@ -511,5 +519,11 @@ code {
   .group-card .compact th:not(:first-child),
   .group-card .compact td:not(:first-child) {
     text-align: center;
+  }
+}
+@media (max-width: 640px) {
+  .metric-row strong {
+    flex-basis: 120px;
+    text-align: right;
   }
 }
