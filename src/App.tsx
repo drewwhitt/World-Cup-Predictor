@@ -13,9 +13,10 @@ import type { StoredResults, TeamCode, TeamProbabilities } from "./lib/types";
 import { matchOutcomeProbabilities } from "./lib/elo";
 import { computeStandings } from "./lib/groups";
 import {
-  deleteOfficialResult,
   loadOfficialResults,
   saveOfficialResult,
+  deleteOfficialResult,
+  loadLatestOfficialResultUpdate,
 } from "./lib/supabase";
 
 const STORAGE_KEY = "worldcup-predictor-results";
@@ -50,6 +51,7 @@ export default function App() {
   const [stored, setStored] = useState<StoredResults>(loadResults);
   const [isLoadingResults, setIsLoadingResults] = useState(true);
   const [selectedMatch, setSelectedMatch] = useState(GROUP_MATCHES[0]?.id ?? "");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
   const [homeGoals, setHomeGoals] = useState("0");
   const [awayGoals, setAwayGoals] = useState("0");
   const [selectedTeam, setSelectedTeam] = useState<TeamCode | null>(null);
@@ -92,22 +94,28 @@ const [groupViews, setGroupViews] = useState<Record<string, "standings" | "predi
     return map;
   }, []);
   const [openBracketRounds, setOpenBracketRounds] = useState<Record<string, boolean>>({});
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   useEffect(() => {
   let active = true;
 
-  loadOfficialResults()
-    .then((results) => {
-      if (!active) return;
+ loadOfficialResults()
+  .then(async (results) => {
+    if (!active) return;
 
-      setStored(results);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
-    })
-    .catch((error) => {
-      console.error("Failed to load official results", error);
-    })
-    .finally(() => {
-      if (active) setIsLoadingResults(false);
-    });
+    setStored(results);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+
+    const latestUpdate = await loadLatestOfficialResultUpdate();
+    if (!active) return;
+
+    setLastUpdatedAt(latestUpdate);
+  })
+  .catch((error) => {
+    console.error("Failed to load official results", error);
+  })
+  .finally(() => {
+    if (active) setIsLoadingResults(false);
+  });
 
   return () => {
     active = false;
@@ -207,6 +215,19 @@ const saveScenarioResult = (matchId: string, homeGoalsValue: string, awayGoalsVa
   setScenarioEnabled(true);
 };
 
+const removeScenarioResult = (matchId: string) => {
+  setScenarioResults((prev) => {
+    const next = { matches: { ...prev.matches } };
+    delete next.matches[matchId];
+
+    if (Object.keys(next.matches).length === 0) {
+      setScenarioEnabled(false);
+    }
+
+    return next;
+  });
+};
+
 const resetScenario = () => {
   setScenarioResults({ matches: {} });
   setScenarioEnabled(false);
@@ -294,6 +315,13 @@ const toggleBracketRound = (round: string) => {
   }));
 };
 
+const toggleGroup = (group: string) => {
+  setOpenGroups((prev) => ({
+    ...prev,
+    [group]: !prev[group],
+  }));
+};
+
 const recordableMatches = useMemo(
   () =>
     [...GROUP_MATCHES].sort(
@@ -302,15 +330,31 @@ const recordableMatches = useMemo(
   [],
 );
 
+
+
 return (
   <div className="app">
       <header>
-        <h1>World Cup 2026 Predictor</h1>
-        <p className="subtitle">
-          Elo ratings + Monte Carlo simulation · {playedCount} group matches recorded
-          {isAdmin ? " · Admin mode" : ""}
-        </p>
-      </header>
+  <h1>World Cup 2026 Predictor</h1>
+
+  <p className="subtitle">
+    Elo ratings + Monte Carlo simulation · {playedCount} group matches recorded
+    {isAdmin ? " · Admin mode" : ""}
+  </p>
+
+  {lastUpdatedAt && (
+    <p className="subtitle">
+      Official results updated:{" "}
+      {new Date(lastUpdatedAt).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      })}
+    </p>
+  )}
+</header>
 
       {isAdmin && (
         <div className="banner">
@@ -351,7 +395,7 @@ return (
               </tr>
             </thead>
             <tbody>
-              {current.probabilities.slice(0, showAllTeams ? 48 : 15).map((row) => {
+              {current.probabilities.slice(0, showAllTeams ? 48 : 6).map((row) => {
                 const base = baselineMap.get(row.code);
                 return (
                   <tr key={row.code}>
@@ -378,7 +422,7 @@ return (
   {showAllTeams ? "Show top 15" : "Show all 48 teams"}
 </button>
       </section>
-      <section className="panel">
+     <section className="panel">
   <h2>Group outlook</h2>
   <p className="hint">
     Odds are based on the current recorded results plus simulated remaining matches.
@@ -392,106 +436,130 @@ return (
         .filter(Boolean) as TeamProbabilities[];
 
       const activeView = groupViews[group] ?? "standings";
+      const isGroupOpen = openGroups[group] ?? false;
 
       return (
-        <div className="group-card" key={group}>
-          <div className="group-card-header">
-            <h3>Group {group}</h3>
+  <div className="group-card" key={group}>
+    <div className="group-card-header">
+      <div>
+        <h3>Group {group}</h3>
 
-            <div className="group-view-toggle">
-              <button
-                type="button"
-                className={activeView === "standings" ? "active" : ""}
-                onClick={() => setGroupView(group, "standings")}
-              >
-                Standings
-              </button>
-              <button
-                type="button"
-                className={activeView === "predictions" ? "active" : ""}
-                onClick={() => setGroupView(group, "predictions")}
-              >
-                Predictions
-              </button>
-            </div>
-          </div>
+        {!isGroupOpen && (
+          <p className="group-team-preview">
+            {TEAMS_BY_GROUP[group]
+              .map((code) => TEAM_BY_CODE[code].name)
+              .join(" · ")}
+          </p>
+        )}
+      </div>
 
-          {activeView === "standings" ? (
-            <div className="table-wrap compact">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Team</th>
-                    <th>Pts</th>
-                    <th>GF</th>
-                    <th>GA</th>
-                    <th>GD</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentStandings[group].map((row) => (
-                    <tr key={row.team}>
-                      <td>
-                        <button
-                          type="button"
-                          className="team-link"
-                          onClick={() => setSelectedTeam(row.team)}
-                        >
-                          {TEAM_BY_CODE[row.team].name}
-                        </button>
-                      </td>
-                      <td className="current">{row.points}</td>
-                      <td>{row.gf}</td>
-                      <td>{row.ga}</td>
-                      <td>{row.gd}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="table-wrap compact">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Team</th>
-                    <th>1st</th>
-                    <th>2nd</th>
-                    <th>3rd</th>
-                    <th>Adv 3rd</th>
-                    <th>Advance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {teams
-                    .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
-                    .map((row) => (
-                      <tr key={row.code}>
-                        <td>
-                          <button
-                            type="button"
-                            className="team-link"
-                            onClick={() => setSelectedTeam(row.code)}
-                          >
-                            {row.name}
-                          </button>
-                        </td>
-                        <td>{pct(row.groupWin)}</td>
-                        <td>{pct(row.groupSecond)}</td>
-                        <td>{pct(row.groupThird)}</td>
-                        <td>{pct(row.advanceAsThird)}</td>
-                        <td className="current">{pct(row.advanceFromGroup)}</td>
+      <button
+        type="button"
+        className="group-collapse-button"
+        onClick={() => toggleGroup(group)}
+      >
+        {isGroupOpen ? "−" : "+"}
+      </button>
+    </div>
+
+    {isGroupOpen && (
+      <>
+              <div className="group-view-toggle">
+                <button
+                  type="button"
+                  className={activeView === "standings" ? "active" : ""}
+                  onClick={() => setGroupView(group, "standings")}
+                >
+                  Standings
+                </button>
+                <button
+                  type="button"
+                  className={activeView === "predictions" ? "active" : ""}
+                  onClick={() => setGroupView(group, "predictions")}
+                >
+                  Predictions
+                </button>
+              </div>
+
+              {activeView === "standings" ? (
+                <div className="table-wrap compact">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Team</th>
+                        <th>Pts</th>
+                        <th>GF</th>
+                        <th>GA</th>
+                        <th>GD</th>
                       </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody>
+                      {currentStandings[group].map((row) => (
+                        <tr key={row.team}>
+                          <td>
+                            <button
+                              type="button"
+                              className="team-link"
+                              onClick={() => setSelectedTeam(row.team)}
+                            >
+                              {TEAM_BY_CODE[row.team].name}
+                            </button>
+                          </td>
+                          <td className="current">{row.points}</td>
+                          <td>{row.gf}</td>
+                          <td>{row.ga}</td>
+                          <td>{row.gd}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="table-wrap compact">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Team</th>
+                        <th>1st</th>
+                        <th>2nd</th>
+                        <th>3rd</th>
+                        <th>Adv 3rd</th>
+                        <th>Advance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {teams
+                        .sort((a, b) => b.advanceFromGroup - a.advanceFromGroup)
+                        .map((row) => (
+                          <tr key={row.code}>
+                            <td>
+                              <button
+                                type="button"
+                                className="team-link"
+                                onClick={() => setSelectedTeam(row.code)}
+                              >
+                                {row.name}
+                              </button>
+                            </td>
+                            <td>{pct(row.groupWin)}</td>
+                            <td>{pct(row.groupSecond)}</td>
+                            <td>{pct(row.groupThird)}</td>
+                            <td>{pct(row.advanceAsThird)}</td>
+                            <td className="current">{pct(row.advanceFromGroup)}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
           )}
         </div>
       );
     })}
   </div>
 </section>
+
 <section className="panel">
   <h2>Projected knockout bracket</h2>
   <p className="hint">
@@ -577,41 +645,52 @@ return (
       </select>
     </label>
 
-    {scenarioTeam && scenarioTeamOfficial && scenarioTeamCurrent && (
-      <div className="mini-card">
-        <h3>{TEAM_BY_CODE[scenarioTeam].name} scenario impact</h3>
+    {scenarioTeamOfficial && scenarioTeamCurrent && (
+  <div className="mini-card">
 
-        <div className="metric-row">
-          <span>Advance</span>
-          <strong>
-            {pct(scenarioTeamOfficial.advanceFromGroup)} →{" "}
-            {pct(scenarioTeamCurrent.advanceFromGroup)}
-          </strong>
-        </div>
+    <div className="metric-row">
+      <span>Group Win</span>
+      <strong>
+        {pct(scenarioTeamOfficial.groupWin)} → {pct(scenarioTeamCurrent.groupWin)}
+      </strong>
+    </div>
 
-        <div className="metric-row">
-          <span>Reach Round of 16</span>
-          <strong>
-            {pct(scenarioTeamOfficial.roundOf16)} → {pct(scenarioTeamCurrent.roundOf16)}
-          </strong>
-        </div>
+    <div className="metric-row">
+      <span>Reach Round of 32</span>
+      <strong>
+        {pct(scenarioTeamOfficial.roundOf32)} → {pct(scenarioTeamCurrent.roundOf32)}
+      </strong>
+    </div>
 
-        <div className="metric-row">
-          <span>Reach Quarter-final</span>
-          <strong>
-            {pct(scenarioTeamOfficial.quarterFinal)} →{" "}
-            {pct(scenarioTeamCurrent.quarterFinal)}
-          </strong>
-        </div>
+    <div className="metric-row">
+      <span>Reach Round of 16</span>
+      <strong>
+        {pct(scenarioTeamOfficial.roundOf16)} → {pct(scenarioTeamCurrent.roundOf16)}
+      </strong>
+    </div>
 
-        <div className="metric-row">
-          <span>Win World Cup</span>
-          <strong>
-            {pct(scenarioTeamOfficial.champion)} → {pct(scenarioTeamCurrent.champion)}
-          </strong>
-        </div>
-      </div>
-    )}
+    <div className="metric-row">
+      <span>Reach Quarter-final</span>
+      <strong>
+        {pct(scenarioTeamOfficial.quarterFinal)} → {pct(scenarioTeamCurrent.quarterFinal)}
+      </strong>
+    </div>
+
+    <div className="metric-row">
+      <span>Reach Semi-final</span>
+      <strong>
+        {pct(scenarioTeamOfficial.semiFinal)} → {pct(scenarioTeamCurrent.semiFinal)}
+      </strong>
+    </div>
+
+    <div className="metric-row">
+      <span>Win World Cup</span>
+      <strong>
+        {pct(scenarioTeamOfficial.champion)} → {pct(scenarioTeamCurrent.champion)}
+      </strong>
+    </div>
+  </div>
+)}
 
     <div className="scenario-match-list">
       {scenarioTeamMatches.map((match) => {
@@ -619,11 +698,12 @@ return (
 
         return (
           <ScenarioMatchInput
-            key={match.id}
-            match={match}
-            saved={saved}
-            onSave={saveScenarioResult}
-          />
+  key={match.id}
+  match={match}
+  saved={saved}
+  onSave={saveScenarioResult}
+  onRemove={removeScenarioResult}
+/>
         );
       })}
     </div>
@@ -858,13 +938,15 @@ function ScenarioMatchInput({
   match,
   saved,
   onSave,
+  onRemove,
 }: {
   match: (typeof GROUP_MATCHES)[number];
   saved?: { homeGoals: number; awayGoals: number };
   onSave: (matchId: string, homeGoals: string, awayGoals: string) => void;
+  onRemove: (matchId: string) => void;
 }) {
-  const [home, setHome] = useState(saved?.homeGoals?.toString() ?? "");
-  const [away, setAway] = useState(saved?.awayGoals?.toString() ?? "");
+  const [home, setHome] = useState(saved?.homeGoals?.toString() ?? "0");
+  const [away, setAway] = useState(saved?.awayGoals?.toString() ?? "0");
 
   return (
     <div className="scenario-match">
@@ -882,20 +964,35 @@ function ScenarioMatchInput({
 
       <div className="scenario-score-row">
         <input
-          type="number"
-          min={0}
-          value={home}
-          onChange={(e) => setHome(e.target.value)}
-        />
+  type="number"
+  min={0}
+  value={home}
+  onFocus={(e) => e.target.select()}
+  onChange={(e) => setHome(e.target.value)}
+/>
         <span>–</span>
         <input
-          type="number"
-          min={0}
-          value={away}
-          onChange={(e) => setAway(e.target.value)}
-        />
-        <button type="button" onClick={() => onSave(match.id, home, away)}>
-          Apply
+  type="number"
+  min={0}
+  value={away}
+  onFocus={(e) => e.target.select()}
+  onChange={(e) => setAway(e.target.value)}
+/>
+
+        <button
+          type="button"
+          className={saved ? "secondary" : ""}
+          onClick={() => {
+            if (saved) {
+              onRemove(match.id);
+              setHome("0");
+              setAway("0");
+            } else {
+              onSave(match.id, home, away);
+            }
+          }}
+        >
+          {saved ? "Revert" : "Apply"}
         </button>
       </div>
     </div>

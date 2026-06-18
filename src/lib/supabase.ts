@@ -56,3 +56,19 @@ export async function deleteOfficialResult(matchId: string): Promise<void> {
 
   if (error) throw error;
 }
+
+export async function loadLatestOfficialResultUpdate() {
+  const { data, error } = await supabase
+    .from("match_results")
+    .select("updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error loading latest official update:", error);
+    return null;
+  }
+
+  return data?.updated_at ?? null;
+}

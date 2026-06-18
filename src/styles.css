@@ -429,3 +429,9 @@ code {
 .error {
   color: #f87171;
 }
+.group-team-preview {
+  margin: 0.35rem 0 0;
+  color: #93a4c7;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
