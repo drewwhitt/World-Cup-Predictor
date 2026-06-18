@@ -435,3 +435,55 @@ code {
   font-size: 0.82rem;
   line-height: 1.4;
 }
+@media (max-width: 640px) {
+  .app {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px;
+    overflow-x: hidden;
+  }
+
+  .groups-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .group-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .group-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .group-card-header > div {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .group-team-preview {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+  }
+
+  .group-collapse-button {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
