@@ -35,6 +35,15 @@ function pct(n: number): string {
   return `${(n * 100).toFixed(1)}%`;
 }
 
+function formatMatchDate(date: string): string {
+  const [year, month, day] = date.split("-").map(Number);
+
+  return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 function delta(current: number, baseline: number): string {
   const d = (current - baseline) * 100;
   if (Math.abs(d) < 0.05) return "—";
@@ -388,7 +397,7 @@ return (
           </table>
         </div>
         <button type="button" className="secondary" onClick={() => setShowAllTeams((v) => !v)}>
-  {showAllTeams ? "Show top 15" : "Show all 48 teams"}
+  {showAllTeams ? "Show top 6" : "Show all 48 teams"}
 </button>
       </section>
      <section className="panel">
@@ -702,12 +711,9 @@ return (
       {upcoming.map((p) => (
         <li key={p.id}>
           <span className="match-label">
-            {new Date(
-              GROUP_MATCHES.find((m) => m.id === p.id)?.date ?? "",
-            ).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}
+            {formatMatchDate(
+  GROUP_MATCHES.find((m) => m.id === p.id)?.date ?? ""
+)}
             {" · "}
             {p.label}
           </span>
@@ -917,10 +923,7 @@ function ScenarioMatchInput({
           {TEAM_BY_CODE[match.home].name} vs {TEAM_BY_CODE[match.away].name}
         </strong>
         <p className="hint">
-          {new Date(match.date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })}
+          {formatMatchDate(match.date)}
         </p>
       </div>
 

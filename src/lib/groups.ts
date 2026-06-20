@@ -43,6 +43,7 @@ export function computeStandings(
     }
     const home = tables[match.group][match.home];
     const away = tables[match.group][match.away];
+    if (!home || !away) continue;
     home.played += 1;
     away.played += 1;
     home.gf += match.homeGoals;
@@ -74,16 +75,56 @@ export function computeStandings(
 
   const result = {} as Record<GroupLetter, StandingRow[]>;
   for (const group of Object.keys(tables) as GroupLetter[]) {
-    result[group] = Object.values(tables[group]).sort(compareRows);
+    const groupMatches = matches.filter((m) => m.group === group);
+
+result[group] = Object.values(tables[group])
+  .filter((row): row is StandingRow => Boolean(row))
+  .sort((a, b) => compareRows(a, b, groupMatches));
   }
   return result;
 }
 
-function compareRows(a: StandingRow, b: StandingRow): number {
+function compareRows(
+  a: StandingRow,
+  b: StandingRow,
+  matches: GroupMatch[],
+): number {
   if (b.points !== a.points) return b.points - a.points;
+
+  const headToHead = getHeadToHeadResult(a.team, b.team, matches);
+  if (headToHead !== 0) return headToHead;
+
   if (b.gd !== a.gd) return b.gd - a.gd;
   if (b.gf !== a.gf) return b.gf - a.gf;
+
   return TEAM_BY_CODE[a.team].name.localeCompare(TEAM_BY_CODE[b.team].name);
+}
+
+function getHeadToHeadResult(
+  teamA: TeamCode,
+  teamB: TeamCode,
+  matches: GroupMatch[],
+): number {
+  const match = matches.find(
+    (m) =>
+      m.played &&
+      m.homeGoals !== undefined &&
+      m.awayGoals !== undefined &&
+      ((m.home === teamA && m.away === teamB) ||
+        (m.home === teamB && m.away === teamA)),
+  );
+
+  if (!match || match.homeGoals === undefined || match.awayGoals === undefined) {
+    return 0;
+  }
+
+  const teamAGoals = match.home === teamA ? match.homeGoals : match.awayGoals;
+  const teamBGoals = match.home === teamB ? match.homeGoals : match.awayGoals;
+
+  if (teamAGoals > teamBGoals) return -1;
+  if (teamBGoals > teamAGoals) return 1;
+
+  return 0;
 }
 
 export function summarizeGroups(standings: Record<GroupLetter, StandingRow[]>): GroupStanding[] {
