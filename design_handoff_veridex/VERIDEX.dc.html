@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @keyframes vx-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  ::selection { background: rgba(46,125,79,.18); }
+</style>
+</helmet>
+
+<div style="background:#F4EFE3; min-height:100vh; font-family:'IBM Plex Sans',system-ui,sans-serif; color:#1A1714; -webkit-font-smoothing:antialiased; padding-bottom:80px;">
+
+  <!-- BREAKING TICKER -->
+  <sc-if value="{{ showBreaking }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#0E1A2C; color:#EDE7DA; overflow:hidden; display:flex; align-items:center; height:34px; white-space:nowrap;">
+      <span style="background:{{ gold }}; color:#0E1A2C; font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.14em; padding:9px 14px; flex-shrink:0; align-self:stretch; display:flex; align-items:center;">BREAKING</span>
+      <div style="overflow:hidden; flex:1;">
+        <div style="display:inline-flex; white-space:nowrap; animation:vx-marquee 38s linear infinite; font:500 12.5px/1 'IBM Plex Sans',sans-serif; letter-spacing:.01em;">
+          <span style="padding:0 26px;">{{ breakingText }}</span>
+          <span style="padding:0 26px;">{{ breakingText }}</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- MASTHEAD -->
+  <div style="max-width:1200px; margin:0 auto; padding:0 40px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:11px 0; font:500 11px/1 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; border-bottom:1px solid rgba(26,23,20,.08);">
+      <span style="text-transform:uppercase;">{{ today }}</span>
+      <span style="display:flex; gap:18px; align-items:center;">
+        <span style="text-transform:uppercase;">Vol. III · No. 176</span>
+        <span style="color:{{ gold }}; text-transform:uppercase; font-weight:600;">✦ Subscribe to Premium</span>
+      </span>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:26px 0 22px;">
+      <div>
+        <div style="font-family:'Libre Caslon Display',Georgia,serif; font-size:46px; line-height:.92; letter-spacing:.04em; color:#1A1714;">VERIDEX</div>
+        <div style="font:500 11px/1 'IBM Plex Mono',monospace; letter-spacing:.34em; color:#8A8073; text-transform:uppercase; margin-top:9px;">Predictive Sports Intelligence</div>
+      </div>
+      <!-- EDITION TOGGLE -->
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+        <span style="font:500 10px/1 'IBM Plex Mono',monospace; letter-spacing:.16em; color:#A39A8B; text-transform:uppercase;">Edition</span>
+        <div style="display:inline-flex; border:1px solid rgba(26,23,20,.2); border-radius:2px; overflow:hidden;">
+          <button onClick="{{ setDesk }}" style="background:{{ deskBtnBg }}; color:{{ deskBtnFg }}; border:none; cursor:pointer; font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.1em; padding:9px 16px; text-transform:uppercase;">Desk</button>
+          <button onClick="{{ setWire }}" style="background:{{ wireBtnBg }}; color:{{ wireBtnFg }}; border:none; cursor:pointer; font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.1em; padding:9px 16px; text-transform:uppercase; border-left:1px solid rgba(26,23,20,.2);">Wire</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIMARY NAV -->
+    <div style="display:flex; gap:34px; border-bottom:2px solid #1A1714;">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+        <button onClick="{{ n.onClick }}" style="background:none; border:none; cursor:pointer; font:600 14px/1 'IBM Plex Sans',sans-serif; color:#3A352E; padding:0 0 13px; position:relative; letter-spacing:.01em;">
+          {{ n.label }}
+          <sc-if value="{{ n.active }}" hint-placeholder-val="{{ false }}">
+            <span style="position:absolute; left:0; right:0; bottom:-2px; height:3px; background:#1A1714;"></span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </div>
+
+    <!-- SPORT SELECTOR -->
+    <div style="display:flex; gap:9px; flex-wrap:wrap; padding:16px 0 4px;">
+      <sc-for list="{{ sportPills }}" as="s" hint-placeholder-count="8">
+        <sc-if value="{{ s.active }}" hint-placeholder-val="{{ true }}">
+          <span style="font:600 12px/1 'IBM Plex Sans',sans-serif; padding:8px 14px; background:#1A1714; color:#F4EFE3; border-radius:2px;">{{ s.name }}</span>
+        </sc-if>
+        <sc-if value="{{ s.inactive }}" hint-placeholder-val="{{ false }}">
+          <span style="font:500 12px/1 'IBM Plex Sans',sans-serif; padding:8px 14px; background:transparent; color:#7A7164; border:1px solid rgba(26,23,20,.16); border-radius:2px;">{{ s.name }}</span>
+        </sc-if>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="max-width:1200px; margin:0 auto; padding:0 40px;">
+
+  <!-- ============ HOME ============ -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+
+    <!-- HERO: DESK -->
+    <sc-if value="{{ isDesk }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:46px 0 36px; max-width:880px;">
+        <div style="font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.2em; color:#8A8073; text-transform:uppercase;">Tournament Outlook · World Cup 2026</div>
+        <h1 style="font-family:'Libre Caslon Display',Georgia,serif; font-weight:400; font-size:60px; line-height:1.02; letter-spacing:-.01em; margin:18px 0 0; text-wrap:balance;">{{ heroTitle }}</h1>
+        <p style="font-family:'Libre Caslon Text',Georgia,serif; font-size:20px; line-height:1.5; color:#46403A; margin:22px 0 0; max-width:660px;">{{ heroSub }}</p>
+        <div style="font:500 12px/1 'IBM Plex Mono',monospace; letter-spacing:.04em; color:#8A8073; margin-top:22px; display:flex; align-items:center; gap:10px;"><span style="width:18px; height:2px; background:#1A1714; display:inline-block;"></span>{{ heroByline }}</div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-top:1px solid rgba(26,23,20,.16); border-bottom:1px solid rgba(26,23,20,.16); padding:22px 0; margin-bottom:8px;">
+        <div style="padding-right:24px;"><div style="font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8A8073; text-transform:uppercase;">Updated</div><div style="font-family:'Libre Caslon Display',serif; font-size:24px; margin-top:9px;">Matchday 2</div><div style="font:500 12px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:3px;">complete</div></div>
+        <div style="padding:0 24px; border-left:1px solid rgba(26,23,20,.12);"><div style="font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8A8073; text-transform:uppercase;">Favorite</div><div style="font-family:'Libre Caslon Display',serif; font-size:24px; margin-top:9px;">Brazil</div><div style="font:500 12px 'IBM Plex Mono',monospace; color:#2E7D4F; margin-top:3px;">24.5% · +1.3 pp</div></div>
+        <div style="padding:0 24px; border-left:1px solid rgba(26,23,20,.12);"><div style="font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8A8073; text-transform:uppercase;">Biggest Mover</div><div style="font-family:'Libre Caslon Display',serif; font-size:24px; margin-top:9px;">Portugal</div><div style="font:500 12px 'IBM Plex Mono',monospace; color:#B0412A; margin-top:3px;">−1.7 pp</div></div>
+        <div style="padding:0 24px; border-left:1px solid rgba(26,23,20,.12);"><div style="font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8A8073; text-transform:uppercase;">Model Confidence</div><div style="font-family:'Libre Caslon Display',serif; font-size:24px; margin-top:9px;">88<span style="font-size:15px; color:#8A8073;">/100</span></div><div style="font:500 12px 'IBM Plex Mono',monospace; color:#2E7D4F; margin-top:3px;">+4 pts</div></div>
+      </div>
+    </sc-if>
+
+    <!-- HERO: WIRE -->
+    <sc-if value="{{ isWire }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative; margin:30px 0 8px; border-radius:3px; overflow:hidden; min-height:460px; display:flex; align-items:flex-end; background:repeating-linear-gradient(135deg,#1c2a3d 0 14px,#1a2738 14px 28px);">
+        <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,18,30,.25) 0%, rgba(10,18,30,.55) 50%, rgba(10,18,30,.94) 100%);"></div>
+        <div style="position:absolute; top:18px; left:20px; font:500 10px 'IBM Plex Mono',monospace; letter-spacing:.16em; color:rgba(237,231,218,.55); text-transform:uppercase;">[ Editorial photo — Brazil celebrate vs Serbia ]</div>
+        <div style="position:relative; padding:40px; width:100%;">
+          <div style="display:inline-block; background:{{ gold }}; color:#0E1A2C; font:600 11px/1 'IBM Plex Mono',monospace; letter-spacing:.12em; padding:7px 12px; text-transform:uppercase;">World Cup · Championship Forecast</div>
+          <h1 style="font-family:'Libre Caslon Display',Georgia,serif; font-weight:400; font-size:58px; line-height:1.03; color:#F7F4ED; margin:18px 0 0; max-width:880px; text-wrap:balance;">{{ heroTitle }}</h1>
+          <p style="font:400 18px/1.5 'IBM Plex Sans',sans-serif; color:rgba(247,244,237,.82); margin:18px 0 0; max-width:660px;">{{ heroSub }}</p>
+          <div style="display:flex; align-items:center; gap:12px; margin-top:20px; font:500 12px 'IBM Plex Mono',monospace; color:rgba(247,244,237,.62);"><span style="width:3px; height:14px; background:{{ gold }}; display:inline-block;"></span>{{ heroByline }}</div>
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:28px; max-width:760px;">
+            <div style="background:rgba(247,244,237,.08); border:1px solid rgba(247,244,237,.16); border-radius:2px; padding:14px 16px;"><div style="font:600 9px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:rgba(247,244,237,.6); text-transform:uppercase;">Championship Odds</div><div style="font-family:'Libre Caslon Display',serif; font-size:28px; color:#F7F4ED; margin-top:7px;">24.5%</div><div style="font:600 11px 'IBM Plex Mono',monospace; color:#7FC79A; margin-top:2px;">↗ +1.3 pp</div></div>
+            <div style="background:rgba(247,244,237,.08); border:1px solid rgba(247,244,237,.16); border-radius:2px; padding:14px 16px;"><div style="font:600 9px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:rgba(247,244,237,.6); text-transform:uppercase;">Power Ranking</div><div style="font-family:'Libre Caslon Display',serif; font-size:28px; color:#F7F4ED; margin-top:7px;">#1</div><div style="font:600 11px 'IBM Plex Mono',monospace; color:#7FC79A; margin-top:2px;">↗ +1</div></div>
+            <div style="background:rgba(247,244,237,.08); border:1px solid rgba(247,244,237,.16); border-radius:2px; padding:14px 16px;"><div style="font:600 9px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:rgba(247,244,237,.6); text-transform:uppercase;">Power Rating</div><div style="font-family:'Libre Caslon Display',serif; font-size:28px; color:#F7F4ED; margin-top:7px;">92.4</div><div style="font:600 11px 'IBM Plex Mono',monospace; color:#7FC79A; margin-top:2px;">↗ +0.8</div></div>
+            <div style="background:rgba(247,244,237,.08); border:1px solid rgba(247,244,237,.16); border-radius:2px; padding:14px 16px;"><div style="font:600 9px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:rgba(247,244,237,.6); text-transform:uppercase;">Confidence</div><div style="font-family:'Libre Caslon Display',serif; font-size:28px; color:#F7F4ED; margin-top:7px;">88<span style="font-size:15px; color:rgba(247,244,237,.55);">/100</span></div><div style="font:600 11px 'IBM Plex Mono',monospace; color:#7FC79A; margin-top:2px;">↗ +4</div></div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- QUICK FORECAST STRIP -->
+    <div style="display:flex; align-items:stretch; gap:0; border:1px solid rgba(26,23,20,.16); border-radius:3px; margin:24px 0 0; overflow:hidden; background:#FCF9F2;">
+      <div style="background:#1A1714; color:#F4EFE3; padding:18px 22px; display:flex; flex-direction:column; justify-content:center; min-width:184px;">
+        <div style="font:600 10px/1 'IBM Plex Mono',monospace; letter-spacing:.14em; text-transform:uppercase; color:rgba(244,239,227,.6);">Top Championship</div>
+        <div style="font-family:'Libre Caslon Display',serif; font-size:21px; margin-top:6px;">Probabilities</div>
+      </div>
+      <sc-for list="{{ quickTop }}" as="q" hint-placeholder-count="5">
+        <div style="flex:1; padding:18px 20px; border-left:1px solid rgba(26,23,20,.1); display:flex; flex-direction:column; justify-content:center;">
+          <div style="font:600 12px/1 'IBM Plex Sans',sans-serif; color:#46403A;">{{ q.name }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:22px; margin-top:7px;">{{ q.val }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- SECONDARY HEADLINES -->
+    <div style="display:flex; align-items:baseline; justify-content:space-between; margin:46px 0 18px; border-bottom:1px solid rgba(26,23,20,.16); padding-bottom:12px;">
+      <h2 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:26px; margin:0;">Latest from the model</h2>
+      <span style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Updated continuously</span>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(26,23,20,.12); border:1px solid rgba(26,23,20,.12);">
+      <sc-for list="{{ headlines }}" as="h" hint-placeholder-count="6">
+        <div style="background:#FCF9F2; padding:24px; display:flex; flex-direction:column; min-height:200px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">{{ h.metricLabel }}</div>
+            <sc-if value="{{ h.up }}" hint-placeholder-val="{{ true }}"><div style="font:600 13px 'IBM Plex Mono',monospace; color:#2E7D4F;">↗ {{ h.metric }}</div></sc-if>
+            <sc-if value="{{ h.down }}" hint-placeholder-val="{{ false }}"><div style="font:600 13px 'IBM Plex Mono',monospace; color:#B0412A;">↘ {{ h.metric }}</div></sc-if>
+          </div>
+          <h3 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:21px; line-height:1.15; margin:14px 0 0;">{{ h.title }}</h3>
+          <p style="font:400 14px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin:11px 0 0; flex:1;">{{ h.summary }}</p>
+          <div style="font:500 11px 'IBM Plex Mono',monospace; color:#A39A8B; margin-top:14px; text-transform:uppercase; letter-spacing:.06em;">{{ h.time }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- THE MORNING FORECAST -->
+    <div style="margin:50px 0 0; border:1.5px solid #1A1714; border-radius:3px; overflow:hidden;">
+      <div style="display:flex; align-items:center; justify-content:space-between; background:#1A1714; color:#F4EFE3; padding:16px 24px;">
+        <div style="display:flex; align-items:baseline; gap:14px;">
+          <span style="font-family:'Libre Caslon Display',serif; font-size:24px; letter-spacing:.02em;">The Morning Forecast</span>
+          <span style="font:500 11px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:rgba(244,239,227,.6); text-transform:uppercase;">Daily Briefing</span>
+        </div>
+        <span style="font:500 11px 'IBM Plex Mono',monospace; letter-spacing:.08em; color:rgba(244,239,227,.6); text-transform:uppercase;">June 24 · 6:45 AM</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(26,23,20,.12);">
+        <div style="background:#FCF9F2; padding:22px 24px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#2E7D4F; text-transform:uppercase;">▲ Biggest Riser</div><div style="font-family:'Libre Caslon Display',serif; font-size:27px; margin-top:10px;">{{ mf.riser }}</div><div style="font:600 13px 'IBM Plex Mono',monospace; color:#2E7D4F; margin-top:5px;">{{ mf.riserVal }} <span style="color:#8A8073; font-weight:400;">{{ mf.riserNote }}</span></div></div>
+        <div style="background:#FCF9F2; padding:22px 24px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#B0412A; text-transform:uppercase;">▼ Biggest Faller</div><div style="font-family:'Libre Caslon Display',serif; font-size:27px; margin-top:10px;">{{ mf.faller }}</div><div style="font:600 13px 'IBM Plex Mono',monospace; color:#B0412A; margin-top:5px;">{{ mf.fallerVal }} <span style="color:#8A8073; font-weight:400;">{{ mf.fallerNote }}</span></div></div>
+        <div style="background:#FCF9F2; padding:22px 24px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">◆ Most Important Match</div><div style="font-family:'Libre Caslon Display',serif; font-size:27px; margin-top:10px;">{{ mf.matchName }}</div><div style="font:500 13px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:5px;">{{ mf.matchNote }}</div></div>
+        <div style="background:#FCF9F2; padding:22px 24px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">★ Most Likely Champion</div><div style="font-family:'Libre Caslon Display',serif; font-size:27px; margin-top:10px;">{{ mf.champ }} <span style="font-family:'IBM Plex Mono'; font-size:16px; color:#2E7D4F;">{{ mf.champVal }}</span></div><div style="font:500 13px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:5px;">{{ mf.champNote }}</div></div>
+        <div style="background:#FCF9F2; padding:22px 24px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">⚠ Biggest Upset Risk</div><div style="font-family:'Libre Caslon Display',serif; font-size:27px; margin-top:10px;">{{ mf.upset }} <span style="font-family:'IBM Plex Mono'; font-size:16px; color:#B0412A;">{{ mf.upsetVal }}</span></div><div style="font:500 13px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:5px;">{{ mf.upsetNote }}</div></div>
+        <div style="background:#FCF9F2; padding:22px 24px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">◉ Key Model Insight</div><p style="font:400 13.5px/1.5 'IBM Plex Sans',sans-serif; color:#46403A; margin:10px 0 0;">{{ mf.insight }}</p></div>
+      </div>
+    </div>
+
+    <!-- CHAMPIONSHIP LEADERBOARD -->
+    <div style="margin:50px 0 0; border:1px solid rgba(26,23,20,.16); border-radius:3px; background:#FCF9F2; overflow:hidden;">
+      <div style="padding:24px 26px 18px;">
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.14em; color:#8A8073; text-transform:uppercase;">Championship Probability</div>
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:6px;">
+          <h2 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:27px; margin:0;">All 16 contenders</h2>
+          <span style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#A39A8B; text-transform:uppercase;">Sorted by current probability</span>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:54px 1fr 96px 96px 130px 92px; padding:0 26px 11px; border-bottom:1px solid rgba(26,23,20,.16); font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#A39A8B; text-transform:uppercase;">
+        <div>Rank</div><div>Team</div><div>Group</div><div style="text-align:right;">Baseline</div><div style="text-align:right;">Current</div><div style="text-align:right;">Δ</div>
+      </div>
+      <sc-for list="{{ leaderboard }}" as="t" hint-placeholder-count="8">
+        <div style="display:grid; grid-template-columns:54px 1fr 96px 96px 130px 92px; align-items:center; padding:14px 26px; border-bottom:1px solid rgba(26,23,20,.08);">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:#A39A8B;">{{ t.rank }}</div>
+          <div style="font:700 15px 'IBM Plex Sans',sans-serif;">{{ t.name }}</div>
+          <div style="font:500 12px 'IBM Plex Mono',monospace; color:#8A8073;">{{ t.group }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:#8A8073; text-align:right;">{{ t.baselineStr }}</div>
+          <div style="display:flex; align-items:center; gap:10px; justify-content:flex-end;">
+            <div style="flex:1; height:5px; background:rgba(26,23,20,.08); border-radius:3px; overflow:hidden; max-width:78px;"><div style="height:100%; background:#1A1714; width:{{ t.barPct }};"></div></div>
+            <span style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; width:54px; text-align:right;">{{ t.currentStr }}</span>
+          </div>
+          <div style="text-align:right;">
+            <sc-if value="{{ t.up }}" hint-placeholder-val="{{ true }}"><span style="font:600 12px 'IBM Plex Mono',monospace; color:#2E7D4F; background:rgba(46,125,79,.12); padding:4px 9px; border-radius:2px;">{{ t.deltaStr }}</span></sc-if>
+            <sc-if value="{{ t.down }}" hint-placeholder-val="{{ false }}"><span style="font:600 12px 'IBM Plex Mono',monospace; color:#B0412A; background:rgba(176,65,42,.12); padding:4px 9px; border-radius:2px;">{{ t.deltaStr }}</span></sc-if>
+            <sc-if value="{{ t.flat }}" hint-placeholder-val="{{ false }}"><span style="font:600 12px 'IBM Plex Mono',monospace; color:#A39A8B;">—</span></sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+  </sc-if>
+
+  <!-- ============ FORECASTS ============ -->
+  <sc-if value="{{ isForecasts }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:42px 0 26px;">
+      <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.2em; color:#8A8073; text-transform:uppercase;">Forecasts · World Cup 2026</div>
+      <h1 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:46px; line-height:1.04; margin:14px 0 0;">Championship odds over time</h1>
+      <p style="font:400 17px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin:16px 0 0; max-width:640px;">How each contender’s title probability has moved across the group stage, drawn from 50,000 simulations per update.</p>
+    </div>
+    <div style="display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;">
+      <sc-for list="{{ forecastTabs }}" as="f" hint-placeholder-count="4">
+        <sc-if value="{{ f.active }}" hint-placeholder-val="{{ true }}"><span style="font:600 12px 'IBM Plex Sans',sans-serif; padding:9px 16px; background:#1A1714; color:#F4EFE3; border-radius:2px;">{{ f.label }}</span></sc-if>
+        <sc-if value="{{ f.inactive }}" hint-placeholder-val="{{ false }}"><span style="font:500 12px 'IBM Plex Sans',sans-serif; padding:9px 16px; background:transparent; color:#7A7164; border:1px solid rgba(26,23,20,.16); border-radius:2px;">{{ f.label }}</span></sc-if>
+      </sc-for>
+    </div>
+    <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:24px;">
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px;">
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin-bottom:18px;">Title probability — top 5</div>
+        {{ forecastChart }}
+      </div>
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px;">
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin-bottom:6px;">Current standings</div>
+        <sc-for list="{{ leaderboard }}" as="t" hint-placeholder-count="8">
+          <div style="display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid rgba(26,23,20,.08);">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#A39A8B; width:22px;">{{ t.rank }}</span>
+            <span style="font:600 14px 'IBM Plex Sans',sans-serif; flex:1;">{{ t.name }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px;">{{ t.currentStr }}</span>
+            <sc-if value="{{ t.up }}" hint-placeholder-val="{{ true }}"><span style="font:600 11px 'IBM Plex Mono',monospace; color:#2E7D4F; width:62px; text-align:right;">{{ t.deltaStr }}</span></sc-if>
+            <sc-if value="{{ t.down }}" hint-placeholder-val="{{ false }}"><span style="font:600 11px 'IBM Plex Mono',monospace; color:#B0412A; width:62px; text-align:right;">{{ t.deltaStr }}</span></sc-if>
+            <sc-if value="{{ t.flat }}" hint-placeholder-val="{{ false }}"><span style="font:600 11px 'IBM Plex Mono',monospace; color:#A39A8B; width:62px; text-align:right;">—</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ RANKINGS ============ -->
+  <sc-if value="{{ isRankings }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:42px 0 26px;">
+      <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.2em; color:#8A8073; text-transform:uppercase;">Veridex Power Rankings</div>
+      <h1 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:46px; line-height:1.04; margin:14px 0 0;">Who’s strongest, right now</h1>
+      <p style="font:400 17px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin:16px 0 0; max-width:640px;">A single rating blending Elo, expected goals, schedule strength and squad availability — recomputed after every match.</p>
+    </div>
+    <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; overflow:hidden;">
+      <div style="display:grid; grid-template-columns:54px 1fr 110px 96px 150px 92px; padding:16px 26px; border-bottom:1px solid rgba(26,23,20,.16); font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#A39A8B; text-transform:uppercase;">
+        <div>Rank</div><div>Team</div><div style="text-align:right;">Power rating</div><div style="text-align:right;">Trend</div><div style="text-align:center;">Form</div><div style="text-align:right;">Title odds</div>
+      </div>
+      <sc-for list="{{ rankTeams }}" as="t" hint-placeholder-count="8">
+        <div style="display:grid; grid-template-columns:54px 1fr 110px 96px 150px 92px; align-items:center; padding:15px 26px; border-bottom:1px solid rgba(26,23,20,.08);">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:#A39A8B;">{{ t.rank }}</div>
+          <div><div style="font:700 15px 'IBM Plex Sans',sans-serif;">{{ t.name }}</div><div style="font:500 11px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:2px;">{{ t.group }}</div></div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:16px; text-align:right;">{{ t.rating }}</div>
+          <div style="display:flex; justify-content:flex-end;">{{ t.spark }}</div>
+          <div style="display:flex; gap:4px; justify-content:center;">
+            <sc-for list="{{ t.form }}" as="g" hint-placeholder-count="5">
+              <sc-if value="{{ g.win }}" hint-placeholder-val="{{ true }}"><span style="width:20px; height:20px; border-radius:2px; background:rgba(46,125,79,.16); color:#2E7D4F; font:600 11px 'IBM Plex Mono',monospace; display:flex; align-items:center; justify-content:center;">W</span></sc-if>
+              <sc-if value="{{ g.draw }}" hint-placeholder-val="{{ false }}"><span style="width:20px; height:20px; border-radius:2px; background:rgba(26,23,20,.08); color:#8A8073; font:600 11px 'IBM Plex Mono',monospace; display:flex; align-items:center; justify-content:center;">D</span></sc-if>
+              <sc-if value="{{ g.loss }}" hint-placeholder-val="{{ false }}"><span style="width:20px; height:20px; border-radius:2px; background:rgba(176,65,42,.16); color:#B0412A; font:600 11px 'IBM Plex Mono',monospace; display:flex; align-items:center; justify-content:center;">L</span></sc-if>
+            </sc-for>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px; text-align:right;">{{ t.currentStr }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- ============ MATCH CENTER ============ -->
+  <sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:42px 0 26px;">
+      <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.2em; color:#8A8073; text-transform:uppercase;">Match Center · Featured Prediction</div>
+      <h1 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:46px; line-height:1.04; margin:14px 0 0;">{{ match.home }} vs {{ match.away }}</h1>
+      <div style="font:500 13px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:12px;">{{ match.time }} · {{ match.venue }}</div>
+    </div>
+    <div style="display:grid; grid-template-columns:1.4fr 1fr; gap:24px; align-items:start;">
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:28px;">
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">Match outcome probability</div>
+        <div style="display:flex; height:54px; border-radius:3px; overflow:hidden; margin:20px 0 12px; border:1px solid rgba(26,23,20,.12);">
+          <div style="width:{{ match.homePct }}; background:#3B6CA8; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;"><span style="font:700 16px 'IBM Plex Mono',monospace;">{{ match.homePct }}</span></div>
+          <div style="width:{{ match.drawPct }}; background:#B8AE9C; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;"><span style="font:700 16px 'IBM Plex Mono',monospace;">{{ match.drawPct }}</span></div>
+          <div style="width:{{ match.awayPct }}; background:#2E7D4F; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;"><span style="font:700 16px 'IBM Plex Mono',monospace;">{{ match.awayPct }}</span></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font:600 12px 'IBM Plex Sans',sans-serif;">
+          <span style="color:#3B6CA8;">{{ match.home }} win</span><span style="color:#8A8073;">Draw</span><span style="color:#2E7D4F;">{{ match.away }} win</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(26,23,20,.12); margin-top:24px; border:1px solid rgba(26,23,20,.12);">
+          <div style="background:#FCF9F2; padding:18px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Expected score</div><div style="font-family:'Libre Caslon Display',serif; font-size:26px; margin-top:8px;">{{ match.xScore }}</div></div>
+          <div style="background:#FCF9F2; padding:18px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Upset risk</div><div style="font-family:'Libre Caslon Display',serif; font-size:26px; margin-top:8px;">{{ match.upset }}</div></div>
+        </div>
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin:26px 0 14px;">Key factors influencing prediction</div>
+        <sc-for list="{{ match.factors }}" as="f" hint-placeholder-count="4">
+          <div style="display:grid; grid-template-columns:1fr auto; gap:12px; padding:13px 0; border-bottom:1px solid rgba(26,23,20,.08);">
+            <div><div style="font:600 13px 'IBM Plex Sans',sans-serif;">{{ f.0 }} <span style="color:#8A8073; font-weight:500;">— favors {{ f.1 }}</span></div><div style="font:400 12.5px/1.4 'IBM Plex Sans',sans-serif; color:#5E564B; margin-top:3px;">{{ f.3 }}</div></div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px; color:#1A1714; align-self:center;">{{ f.2 }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#1A1714; color:#EDE7DA; border-radius:3px; padding:28px;">
+        <div style="display:flex; align-items:center; gap:9px; font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:{{ gold }}; text-transform:uppercase;"><span style="width:7px; height:7px; background:{{ gold }}; border-radius:50%; display:inline-block;"></span>AI-generated preview</div>
+        <h3 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:23px; line-height:1.2; margin:16px 0 14px; color:#F7F4ED;">Brazil’s edge holds in a Group B heavyweight</h3>
+        <p style="font:400 14.5px/1.65 'IBM Plex Sans',sans-serif; color:rgba(237,231,218,.82); margin:0;">{{ match.preview }}</p>
+        <div style="font:500 11px 'IBM Plex Mono',monospace; color:rgba(237,231,218,.5); margin-top:18px; text-transform:uppercase; letter-spacing:.06em; border-top:1px solid rgba(237,231,218,.16); padding-top:14px;">Written by the Veridex model · updated 6:45 AM</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SIMULATIONS ============ -->
+  <sc-if value="{{ isSim }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:42px 0 26px;">
+      <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.2em; color:#8A8073; text-transform:uppercase;">Simulations · What-If Engine</div>
+      <h1 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:46px; line-height:1.04; margin:14px 0 0;">Rewrite the results. Watch the model react.</h1>
+      <p style="font:400 17px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin:16px 0 0; max-width:660px;">Choose an outcome for any upcoming match and the championship odds recalculate across all simulations — live.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+          <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">Set match outcomes</div>
+          <button onClick="{{ resetSim }}" style="background:none; border:1px solid rgba(26,23,20,.2); border-radius:2px; cursor:pointer; font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.08em; color:#5E564B; padding:6px 12px; text-transform:uppercase;">Reset</button>
+        </div>
+        <sc-for list="{{ simMatches }}" as="m" hint-placeholder-count="4">
+          <div style="padding:14px 0; border-bottom:1px solid rgba(26,23,20,.08);">
+            <div style="font:600 13px 'IBM Plex Sans',sans-serif; margin-bottom:10px;">{{ m.label }}</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+              <sc-for list="{{ m.opts }}" as="o" hint-placeholder-count="3">
+                <sc-if value="{{ o.selected }}" hint-placeholder-val="{{ false }}"><button onClick="{{ o.onClick }}" style="background:#1A1714; color:#F4EFE3; border:1px solid #1A1714; border-radius:2px; cursor:pointer; font:600 11.5px 'IBM Plex Sans',sans-serif; padding:9px 6px;">{{ o.label }}</button></sc-if>
+                <sc-if value="{{ o.unselected }}" hint-placeholder-val="{{ true }}"><button onClick="{{ o.onClick }}" style="background:#fff; color:#46403A; border:1px solid rgba(26,23,20,.18); border-radius:2px; cursor:pointer; font:500 11.5px 'IBM Plex Sans',sans-serif; padding:9px 6px;">{{ o.label }}</button></sc-if>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <div style="margin-top:18px; padding:16px; background:rgba(26,23,20,.04); border-radius:3px;">
+          <div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin-bottom:8px;">Storyline</div>
+          <sc-for list="{{ simStory }}" as="line" hint-placeholder-count="1">
+            <div style="font:400 13.5px/1.5 'IBM Plex Sans',sans-serif; color:#46403A; padding:2px 0;">{{ line }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px;">
+          <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase;">Projected championship odds</div>
+          <sc-if value="{{ simActive }}" hint-placeholder-val="{{ false }}"><span style="font:600 10px 'IBM Plex Mono',monospace; color:#2E7D4F; text-transform:uppercase; letter-spacing:.08em;">● Live</span></sc-if>
+        </div>
+        <sc-for list="{{ simTop }}" as="s" hint-placeholder-count="6">
+          <div style="margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+              <span style="font:600 14px 'IBM Plex Sans',sans-serif;">{{ s.name }}</span>
+              <span style="display:flex; align-items:baseline; gap:8px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:15px;">{{ s.valStr }}</span>
+                <sc-if value="{{ s.up }}" hint-placeholder-val="{{ false }}"><span style="font:600 11px 'IBM Plex Mono',monospace; color:#2E7D4F; width:40px; text-align:right;">+{{ s.dStr }}</span></sc-if>
+                <sc-if value="{{ s.down }}" hint-placeholder-val="{{ false }}"><span style="font:600 11px 'IBM Plex Mono',monospace; color:#B0412A; width:40px; text-align:right;">−{{ s.dStr }}</span></sc-if>
+                <sc-if value="{{ s.flat }}" hint-placeholder-val="{{ true }}"><span style="font:600 11px 'IBM Plex Mono',monospace; color:#A39A8B; width:40px; text-align:right;">—</span></sc-if>
+              </span>
+            </div>
+            <div style="height:8px; background:rgba(26,23,20,.08); border-radius:4px; overflow:hidden;"><div style="height:100%; background:#1A1714; width:{{ s.barPct }};"></div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ MODEL LAB ============ -->
+  <sc-if value="{{ isLab }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:42px 0 26px;">
+      <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.2em; color:#8A8073; text-transform:uppercase;">Model Lab · Methodology & Transparency</div>
+      <h1 style="font-family:'Libre Caslon Display',serif; font-weight:400; font-size:46px; line-height:1.04; margin:14px 0 0;">How the forecasts are built</h1>
+      <p style="font:400 17px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin:16px 0 0; max-width:660px;">Every number on Veridex traces back to a documented, backtested process. Here’s what goes in, how it runs, and how accurate it has been.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px;">
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:20px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Brier score</div><div style="font-family:'Libre Caslon Display',serif; font-size:34px; margin-top:8px;">0.187</div><div style="font:500 11px 'IBM Plex Mono',monospace; color:#2E7D4F; margin-top:3px;">better than market</div></div>
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:20px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Calibration</div><div style="font-family:'Libre Caslon Display',serif; font-size:34px; margin-top:8px;">96%</div><div style="font:500 11px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:3px;">within tolerance</div></div>
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:20px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Tournaments tested</div><div style="font-family:'Libre Caslon Display',serif; font-size:34px; margin-top:8px;">8</div><div style="font:500 11px 'IBM Plex Mono',monospace; color:#8A8073; margin-top:3px;">2010–2024</div></div>
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:20px;"><div style="font:600 10px 'IBM Plex Mono',monospace; letter-spacing:.1em; color:#8A8073; text-transform:uppercase;">Favorite hit rate</div><div style="font-family:'Libre Caslon Display',serif; font-size:34px; margin-top:8px;">71%</div><div style="font:500 11px 'IBM Plex Mono',monospace; color:#2E7D4F; margin-top:3px;">vs 64% market</div></div>
+    </div>
+    <div style="display:grid; grid-template-columns:1.3fr 1fr; gap:24px; align-items:start;">
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px;">
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin-bottom:6px;">The simulation process</div>
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="4">
+          <div style="display:grid; grid-template-columns:36px 1fr; gap:14px; padding:16px 0; border-bottom:1px solid rgba(26,23,20,.08);">
+            <div style="font-family:'Libre Caslon Display',serif; font-size:26px; color:#A39A8B;">{{ st.0 }}</div>
+            <div><div style="font:600 15px 'IBM Plex Sans',sans-serif;">{{ st.1 }}</div><div style="font:400 13.5px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin-top:4px;">{{ st.2 }}</div></div>
+          </div>
+        </sc-for>
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin:24px 0 12px;">Model inputs</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <sc-for list="{{ inputs }}" as="ip" hint-placeholder-count="6">
+            <span style="font:500 12px 'IBM Plex Mono',monospace; color:#46403A; background:rgba(26,23,20,.05); border:1px solid rgba(26,23,20,.1); padding:7px 11px; border-radius:2px;">{{ ip }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px;">
+        <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin-bottom:6px;">Calibration — backtested</div>
+        <div style="font:400 13px/1.5 'IBM Plex Sans',sans-serif; color:#5E564B; margin-bottom:14px;">When the model says 30%, it happens close to 30% of the time. Points on the dashed line are perfectly calibrated.</div>
+        {{ calChart }}
+      </div>
+    </div>
+    <div style="background:#FCF9F2; border:1px solid rgba(26,23,20,.16); border-radius:3px; padding:26px; margin-top:24px;">
+      <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.12em; color:#8A8073; text-transform:uppercase; margin-bottom:6px;">Frequently asked</div>
+      <sc-for list="{{ faq }}" as="q" hint-placeholder-count="3">
+        <div style="padding:16px 0; border-bottom:1px solid rgba(26,23,20,.08);">
+          <div style="font-family:'Libre Caslon Display',serif; font-size:19px;">{{ q.0 }}</div>
+          <div style="font:400 14px/1.6 'IBM Plex Sans',sans-serif; color:#5E564B; margin-top:7px;">{{ q.1 }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div style="max-width:1200px; margin:60px auto 0; padding:28px 40px 0; border-top:2px solid #1A1714; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+    <div style="font-family:'Libre Caslon Display',serif; font-size:22px; letter-spacing:.04em;">VERIDEX</div>
+    <div style="font:500 11px 'IBM Plex Mono',monospace; letter-spacing:.08em; color:#8A8073; text-transform:uppercase;">Predictive Sports Intelligence · © 2026 · Forecasts are probabilistic, not guarantees</div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:900},&quot;edition&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desk&quot;,&quot;wire&quot;],&quot;default&quot;:&quot;wire&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showBreaking&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;goldAccent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#D7B254&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { tab: 'home', edition: null, sim: {} };
+
+  renderVals() {
+    const E = React.createElement;
+    const ink = '#1A1714', ink2 = '#5E564B', hair = 'rgba(26,23,20,.12)';
+    const POS = '#2E7D4F', NEG = '#B0412A';
+    const edition = this.state.edition ?? (this.props.edition || 'wire');
+    const gold = this.props.goldAccent || '#D7B254';
+    const showBreaking = this.props.showBreaking ?? true;
+    const tab = this.state.tab;
+
+    // ---- core dataset: World Cup 2026 contenders ----
+    const raw = [
+      ['Brazil','BRA','A',23.2,24.5,92.4,'WWWDW',[21.0,22.4,23.2,24.5]],
+      ['France','FRA','B',19.1,18.9,91.0,'WWDWL',[20.2,19.6,19.1,18.9]],
+      ['Argentina','ARG','C',16.4,16.7,90.2,'WDWWW',[17.1,16.0,16.4,16.7]],
+      ['Spain','ESP','D',9.6,9.8,87.5,'WWWWD',[8.4,9.1,9.6,9.8]],
+      ['Portugal','POR','A',10.9,9.3,86.1,'WLDWL',[11.5,11.2,10.9,9.3]],
+      ['England','ENG','E',6.8,7.1,85.0,'DWWDW',[6.1,6.5,6.8,7.1]],
+      ['Germany','GER','F',4.9,5.2,83.8,'WDWWW',[4.2,4.6,4.9,5.2]],
+      ['Netherlands','NED','C',3.6,3.4,82.9,'DWLDW',[3.9,3.7,3.6,3.4]],
+      ['USA','USA','B',1.8,2.1,79.4,'WWDWW',[1.3,1.5,1.8,2.1]],
+      ['Belgium','BEL','F',2.0,1.8,80.1,'LWDWL',[2.4,2.2,2.0,1.8]],
+      ['Uruguay','URU','D',1.1,1.2,78.6,'DWWLD',[1.0,1.1,1.1,1.2]],
+      ['Croatia','CRO','E',0.9,1.0,77.9,'WDDWL',[0.8,0.9,0.9,1.0]],
+      ['Colombia','COL','G',0.8,0.9,77.2,'WWDLW',[0.7,0.8,0.8,0.9]],
+      ['Morocco','MAR','H',0.7,0.8,76.8,'DWWWD',[0.6,0.7,0.7,0.8]],
+      ['Mexico','MEX','A',0.5,0.5,74.3,'DDWLD',[0.6,0.5,0.5,0.5]],
+      ['Japan','JPN','G',0.4,0.5,73.9,'WDWWD',[0.3,0.4,0.4,0.5]],
+    ];
+    const teams = raw.map(r => {
+      const delta = +(r[4] - r[3]).toFixed(1);
+      return { name:r[0], code:r[1], group:'Group '+r[2], baseline:r[3], current:r[4],
+        rating:r[5], formStr:r[6], trend:r[7], delta,
+        baselineStr:r[3].toFixed(1)+'%', currentStr:r[4].toFixed(1)+'%',
+        deltaStr:(delta>0?'+':delta<0?'−':'')+Math.abs(delta).toFixed(1)+' pp',
+        up:delta>0, down:delta<0, flat:delta===0,
+        form: r[6].split('').map(l=>({l, win:l==='W', draw:l==='D', loss:l==='L'})) };
+    });
+    const sorted = [...teams].sort((a,b)=>b.current-a.current);
+    const maxBar = sorted[0].current;
+    sorted.forEach((t,i)=>{ t.rank = String(i+1).padStart(2,'0'); t.barPct = (t.current/maxBar*100).toFixed(1)+'%'; });
+
+    // sparklines
+    const spark = (arr,col,w=66,h=22)=>{
+      const mn=Math.min(...arr), mx=Math.max(...arr), p=3;
+      const xs=arr.map((_,i)=>p+i*((w-2*p)/(arr.length-1)));
+      const ys=arr.map(v=>(h-p)-((v-mn)/((mx-mn)||1))*(h-2*p));
+      const pts=xs.map((x,i)=>x.toFixed(1)+','+ys[i].toFixed(1)).join(' ');
+      return E('svg',{width:w,height:h,viewBox:`0 0 ${w} ${h}`,style:{display:'block'}},
+        E('polyline',{points:pts,fill:'none',stroke:col,strokeWidth:1.6,strokeLinejoin:'round',strokeLinecap:'round'}),
+        E('circle',{cx:xs[xs.length-1],cy:ys[ys.length-1],r:2.4,fill:col}));
+    };
+    sorted.forEach(t=> t.spark = spark(t.trend, t.up?POS:t.down?NEG:ink2));
+
+    // ---- multi-line forecast chart (top 5) ----
+    const top5 = sorted.slice(0,5);
+    const lineCols = ['#2E7D4F','#3B6CA8','#7E6CC4','#B0412A','#B98C2A'];
+    const multiLine = (series,w,h)=>{
+      const padL=8,padR=92,padT=16,padB=26, n=series[0].pts.length;
+      const ymax=26, X=i=>padL+i*((w-padL-padR)/(n-1)), Y=v=>padT+(1-v/ymax)*(h-padT-padB);
+      const kids=[];
+      [0,10,20].forEach(g=>{ kids.push(E('line',{key:'g'+g,x1:padL,x2:w-padR,y1:Y(g),y2:Y(g),stroke:'rgba(26,23,20,.10)',strokeWidth:1}));
+        kids.push(E('text',{key:'gt'+g,x:padL,y:Y(g)-4,fill:'#8A8073',fontSize:10,fontFamily:'IBM Plex Mono,monospace'},g+'%')); });
+      ['PRE','MD 1','MD 2','NOW'].forEach((lab,i)=> kids.push(E('text',{key:'x'+i,x:X(i),y:h-8,fill:'#8A8073',fontSize:10,fontFamily:'IBM Plex Mono,monospace',textAnchor:i===0?'start':'middle'},lab)) );
+      series.forEach((s,si)=>{
+        const pts=s.pts.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+        kids.push(E('polyline',{key:'l'+si,points:pts,fill:'none',stroke:s.col,strokeWidth:2.2,strokeLinejoin:'round'}));
+        const lx=X(n-1), ly=Y(s.pts[n-1]);
+        kids.push(E('circle',{key:'d'+si,cx:lx,cy:ly,r:3,fill:s.col}));
+        kids.push(E('text',{key:'el'+si,x:lx+9,y:ly+4,fill:ink,fontSize:12,fontFamily:'IBM Plex Sans,sans-serif',fontWeight:600},s.name));
+      });
+      return E('svg',{width:'100%',viewBox:`0 0 ${w} ${h}`,preserveAspectRatio:'xMidYMid meet',style:{display:'block'}},...kids);
+    };
+    const forecastChart = multiLine(top5.map((t,i)=>({name:t.name,col:lineCols[i],pts:t.trend})), 760, 320);
+
+    // ---- calibration chart ----
+    const calChart = (()=>{
+      const w=420,h=300,pad=40;
+      const X=v=>pad+v/100*(w-pad-14), Y=v=>(h-pad)-v/100*(h-pad-14);
+      const pred=[10,20,30,40,50,60,70,80,90];
+      const act=[8,19,33,38,52,58,73,79,91];
+      const kids=[];
+      [0,25,50,75,100].forEach(g=>{ kids.push(E('line',{key:'gx'+g,x1:X(g),x2:X(g),y1:Y(0),y2:Y(100),stroke:'rgba(26,23,20,.08)'}));
+        kids.push(E('line',{key:'gy'+g,x1:X(0),x2:X(100),y1:Y(g),y2:Y(g),stroke:'rgba(26,23,20,.08)'})); });
+      kids.push(E('line',{key:'diag',x1:X(0),y1:Y(0),x2:X(100),y2:Y(100),stroke:'#8A8073',strokeWidth:1.4,strokeDasharray:'4 4'}));
+      const pts=pred.map((p,i)=>X(p).toFixed(1)+','+Y(act[i]).toFixed(1)).join(' ');
+      kids.push(E('polyline',{key:'cal',points:pts,fill:'none',stroke:'#2E7D4F',strokeWidth:2.4,strokeLinejoin:'round'}));
+      pred.forEach((p,i)=> kids.push(E('circle',{key:'c'+i,cx:X(p),cy:Y(act[i]),r:3.4,fill:'#2E7D4F'})));
+      kids.push(E('text',{key:'xl',x:(w+pad)/2-10,y:h-8,fill:'#8A8073',fontSize:11,fontFamily:'IBM Plex Mono,monospace',textAnchor:'middle'},'PREDICTED'));
+      kids.push(E('text',{key:'yl',x:14,y:h/2,fill:'#8A8073',fontSize:11,fontFamily:'IBM Plex Mono,monospace',textAnchor:'middle',transform:`rotate(-90 14 ${h/2})`},'OBSERVED'));
+      return E('svg',{width:'100%',viewBox:`0 0 ${w} ${h}`,preserveAspectRatio:'xMidYMid meet',style:{display:'block'}},...kids);
+    })();
+
+    // ---- match center ----
+    const match = {
+      home:'France', away:'Brazil', homeCode:'FRA', awayCode:'BRA',
+      time:'Today · 3:00 PM ET', venue:'MetLife Stadium, New Jersey · Group Stage MD 3',
+      homePct:'32%', drawPct:'27%', awayPct:'41%',
+      homeOdd:'32.4', drawOdd:'26.8', awayOdd:'40.8',
+      xScore:'1.4 – 1.6', upset:'Moderate',
+      factors:[
+        ['Rest advantage','Brazil', '+0.4 xG', 'Brazil had one extra recovery day after Tuesday’s early kickoff.'],
+        ['Squad availability','France', '−0.6 xGA', 'France missing first-choice center-back; back line reshuffled.'],
+        ['Recent xG trend','Brazil', '+0.3 xG', 'Brazil averaging 2.1 xG across the group stage, league-best.'],
+        ['Venue & travel','Neutral', '—', 'Neutral venue; both squads on equivalent travel load.'],
+      ],
+      preview:'The Veridex model gives Brazil the edge in a marquee Group Stage finale, projecting a 41% win probability against France’s 32%, with a 27% chance of a draw. Brazil’s league-best expected-goals output and an extra day of rest tilt a tight matchup, though France’s reshuffled defense remains the model’s largest source of uncertainty. A French win would vault them past Brazil into the projected top two and reopen the race at the summit of Group B. Expect a cagey opening 30 minutes before Brazil’s press begins to tell.'
+    };
+
+    // ---- simulations: what-if ----
+    const sim = this.state.sim;
+    const set = o => this.setState(s=>o(s));
+    const matchEffects = {
+      m1:{ label:'France vs Brazil', home:'France', away:'Brazil',
+        eff:{ home:{France:2.4,Brazil:-2.6}, draw:{France:0.4,Brazil:-0.6}, away:{Brazil:1.8,France:-1.6} } },
+      m2:{ label:'Spain vs USA', home:'Spain', away:'USA',
+        eff:{ home:{Spain:0.6,USA:-0.4}, draw:{Spain:-0.1,USA:0.3}, away:{USA:1.9,Spain:-1.4} } },
+      m3:{ label:'England vs Germany', home:'England', away:'Germany',
+        eff:{ home:{England:1.2,Germany:-1.0}, draw:{England:0.1,Germany:0.1}, away:{Germany:1.3,England:-0.9} } },
+      m4:{ label:'Argentina vs Netherlands', home:'Argentina', away:'Netherlands',
+        eff:{ home:{Argentina:1.1,Netherlands:-0.5}, draw:{Argentina:-0.2,Netherlands:0.4}, away:{Netherlands:1.6,Argentina:-1.3} } },
+    };
+    const simMatches = Object.keys(matchEffects).map(id=>{
+      const m = matchEffects[id];
+      const opts = [
+        {key:'home', label:m.home+' win'},
+        {key:'draw', label:'Draw'},
+        {key:'away', label:m.away+' win'},
+      ].map(o=>({ ...o, selected: sim[id]===o.key, unselected: sim[id]!==o.key,
+        onClick: ()=> this.setState(s=>({ sim: {...s.sim, [id]: s.sim[id]===o.key ? undefined : o.key } })) }));
+      return { id, label:m.label, opts };
+    });
+    // recompute odds
+    const oddsMap = {}; sorted.forEach(t=> oddsMap[t.name]=t.current);
+    const storyLines = [];
+    Object.keys(sim).forEach(id=>{
+      const key = sim[id]; if(!key) return;
+      const m = matchEffects[id]; const eff = m.eff[key];
+      Object.keys(eff).forEach(name=>{ oddsMap[name] = Math.max(0.1, +(oddsMap[name]+eff[name]).toFixed(1)); });
+      const win = key==='home'?m.home : key==='away'?m.away : 'A draw';
+      const pair = key==='draw' ? `${m.label} ends level` : `${win} beats ${key==='home'?m.away:m.home}`;
+      storyLines.push(pair);
+    });
+    const simSorted = Object.keys(oddsMap).map(n=>({name:n,val:oddsMap[n]})).sort((a,b)=>b.val-a.val);
+    const simMax = simSorted[0].val;
+    const baseRank = sorted.map(t=>t.name);
+    const simTop = simSorted.slice(0,6).map((t,i)=>{
+      const base = teams.find(x=>x.name===t.name);
+      const d = +(t.val - base.current).toFixed(1);
+      return { name:t.name, valStr:t.val.toFixed(1)+'%', barPct:(t.val/simMax*100).toFixed(1)+'%',
+        d, dStr:Math.abs(d).toFixed(1), up:d>0, down:d<0, flat:d===0,
+        moved: baseRank[i]!==t.name };
+    });
+    const simActive = Object.values(sim).some(Boolean);
+    const simStory = simActive
+      ? [`${storyLines.length} scenario${storyLines.length>1?'s':''} applied. ${simTop[0].name} now projects as champion at ${simTop[0].valStr}.`, ...storyLines]
+      : ['Pick an outcome for any match below. Championship odds, the leaderboard, and storylines recalculate instantly across all 10,000 simulations.'];
+
+    // ---- home: secondary headlines, morning forecast, quick strip ----
+    const headlines = [
+      {title:'Brazil Reclaims Favorite Status After Matchday 2 Surge', summary:'A clinical 3–0 over Serbia lifts Brazil to a tournament-high 24.5% title probability.', metric:'24.5%', metricLabel:'TITLE ODDS', time:'12 min ago', up:true},
+      {title:'Portugal’s Title Hopes Dip As Group A Tightens', summary:'A surprise draw drops Portugal 1.7 points — the field’s biggest faller this update.', metric:'−1.7 pp', metricLabel:'CHANGE', time:'34 min ago', up:false},
+      {title:'USA’s Path To The Quarterfinals Widens', summary:'The model now gives the hosts a 61% chance of advancing from Group B.', metric:'61%', metricLabel:'ADVANCE', time:'1 hr ago', up:true},
+      {title:'Spain Climbs Into The Top Four', summary:'Back-to-back clean sheets push Spain past Portugal into fourth on title odds.', metric:'9.8%', metricLabel:'TITLE ODDS', time:'2 hr ago', up:true},
+      {title:'England’s Defensive Concerns Persist Despite Win', summary:'Underlying xGA suggests England’s back line remains a model liability.', metric:'7.1%', metricLabel:'TITLE ODDS', time:'3 hr ago', up:false},
+      {title:'Germany Quietly Builds Momentum In Group F', summary:'Three straight overperformances on xG lift Germany into the top seven.', metric:'5.2%', metricLabel:'TITLE ODDS', time:'4 hr ago', up:true},
+    ];
+    const quickTop = top5.map(t=>({name:t.name, val:t.current.toFixed(1)+'%'}));
+    const mf = {
+      riser:'Brazil', riserVal:'+1.3 pp', riserNote:'to 24.5% title odds',
+      faller:'Portugal', fallerVal:'−1.7 pp', fallerNote:'to 9.3% title odds',
+      matchName:'France vs Brazil', matchNote:'Group B decider · 3:00 PM ET',
+      champ:'Brazil', champVal:'24.5%', champNote:'most likely champion',
+      upset:'USA over Spain', upsetVal:'19%', upsetNote:'highest-leverage upset risk today',
+      insight:'Brazil’s rise is driven less by results than by xG: it leads the field in expected goals while conceding the fewest big chances. The model treats that profile as more repeatable than France’s narrow wins.'
+    };
+
+    const sports = ['World Cup','NFL','NBA','NHL','MLB','MLS','Premier League','Champions League'];
+    const sportPills = sports.map(s=>({name:s, active:s==='World Cup'}));
+    const nav = [
+      {id:'home',label:'Home'},{id:'forecasts',label:'Forecasts'},{id:'rankings',label:'Rankings'},
+      {id:'match',label:'Match Center'},{id:'sim',label:'Simulations'},{id:'lab',label:'Model Lab'},
+    ].map(n=>({...n, active:tab===n.id, onClick:()=>this.setState({tab:n.id})}));
+
+    const breakingText = 'Brazil reclaims #1 at 24.5%  ·  Portugal slides 1.7pp after Group A draw  ·  France vs Brazil kicks off 3:00 PM ET  ·  Veridex model refreshed with 50,000 new simulations  ·  USA’s advance odds climb to 61%';
+
+    const forecastTabs = [
+      {label:'Championship', active:true},{label:'Qualification', active:false},
+      {label:'Group Advance', active:false},{label:'Knockout', active:false},
+    ];
+
+    const steps = [
+      ['01','Ingest every result','Final scores, expected goals, shot quality and lineup data flow in within minutes of full-time.'],
+      ['02','Rate every team','A blended power rating updates from Elo, xG differential, schedule strength and squad availability.'],
+      ['03','Simulate the tournament','The remaining schedule is played out 50,000 times, sampling each match from the rating-implied distribution.'],
+      ['04','Calibrate & publish','Probabilities are checked against historical calibration curves before the page updates.'],
+    ];
+    const inputs = ['Match results','Expected goals (xG / xGA)','Squad availability','Travel & rest','Historical form','Market priors','Set-piece efficiency','Home advantage'];
+    const faq = [
+      ['Why don\u2019t the odds add up to 100%?','Probability is spread across all 48 entrants. The 16 contenders shown here account for roughly 95% of championship outcomes; the long tail holds the rest.'],
+      ['How often do the numbers change?','After every completed match, and on lineup news. Most updates move a favorite by less than a point \u2014 large swings are flagged in the Morning Forecast.'],
+      ['Is this a betting product?','No. Veridex publishes probabilistic forecasts and analysis. We don\u2019t offer odds, lines, or wagering of any kind.'],
+    ];
+
+    return {
+      ink, ink2, hair, gold, edition,
+      isDesk: edition==='desk', isWire: edition==='wire', showBreaking, breakingText,
+      isHome: tab==='home', isForecasts: tab==='forecasts', isRankings: tab==='rankings',
+      isMatch: tab==='match', isSim: tab==='sim', isLab: tab==='lab',
+      today:'Tuesday, June 24, 2026',
+      nav, sportPills,
+      setDesk:()=>this.setState({edition:'desk'}), setWire:()=>this.setState({edition:'wire'}),
+      leaderboard: sorted,
+      forecastChart, calChart, top5disp: top5, forecastTabs,
+      rankTeams: sorted,
+      headlines, quickTop, mf, match, steps, inputs, faq,
+      simMatches, simTop, simStory, simActive, resetSim:()=>this.setState({sim:{}}),
+      heroTitle:'Brazil Reclaims World Cup Favorite Status After Matchday 2',
+      heroSub:'The Veridex model ran 50,000 fresh simulations after Tuesday’s results and now rates Brazil the tournament’s most likely champion — its first time atop the table since the group-stage draw.',
+      heroByline:'VERIDEX Analytics Desk · June 24, 2026 · 6:45 AM',
+    };
+  }
+}
+</script>
+</body>
+</html>

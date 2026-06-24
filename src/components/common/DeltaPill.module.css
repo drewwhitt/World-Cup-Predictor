@@ -1,0 +1,26 @@
+.up,
+.down,
+.flat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  padding: 5px 8px;
+  border-radius: 2px;
+  font: 600 11px/1 var(--font-mono);
+}
+
+.up {
+  color: var(--positive);
+  background: rgba(46, 125, 79, 0.12);
+}
+
+.down {
+  color: var(--negative);
+  background: rgba(176, 65, 42, 0.12);
+}
+
+.flat {
+  color: var(--ink-3);
+  background: rgba(26, 23, 20, 0.05);
+}

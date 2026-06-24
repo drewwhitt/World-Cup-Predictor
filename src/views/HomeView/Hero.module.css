@@ -1,0 +1,115 @@
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 460px;
+  margin: 30px 0 8px;
+  overflow: hidden;
+  background: repeating-linear-gradient(135deg, #1c2a3d 0 14px, #1a2738 14px 28px);
+  border-radius: 3px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 18, 30, 0.25) 0%, rgba(10, 18, 30, 0.55) 50%, rgba(10, 18, 30, 0.94) 100%);
+}
+
+.photoLabel {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  color: rgba(237, 231, 218, 0.55);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.content {
+  position: relative;
+  width: 100%;
+  padding: 40px;
+}
+
+.kicker {
+  display: inline-block;
+  padding: 7px 12px;
+  color: var(--navy);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--gold);
+}
+
+.content h1 {
+  max-width: 880px;
+  margin: 18px 0 0;
+  color: var(--on-dark);
+  font-family: var(--font-display);
+  font-size: 58px;
+  font-weight: 400;
+  line-height: 1.03;
+}
+
+.content p {
+  max-width: 660px;
+  margin: 18px 0 0;
+  color: var(--on-dark-soft);
+  font: 400 18px/1.5 var(--font-sans);
+}
+
+.byline {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 20px;
+  color: rgba(247, 244, 237, 0.62);
+  font: 500 12px var(--font-mono);
+}
+
+.byline span {
+  display: inline-block;
+  width: 3px;
+  height: 14px;
+  background: var(--gold);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 760px;
+  margin-top: 28px;
+}
+
+.metricCard {
+  padding: 14px 16px;
+  background: rgba(247, 244, 237, 0.08);
+  border: 1px solid rgba(247, 244, 237, 0.16);
+  border-radius: 2px;
+}
+
+.metricLabel {
+  color: rgba(247, 244, 237, 0.6);
+  font: 600 9px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.metricValue {
+  margin-top: 7px;
+  color: var(--on-dark);
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+.metricValue span {
+  color: rgba(247, 244, 237, 0.55);
+  font-size: 15px;
+}
+
+.metricDelta {
+  margin-top: 2px;
+  color: var(--pos-on-dark);
+  font: 600 11px var(--font-mono);
+}

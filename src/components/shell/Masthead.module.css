@@ -1,0 +1,86 @@
+.utility {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0;
+  color: var(--ink-3);
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--hairline-2);
+}
+
+.utilityRight {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.subscribe {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.masthead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 26px 0 22px;
+}
+
+.wordmark {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 46px;
+  line-height: 0.92;
+  letter-spacing: 0.04em;
+}
+
+.tagline {
+  margin-top: 9px;
+  color: var(--ink-3);
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.edition {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.edition > span {
+  color: var(--ink-4);
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.segmented {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid rgba(26, 23, 20, 0.2);
+  border-radius: 2px;
+}
+
+.segmented button {
+  padding: 9px 16px;
+  cursor: pointer;
+  color: var(--ink-2);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 0;
+}
+
+.segmented button + button {
+  border-left: 1px solid rgba(26, 23, 20, 0.2);
+}
+
+.segmented .active {
+  color: var(--paper);
+  background: var(--ink);
+}

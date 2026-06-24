@@ -1,0 +1,37 @@
+.page {
+  min-height: 100vh;
+  padding-bottom: 80px;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.container {
+  width: min(100%, var(--container));
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: min(100%, var(--container));
+  margin: 60px auto 0;
+  padding: 28px var(--container-pad) 0;
+  border-top: 2px solid var(--ink);
+}
+
+.footerWordmark {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+
+.footerMeta {
+  color: var(--ink-3);
+  font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

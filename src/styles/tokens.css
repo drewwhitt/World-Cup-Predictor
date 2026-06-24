@@ -1,0 +1,26 @@
+:root {
+  --paper: #F4EFE3;
+  --surface: #FCF9F2;
+  --ink: #1A1714;
+  --ink-2: #5E564B;
+  --ink-3: #8A8073;
+  --ink-4: #A39A8B;
+  --hairline: rgba(26, 23, 20, 0.12);
+  --hairline-2: rgba(26, 23, 20, 0.08);
+  --positive: #2E7D4F;
+  --negative: #B0412A;
+  --navy: #0E1A2C;
+  --gold: #D7B254;
+  --on-dark: #F7F4ED;
+  --on-dark-soft: rgba(247, 244, 237, 0.82);
+  --pos-on-dark: #7FC79A;
+  --home-win: #3B6CA8;
+  --draw: #B8AE9C;
+  --away-win: #2E7D4F;
+  --font-display: "Libre Caslon Display", Georgia, serif;
+  --font-serif: "Libre Caslon Text", Georgia, serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --container: 1200px;
+  --container-pad: 40px;
+}

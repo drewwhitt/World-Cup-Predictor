@@ -1,0 +1,25 @@
+.sports {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 16px 0 4px;
+}
+
+.sports span {
+  border-radius: 2px;
+}
+
+.active {
+  padding: 8px 14px;
+  color: var(--paper);
+  font: 600 12px/1 var(--font-sans);
+  background: var(--ink);
+}
+
+.inactive {
+  padding: 8px 14px;
+  color: var(--ink-3);
+  font: 500 12px/1 var(--font-sans);
+  background: transparent;
+  border: 1px solid rgba(26, 23, 20, 0.16);
+}

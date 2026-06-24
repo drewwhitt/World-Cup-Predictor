@@ -1,0 +1,60 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+  padding: 24px;
+  background: var(--surface);
+}
+
+.card:hover {
+  background: #FFFDF7;
+}
+
+.topline {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.topline div {
+  color: var(--ink-3);
+  font: 600 10px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.topline strong {
+  font: 600 13px var(--font-mono);
+}
+
+.up {
+  color: var(--positive);
+}
+
+.down {
+  color: var(--negative);
+}
+
+.card h3 {
+  margin: 14px 0 0;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.card p {
+  flex: 1;
+  margin: 11px 0 0;
+  color: var(--ink-2);
+  font: 400 14px/1.5 var(--font-sans);
+}
+
+.card time {
+  margin-top: 14px;
+  color: var(--ink-4);
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

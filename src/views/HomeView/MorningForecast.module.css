@@ -1,0 +1,109 @@
+.panel {
+  margin: 50px 0 0;
+  overflow: hidden;
+  border: 1.5px solid var(--ink);
+  border-radius: 3px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.header div {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+}
+
+.header span {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.02em;
+}
+
+.header em,
+.header time {
+  color: rgba(244, 239, 227, 0.6);
+  font: 500 11px var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header time {
+  letter-spacing: 0.08em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--hairline);
+}
+
+.cell {
+  min-height: 142px;
+  padding: 22px 24px;
+  background: var(--surface);
+}
+
+.cell div {
+  color: var(--ink-3);
+  font: 600 10px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cell strong {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.cell p {
+  margin: 5px 0 0;
+  color: var(--ink-3);
+  font: 500 13px var(--font-mono);
+}
+
+.cell .insight {
+  margin-top: 10px;
+  color: #46403A;
+  font: 400 13.5px/1.5 var(--font-sans);
+}
+
+.cell .pos,
+.pos {
+  color: var(--positive);
+}
+
+.cell .neg,
+.neg {
+  color: var(--negative);
+}
+
+.cell p span {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.inlinePos,
+.inlineNeg {
+  font-family: var(--font-mono);
+  font-size: 16px;
+}
+
+.inlinePos {
+  color: var(--positive);
+}
+
+.inlineNeg {
+  color: var(--negative);
+}
