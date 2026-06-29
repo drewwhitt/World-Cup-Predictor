@@ -1,5 +1,5 @@
 export type Edition = "wire" | "desk";
-export type TabId = "home" | "forecasts" | "rankings" | "match" | "sim" | "lab";
+export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab";
 export type SimOutcome = "home" | "draw" | "away";
 
 export type Team = {
@@ -138,6 +138,7 @@ export const navItems: Array<{ id: TabId; label: string }> = [
   { id: "home", label: "Home" },
   { id: "forecasts", label: "Forecasts" },
   { id: "rankings", label: "Rankings" },
+  { id: "bracket", label: "Bracket" },
   { id: "match", label: "Match Center" },
   { id: "sim", label: "Simulations" },
   { id: "lab", label: "Model Lab" },
