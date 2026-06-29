@@ -9,13 +9,14 @@ import s from "./AppShell.module.css";
 type Props = {
   activeTab: TabId;
   edition: Edition;
+  breakingText?: string;
   children: ReactNode;
 };
 
-export function AppShell({ activeTab, edition, children }: Props) {
+export function AppShell({ activeTab, edition, breakingText, children }: Props) {
   return (
     <div className={s.page}>
-      {edition === "wire" && <BreakingTicker />}
+      {edition === "wire" && <BreakingTicker text={breakingText} />}
       <header className={s.container}>
         <Masthead />
         <PrimaryNav activeTab={activeTab} />

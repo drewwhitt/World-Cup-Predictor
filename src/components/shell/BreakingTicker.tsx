@@ -1,14 +1,18 @@
-import { breakingText } from "../../data/worldCup";
+import { breakingText as defaultText } from "../../data/worldCup";
 import s from "./BreakingTicker.module.css";
 
-export function BreakingTicker() {
+type Props = {
+  text?: string;
+};
+
+export function BreakingTicker({ text = defaultText }: Props) {
   return (
     <div className={s.ticker}>
       <span className={s.tag}>Breaking</span>
       <div className={s.window}>
         <div className={s.track}>
-          <span>{breakingText}</span>
-          <span>{breakingText}</span>
+          <span>{text}</span>
+          <span>{text}</span>
         </div>
       </div>
     </div>

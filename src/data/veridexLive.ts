@@ -1,9 +1,10 @@
 import baselineData from "./baseline.json";
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from ".";
 import { computeElosFromResults, runSimulation } from "../lib/simulate";
+import { computeStandings } from "../lib/groups";
 import { TEAM_BY_CODE } from "../lib/teams";
 import type { StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
-import type { MorningForecast, Team } from "./worldCup";
+import type { Headline, MorningForecast, Team } from "./worldCup";
 
 type BaselineRow = TeamProbabilities;
 
@@ -22,17 +23,20 @@ function formForTeam(code: TeamCode, stored: StoredResults): string {
       const result = stored.matches[match.id];
       const goalsFor = match.home === code ? result.homeGoals : result.awayGoals;
       const goalsAgainst = match.home === code ? result.awayGoals : result.homeGoals;
-
       if (goalsFor > goalsAgainst) return "W";
       if (goalsFor < goalsAgainst) return "L";
       return "D";
     });
-
   return [...played, "D", "D", "D", "D", "D"].slice(0, 5).join("");
 }
 
 function ratingFromElo(elo: number): number {
   return Number(Math.max(70, Math.min(94, (elo - 1350) / 10)).toFixed(1));
+}
+
+function timeAgo(index: number): string {
+  const times = ["Just now", "12 min ago", "34 min ago", "1 hr ago", "2 hr ago", "3 hr ago"];
+  return times[index] ?? "Today";
 }
 
 export function buildLiveTeams(stored: StoredResults): Team[] {
@@ -97,4 +101,139 @@ export function buildLiveMorningForecast(liveTeams: Team[]): MorningForecast {
     upsetNote: "highest long-tail contender in current table",
     insight: `${champ.name} leads the current model after your manually entered results. The largest move belongs to ${riser.name}, up ${Math.max(0, riser.delta).toFixed(1)} percentage points from the pre-tournament baseline.`,
   };
+}
+
+export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): Headline[] {
+  const playedCount = Object.keys(stored.matches).length;
+  if (playedCount === 0) return [];
+
+  const byDelta = [...liveTeams]
+    .map((t) => ({ ...t, delta: Number((t.current - t.baseline).toFixed(1)) }))
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+
+  const sorted = [...liveTeams].sort((a, b) => b.current - a.current);
+
+  // Compute group standings to find group leaders
+  const playedMatches = GROUP_MATCHES.map((m) => {
+    const r = stored.matches[m.id];
+    return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
+  });
+  const standings = computeStandings(playedMatches);
+  const groupLeaders: string[] = [];
+  for (const group of Object.values(standings)) {
+    const sorted_g = [...group].sort((a, b) => b.points - a.points || (b.gf - b.ga) - (a.gf - a.ga));
+    if (sorted_g[0]) groupLeaders.push(TEAM_BY_CODE[sorted_g[0].team]?.name ?? "");
+  }
+
+  const headlines: Headline[] = [];
+
+  // Headline 1 — biggest riser
+  const riser = byDelta.find((t) => t.delta > 0);
+  if (riser) {
+    headlines.push({
+      title: `${riser.name} Makes Biggest Move In Latest Model Update`,
+      summary: `A strong run of results has pushed ${riser.name} up ${riser.delta.toFixed(1)} percentage points in title probability since the pre-tournament baseline.`,
+      metric: `+${riser.delta.toFixed(1)} pp`,
+      metricLabel: "CHANGE",
+      time: timeAgo(0),
+      up: true,
+    });
+  }
+
+  // Headline 2 — current leader
+  const leader = sorted[0];
+  if (leader) {
+    headlines.push({
+      title: `${leader.name} Holds Top Spot With ${leader.current.toFixed(1)}% Championship Odds`,
+      summary: `The Veridex model rates ${leader.name} as the most likely champion after ${playedCount} group stage results recorded.`,
+      metric: `${leader.current.toFixed(1)}%`,
+      metricLabel: "TITLE ODDS",
+      time: timeAgo(1),
+      up: leader.current > leader.baseline,
+    });
+  }
+
+  // Headline 3 — biggest faller
+  const faller = byDelta.filter((t) => t.delta < 0).sort((a, b) => a.delta - b.delta)[0];
+  if (faller) {
+    headlines.push({
+      title: `${faller.name}'s Title Hopes Fade After Group Stage Results`,
+      summary: `Results so far have knocked ${faller.name} down ${Math.abs(faller.delta).toFixed(1)} percentage points from their pre-tournament probability.`,
+      metric: `${faller.delta.toFixed(1)} pp`,
+      metricLabel: "CHANGE",
+      time: timeAgo(2),
+      up: false,
+    });
+  }
+
+  // Headline 4 — #2 team
+  const second = sorted[1];
+  if (second) {
+    headlines.push({
+      title: `${second.name} Sits Second In Championship Race`,
+      summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention heading into the knockout rounds.`,
+      metric: `${second.current.toFixed(1)}%`,
+      metricLabel: "TITLE ODDS",
+      time: timeAgo(3),
+      up: second.current > second.baseline,
+    });
+  }
+
+  // Headline 5 — group stage completion
+  headlines.push({
+    title: `Model Refreshed: ${playedCount} Group Stage Results Recorded`,
+    summary: `The Veridex model has processed ${playedCount} of 72 group stage matches. Probabilities reflect ${DEFAULT_SETTINGS.simulations.toLocaleString()} Monte Carlo simulations of the remaining tournament.`,
+    metric: `${playedCount}/72`,
+    metricLabel: "RESULTS IN",
+    time: timeAgo(4),
+    up: true,
+  });
+
+  // Headline 6 — surprise team
+  const surprise = byDelta.filter((t) => t.delta > 0).sort((a, b) => {
+    // highest current % relative to baseline
+    const aRatio = a.current / Math.max(0.1, a.baseline);
+    const bRatio = b.current / Math.max(0.1, b.baseline);
+    return bRatio - aRatio;
+  })[1]; // [0] is already the riser headline
+  if (surprise) {
+    headlines.push({
+      title: `${surprise.name} Emerging As Quiet Contender`,
+      summary: `Often overlooked, ${surprise.name} have outperformed their pre-tournament projection — the model now gives them ${surprise.current.toFixed(1)}% championship probability.`,
+      metric: `${surprise.current.toFixed(1)}%`,
+      metricLabel: "TITLE ODDS",
+      time: timeAgo(5),
+      up: true,
+    });
+  }
+
+  return headlines.slice(0, 6);
+}
+
+export function buildLiveBreakingText(liveTeams: Team[], stored: StoredResults): string {
+  const playedCount = Object.keys(stored.matches).length;
+  if (playedCount === 0) {
+    return "World Cup 2026 is underway · Veridex model live · Enter results in admin mode to update predictions";
+  }
+
+  const sorted = [...liveTeams].sort((a, b) => b.current - a.current);
+  const byDelta = liveTeams.map((t) => ({
+    ...t,
+    delta: Number((t.current - t.baseline).toFixed(1)),
+  }));
+  const riser = [...byDelta].sort((a, b) => b.delta - a.delta)[0];
+  const faller = [...byDelta].sort((a, b) => a.delta - b.delta)[0];
+  const leader = sorted[0];
+  const second = sorted[1];
+
+  const parts = [
+    `${leader.name} leads at ${leader.current.toFixed(1)}%`,
+    riser.delta > 0 ? `${riser.name} +${riser.delta.toFixed(1)}pp after group stage results` : null,
+    faller.delta < 0 ? `${faller.name} -${Math.abs(faller.delta).toFixed(1)}pp` : null,
+    `${second.name} at ${second.current.toFixed(1)}%`,
+    `${playedCount} results recorded · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`,
+    `Veridex model updated`,
+  ].filter(Boolean) as string[];
+
+  return parts.join(" · ");
 }

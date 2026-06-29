@@ -1,4 +1,4 @@
-import { headlines, morningForecast, teams as mockTeams, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
+import { headlines as mockHeadlines, morningForecast, teams as mockTeams, type Headline, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
 import { Hero } from "./Hero";
 import { HeadlineCard } from "./HeadlineCard";
 import { Leaderboard } from "./Leaderboard";
@@ -9,10 +9,11 @@ import s from "./HomeView.module.css";
 type Props = {
   teams?: Team[];
   morning?: MorningForecastData;
+  headlines?: Headline[];
   playedCount?: number;
 };
 
-export function HomeView({ teams = mockTeams, morning = morningForecast, playedCount = 0 }: Props) {
+export function HomeView({ teams = mockTeams, morning = morningForecast, headlines = mockHeadlines, playedCount = 0 }: Props) {
   return (
     <>
       <Hero teams={teams} playedCount={playedCount} />
