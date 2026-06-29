@@ -1,7 +1,11 @@
-import { morningForecast as mf } from "../../data/worldCup";
+import type { MorningForecast as MorningForecastData } from "../../data/worldCup";
 import s from "./MorningForecast.module.css";
 
-export function MorningForecast() {
+type Props = {
+  forecast: MorningForecastData;
+};
+
+export function MorningForecast({ forecast: mf }: Props) {
   return (
     <section className={s.panel}>
       <header className={s.header}>

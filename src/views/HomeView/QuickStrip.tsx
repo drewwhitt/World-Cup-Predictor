@@ -1,8 +1,12 @@
-import { contenderRows } from "../../data/worldCup";
+import { contenderRows, type Team } from "../../data/worldCup";
 import s from "./QuickStrip.module.css";
 
-export function QuickStrip() {
-  const topFive = contenderRows().slice(0, 5);
+type Props = {
+  teams: Team[];
+};
+
+export function QuickStrip({ teams }: Props) {
+  const topFive = contenderRows(teams).slice(0, 5);
 
   return (
     <section className={s.strip}>

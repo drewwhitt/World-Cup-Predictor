@@ -1,25 +1,35 @@
-import { hero } from "../../data/worldCup";
+import type { Team } from "../../data/worldCup";
 import s from "./Hero.module.css";
 
-const metrics = [
-  { label: "Championship Odds", value: "24.5%", delta: "+1.3 pp" },
-  { label: "Power Ranking", value: "#1", delta: "+1" },
-  { label: "Power Rating", value: "92.4", delta: "+0.8" },
-  { label: "Confidence", value: "88", suffix: "/100", delta: "+4" },
-];
+type Props = {
+  teams: Team[];
+  playedCount: number;
+};
 
-export function Hero() {
+export function Hero({ teams, playedCount }: Props) {
+  const favorite = [...teams].sort((a, b) => b.current - a.current)[0];
+  const delta = Number((favorite.current - favorite.baseline).toFixed(1));
+  const confidence = Math.round(Math.min(96, Math.max(62, 76 + favorite.current / 2)));
+  const heroTitle = `${favorite.name} Leads World Cup Forecast After Latest Results`;
+  const heroSub = `The Veridex model ran ${playedCount > 0 ? "10,000" : "pre-tournament"} simulations using your manually entered results and now rates ${favorite.name} the tournament's most likely champion.`;
+  const metrics = [
+    { label: "Championship Odds", value: `${favorite.current.toFixed(1)}%`, delta: `${delta >= 0 ? "+" : "-"}${Math.abs(delta).toFixed(1)} pp` },
+    { label: "Power Ranking", value: "#1", delta: "current leader" },
+    { label: "Power Rating", value: favorite.rating.toFixed(1), delta: "Elo blended" },
+    { label: "Confidence", value: String(confidence), suffix: "/100", delta: `${playedCount} results` },
+  ];
+
   return (
     <section className={s.hero}>
       <div className={s.overlay} />
       <div className={s.photoLabel}>[ Editorial photo - Brazil celebrate vs Serbia ]</div>
       <div className={s.content}>
         <div className={s.kicker}>World Cup · Championship Forecast</div>
-        <h1>{hero.title}</h1>
-        <p>{hero.sub}</p>
+        <h1>{heroTitle}</h1>
+        <p>{heroSub}</p>
         <div className={s.byline}>
           <span />
-          {hero.byline}
+          VERIDEX Analytics Desk · June 24, 2026 · Live model
         </div>
         <div className={s.metrics}>
           {metrics.map((metric) => (

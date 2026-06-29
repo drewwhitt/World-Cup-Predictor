@@ -1,0 +1,101 @@
+.panel {
+  width: min(100%, var(--container));
+  margin: 40px auto 0;
+  padding: 0 var(--container-pad);
+}
+
+.panel::before {
+  display: block;
+  height: 2px;
+  margin-bottom: 22px;
+  content: "";
+  background: var(--ink);
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 22px 24px 0;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+}
+
+.heading span,
+.heading strong,
+.panel p {
+  color: var(--ink-3);
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 120px 120px auto;
+  gap: 14px;
+  align-items: end;
+  padding: 22px 24px 24px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+.form label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink-3);
+  font: 600 10px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.form select,
+.form input {
+  height: 38px;
+  padding: 0 10px;
+  color: var(--ink);
+  font: 500 13px var(--font-sans);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+}
+
+.form button {
+  height: 38px;
+  padding: 0 16px;
+  cursor: pointer;
+  color: var(--paper);
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--ink);
+  border: 0;
+  border-radius: 2px;
+}
+
+.panel p {
+  margin: 10px 24px 0;
+}
+
+.saving {
+  color: var(--ink-3);
+}
+
+.saved {
+  color: var(--positive);
+}
+
+.error {
+  color: var(--negative);
+}

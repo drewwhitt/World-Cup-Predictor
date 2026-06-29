@@ -203,8 +203,8 @@ export const calibrationPoints = {
   observed: [8, 19, 33, 38, 52, 58, 73, 79, 91],
 };
 
-export function contenderRows() {
-  const sorted = [...teams].sort((a, b) => b.current - a.current);
+export function contenderRows(source: Team[] = teams) {
+  const sorted = [...source].sort((a, b) => b.current - a.current);
   const maxCurrent = sorted[0]?.current ?? 1;
 
   return sorted.map((team, index) => {

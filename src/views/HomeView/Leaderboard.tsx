@@ -1,9 +1,13 @@
 import { DeltaPill } from "../../components/common/DeltaPill";
-import { contenderRows } from "../../data/worldCup";
+import { contenderRows, type Team } from "../../data/worldCup";
 import s from "./Leaderboard.module.css";
 
-export function Leaderboard() {
-  const rows = contenderRows();
+type Props = {
+  teams: Team[];
+};
+
+export function Leaderboard({ teams }: Props) {
+  const rows = contenderRows(teams);
 
   return (
     <section className={s.card}>
