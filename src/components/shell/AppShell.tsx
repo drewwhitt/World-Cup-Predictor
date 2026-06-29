@@ -10,16 +10,17 @@ type Props = {
   activeTab: TabId;
   edition: Edition;
   breakingText?: string;
+  onTabChange?: (tab: TabId) => void;
   children: ReactNode;
 };
 
-export function AppShell({ activeTab, edition, breakingText, children }: Props) {
+export function AppShell({ activeTab, edition, breakingText, onTabChange, children }: Props) {
   return (
     <div className={s.page}>
       {edition === "wire" && <BreakingTicker text={breakingText} />}
       <header className={s.container}>
         <Masthead />
-        <PrimaryNav activeTab={activeTab} />
+        <PrimaryNav activeTab={activeTab} onTabChange={onTabChange} />
         <SportSelector />
       </header>
       <main className={s.container}>{children}</main>

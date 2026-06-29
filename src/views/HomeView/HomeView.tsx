@@ -18,6 +18,7 @@ export function HomeView({ teams = mockTeams, morning = morningForecast, headlin
     <>
       <Hero teams={teams} playedCount={playedCount} />
       <QuickStrip teams={teams} />
+      <MorningForecast forecast={morning} />
       <section className={s.latestHeader}>
         <h2>Latest from the model</h2>
         <span>Updated continuously</span>
@@ -27,7 +28,6 @@ export function HomeView({ teams = mockTeams, morning = morningForecast, headlin
           <HeadlineCard headline={headline} key={headline.title} />
         ))}
       </section>
-      <MorningForecast forecast={morning} />
       <Leaderboard teams={teams} />
     </>
   );

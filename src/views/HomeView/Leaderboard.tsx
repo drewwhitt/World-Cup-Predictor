@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DeltaPill } from "../../components/common/DeltaPill";
 import { contenderRows, type Team } from "../../data/worldCup";
 import s from "./Leaderboard.module.css";
@@ -7,14 +8,17 @@ type Props = {
 };
 
 export function Leaderboard({ teams }: Props) {
+  const [expanded, setExpanded] = useState(false);
   const rows = contenderRows(teams);
+  const visible = expanded ? rows : rows.slice(0, 8);
+  const total = rows.length;
 
   return (
     <section className={s.card}>
       <header className={s.header}>
         <div className={s.eyebrow}>Championship Probability</div>
         <div className={s.titleRow}>
-          <h2>All 16 contenders</h2>
+          <h2>{expanded ? `All ${total} teams` : "Top 8 contenders"}</h2>
           <span>Sorted by current probability</span>
         </div>
       </header>
@@ -27,7 +31,7 @@ export function Leaderboard({ teams }: Props) {
           <span>Current</span>
           <span>Δ</span>
         </div>
-        {rows.map((team) => (
+        {visible.map((team) => (
           <div className={s.row} key={team.code}>
             <span className={s.rank}>{team.rank}</span>
             <strong>{team.name}</strong>
@@ -40,6 +44,17 @@ export function Leaderboard({ teams }: Props) {
             <DeltaPill value={team.delta} />
           </div>
         ))}
+      </div>
+      <div className={s.expandRow}>
+        <button
+          type="button"
+          className={s.expandBtn}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded
+            ? "Show top 8 only ↑"
+            : `Show all ${total} teams ↓`}
+        </button>
       </div>
     </section>
   );
