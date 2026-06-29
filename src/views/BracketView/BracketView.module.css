@@ -1,9 +1,9 @@
 .page {
-  padding: 32px 0 64px;
+  padding: 28px 0 64px;
 }
 
 .header {
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
 .eyebrow {
@@ -11,15 +11,15 @@
   font: 600 11px/1 var(--font-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: 36px;
   font-weight: 400;
   color: var(--ink);
-  margin: 0 0 20px;
+  margin: 0 0 16px;
 }
 
 .champBanner {
@@ -33,123 +33,186 @@
 }
 
 .champLabel {
-  font: 500 11px/1 var(--font-mono);
-  letter-spacing: 0.1em;
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold);
 }
 
 .champName {
-  font: 600 16px/1 var(--font-sans);
+  font: 600 15px/1 var(--font-sans);
 }
 
 .champOdds {
-  font: 700 18px/1 var(--font-sans);
+  font: 700 17px/1 var(--font-sans);
   color: var(--gold);
 }
 
-/* Bracket layout */
-.bracket {
+/* ── Bracket outer container ── */
+.bracketOuter {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 6px;
   overflow-x: auto;
   padding-bottom: 16px;
-  align-items: flex-start;
 }
 
+.halfLeft,
+.halfRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Round columns ── */
 .roundCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   flex: 0 0 auto;
-  width: 210px;
 }
 
 .roundLabel {
-  color: var(--ink-3);
-  font: 600 10px/1 var(--font-mono);
-  letter-spacing: 0.14em;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--hairline);
-  margin-bottom: 10px;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.matchList {
+/* Each round column stacks matches with spacing that grows toward the final */
+.r32col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  width: 150px;
 }
 
-/* Match card */
+.r16col {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 160px;
+}
+
+.qfcol {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  width: 170px;
+}
+
+.sfcol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 170px;
+  min-height: 420px;
+}
+
+/* ── Final ── */
+.finalCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: 180px;
+}
+
+.finalWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.champTeam {
+  font: 600 12px/1.3 var(--font-sans);
+  color: var(--ink);
+  text-align: center;
+  padding: 8px 12px;
+  background: #fef9ee;
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ── Match card ── */
 .matchCard {
   background: var(--paper);
   border: 1px solid var(--hairline);
-  border-radius: 4px;
-  padding: 10px 12px;
-  transition: border-color 0.15s;
+  border-radius: 3px;
+  padding: 7px 9px;
+  width: 100%;
 }
 
-.matchCard:hover {
+.matchCard.md {
+  padding: 9px 11px;
+}
+
+.matchCard.lg {
+  padding: 12px 14px;
   border-color: var(--ink-3);
 }
 
 .team {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 3px 0;
-}
-
-.code {
-  font: 600 10px/1 var(--font-mono);
-  color: var(--ink-3);
-  min-width: 30px;
-  letter-spacing: 0.06em;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 2px 0;
 }
 
 .teamName {
-  font: 500 12px/1.2 var(--font-sans);
-  color: var(--ink-2);
-  flex: 1;
+  font: 400 11px/1.2 var(--font-sans);
+  color: var(--ink-3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.matchCard.md .teamName,
+.matchCard.lg .teamName {
+  max-width: 110px;
+  font-size: 12px;
 }
 
 .pct {
-  font: 600 12px/1 var(--font-mono);
+  font: 600 10px/1 var(--font-mono);
   color: var(--ink-3);
-  min-width: 32px;
-  text-align: right;
+  flex-shrink: 0;
 }
 
-.favorite .teamName {
-  color: var(--ink);
+.fav .teamName {
   font-weight: 700;
-}
-
-.favorite .pct {
   color: var(--ink);
 }
 
-.vs {
-  text-align: center;
-  font: 500 9px/1 var(--font-mono);
-  color: var(--ink-4);
-  letter-spacing: 0.1em;
-  padding: 2px 0;
-  text-transform: uppercase;
+.fav .pct {
+  color: var(--ink);
+}
+
+.divider {
+  height: 1px;
+  background: var(--hairline);
+  margin: 3px 0;
 }
 
 .bar {
-  height: 3px;
+  height: 2px;
   background: var(--hairline);
   border-radius: 99px;
   overflow: hidden;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
-.barHome {
+.barFill {
   height: 100%;
   background: var(--navy);
   border-radius: 99px;
-  transition: width 0.4s ease;
 }
