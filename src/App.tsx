@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { AdminResultsPanel } from "./components/admin/AdminResultsPanel";
 import { AppShell } from "./components/shell/AppShell";
 import type { Edition, TabId } from "./data/worldCup";
 import seedResults from "./data/results.json";
