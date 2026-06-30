@@ -82,8 +82,14 @@ export interface MatchPrediction {
   label: string;
 }
 
+export interface MatchScore {
+  homeGoals: number;
+  awayGoals: number;
+}
+
 export interface StoredResults {
-  matches: Record<string, { homeGoals: number; awayGoals: number }>;
+  matches: Record<string, MatchScore>;           // group stage: key = match id
+  knockoutMatches?: Record<string, MatchScore>;  // knockout: key = "ko-73" etc
 }
 export interface KnockoutMatchupProbability {
   round: KnockoutMatchDef["round"];

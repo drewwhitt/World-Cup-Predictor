@@ -15,35 +15,48 @@ export async function loadOfficialResults(): Promise<StoredResults> {
 
   if (error) throw error;
 
-  return {
-    matches: Object.fromEntries(
-      data.map((row) => [
-        row.match_id,
-        {
-          homeGoals: row.home_goals,
-          awayGoals: row.away_goals,
-        },
-      ]),
-    ),
-  };
+  const matches: StoredResults["matches"] = {};
+  const knockoutMatches: NonNullable<StoredResults["knockoutMatches"]> = {};
+
+  for (const row of data) {
+    const score = { homeGoals: row.home_goals, awayGoals: row.away_goals };
+    if (row.match_id.startsWith("ko-")) {
+      knockoutMatches[row.match_id] = score;
+    } else {
+      matches[row.match_id] = score;
+    }
+  }
+
+  return { matches, knockoutMatches };
 }
 
 export async function saveOfficialResult(
   matchId: string,
   homeGoals: number,
   awayGoals: number,
+  homeTeam?: string,
+  awayTeam?: string,
+  matchDate?: string,
 ): Promise<void> {
-const match = GROUP_MATCHES.find((m) => m.id === matchId);
+  // For group matches, look up team names from GROUP_MATCHES
+  if (!homeTeam && !matchId.startsWith("ko-")) {
+    const match = GROUP_MATCHES.find((m) => m.id === matchId);
+    if (match) {
+      homeTeam = TEAM_BY_CODE[match.home]?.name;
+      awayTeam = TEAM_BY_CODE[match.away]?.name;
+      matchDate = match.date;
+    }
+  }
 
-const { error } = await supabase.from("match_results").upsert({
-  match_id: matchId,
-  home_team: match ? TEAM_BY_CODE[match.home].name : null,
-  away_team: match ? TEAM_BY_CODE[match.away].name : null,
-  match_date: match?.date,
-  home_goals: homeGoals,
-  away_goals: awayGoals,
-  updated_at: new Date().toISOString(),
-});
+  const { error } = await supabase.from("match_results").upsert({
+    match_id: matchId,
+    home_team: homeTeam ?? null,
+    away_team: awayTeam ?? null,
+    match_date: matchDate ?? null,
+    home_goals: homeGoals,
+    away_goals: awayGoals,
+    updated_at: new Date().toISOString(),
+  });
 
   if (error) throw error;
 }

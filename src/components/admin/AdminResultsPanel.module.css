@@ -99,3 +99,31 @@
 .error {
   color: var(--negative);
 }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tabActive, .tabInactive {
+  padding: 7px 16px;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid;
+}
+
+.tabActive {
+  background: var(--navy);
+  color: var(--on-dark);
+  border-color: var(--navy);
+}
+
+.tabInactive {
+  background: transparent;
+  color: var(--ink-2);
+  border-color: var(--hairline-2);
+}
