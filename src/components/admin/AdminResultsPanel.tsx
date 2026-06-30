@@ -40,6 +40,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
   const [selectedKO, setSelectedKO] = useState<string>(R32_MATCHUPS[0].id);
   const [homeGoals, setHomeGoals]   = useState("0");
   const [awayGoals, setAwayGoals]   = useState("0");
+  const [penaltyWinner, setPenaltyWinner] = useState<"home" | "away" | "">("");
   const [status, setStatus]         = useState<"idle"|"saving"|"saved"|"error">("idle");
 
   const groupMatches = useMemo(
@@ -52,6 +53,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
     const saved = stored.knockoutMatches?.[id];
     setHomeGoals(saved?.homeGoals.toString() ?? "0");
     setAwayGoals(saved?.awayGoals.toString() ?? "0");
+    setPenaltyWinner(saved?.penaltyWinner ?? "");
     setStatus("idle");
   }
 
@@ -88,7 +90,11 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
         ...stored,
         knockoutMatches: {
           ...(stored.knockoutMatches ?? {}),
-          [selectedKO]: { homeGoals: home, awayGoals: away },
+          [selectedKO]: {
+            homeGoals: home,
+            awayGoals: away,
+            ...(home === away && penaltyWinner ? { penaltyWinner } : {}),
+          },
         },
       };
       onChange(next);
@@ -186,6 +192,16 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
             {currentKOMatch ? TEAM_BY_CODE[currentKOMatch.away]?.name : "Away"}
             <input min={0} type="number" value={awayGoals} onChange={(e) => setAwayGoals(e.target.value)} />
           </label>
+          {homeGoals === awayGoals && currentKOMatch && (
+            <label>
+              Won on penalties
+              <select value={penaltyWinner} onChange={(e) => setPenaltyWinner(e.target.value as "home" | "away" | "")}>
+                <option value="">Select penalty winner</option>
+                <option value="home">{TEAM_BY_CODE[currentKOMatch.home]?.name}</option>
+                <option value="away">{TEAM_BY_CODE[currentKOMatch.away]?.name}</option>
+              </select>
+            </label>
+          )}
           <button type="button" onClick={saveResult}>Save result</button>
         </div>
       )}

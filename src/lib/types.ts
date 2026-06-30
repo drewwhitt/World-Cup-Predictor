@@ -85,6 +85,12 @@ export interface MatchPrediction {
 export interface MatchScore {
   homeGoals: number;
   awayGoals: number;
+  /**
+   * Set only for knockout matches that finished level after 90 (or extra time)
+   * and were decided on penalties. "home" or "away" — whichever side won the
+   * shootout. Leave undefined for matches with a clear winner in regulation.
+   */
+  penaltyWinner?: "home" | "away";
 }
 
 export interface StoredResults {

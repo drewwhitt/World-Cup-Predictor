@@ -76,7 +76,10 @@ function confirmedWinner(
   if (!result || !top || !bot) return null;
   if (result.homeGoals > result.awayGoals) return top.code;
   if (result.awayGoals > result.homeGoals) return bot.code;
-  return null; // draw → penalties, not modeled as a deterministic winner here
+  // Level after 90/ET — check penalty shootout winner
+  if (result.penaltyWinner === "home") return top.code;
+  if (result.penaltyWinner === "away") return bot.code;
+  return null; // draw with no penalty winner recorded yet
 }
 
 export function BracketView({ stored }: Props) {
