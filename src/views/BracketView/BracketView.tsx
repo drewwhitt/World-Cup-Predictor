@@ -53,6 +53,7 @@ type MatchNode = {
   bot: SlotTeam;
   topWinPct: number;
   confirmed: boolean;
+  winnerCode: TeamCode | null;
 };
 
 function toSlotTeam(code: TeamCode | null, confirmed: boolean): SlotTeam {
@@ -96,7 +97,8 @@ export function BracketView({ stored }: Props) {
       const bot = toSlotTeam(m.away, true);
       const topWinPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[m.id];
-      return { id: m.id, top, bot, topWinPct, confirmed: isConfirmed };
+      const winnerCode = isConfirmed ? confirmedWinner(m.id, top, bot, stored) : null;
+      return { id: m.id, top, bot, topWinPct, confirmed: isConfirmed, winnerCode };
     });
 
     function getWinner(node: MatchNode): SlotTeam {
@@ -113,32 +115,39 @@ export function BracketView({ stored }: Props) {
       const top = getWinner(r32[i * 2]);
       const bot = getWinner(r32[i * 2 + 1]);
       const topWinPct = winPct(top, bot, elos);
-      return { id, top, bot, topWinPct, confirmed: !!stored.knockoutMatches?.[id] };
+      const isConfirmed = !!stored.knockoutMatches?.[id];
+      const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
+      return { id, top, bot, topWinPct, confirmed: isConfirmed, winnerCode };
     });
 
     const qf: MatchNode[] = QF_IDS.map((id, i) => {
       const top = getWinner(r16[i * 2]);
       const bot = getWinner(r16[i * 2 + 1]);
       const topWinPct = winPct(top, bot, elos);
-      return { id, top, bot, topWinPct, confirmed: !!stored.knockoutMatches?.[id] };
+      const isConfirmed = !!stored.knockoutMatches?.[id];
+      const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
+      return { id, top, bot, topWinPct, confirmed: isConfirmed, winnerCode };
     });
 
     const sf: MatchNode[] = SF_IDS.map((id, i) => {
       const top = getWinner(qf[i * 2]);
       const bot = getWinner(qf[i * 2 + 1]);
       const topWinPct = winPct(top, bot, elos);
-      return { id, top, bot, topWinPct, confirmed: !!stored.knockoutMatches?.[id] };
+      const isConfirmed = !!stored.knockoutMatches?.[id];
+      const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
+      return { id, top, bot, topWinPct, confirmed: isConfirmed, winnerCode };
     });
 
     const finTop = getWinner(sf[0]);
     const finBot = getWinner(sf[1]);
     const finWinPct = winPct(finTop, finBot, elos);
+    const finIsConfirmed = !!stored.knockoutMatches?.[FIN_ID];
+    const confWin = confirmedWinner(FIN_ID, finTop, finBot, stored);
     const fin: MatchNode = {
       id: FIN_ID, top: finTop, bot: finBot, topWinPct: finWinPct,
-      confirmed: !!stored.knockoutMatches?.[FIN_ID],
+      confirmed: finIsConfirmed, winnerCode: finIsConfirmed ? confWin : null,
     };
 
-    const confWin = confirmedWinner(FIN_ID, finTop, finBot, stored);
     const champ = confWin
       ? toSlotTeam(confWin, true)
       : toSlotTeam(finWinPct >= 0.5 ? finTop?.code ?? null : finBot?.code ?? null, false);
@@ -242,21 +251,25 @@ export function BracketView({ stored }: Props) {
 function PositionedCard({
   match, x, y, highlight,
 }: { match: MatchNode; x: number; y: number; highlight?: boolean }) {
-  const { top, bot, topWinPct, confirmed } = match;
+  const { top, bot, topWinPct, confirmed, winnerCode } = match;
   const topPct = Math.round(topWinPct * 100);
   const botPct = 100 - topPct;
-  const topFav = topWinPct >= 0.5;
+
+  // When confirmed, bold whichever side matches the actual recorded winner.
+  // When not confirmed, bold the Elo favorite instead.
+  const topIsWinner = confirmed ? top?.code === winnerCode : topWinPct >= 0.5;
+  const botIsWinner = confirmed ? bot?.code === winnerCode : topWinPct < 0.5;
 
   return (
     <div
       className={`${s.matchCard} ${confirmed ? s.matchConfirmed : ""} ${highlight ? s.matchFinal : ""}`}
       style={{ left: x, top: y }}
     >
-      <div className={`${s.team} ${topFav ? s.fav : ""}`}>
+      <div className={`${s.team} ${topIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{top?.name ?? "TBD"}</span>
         <span className={s.pct}>{top && !confirmed ? `${topPct}%` : ""}</span>
       </div>
-      <div className={`${s.team} ${!topFav ? s.fav : ""}`}>
+      <div className={`${s.team} ${botIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{bot?.name ?? "TBD"}</span>
         <span className={s.pct}>{bot && !confirmed ? `${botPct}%` : ""}</span>
       </div>

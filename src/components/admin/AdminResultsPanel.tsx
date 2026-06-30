@@ -107,6 +107,8 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
           away,
           koMatch ? TEAM_BY_CODE[koMatch.home]?.name : undefined,
           koMatch ? TEAM_BY_CODE[koMatch.away]?.name : undefined,
+          undefined,
+          home === away && penaltyWinner ? penaltyWinner : undefined,
         );
         setStatus("saved");
       } catch { setStatus("error"); }

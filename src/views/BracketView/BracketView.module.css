@@ -97,8 +97,12 @@
 }
 
 .matchConfirmed {
-  border-color: var(--ink-3);
-  background: #f8f6f1;
+  border-color: #b8d4ad;
+  background: #eef5ea;
+}
+
+.matchConfirmed .divider {
+  background: #b8d4ad;
 }
 
 .team {

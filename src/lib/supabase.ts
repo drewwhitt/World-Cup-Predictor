@@ -11,7 +11,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export async function loadOfficialResults(): Promise<StoredResults> {
   const { data, error } = await supabase
     .from("match_results")
-    .select("match_id, home_goals, away_goals");
+    .select("match_id, home_goals, away_goals, penalty_winner");
 
   if (error) throw error;
 
@@ -19,7 +19,11 @@ export async function loadOfficialResults(): Promise<StoredResults> {
   const knockoutMatches: NonNullable<StoredResults["knockoutMatches"]> = {};
 
   for (const row of data) {
-    const score = { homeGoals: row.home_goals, awayGoals: row.away_goals };
+    const score = {
+      homeGoals: row.home_goals,
+      awayGoals: row.away_goals,
+      ...(row.penalty_winner ? { penaltyWinner: row.penalty_winner as "home" | "away" } : {}),
+    };
     if (row.match_id.startsWith("ko-")) {
       knockoutMatches[row.match_id] = score;
     } else {
@@ -37,6 +41,7 @@ export async function saveOfficialResult(
   homeTeam?: string,
   awayTeam?: string,
   matchDate?: string,
+  penaltyWinner?: "home" | "away",
 ): Promise<void> {
   // For group matches, look up team names from GROUP_MATCHES
   if (!homeTeam && !matchId.startsWith("ko-")) {
@@ -55,6 +60,7 @@ export async function saveOfficialResult(
     match_date: matchDate ?? null,
     home_goals: homeGoals,
     away_goals: awayGoals,
+    penalty_winner: penaltyWinner ?? null,
     updated_at: new Date().toISOString(),
   });
 
