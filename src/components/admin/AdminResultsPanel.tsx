@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
-import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "../../data";
-import { computeElosFromResults, runSimulation } from "../../lib/simulate";
+import { GROUP_MATCHES } from "../../data";
+import { computeStandings, rankThirdPlaceTeams, summarizeGroups } from "../../lib/groups";
 import { saveOfficialResult } from "../../lib/supabase";
-import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "../../lib/teams";
-import type { StoredResults, TeamCode, TeamProbabilities } from "../../lib/types";
+import { TEAM_BY_CODE } from "../../lib/teams";
+import type { GroupLetter, StoredResults, TeamCode } from "../../lib/types";
 import s from "./AdminResultsPanel.module.css";
 
 type Props = {
@@ -11,55 +11,43 @@ type Props = {
   onChange: (next: StoredResults) => void;
 };
 
-// R32 match IDs and slot definitions (same order as BracketView)
+// R32 match definitions. The 16 group-winner/runner-up slots are unambiguous
+// once group play is done. The 8 third-place slots depend on FIFA's official
+// Annex C combination table (495 possible mappings) — we do NOT guess these.
+// They show "Best 3rd place — TBD" until you confirm the actual matchup
+// from FIFA's published bracket and enter it manually below.
 const R32_DEFS = [
-  { id: "ko-74", homeSlot: "1E", awaySlot: "3A/B/C/D/F", label: "R32 Match 1" },
-  { id: "ko-77", homeSlot: "1I", awaySlot: "3C/D/F/G/H", label: "R32 Match 2" },
-  { id: "ko-73", homeSlot: "2A", awaySlot: "2B",          label: "R32 Match 3" },
-  { id: "ko-75", homeSlot: "1F", awaySlot: "2C",          label: "R32 Match 4" },
-  { id: "ko-83", homeSlot: "2K", awaySlot: "2L",          label: "R32 Match 5" },
-  { id: "ko-84", homeSlot: "1H", awaySlot: "2J",          label: "R32 Match 6" },
-  { id: "ko-81", homeSlot: "1D", awaySlot: "3B/E/F/I/J",  label: "R32 Match 7" },
-  { id: "ko-82", homeSlot: "1G", awaySlot: "3A/E/H/I/J",  label: "R32 Match 8" },
-  { id: "ko-76", homeSlot: "1C", awaySlot: "2F",          label: "R32 Match 9" },
-  { id: "ko-78", homeSlot: "2E", awaySlot: "2I",          label: "R32 Match 10" },
-  { id: "ko-79", homeSlot: "1A", awaySlot: "3C/E/F/H/I",  label: "R32 Match 11" },
-  { id: "ko-80", homeSlot: "1L", awaySlot: "3E/H/I/J/K",  label: "R32 Match 12" },
-  { id: "ko-86", homeSlot: "1J", awaySlot: "2H",          label: "R32 Match 13" },
-  { id: "ko-88", homeSlot: "2D", awaySlot: "2G",          label: "R32 Match 14" },
-  { id: "ko-85", homeSlot: "1B", awaySlot: "3E/F/G/I/J",  label: "R32 Match 15" },
-  { id: "ko-87", homeSlot: "1K", awaySlot: "3D/E/I/J/L",  label: "R32 Match 16" },
+  { id: "ko-74", homeSlot: "1E", awaySlot: "3RD", label: "R32 Match 1" },
+  { id: "ko-77", homeSlot: "1I", awaySlot: "3RD", label: "R32 Match 2" },
+  { id: "ko-73", homeSlot: "2A", awaySlot: "2B",  label: "R32 Match 3" },
+  { id: "ko-75", homeSlot: "1F", awaySlot: "2C",  label: "R32 Match 4" },
+  { id: "ko-83", homeSlot: "2K", awaySlot: "2L",  label: "R32 Match 5" },
+  { id: "ko-84", homeSlot: "1H", awaySlot: "2J",  label: "R32 Match 6" },
+  { id: "ko-81", homeSlot: "1D", awaySlot: "3RD", label: "R32 Match 7" },
+  { id: "ko-82", homeSlot: "1G", awaySlot: "3RD", label: "R32 Match 8" },
+  { id: "ko-76", homeSlot: "1C", awaySlot: "2F",  label: "R32 Match 9" },
+  { id: "ko-78", homeSlot: "2E", awaySlot: "2I",  label: "R32 Match 10" },
+  { id: "ko-79", homeSlot: "1A", awaySlot: "3RD", label: "R32 Match 11" },
+  { id: "ko-80", homeSlot: "1L", awaySlot: "3RD", label: "R32 Match 12" },
+  { id: "ko-86", homeSlot: "1J", awaySlot: "2H",  label: "R32 Match 13" },
+  { id: "ko-88", homeSlot: "2D", awaySlot: "2G",  label: "R32 Match 14" },
+  { id: "ko-85", homeSlot: "1B", awaySlot: "3RD", label: "R32 Match 15" },
+  { id: "ko-87", homeSlot: "1K", awaySlot: "3RD", label: "R32 Match 16" },
 ] as const;
 
-const R16_IDS = ["ko-90","ko-89","ko-94","ko-93","ko-91","ko-92","ko-96","ko-95"];
-const QF_IDS  = ["ko-97","ko-98","ko-99","ko-100"];
-const SF_IDS  = ["ko-101","ko-102"];
-const FIN_ID  = "ko-final";
-
-function resolveGroupSlot(slot: string, probs: TeamProbabilities[]): TeamCode | null {
-  const w = slot.match(/^1([A-L])$/);
-  const r = slot.match(/^2([A-L])$/);
-  const t = slot.match(/^3(.+)$/);
-  if (w) {
-    const g = w[1] as keyof typeof TEAMS_BY_GROUP;
-    return [...(TEAMS_BY_GROUP[g] ?? [])]
-      .map((c) => probs.find((p) => p.code === c))
-      .filter(Boolean)
-      .sort((a, b) => (b!.groupWin + b!.advanceFromGroup) - (a!.groupWin + a!.advanceFromGroup))[0]?.code ?? null;
+function resolveWinnerOrRunnerUp(
+  slot: string,
+  groupStandings: ReturnType<typeof computeStandings>,
+): TeamCode | null {
+  const winnerMatch = slot.match(/^1([A-L])$/);
+  const runnerMatch = slot.match(/^2([A-L])$/);
+  if (winnerMatch) {
+    const g = winnerMatch[1] as GroupLetter;
+    return groupStandings[g]?.[0]?.team ?? null;
   }
-  if (r) {
-    const g = r[1] as keyof typeof TEAMS_BY_GROUP;
-    return [...(TEAMS_BY_GROUP[g] ?? [])]
-      .map((c) => probs.find((p) => p.code === c))
-      .filter(Boolean)
-      .sort((a, b) => (b!.groupSecond + b!.advanceFromGroup) - (a!.groupSecond + a!.advanceFromGroup))[0]?.code ?? null;
-  }
-  if (t) {
-    const groups = t[1].split("/") as Array<keyof typeof TEAMS_BY_GROUP>;
-    return groups.flatMap((g) => TEAMS_BY_GROUP[g] ?? [])
-      .map((c) => probs.find((p) => p.code === c))
-      .filter(Boolean)
-      .sort((a, b) => b!.advanceAsThird - a!.advanceAsThird)[0]?.code ?? null;
+  if (runnerMatch) {
+    const g = runnerMatch[1] as GroupLetter;
+    return groupStandings[g]?.[1]?.team ?? null;
   }
   return null;
 }
@@ -77,98 +65,37 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
     [],
   );
 
-  // Compute probs to resolve knockout team names
-  const probs = useMemo(() => {
+  // Compute REAL standings from confirmed results — no probability/simulation needed
+  // since group stage is fully played. This is deterministic and exact.
+  const groupStandings = useMemo(() => {
     const played = GROUP_MATCHES.map((m) => {
       const r = stored.matches[m.id];
       return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
     });
-    return runSimulation(played, KNOCKOUT_MATCHES, DEFAULT_SETTINGS).probabilities;
+    return computeStandings(played);
   }, [stored]);
 
-  const elos = useMemo(() => {
-    const played = GROUP_MATCHES.map((m) => {
-      const r = stored.matches[m.id];
-      return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
-    });
-    return computeElosFromResults(played, DEFAULT_SETTINGS);
-  }, [stored]);
+  // Rank the 12 third-place teams using FIFA's tiebreak order (points, GD, GF).
+  // This tells us WHICH 8 groups qualify, but NOT which bracket slot each
+  // lands in — that depends on FIFA's official Annex C table (495 combos)
+  // which we don't reproduce here to avoid showing a wrong matchup.
+  const thirdPlaceRanked = useMemo(() => {
+    const groups = summarizeGroups(groupStandings);
+    return rankThirdPlaceTeams(groups);
+  }, [groupStandings]);
 
-  // Resolve the two teams for any knockout match ID
-  function resolveKOTeams(id: string): [TeamCode | null, TeamCode | null] {
-    // R32
-    const r32def = R32_DEFS.find((d) => d.id === id);
-    if (r32def) {
-      return [
-        resolveGroupSlot(r32def.homeSlot, probs),
-        resolveGroupSlot(r32def.awaySlot, probs),
-      ];
-    }
-    // R16: winner of two R32 matches
-    const r16idx = R16_IDS.indexOf(id);
-    if (r16idx >= 0) {
-      const topR32 = R32_DEFS[r16idx * 2];
-      const botR32 = R32_DEFS[r16idx * 2 + 1];
-      return [getKOWinner(topR32.id), getKOWinner(botR32.id)];
-    }
-    // QF
-    const qfIdx = QF_IDS.indexOf(id);
-    if (qfIdx >= 0) {
-      const topR16 = R16_IDS[qfIdx * 2];
-      const botR16 = R16_IDS[qfIdx * 2 + 1];
-      return [getKOWinner(topR16), getKOWinner(botR16)];
-    }
-    // SF
-    const sfIdx = SF_IDS.indexOf(id);
-    if (sfIdx >= 0) {
-      const topQF = QF_IDS[sfIdx * 2];
-      const botQF = QF_IDS[sfIdx * 2 + 1];
-      return [getKOWinner(topQF), getKOWinner(botQF)];
-    }
-    // Final
-    if (id === FIN_ID) {
-      return [getKOWinner(SF_IDS[0]), getKOWinner(SF_IDS[1])];
-    }
-    return [null, null];
-  }
-
-  function getKOWinner(id: string): TeamCode | null {
-    const result = stored.knockoutMatches?.[id];
-    const [top, bot] = resolveKOTeams(id);
-    if (result && top && bot) {
-      return result.homeGoals > result.awayGoals ? top : bot;
-    }
-    // Predicted winner by Elo
-    if (top && bot) {
-      const diff = (elos[top] ?? 1500) - (elos[bot] ?? 1500);
-      return 1 / (1 + Math.pow(10, -diff / 400)) >= 0.5 ? top : bot;
-    }
-    return top ?? bot;
-  }
-
-  // All knockout matches for the dropdown
-  const koMatches = useMemo(() => {
-    const all: Array<{ id: string; round: string; home: TeamCode | null; away: TeamCode | null }> = [];
-    for (const d of R32_DEFS) {
-      const [h, a] = resolveKOTeams(d.id);
-      all.push({ id: d.id, round: "Round of 32", home: h, away: a });
-    }
-    R16_IDS.forEach((id) => {
-      const [h, a] = resolveKOTeams(id);
-      all.push({ id, round: "Round of 16", home: h, away: a });
+  // All R32 matches with resolved teams. Group winner/runner-up slots are
+  // exact. Third-place slots show null (TBD) — enter the actual opponent
+  // once you've confirmed it from FIFA's published bracket.
+  const r32Matches = useMemo(() => {
+    return R32_DEFS.map((def) => {
+      const home = resolveWinnerOrRunnerUp(def.homeSlot, groupStandings);
+      const away = def.awaySlot === "3RD"
+        ? null // TBD — see note above
+        : resolveWinnerOrRunnerUp(def.awaySlot, groupStandings);
+      return { ...def, home, away };
     });
-    QF_IDS.forEach((id) => {
-      const [h, a] = resolveKOTeams(id);
-      all.push({ id, round: "Quarterfinal", home: h, away: a });
-    });
-    SF_IDS.forEach((id) => {
-      const [h, a] = resolveKOTeams(id);
-      all.push({ id, round: "Semifinal", home: h, away: a });
-    });
-    const [fh, fa] = resolveKOTeams(FIN_ID);
-    all.push({ id: FIN_ID, round: "Final", home: fh, away: fa });
-    return all;
-  }, [probs, stored.knockoutMatches]);
+  }, [groupStandings]);
 
   function selectKO(id: string) {
     setSelectedKO(id);
@@ -206,7 +133,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
         setStatus("saved");
       } catch { setStatus("error"); }
     } else {
-      const koMatch = koMatches.find((m) => m.id === selectedKO);
+      const koMatch = r32Matches.find((m) => m.id === selectedKO);
       const next: StoredResults = {
         ...stored,
         knockoutMatches: {
@@ -231,7 +158,11 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
   }
 
   const currentGroupMatch = groupMatches.find((m) => m.id === selectedGroup);
-  const currentKOMatch    = koMatches.find((m) => m.id === selectedKO);
+  const currentKOMatch    = r32Matches.find((m) => m.id === selectedKO);
+  const homeTeamLabel = currentKOMatch?.home ? TEAM_BY_CODE[currentKOMatch.home]?.name : "Home";
+  const awayTeamLabel = currentKOMatch?.away
+    ? TEAM_BY_CODE[currentKOMatch.away]?.name
+    : "Best 3rd place — confirm before entering";
 
   return (
     <section className={s.panel}>
@@ -259,7 +190,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
           className={tab === "knockout" ? s.tabActive : s.tabInactive}
           onClick={() => { setTab("knockout"); setStatus("idle"); }}
         >
-          Knockout Round
+          Round of 32
         </button>
       </div>
 
@@ -291,29 +222,47 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
           <label>
             Match
             <select value={selectedKO} onChange={(e) => selectKO(e.target.value)}>
-              {koMatches.map((m) => {
+              {r32Matches.map((m) => {
                 const homeName = m.home ? TEAM_BY_CODE[m.home]?.name : "TBD";
-                const awayName = m.away ? TEAM_BY_CODE[m.away]?.name : "TBD";
+                const awayName = m.away ? TEAM_BY_CODE[m.away]?.name : "Best 3rd place (TBD)";
                 const isDone = !!(stored.knockoutMatches?.[m.id]);
                 return (
                   <option key={m.id} value={m.id}>
-                    [{m.round}] {homeName} vs {awayName}{isDone ? " ✓" : ""}
+                    {homeName} vs {awayName}{isDone ? " ✓" : ""}
                   </option>
                 );
               })}
             </select>
           </label>
+          {!currentKOMatch?.away && (
+            <p className={s.notice}>
+              This match includes a best-third-place qualifier. FIFA assigns the exact
+              opponent using its official Annex C combination table — confirm the matchup
+              from the published bracket before entering a result.
+            </p>
+          )}
           <label>
-            {currentKOMatch?.home ? TEAM_BY_CODE[currentKOMatch.home]?.name : "Home"}
+            {homeTeamLabel}
             <input min={0} type="number" value={homeGoals} onChange={(e) => setHomeGoals(e.target.value)} />
           </label>
           <label>
-            {currentKOMatch?.away ? TEAM_BY_CODE[currentKOMatch.away]?.name : "Away"}
+            {awayTeamLabel}
             <input min={0} type="number" value={awayGoals} onChange={(e) => setAwayGoals(e.target.value)} />
           </label>
           <button type="button" onClick={saveResult}>Save result</button>
         </div>
       )}
+
+      <div className={s.thirdsBox}>
+        <div className={s.thirdsTitle}>Best third-place ranking (live)</div>
+        <ol className={s.thirdsList}>
+          {thirdPlaceRanked.map((t, i) => (
+            <li key={t.group} className={i < 8 ? s.qualified : s.eliminated}>
+              {i + 1}. Group {t.group} — {TEAM_BY_CODE[t.team]?.name} ({t.points} pts, {t.gd >= 0 ? "+" : ""}{t.gd} GD)
+            </li>
+          ))}
+        </ol>
+      </div>
 
       {status !== "idle" && (
         <p className={s[status]}>

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type ReactElement } from "react";
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "../../data";
 import { computeElosFromResults, runSimulation } from "../../lib/simulate";
 import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "../../lib/teams";
@@ -215,6 +215,101 @@ export function BracketView({ stored }: Props) {
     return { r32, r16, qf, sf, fin, champ };
   }, [stored]);
 
+  // ── Layout geometry ──────────────────────────────────────────────────────────
+  // Card height + gap define the vertical rhythm. Each round's matches are
+  // centered exactly between the midpoints of the two matches that feed them.
+  const CARD_H   = 44;   // height of one match card
+  const CARD_W   = 168;  // width of one match card
+  const ROW_GAP  = 10;   // vertical gap between adjacent R32 cards
+  const COL_GAP  = 36;   // horizontal gap between round columns
+
+  function layoutRound(matches: MatchNode[], prevYs: number[]): number[] {
+    // Each match's y = midpoint between the two source y's it descends from
+    if (prevYs.length === 0) {
+      return matches.map((_, i) => i * (CARD_H + ROW_GAP));
+    }
+    const ys: number[] = [];
+    for (let i = 0; i < matches.length; i++) {
+      const a = prevYs[i * 2];
+      const b = prevYs[i * 2 + 1];
+      ys.push((a + b) / 2);
+    }
+    return ys;
+  }
+
+  const r32Ys = layoutRound(r32, []);
+  const r16Ys = layoutRound(r16, r32Ys);
+  const qfYs  = layoutRound(qf,  r16Ys);
+  const sfYs  = layoutRound(sf,  qfYs);
+  const finY  = (sfYs[0] + sfYs[1]) / 2;
+
+  const totalHeight = Math.max(...r32Ys) + CARD_H + 20;
+
+  // X positions for left-half columns (R32 → R16 → QF → SF), final in center,
+  // then mirrored right-half columns (SF → QF → R16 → R32)
+  const colX = {
+    r32L: 0,
+    r16L: CARD_W + COL_GAP,
+    qfL:  (CARD_W + COL_GAP) * 2,
+    sfL:  (CARD_W + COL_GAP) * 3,
+    fin:  (CARD_W + COL_GAP) * 4,
+    sfR:  (CARD_W + COL_GAP) * 5,
+    qfR:  (CARD_W + COL_GAP) * 6,
+    r16R: (CARD_W + COL_GAP) * 7,
+    r32R: (CARD_W + COL_GAP) * 8,
+  };
+  const totalWidth = colX.r32R + CARD_W;
+
+  // Split each round into left half (feeds SF1) and right half (feeds SF2)
+  const half = (arr: MatchNode[]) => [arr.slice(0, arr.length / 2), arr.slice(arr.length / 2)];
+  const halfY = (arr: number[]) => [arr.slice(0, arr.length / 2), arr.slice(arr.length / 2)];
+
+  const [r32L, r32R] = half(r32);
+  const [r32YL, r32YR] = halfY(r32Ys);
+  const [r16L, r16R] = half(r16);
+  const [r16YL, r16YR] = halfY(r16Ys);
+  const [qfL, qfR] = half(qf);
+  const [qfYL, qfYR] = halfY(qfYs);
+
+  // Connector lines are drawn inline inside renderConnectors / renderConnectorsMirror below.
+
+  function renderConnectors(
+    srcX: number, srcYs: number[], dstX: number, dstYs: number[],
+  ): ReactElement[] {
+    const midX = srcX + CARD_W + COL_GAP / 2;
+    const lines: ReactElement[] = [];
+    for (let i = 0; i < dstYs.length; i++) {
+      const y1 = srcYs[i * 2] + CARD_H / 2;
+      const y2 = srcYs[i * 2 + 1] + CARD_H / 2;
+      const yMid = dstYs[i] + CARD_H / 2;
+      lines.push(
+        <path key={`c-${srcX}-${i}-a`} d={`M ${srcX + CARD_W} ${y1} H ${midX} V ${yMid}`} className={s.connector} />,
+        <path key={`c-${srcX}-${i}-b`} d={`M ${srcX + CARD_W} ${y2} H ${midX} V ${yMid}`} className={s.connector} />,
+        <path key={`c-${srcX}-${i}-c`} d={`M ${midX} ${yMid} H ${dstX}`} className={s.connector} />,
+      );
+    }
+    return lines;
+  }
+
+  // Mirror version: target is to the LEFT of source (right half of bracket)
+  function renderConnectorsMirror(
+    srcX: number, srcYs: number[], dstX: number, dstYs: number[],
+  ): ReactElement[] {
+    const midX = dstX + CARD_W + COL_GAP / 2;
+    const lines: ReactElement[] = [];
+    for (let i = 0; i < dstYs.length; i++) {
+      const y1 = srcYs[i * 2] + CARD_H / 2;
+      const y2 = srcYs[i * 2 + 1] + CARD_H / 2;
+      const yMid = dstYs[i] + CARD_H / 2;
+      lines.push(
+        <path key={`m-${srcX}-${i}-a`} d={`M ${srcX} ${y1} H ${midX} V ${yMid}`} className={s.connector} />,
+        <path key={`m-${srcX}-${i}-b`} d={`M ${srcX} ${y2} H ${midX} V ${yMid}`} className={s.connector} />,
+        <path key={`m-${srcX}-${i}-c`} d={`M ${midX} ${yMid} H ${dstX + CARD_W}`} className={s.connector} />,
+      );
+    }
+    return lines;
+  }
+
   return (
     <div className={s.page}>
       <div className={s.header}>
@@ -226,88 +321,75 @@ export function BracketView({ stored }: Props) {
               {champ.confirmed ? "Champion" : "Most likely champion"}
             </span>
             <span className={s.champName}>{champ.name}</span>
-            {!champ.confirmed && (
-              <span className={s.champOdds}>
-                {Math.round(fin.topWinPct * (fin.top?.code === champ.code ? 100 : 0) +
-                  (1 - fin.topWinPct) * (fin.bot?.code === champ.code ? 100 : 0))}%
-              </span>
-            )}
           </div>
         )}
       </div>
 
-      <div className={s.bracketGrid}>
-        {/* Left half — top section */}
-        <RoundSection label="Round of 32"   matches={r32.slice(0, 8)}  size="sm" />
-        <RoundSection label="Round of 16"   matches={r16.slice(0, 4)}  size="sm" indent={1} />
-        <RoundSection label="Quarterfinals" matches={qf.slice(0, 2)}   size="md" indent={2} />
-        <RoundSection label="Semifinals"    matches={sf.slice(0, 1)}   size="md" indent={3} />
+      <div className={s.scrollWrap}>
+        <div className={s.canvas} style={{ width: totalWidth, height: totalHeight }}>
 
-        {/* Final */}
-        <div className={s.finalRow}>
-          <div className={s.finalLabel}>Final</div>
-          <MatchCard match={fin} size="lg" />
-          {champ && (
-            <div className={`${s.champResult} ${champ.confirmed ? s.confirmed : ""}`}>
-              {champ.confirmed ? "🏆" : "🎯"} {champ.name}
-            </div>
-          )}
+          {/* Round labels */}
+          <div className={s.colLabel} style={{ left: colX.r32L, width: CARD_W }}>Round of 32</div>
+          <div className={s.colLabel} style={{ left: colX.r16L, width: CARD_W }}>Round of 16</div>
+          <div className={s.colLabel} style={{ left: colX.qfL,  width: CARD_W }}>Quarterfinals</div>
+          <div className={s.colLabel} style={{ left: colX.sfL,  width: CARD_W }}>Semifinals</div>
+          <div className={s.colLabel} style={{ left: colX.fin,  width: CARD_W }}>Final</div>
+          <div className={s.colLabel} style={{ left: colX.sfR,  width: CARD_W }}>Semifinals</div>
+          <div className={s.colLabel} style={{ left: colX.qfR,  width: CARD_W }}>Quarterfinals</div>
+          <div className={s.colLabel} style={{ left: colX.r16R, width: CARD_W }}>Round of 16</div>
+          <div className={s.colLabel} style={{ left: colX.r32R, width: CARD_W }}>Round of 32</div>
+
+          {/* Connector lines — SVG overlay */}
+          <svg className={s.connectorLayer} width={totalWidth} height={totalHeight}>
+            {renderConnectors(colX.r32L, r32YL, colX.r16L, r16YL)}
+            {renderConnectors(colX.r16L, r16YL, colX.qfL,  qfYL)}
+            {renderConnectors(colX.qfL,  qfYL,  colX.sfL,  sfYs.slice(0,1))}
+            {renderConnectors(colX.sfL,  sfYs.slice(0,1), colX.fin, [finY])}
+
+            {renderConnectorsMirror(colX.r32R, r32YR, colX.r16R, r16YR)}
+            {renderConnectorsMirror(colX.r16R, r16YR, colX.qfR,  qfYR)}
+            {renderConnectorsMirror(colX.qfR,  qfYR,  colX.sfR,  sfYs.slice(1,2))}
+            {renderConnectorsMirror(colX.sfR,  sfYs.slice(1,2), colX.fin, [finY])}
+          </svg>
+
+          {/* Match cards */}
+          {r32L.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.r32L} y={r32YL[i]} />)}
+          {r16L.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.r16L} y={r16YL[i]} />)}
+          {qfL.map((m, i)   => <PositionedCard key={m.id} match={m} x={colX.qfL}  y={qfYL[i]} />)}
+          <PositionedCard match={sf[0]} x={colX.sfL} y={sfYs[0]} />
+          <PositionedCard match={fin}   x={colX.fin} y={finY} highlight />
+          <PositionedCard match={sf[1]} x={colX.sfR} y={sfYs[1]} />
+          {qfR.map((m, i)   => <PositionedCard key={m.id} match={m} x={colX.qfR}  y={qfYR[i]} />)}
+          {r16R.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.r16R} y={r16YR[i]} />)}
+          {r32R.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.r32R} y={r32YR[i]} />)}
+
         </div>
-
-        {/* Right half — mirror */}
-        <RoundSection label="Semifinals"    matches={sf.slice(1, 2)}   size="md" indent={3} flip />
-        <RoundSection label="Quarterfinals" matches={qf.slice(2, 4)}   size="md" indent={2} flip />
-        <RoundSection label="Round of 16"   matches={r16.slice(4, 8)}  size="sm" indent={1} flip />
-        <RoundSection label="Round of 32"   matches={r32.slice(8, 16)} size="sm" flip />
       </div>
     </div>
   );
 }
 
-function RoundSection({
-  label, matches, size, indent = 0, flip = false,
-}: {
-  label: string;
-  matches: MatchNode[];
-  size: "sm" | "md" | "lg";
-  indent?: number;
-  flip?: boolean;
-}) {
-  const gap = [8, 20, 44, 100][indent] ?? 8;
-  return (
-    <div className={s.roundRow} style={{ justifyContent: flip ? "flex-end" : "flex-start" }}>
-      {!flip && <div className={s.roundLabel}>{label}</div>}
-      <div className={s.matchRow} style={{ gap }}>
-        {matches.map((m) => <MatchCard key={m.id} match={m} size={size} />)}
-      </div>
-      {flip && <div className={`${s.roundLabel} ${s.roundLabelRight}`}>{label}</div>}
-    </div>
-  );
-}
-
-function MatchCard({ match, size }: { match: MatchNode; size: "sm" | "md" | "lg" }) {
+function PositionedCard({
+  match, x, y, highlight,
+}: { match: MatchNode; x: number; y: number; highlight?: boolean }) {
   const { top, bot, topWinPct, confirmed } = match;
   const topPct = Math.round(topWinPct * 100);
   const botPct = 100 - topPct;
   const topFav = topWinPct >= 0.5;
 
   return (
-    <div className={`${s.matchCard} ${s[size]} ${confirmed ? s.matchConfirmed : ""}`}>
-      {confirmed && <div className={s.confirmedBadge}>✓</div>}
-      <div className={`${s.team} ${topFav ? s.fav : ""} ${top?.confirmed ? "" : s.predicted}`}>
+    <div
+      className={`${s.matchCard} ${confirmed ? s.matchConfirmed : ""} ${highlight ? s.matchFinal : ""}`}
+      style={{ left: x, top: y }}
+    >
+      <div className={`${s.team} ${topFav ? s.fav : ""}`}>
         <span className={s.teamName}>{top?.name ?? "TBD"}</span>
         <span className={s.pct}>{top && !confirmed ? `${topPct}%` : ""}</span>
       </div>
-      <div className={s.divider} />
-      <div className={`${s.team} ${!topFav ? s.fav : ""} ${bot?.confirmed ? "" : s.predicted}`}>
+      <div className={`${s.team} ${!topFav ? s.fav : ""}`}>
         <span className={s.teamName}>{bot?.name ?? "TBD"}</span>
         <span className={s.pct}>{bot && !confirmed ? `${botPct}%` : ""}</span>
       </div>
-      {!confirmed && top && bot && (
-        <div className={s.bar}>
-          <div className={s.barFill} style={{ width: `${topPct}%` }} />
-        </div>
-      )}
     </div>
   );
 }
