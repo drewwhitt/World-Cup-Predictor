@@ -88,6 +88,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 0 10px;
+  overflow: visible;
 }
 
 .matchFinal {
@@ -141,14 +142,9 @@
   border-color: #c0392b;
 }
 
-.upsetBadge {
-  position: absolute;
-  top: -8px;
-  right: 6px;
-  font: 700 8px/1 var(--font-mono);
-  letter-spacing: 0.08em;
-  background: #c0392b;
-  color: white;
-  padding: 2px 5px;
-  border-radius: 2px;
+.upsetPct {
+  color: #c0392b !important;
+  font-weight: 700;
+  font-size: 8px;
+  letter-spacing: 0.04em;
 }

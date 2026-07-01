@@ -280,25 +280,24 @@ function PositionedCard({
     >
       <div className={`${s.team} ${topIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{top?.name ?? "TBD"}</span>
-        <span className={s.pct}>
+        <span className={`${s.pct} ${isUpset && topIsWinner ? s.upsetPct : ""}`}>
           {top
             ? confirmed
-              ? `${preMatchTopPct100}%`
+              ? isUpset && topIsWinner ? "UPSET" : `${preMatchTopPct100}%`
               : `${topPct}%`
             : ""}
         </span>
       </div>
       <div className={`${s.team} ${botIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{bot?.name ?? "TBD"}</span>
-        <span className={s.pct}>
+        <span className={`${s.pct} ${isUpset && botIsWinner ? s.upsetPct : ""}`}>
           {bot
             ? confirmed
-              ? `${preMatchBotPct100}%`
+              ? isUpset && botIsWinner ? "UPSET" : `${preMatchBotPct100}%`
               : `${botPct}%`
             : ""}
         </span>
       </div>
-      {isUpset && <div className={s.upsetBadge}>UPSET</div>}
     </div>
   );
 }

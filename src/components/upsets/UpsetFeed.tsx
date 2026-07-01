@@ -61,18 +61,21 @@ export function UpsetFeed({ stored, limit = 5 }: Props) {
     const { home: homeWinPct } = toAdvancementProbabilities(elos[m.home] ?? 1500, elos[m.away] ?? 1500, 0);
 
     let winner: TeamCode, loser: TeamCode;
+    let winnerGoals: number, loserGoals: number;
     if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
       winner = m.home; loser = m.away;
+      winnerGoals = result.homeGoals; loserGoals = result.awayGoals;
     } else {
       winner = m.away; loser = m.home;
+      winnerGoals = result.awayGoals; loserGoals = result.homeGoals;
     }
 
     const winnerPct = winner === m.home ? homeWinPct : 1 - homeWinPct;
     const isUpset = winnerPct < 0.5;
     const upsetSeverity = isUpset ? Math.round((0.5 - winnerPct) * 200) : 0;
     const score = result.penaltyWinner
-      ? `${result.homeGoals}–${result.awayGoals} (pens)`
-      : `${result.homeGoals}–${result.awayGoals}`;
+      ? `${winnerGoals}–${loserGoals} (pens)`
+      : `${winnerGoals}–${loserGoals}`;
 
     results.push({
       id: m.id, winner, loser,
