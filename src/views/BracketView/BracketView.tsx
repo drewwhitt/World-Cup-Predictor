@@ -1,6 +1,7 @@
 import { useMemo, type ReactElement } from "react";
 import { computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES } from "../../data";
+import { toAdvancementProbabilities } from "../../lib/elo";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import { DEFAULT_SETTINGS } from "../../data";
 import type { StoredResults, TeamCode } from "../../lib/types";
@@ -64,8 +65,8 @@ function toSlotTeam(code: TeamCode | null, confirmed: boolean): SlotTeam {
 
 function winPct(top: SlotTeam, bot: SlotTeam, elos: Record<TeamCode, number>): number {
   if (!top || !bot) return 0.5;
-  const diff = (elos[top.code] ?? 1500) - (elos[bot.code] ?? 1500);
-  return 1 / (1 + Math.pow(10, -diff / 400));
+  const { home } = toAdvancementProbabilities(elos[top.code] ?? 1500, elos[bot.code] ?? 1500, 0);
+  return home;
 }
 
 function confirmedWinner(

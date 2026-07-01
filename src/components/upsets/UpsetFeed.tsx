@@ -1,5 +1,5 @@
 import { TEAM_BY_CODE } from "../../lib/teams";
-import { matchOutcomeProbabilities } from "../../lib/elo";
+import { toAdvancementProbabilities } from "../../lib/elo";
 import { computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import type { StoredResults, TeamCode } from "../../lib/types";
@@ -57,13 +57,8 @@ export function UpsetFeed({ stored, limit = 5 }: Props) {
     const result = stored.knockoutMatches?.[m.id];
     if (!result) continue;
 
-    const probs = matchOutcomeProbabilities(
-      elos[m.home] ?? 1500,
-      elos[m.away] ?? 1500,
-      0,
-    );
-    const total = probs.homeWin + probs.awayWin + probs.draw;
-    const homeWinPct = probs.homeWin / total;
+    // Same advancement probability the bracket uses — model base + penalty redistribution
+    const { home: homeWinPct } = toAdvancementProbabilities(elos[m.home] ?? 1500, elos[m.away] ?? 1500, 0);
 
     let winner: TeamCode, loser: TeamCode;
     if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {

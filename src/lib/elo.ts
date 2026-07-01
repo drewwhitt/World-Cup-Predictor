@@ -103,6 +103,30 @@ export function sampleMatchOutcome(
   return { homeGoals: concede, awayGoals: goals };
 }
 
+/**
+ * Converts three-outcome match probabilities (win/draw/loss) into
+ * knockout advancement probabilities. Draws go to extra time then
+ * penalties — modelled as a 50/50 coin flip between the two teams,
+ * applied to the model's draw probability.
+ *
+ * P(advance) = P(win in 90) + P(draw) × 0.5
+ *
+ * This is the correct question for knockout rounds: not "who wins in 90
+ * minutes" but "who advances to the next round." The underlying model
+ * probabilities are unchanged — this is purely a post-processing step.
+ */
+export function toAdvancementProbabilities(
+  homeElo: number,
+  awayElo: number,
+  homeAdvantage = 0,
+): { home: number; away: number } {
+  const { homeWin, draw, awayWin } = matchOutcomeProbabilities(homeElo, awayElo, homeAdvantage);
+  return {
+    home: homeWin + draw * 0.5,
+    away: awayWin + draw * 0.5,
+  };
+}
+
 export function sampleKnockoutWinner(
   home: TeamCode,
   away: TeamCode,
