@@ -3,6 +3,7 @@ import { computeDrivers } from "../../lib/drivers";
 import { runSimulation, computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
+import { getReachableZoneByRound, teamsInZone, R32_MATCHUPS } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import type { Team } from "../../data/worldCup";
 import s from "./ForecastsView.module.css";
@@ -57,19 +58,8 @@ export function ForecastsView({ stored, teams }: Props) {
   const ROUND_ORDER = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"];
 
   // Determine which round the selected team is currently in
-  const R32_DEFS_MAP: Record<string, { home: TeamCode; away: TeamCode }> = {
-    "ko-73": { home: "GER", away: "PAR" }, "ko-74": { home: "FRA", away: "SWE" },
-    "ko-75": { home: "RSA", away: "CAN" }, "ko-76": { home: "NED", away: "MAR" },
-    "ko-77": { home: "POR", away: "CRO" }, "ko-78": { home: "ESP", away: "AUT" },
-    "ko-79": { home: "USA", away: "BIH" }, "ko-80": { home: "BEL", away: "SEN" },
-    "ko-81": { home: "BRA", away: "JPN" }, "ko-82": { home: "CIV", away: "NOR" },
-    "ko-83": { home: "MEX", away: "ECU" }, "ko-84": { home: "ENG", away: "COD" },
-    "ko-85": { home: "ARG", away: "CPV" }, "ko-86": { home: "AUS", away: "EGY" },
-    "ko-87": { home: "SUI", away: "ALG" }, "ko-88": { home: "COL", away: "GHA" },
-  };
-
   const firstRound = useMemo(() => {
-    const r32Entry = Object.entries(R32_DEFS_MAP).find(
+    const r32Entry = Object.entries(R32_MATCHUPS).find(
       ([, m]) => m.home === selectedCode || m.away === selectedCode
     );
     if (!r32Entry) return "Round of 32";
@@ -85,97 +75,85 @@ export function ForecastsView({ stored, teams }: Props) {
   const likelyOpponents = useMemo(() => {
     if (firstRound === "eliminated") return [];
 
-    const firstRoundIdx = ROUND_ORDER.indexOf(firstRound);
+    // Get the valid opponent zones for this team using the bracket tree
+    const zones = getReachableZoneByRound(selectedCode);
 
-    // The R16 fixture structure — who plays whom in R16 (winners of which R32 pairs)
-    // From the official fixture file: R16 matches pair specific R32 winners
-    const R16_PAIRS: Array<[string, string]> = [
-      ["ko-74", "ko-77"], // W74 vs W77
-      ["ko-73", "ko-75"], // W73 vs W75
-      ["ko-76", "ko-78"], // W76 vs W78
-      ["ko-79", "ko-80"], // W79 vs W80
-      ["ko-81", "ko-82"], // W81 vs W82 (approx)
-      ["ko-83", "ko-84"], // W83 vs W84
-      ["ko-85", "ko-86"], // W85 vs W86
-      ["ko-87", "ko-88"], // W87 vs W88
-    ];
+    // For each round, build an allowed set of team codes from the bracket structure
+    const allowedByRound: Record<string, Set<TeamCode>> = {};
+    if (zones.r16)    allowedByRound["Round of 16"]    = teamsInZone([zones.r16]);
+    if (zones.qf)     allowedByRound["Quarter-final"]  = teamsInZone(zones.qf);
+    if (zones.sf)     allowedByRound["Semi-final"]     = teamsInZone(zones.sf);
+    if (zones.final)  allowedByRound["Final"]          = teamsInZone(zones.final);
 
-    // Find confirmed R16 opponent using bracket pairing structure
+    // For confirmed R16 opponent, use direct bracket lookup instead of simulation
     let confirmedR16Opponent: TeamCode | null = null;
-    if (firstRound === "Round of 16") {
-      // Find which R32 match the selected team won
-      const myR32Id = Object.entries(R32_DEFS_MAP).find(
-        ([, m]) => m.home === selectedCode || m.away === selectedCode
-      )?.[0];
-
-      if (myR32Id) {
-        // Find the R16 pair containing our R32 match
-        const pair = R16_PAIRS.find((p) => p[0] === myR32Id || p[1] === myR32Id);
-        if (pair) {
-          const opponentR32Id = pair[0] === myR32Id ? pair[1] : pair[0];
-          const opponentR32 = R32_DEFS_MAP[opponentR32Id];
-          const opponentResult = stored.knockoutMatches?.[opponentR32Id];
-          if (opponentResult && opponentR32) {
-            const homeWon = opponentResult.homeGoals > opponentResult.awayGoals ||
-              opponentResult.penaltyWinner === "home";
-            confirmedR16Opponent = homeWon ? opponentR32.home : opponentR32.away;
-          }
-        }
+    if (firstRound === "Round of 16" && zones.r16) {
+      const opponentDef = R32_MATCHUPS[zones.r16];
+      const opponentResult = stored.knockoutMatches?.[zones.r16];
+      if (opponentResult && opponentDef) {
+        const homeWon = opponentResult.homeGoals > opponentResult.awayGoals ||
+          opponentResult.penaltyWinner === "home";
+        confirmedR16Opponent = homeWon ? opponentDef.home : opponentDef.away;
       }
     }
 
-    // Teams that CANNOT be future opponents because they already played us
-    // or are confirmed to play us in an earlier round
-    const excludedOpponents = new Set<TeamCode>([selectedCode]);
-    if (confirmedR16Opponent) excludedOpponents.add(confirmedR16Opponent);
+    // Which rounds are still ahead?
+    const firstRoundIdx = ROUND_ORDER.indexOf(firstRound);
+    const futureRounds = ["Round of 16", "Quarter-final", "Semi-final", "Final"]
+      .filter((r) => ROUND_ORDER.indexOf(r) >= firstRoundIdx);
 
-    // Filter matchups: only future rounds, exclude impossible opponents
-    const futureMatchups = matchups
-      .filter((m) => {
-        const roundIdx = ROUND_ORDER.indexOf(m.round);
-        if (roundIdx < firstRoundIdx) return false;
-        const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
-        if (excludedOpponents.has(opponent) && m.round !== "Round of 16") return false;
-        return opponent !== selectedCode;
-      })
-      .sort((a, b) => ROUND_ORDER.indexOf(a.round) - ROUND_ORDER.indexOf(b.round));
+    // Build result: for each future round, filter simulation matchups
+    // to only show teams in the correct bracket zone
+    const result: Array<{
+      round: string;
+      opponents: Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>;
+    }> = [];
 
-    // Group by round
-    const byRound = new Map<string, Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>>();
+    for (const round of futureRounds) {
+      const allowed = allowedByRound[round];
+      if (!allowed) continue;
 
-    for (const m of futureMatchups) {
-      if (m.teamA !== selectedCode && m.teamB !== selectedCode) continue;
-      const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
-      const roundItems = byRound.get(m.round) ?? [];
-      roundItems.push({
-        opponent,
-        opponentName: TEAM_BY_CODE[opponent]?.name ?? opponent,
-        prob: m.probability,
-        advancePct: pct(m.probability),
-      });
-      byRound.set(m.round, roundItems);
+      // If confirmed R16 opponent is known, override simulation data
+      if (round === "Round of 16" && confirmedR16Opponent) {
+        result.push({
+          round,
+          opponents: [{
+            opponent: confirmedR16Opponent,
+            opponentName: TEAM_BY_CODE[confirmedR16Opponent]?.name ?? confirmedR16Opponent,
+            prob: 1,
+            advancePct: 100,
+          }],
+        });
+        continue;
+      }
+
+      // Get simulation matchups for this round, filtered to allowed zone
+      const roundMatchups = matchups
+        .filter((m) => {
+          if (m.round !== round) return false;
+          if (m.teamA !== selectedCode && m.teamB !== selectedCode) return false;
+          const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
+          return allowed.has(opponent) && opponent !== selectedCode;
+        })
+        .map((m) => {
+          const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
+          return {
+            opponent,
+            opponentName: TEAM_BY_CODE[opponent]?.name ?? opponent,
+            prob: m.probability,
+            advancePct: pct(m.probability),
+          };
+        })
+        .sort((a, b) => b.prob - a.prob)
+        .slice(0, 3);
+
+      if (roundMatchups.length > 0) {
+        result.push({ round, opponents: roundMatchups });
+      }
     }
 
-    // For the confirmed next opponent, override with 100%
-    if (confirmedR16Opponent && byRound.has("Round of 16")) {
-      byRound.set("Round of 16", [{
-        opponent: confirmedR16Opponent,
-        opponentName: TEAM_BY_CODE[confirmedR16Opponent]?.name ?? confirmedR16Opponent,
-        prob: 1,
-        advancePct: 100,
-      }]);
-    }
-
-    return Array.from(byRound.entries())
-      .sort(([a], [b]) => ROUND_ORDER.indexOf(a) - ROUND_ORDER.indexOf(b))
-      .map(([round, items]) => ({
-        round,
-        opponents: items
-          .sort((a, b) => b.prob - a.prob)
-          .slice(0, 3),
-      }))
-      .filter(({ opponents }) => opponents.length > 0);
-  }, [selectedCode, matchups, stored]);
+    return result;
+  }, [selectedCode, matchups, stored, firstRound]);
 
   // Build form from stored results
   const recentResults = useMemo(() => {
