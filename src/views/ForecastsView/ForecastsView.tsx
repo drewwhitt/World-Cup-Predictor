@@ -139,19 +139,28 @@ export function ForecastsView({ stored, teams }: Props) {
       const field = roundToField[round];
       if (!field) continue;
 
-      const opponents = Array.from(allowed)
+      const raw = Array.from(allowed)
         .filter((code) => code !== selectedCode)
         .map((code) => {
           const tp = teamProbs.get(code);
           const prob = tp ? tp[field] : 0;
-          return {
-            opponent: code,
-            opponentName: TEAM_BY_CODE[code]?.name ?? code,
-            prob,
-            advancePct: pct(prob),
-          };
+          return { code, prob };
         })
-        .filter((o) => o.prob > 0.001)
+        .filter((o) => o.prob > 0.001);
+
+      if (raw.length === 0) continue;
+
+      // Normalize within the zone so percentages reflect relative likelihood
+      // of being France's opponent, matching what the bracket shows
+      const total = raw.reduce((s, o) => s + o.prob, 0);
+
+      const opponents = raw
+        .map(({ code, prob }) => ({
+          opponent: code,
+          opponentName: TEAM_BY_CODE[code]?.name ?? code,
+          prob: prob / total,
+          advancePct: pct(prob / total),
+        }))
         .sort((a, b) => b.prob - a.prob)
         .slice(0, 3);
 

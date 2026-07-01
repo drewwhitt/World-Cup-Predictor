@@ -91,8 +91,6 @@ export function runSimulation(
   const rng = mulberry32(seed);
 
   // Real 2026 R32 matchups from FIFA's published bracket.
-  // We use these directly instead of resolving from group slot strings
-  // because the official draw doesn't follow a simple 1A-vs-2B pattern.
   const REAL_R32: Record<string, { home: TeamCode; away: TeamCode }> = {
     "ko-73": { home: "GER", away: "PAR" },
     "ko-74": { home: "FRA", away: "SWE" },
@@ -112,8 +110,36 @@ export function runSimulation(
     "ko-88": { home: "COL", away: "GHA" },
   };
 
+  // Real R16 matchups — winners of consecutive R32 pairs face each other.
+  const R16_FROM_R32: Record<string, [string, string]> = {
+    "ko-89": ["W73", "W74"],
+    "ko-90": ["W75", "W76"],
+    "ko-91": ["W77", "W78"],
+    "ko-92": ["W79", "W80"],
+    "ko-93": ["W81", "W82"],
+    "ko-94": ["W83", "W84"],
+    "ko-95": ["W85", "W86"],
+    "ko-96": ["W87", "W88"],
+  };
+
+  // Real QF matchups — winners of R16 pairs face each other
+  const QF_FROM_R16: Record<string, [string, string]> = {
+    "ko-97":  ["W89", "W90"],
+    "ko-98":  ["W91", "W92"],
+    "ko-99":  ["W93", "W94"],
+    "ko-100": ["W95", "W96"],
+  };
+
+  // Real SF matchups
+  const SF_FROM_QF: Record<string, [string, string]> = {
+    "ko-101": ["W97", "W98"],
+    "ko-102": ["W99", "W100"],
+  };
+
   // Build confirmedWinners from stored knockout results using real team codes
   const confirmedWinners: Record<string, TeamCode> = {};
+
+  // First pass: resolve R32 results
   for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
     const def = REAL_R32[matchId];
     const num = matchId.match(/ko-(\d+)/)?.[1];
@@ -123,6 +149,57 @@ export function runSimulation(
       winner = def.home;
     } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
       winner = def.away;
+    } else continue;
+    confirmedWinners[`W${num}`] = winner;
+  }
+
+  // Second pass: resolve R16 results
+  for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
+    const r16Keys = R16_FROM_R32[matchId];
+    const num = matchId.match(/ko-(\d+)/)?.[1];
+    if (!r16Keys || !num) continue;
+    const homeTeam = confirmedWinners[r16Keys[0]];
+    const awayTeam = confirmedWinners[r16Keys[1]];
+    if (!homeTeam || !awayTeam) continue;
+    let winner: TeamCode;
+    if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
+      winner = homeTeam;
+    } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
+      winner = awayTeam;
+    } else continue;
+    confirmedWinners[`W${num}`] = winner;
+  }
+
+  // Third pass: resolve QF results
+  for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
+    const qfKeys = QF_FROM_R16[matchId];
+    const num = matchId.match(/ko-(\d+)/)?.[1];
+    if (!qfKeys || !num) continue;
+    const homeTeam = confirmedWinners[qfKeys[0]];
+    const awayTeam = confirmedWinners[qfKeys[1]];
+    if (!homeTeam || !awayTeam) continue;
+    let winner: TeamCode;
+    if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
+      winner = homeTeam;
+    } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
+      winner = awayTeam;
+    } else continue;
+    confirmedWinners[`W${num}`] = winner;
+  }
+
+  // Fourth pass: resolve SF results
+  for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
+    const sfKeys = SF_FROM_QF[matchId];
+    const num = matchId.match(/ko-(\d+)/)?.[1];
+    if (!sfKeys || !num) continue;
+    const homeTeam = confirmedWinners[sfKeys[0]];
+    const awayTeam = confirmedWinners[sfKeys[1]];
+    if (!homeTeam || !awayTeam) continue;
+    let winner: TeamCode;
+    if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
+      winner = homeTeam;
+    } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
+      winner = awayTeam;
     } else continue;
     confirmedWinners[`W${num}`] = winner;
   }
