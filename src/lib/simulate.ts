@@ -111,15 +111,18 @@ export function runSimulation(
   };
 
   // Real R16 matchups — winners of consecutive R32 pairs face each other.
+  // Real R16 matchups from fixture file: ko-89=W74vW77, ko-90=W73vW75,
+  // ko-91=W76vW78, ko-92=W79vW80, ko-93=W83vW84, ko-94=W81vW82,
+  // ko-95=W86vW88, ko-96=W85vW87
   const R16_FROM_R32: Record<string, [string, string]> = {
-    "ko-89": ["W73", "W74"],
-    "ko-90": ["W75", "W76"],
-    "ko-91": ["W77", "W78"],
+    "ko-89": ["W74", "W77"],
+    "ko-90": ["W73", "W75"],
+    "ko-91": ["W76", "W78"],
     "ko-92": ["W79", "W80"],
-    "ko-93": ["W81", "W82"],
-    "ko-94": ["W83", "W84"],
-    "ko-95": ["W85", "W86"],
-    "ko-96": ["W87", "W88"],
+    "ko-93": ["W83", "W84"],
+    "ko-94": ["W81", "W82"],
+    "ko-95": ["W86", "W88"],
+    "ko-96": ["W85", "W87"],
   };
 
   // Real QF matchups — winners of R16 pairs face each other
