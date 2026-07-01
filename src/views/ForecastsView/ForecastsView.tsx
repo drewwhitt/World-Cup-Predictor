@@ -31,6 +31,33 @@ function pct(v: number) { return Number((v * 100).toFixed(1)); }
 export function ForecastsView({ stored, teams }: Props) {
   // Default to the current most likely champion
   const sortedTeams = [...teams].sort((a, b) => b.current - a.current);
+
+  // Compute eliminated teams using R32 matchups + stored knockout results
+  const eliminatedTeams = useMemo(() => {
+    const eliminated = new Set<TeamCode>();
+    const r32Teams = new Set<TeamCode>();
+    for (const m of Object.values(R32_MATCHUPS)) {
+      r32Teams.add(m.home); r32Teams.add(m.away);
+    }
+    // Group stage eliminations
+    for (const t of sortedTeams) {
+      if (!r32Teams.has(t.code as TeamCode)) eliminated.add(t.code as TeamCode);
+    }
+    // Knockout eliminations
+    for (const [matchId, result] of Object.entries(stored.knockoutMatches ?? {})) {
+      const def = R32_MATCHUPS[matchId];
+      if (!def) continue;
+      if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
+        eliminated.add(def.away);
+      } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
+        eliminated.add(def.home);
+      }
+    }
+    return eliminated;
+  }, [sortedTeams, stored]);
+
+  const activeTeams = sortedTeams.filter((t) => !eliminatedTeams.has(t.code as TeamCode));
+  const eliminatedTeamsList = sortedTeams.filter((t) => eliminatedTeams.has(t.code as TeamCode));
   const [selectedCode, setSelectedCode] = useState<TeamCode>(
     sortedTeams[0]?.code as TeamCode ?? "BRA"
   );
@@ -271,8 +298,11 @@ export function ForecastsView({ stored, teams }: Props) {
 
   if (!selected || !selectedTeam) return null;
 
-  const champPct = pct(selected.champion);
-  const deltaFromBaseline = Number((selectedTeam.current - selectedTeam.baseline).toFixed(1));
+  const isEliminated = eliminatedTeams.has(selectedCode);
+  const champPct = isEliminated ? 0 : pct(selected.champion);
+  const deltaFromBaseline = isEliminated
+    ? Number((0 - selectedTeam.baseline).toFixed(1))
+    : Number((selectedTeam.current - selectedTeam.baseline).toFixed(1));
   const eloRating = Math.round(selectedElo);
 
   return (
@@ -285,11 +315,22 @@ export function ForecastsView({ stored, teams }: Props) {
           value={selectedCode}
           onChange={(e) => setSelectedCode(e.target.value as TeamCode)}
         >
-          {sortedTeams.map((t) => (
-            <option key={t.code} value={t.code}>
-              {t.name} — {t.current.toFixed(1)}%
-            </option>
-          ))}
+          <optgroup label="Still in tournament">
+            {activeTeams.map((t) => (
+              <option key={t.code} value={t.code}>
+                {t.name} — {t.current.toFixed(1)}%
+              </option>
+            ))}
+          </optgroup>
+          {eliminatedTeamsList.length > 0 && (
+            <optgroup label="Eliminated">
+              {eliminatedTeamsList.map((t) => (
+                <option key={t.code} value={t.code}>
+                  {t.name} — 0.0%
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
       </div>
 
