@@ -13,6 +13,7 @@ import { loadOfficialResults } from "./lib/supabase";
 import type { StoredResults } from "./lib/types";
 import { HomeView } from "./views/HomeView/HomeView";
 import { BracketView } from "./views/BracketView/BracketView";
+import { ForecastsView } from "./views/ForecastsView/ForecastsView";
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
@@ -50,6 +51,8 @@ export default function App() {
 
   function renderContent() {
     switch (activeTab) {
+      case "forecasts":
+        return <ForecastsView stored={stored} teams={liveTeams} />;
       case "bracket":
         return <BracketView stored={stored} />;
       case "home":
