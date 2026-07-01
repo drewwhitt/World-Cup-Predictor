@@ -1,0 +1,133 @@
+.loading, .empty, .compactEmpty {
+  padding: 16px;
+  color: var(--ink-3);
+  font: 400 12px/1.4 var(--font-sans);
+  text-align: center;
+}
+
+/* ── Full list view (sport tab page) ── */
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  padding: 18px 20px;
+  margin: 20px 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.header h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0;
+}
+
+.header span {
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto auto 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.teamName {
+  font: 600 13px/1.2 var(--font-sans);
+  color: var(--ink);
+}
+
+.values {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 400 11px/1 var(--font-mono);
+  color: var(--ink-3);
+}
+
+.prevVal {
+  color: var(--ink-4);
+}
+
+.arrow {
+  color: var(--ink-4);
+}
+
+.currVal {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.delta {
+  font: 700 13px/1 var(--font-mono);
+  text-align: right;
+  min-width: 64px;
+}
+
+.up { color: #2d8a4e; }
+.down { color: #c0392b; }
+
+.reason {
+  font: 400 11px/1.3 var(--font-sans);
+  color: var(--ink-3);
+  font-style: italic;
+}
+
+/* ── Compact card view (home page, one per sport) ── */
+.compactCard {
+  background: var(--navy);
+  color: var(--on-dark);
+  border-radius: 4px;
+  padding: 16px 18px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.compactLabel {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.compactTeam {
+  font: 600 16px/1.2 var(--font-sans);
+  margin-bottom: 4px;
+}
+
+.compactDelta {
+  font: 700 18px/1 var(--font-mono);
+}
+
+.compactReason {
+  margin-top: 8px;
+  font: 400 11px/1.4 var(--font-sans);
+  color: rgba(244, 239, 227, 0.7);
+}

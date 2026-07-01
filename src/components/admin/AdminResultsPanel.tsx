@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { GROUP_MATCHES } from "../../data";
 import { saveOfficialResult } from "../../lib/supabase";
+import { recordSnapshot } from "../../lib/snapshots";
+import { buildLiveTeams } from "../../data/veridexLive";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./AdminResultsPanel.module.css";
@@ -42,6 +44,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
   const [awayGoals, setAwayGoals]   = useState("0");
   const [penaltyWinner, setPenaltyWinner] = useState<"home" | "away" | "">("");
   const [status, setStatus]         = useState<"idle"|"saving"|"saved"|"error">("idle");
+  const [snapStatus, setSnapStatus] = useState<"idle"|"saving"|"saved"|"error">("idle");
 
   const groupMatches = useMemo(
     () => [...GROUP_MATCHES].sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday),
@@ -115,6 +118,24 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
     }
   }
 
+  /**
+   * Records today's championship probability for every team to
+   * probability_snapshots. Call this once after entering results for
+   * the day — it's what powers the "movers" feed across the site.
+   */
+  async function takeSnapshot() {
+    setSnapStatus("saving");
+    try {
+      const liveTeams = buildLiveTeams(stored);
+      const teamValues = liveTeams.map((t) => ({ code: t.code, value: t.current }));
+      await recordSnapshot("world_cup", teamValues, "champion_pct");
+      setSnapStatus("saved");
+    } catch (err) {
+      console.error("Snapshot failed", err);
+      setSnapStatus("error");
+    }
+  }
+
   const currentGroupMatch = groupMatches.find((m) => m.id === selectedGroup);
   const currentKOMatch    = R32_MATCHUPS.find((m) => m.id === selectedKO);
 
@@ -125,10 +146,17 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
           <span>Admin Input</span>
           <h2>Record a match result</h2>
         </div>
-        <strong>
-          {Object.keys(stored.matches).length} group +{" "}
-          {Object.keys(stored.knockoutMatches ?? {}).length} knockout results
-        </strong>
+        <div className={s.headingRight}>
+          <strong>
+            {Object.keys(stored.matches).length} group +{" "}
+            {Object.keys(stored.knockoutMatches ?? {}).length} knockout results
+          </strong>
+          <button type="button" className={s.snapshotBtn} onClick={takeSnapshot}>
+            {snapStatus === "saving" ? "Saving snapshot..." : "Snapshot today's odds"}
+          </button>
+          {snapStatus === "saved" && <span className={s.saved}>Snapshot saved ✓</span>}
+          {snapStatus === "error" && <span className={s.error}>Snapshot failed</span>}
+        </div>
       </div>
 
       <div className={s.tabs}>

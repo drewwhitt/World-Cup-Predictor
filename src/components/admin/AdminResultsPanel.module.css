@@ -172,3 +172,25 @@
   color: var(--ink-4);
   text-decoration: line-through;
 }
+
+.headingRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.snapshotBtn {
+  padding: 7px 14px;
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: var(--on-dark);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.snapshotBtn:hover {
+  opacity: 0.85;
+}
