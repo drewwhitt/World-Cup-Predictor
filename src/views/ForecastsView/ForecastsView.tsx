@@ -102,18 +102,27 @@ export function ForecastsView({ stored, teams }: Props) {
     const futureRounds = ["Round of 16", "Quarter-final", "Semi-final", "Final"]
       .filter((r) => ROUND_ORDER.indexOf(r) >= firstRoundIdx);
 
-    // Build result: for each future round, filter simulation matchups
-    // to only show teams in the correct bracket zone
+    // Build result: for each future round, derive opponent probabilities
+    // directly from TeamProbabilities rather than simulation matchup counts
+    // (matchup counts can be stale if bracket structure changed mid-session)
     const result: Array<{
       round: string;
       opponents: Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>;
     }> = [];
 
+    // Map round name → TeamProbabilities field
+    const roundToField: Record<string, "roundOf16" | "quarterFinal" | "semiFinal" | "final"> = {
+      "Round of 16":   "roundOf16",
+      "Quarter-final": "quarterFinal",
+      "Semi-final":    "semiFinal",
+      "Final":         "final",
+    };
+
     for (const round of futureRounds) {
       const allowed = allowedByRound[round];
       if (!allowed) continue;
 
-      // If confirmed R16 opponent is known, override simulation data
+      // Confirmed R16 opponent — 100% certainty
       if (round === "Round of 16" && confirmedR16Opponent) {
         result.push({
           round,
@@ -127,33 +136,32 @@ export function ForecastsView({ stored, teams }: Props) {
         continue;
       }
 
-      // Get simulation matchups for this round, filtered to allowed zone
-      const roundMatchups = matchups
-        .filter((m) => {
-          if (m.round !== round) return false;
-          if (m.teamA !== selectedCode && m.teamB !== selectedCode) return false;
-          const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
-          return allowed.has(opponent) && opponent !== selectedCode;
-        })
-        .map((m) => {
-          const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
+      const field = roundToField[round];
+      if (!field) continue;
+
+      const opponents = Array.from(allowed)
+        .filter((code) => code !== selectedCode)
+        .map((code) => {
+          const tp = teamProbs.get(code);
+          const prob = tp ? tp[field] : 0;
           return {
-            opponent,
-            opponentName: TEAM_BY_CODE[opponent]?.name ?? opponent,
-            prob: m.probability,
-            advancePct: pct(m.probability),
+            opponent: code,
+            opponentName: TEAM_BY_CODE[code]?.name ?? code,
+            prob,
+            advancePct: pct(prob),
           };
         })
+        .filter((o) => o.prob > 0.001)
         .sort((a, b) => b.prob - a.prob)
         .slice(0, 3);
 
-      if (roundMatchups.length > 0) {
-        result.push({ round, opponents: roundMatchups });
+      if (opponents.length > 0) {
+        result.push({ round, opponents });
       }
     }
 
     return result;
-  }, [selectedCode, matchups, stored, firstRound]);
+  }, [selectedCode, matchups, stored, firstRound, teamProbs]);
 
   // Build form from stored results
   const recentResults = useMemo(() => {
