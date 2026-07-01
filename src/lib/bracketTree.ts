@@ -53,36 +53,37 @@ export const R32_MATCHUPS: Record<string, { home: TeamCode; away: TeamCode }> = 
 
 type Zone = readonly string[]; // R32 match IDs
 
-// The 8 R16 pairs — teams can only face each other if from different R32 in same pair
+// The 8 R16 pairs — consecutive R32 match IDs pair up
+// (ko-73 winner faces ko-74 winner, ko-75 vs ko-76, etc.)
 const R16_PAIRS: readonly [string, string][] = [
-  ["ko-74", "ko-77"],  // R89
-  ["ko-73", "ko-75"],  // R90
-  ["ko-76", "ko-78"],  // R91
-  ["ko-79", "ko-80"],  // R92
-  ["ko-83", "ko-84"],  // R93
-  ["ko-81", "ko-82"],  // R94
-  ["ko-86", "ko-88"],  // R95
-  ["ko-85", "ko-87"],  // R96
+  ["ko-73", "ko-74"],  // Paraguay vs France
+  ["ko-75", "ko-76"],  // Canada vs Morocco
+  ["ko-77", "ko-78"],  // Portugal vs Austria
+  ["ko-79", "ko-80"],  // USA vs Belgium
+  ["ko-81", "ko-82"],  // Brazil vs Norway
+  ["ko-83", "ko-84"],  // Mexico vs England
+  ["ko-85", "ko-86"],  // Argentina vs Egypt
+  ["ko-87", "ko-88"],  // Switzerland vs Colombia
 ] as const;
 
 // The 4 QF pairs — each merges two R16 pairs
 const QF_PAIRS: readonly [Zone, Zone][] = [
-  [["ko-74", "ko-77"], ["ko-73", "ko-75"]],  // R97: W89 vs W90
-  [["ko-83", "ko-84"], ["ko-81", "ko-82"]],  // R98: W93 vs W94
-  [["ko-76", "ko-78"], ["ko-79", "ko-80"]],  // R99: W91 vs W92
-  [["ko-86", "ko-88"], ["ko-85", "ko-87"]],  // R100: W95 vs W96
+  [["ko-73", "ko-74"], ["ko-75", "ko-76"]],  // QF1
+  [["ko-77", "ko-78"], ["ko-79", "ko-80"]],  // QF2
+  [["ko-81", "ko-82"], ["ko-83", "ko-84"]],  // QF3
+  [["ko-85", "ko-86"], ["ko-87", "ko-88"]],  // QF4
 ] as const;
 
 // The 2 SF pairs — each merges two QF zones
 const SF_PAIRS: readonly [Zone, Zone][] = [
-  [["ko-74","ko-77","ko-73","ko-75"], ["ko-83","ko-84","ko-81","ko-82"]], // R101
-  [["ko-76","ko-78","ko-79","ko-80"], ["ko-86","ko-88","ko-85","ko-87"]], // R102
+  [["ko-73","ko-74","ko-75","ko-76"], ["ko-77","ko-78","ko-79","ko-80"]], // SF1: QF1 vs QF2
+  [["ko-81","ko-82","ko-83","ko-84"], ["ko-85","ko-86","ko-87","ko-88"]], // SF2: QF3 vs QF4
 ] as const;
 
 // Final: SF1 half vs SF2 half
 const FINAL_HALVES: readonly [Zone, Zone] = [
-  ["ko-74","ko-77","ko-73","ko-75","ko-83","ko-84","ko-81","ko-82"],
-  ["ko-76","ko-78","ko-79","ko-80","ko-86","ko-88","ko-85","ko-87"],
+  ["ko-73","ko-74","ko-75","ko-76","ko-77","ko-78","ko-79","ko-80"],
+  ["ko-81","ko-82","ko-83","ko-84","ko-85","ko-86","ko-87","ko-88"],
 ] as const;
 
 /**
