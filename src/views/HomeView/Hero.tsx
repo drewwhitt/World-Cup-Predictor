@@ -29,7 +29,7 @@ export function Hero({ teams, playedCount }: Props) {
         <p>{heroSub}</p>
         <div className={s.byline}>
           <span />
-          VERIDEX Analytics Desk · June 24, 2026 · Live model
+          VERIDEX Analytics Desk · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · Live model
         </div>
         <div className={s.metrics}>
           {metrics.map((metric) => (

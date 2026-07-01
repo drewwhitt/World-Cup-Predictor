@@ -4,11 +4,12 @@ import { fileURLToPath } from "node:url";
 import rawFixtures from "../src/data/worldcup-fixtures.json";
 import { buildGroupFixtures, buildKnockoutFixtures } from "../src/lib/fixtures";
 import { runSimulation } from "../src/lib/simulate";
+import { K_FACTOR, HOST_ADVANTAGE } from "../src/lib/elo";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../src/data/baseline.json");
 
-const settings = { kFactor: 32, homeAdvantage: 65, simulations: 10000 };
+const settings = { kFactor: K_FACTOR, homeAdvantage: HOST_ADVANTAGE, simulations: 10000 };
 const groupMatches = buildGroupFixtures(rawFixtures);
 const knockout = buildKnockoutFixtures(rawFixtures);
 

@@ -60,6 +60,7 @@ export default function App() {
             morning={liveMorning}
             headlines={liveHeadlines}
             playedCount={playedCount}
+            stored={stored}
           />
         );
     }
