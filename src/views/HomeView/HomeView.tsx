@@ -1,5 +1,6 @@
 import { headlines as mockHeadlines, morningForecast, teams as mockTeams, type Headline, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
 import { DailyMovers } from "../../components/movers/DailyMovers";
+import { UpsetFeed } from "../../components/upsets/UpsetFeed";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults } from "../../lib/types";
 import { Hero } from "./Hero";
@@ -28,6 +29,7 @@ export function HomeView({ teams = mockTeams, morning = morningForecast, headlin
       <QuickStrip teams={teams} />
       <MorningForecast forecast={morning} />
       <DailyMovers sport="world_cup" teamNames={TEAM_NAMES} limit={6} title="Today's Movers — World Cup" />
+      {stored && <UpsetFeed stored={stored} limit={8} />}
       <section className={s.latestHeader}>
         <h2>Latest from the model</h2>
         <span>Updated continuously</span>
