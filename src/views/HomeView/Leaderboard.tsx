@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DeltaPill } from "../../components/common/DeltaPill";
 import { contenderRows, type Team } from "../../data/worldCup";
+import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./Leaderboard.module.css";
 
@@ -26,6 +27,20 @@ const R32_MATCHUPS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
 
 function getEliminatedTeams(stored: StoredResults): Set<TeamCode> {
   const eliminated = new Set<TeamCode>();
+
+  // All teams that appear in the R32 bracket
+  const r32Teams = new Set<TeamCode>();
+  for (const m of R32_MATCHUPS) {
+    r32Teams.add(m.home);
+    r32Teams.add(m.away);
+  }
+
+  // Any team NOT in the R32 was eliminated in the group stage
+  for (const code of Object.keys(TEAM_BY_CODE) as TeamCode[]) {
+    if (!r32Teams.has(code)) eliminated.add(code);
+  }
+
+  // Teams knocked out in R32
   for (const m of R32_MATCHUPS) {
     const result = stored.knockoutMatches?.[m.id];
     if (!result) continue;
@@ -39,6 +54,7 @@ function getEliminatedTeams(stored: StoredResults): Set<TeamCode> {
       eliminated.add(m.home);
     }
   }
+
   return eliminated;
 }
 
