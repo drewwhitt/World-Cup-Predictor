@@ -139,10 +139,20 @@ export function runSimulation(
     "ko-102": ["W99", "W100"],
   };
 
-  // Build confirmedWinners from stored knockout results using real team codes
+  // Build confirmedWinners from stored knockout results using real team codes.
+  // ALSO pre-seed R32 participants directly — the fixture file's homeSlot/awaySlot
+  // strings (like "1A", "3C/E/F/H/I") don't match the real bracket, so
+  // bracket.ts resolveSlot would put wrong teams in R32. We bypass this by
+  // pre-seeding all 16 real R32 matchups as participant pairs.
   const confirmedWinners: Record<string, TeamCode> = {};
 
-  // First pass: resolve R32 results
+  // Pre-seed R32 participants using a special "home/away" convention:
+  // For each ko-NN match, store the real home as "H{NN}" and away as "A{NN}"
+  // bracket.ts will be updated to check these before resolving slots.
+  // Actually — simpler approach: seed all known R32 winners now, and for
+  // unplayed R32 matches we'll fix bracket.ts to check REAL_R32 directly.
+
+  // First pass: resolve R32 results (played matches → set winner W-keys)
   for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
     const def = REAL_R32[matchId];
     const num = matchId.match(/ko-(\d+)/)?.[1];
@@ -210,7 +220,7 @@ export function runSimulation(
   const counts = initCounts();
   const matchupCounts = new Map<string, number>();
   for (let i = 0; i < settings.simulations; i++) {
-    const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng, confirmedWinners);
+    const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng, confirmedWinners, REAL_R32);
     accumulate(counts, sim);
     accumulateMatchups(matchupCounts, sim.matchups);
   }
@@ -250,6 +260,7 @@ function simulateOnce(
   settings: SimulationSettings,
   rng: () => number,
   confirmedWinners: Record<string, TeamCode> = {},
+  realR32: Record<string, { home: TeamCode; away: TeamCode }> = {},
 ): {
   groups: ReturnType<typeof summarizeGroups>;
   qualifiedThird: ReturnType<typeof qualifyingThirdGroups>;
@@ -306,6 +317,7 @@ function simulateOnce(
     rng,
     sampleKnockoutWinner,
     confirmedWinners,
+    realR32,
   );
 
   return { groups, qualifiedThird, champion, reached, matchups };

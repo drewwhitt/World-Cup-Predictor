@@ -96,7 +96,8 @@ export function simulateKnockout(
     elos: Record<TeamCode, number>,
     rng: () => number,
   ) => TeamCode,
-  confirmedWinners: Record<string, TeamCode> = {}, // pre-seeded from stored results
+  confirmedWinners: Record<string, TeamCode> = {},
+  realR32Participants: Record<string, { home: TeamCode; away: TeamCode }> = {},
 ): {
   champion: TeamCode;
   reached: Partial<Record<TeamCode, Set<string>>>;
@@ -111,8 +112,18 @@ export function simulateKnockout(
   };
 
   for (const def of defs) {
-    const home = resolveSlot(def.homeSlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
-    const away = resolveSlot(def.awaySlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
+    // For R32 matches, use real participant data if available instead of
+    // the fixture file's group slot strings (which don't match the real draw)
+    let home: TeamCode | null;
+    let away: TeamCode | null;
+    const realParticipants = realR32Participants[def.id];
+    if (realParticipants) {
+      home = realParticipants.home;
+      away = realParticipants.away;
+    } else {
+      home = resolveSlot(def.homeSlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
+      away = resolveSlot(def.awaySlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
+    }
     if (!home || !away) continue;
     matchups.push({ id: def.id, round: def.round, home, away });
     track(home, def.round);
