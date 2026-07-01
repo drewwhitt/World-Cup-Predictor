@@ -100,12 +100,12 @@ export function simulateKnockout(
 ): {
   champion: TeamCode;
   reached: Partial<Record<TeamCode, Set<string>>>;
-  matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>;
+  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>;
 } {
   const winners: Record<string, TeamCode> = { ...confirmedWinners };
   const reached: Partial<Record<TeamCode, Set<string>>> = {};
   let champion: TeamCode | null = null;
-  const matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }> = [];
+  const matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }> = [];
   const track = (team: TeamCode, round: string) => {
     (reached[team] ??= new Set()).add(round);
   };
@@ -114,7 +114,7 @@ export function simulateKnockout(
     const home = resolveSlot(def.homeSlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
     const away = resolveSlot(def.awaySlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
     if (!home || !away) continue;
-    matchups.push({ round: def.round, home, away });
+    matchups.push({ id: def.id, round: def.round, home, away });
     track(home, def.round);
     track(away, def.round);
 

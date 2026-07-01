@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { computeDrivers, getUpcomingKnockoutOdds } from "../../lib/drivers";
+import { computeDrivers } from "../../lib/drivers";
 import { runSimulation, computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
@@ -14,12 +14,12 @@ type Props = {
 
 // Round labels in order
 const ROUND_KEYS = [
-  { key: "roundOf32",    label: "Round of 32" },
-  { key: "roundOf16",    label: "Round of 16" },
-  { key: "quarterFinal", label: "Quarterfinal" },
-  { key: "semiFinal",    label: "Semifinal" },
-  { key: "final",        label: "Final" },
-  { key: "champion",     label: "Champion" },
+  { key: "roundOf32",    label: "Round of 32",    koRound: "Round of 32"  },
+  { key: "roundOf16",    label: "Round of 16",    koRound: "Round of 16"  },
+  { key: "quarterFinal", label: "Quarterfinal",   koRound: "Quarter-final" },
+  { key: "semiFinal",    label: "Semifinal",      koRound: "Semi-final"   },
+  { key: "final",        label: "Final",          koRound: "Final"        },
+  { key: "champion",     label: "Champion",       koRound: null           },
 ] as const;
 
 type RoundKey = typeof ROUND_KEYS[number]["key"];
@@ -54,74 +54,91 @@ export function ForecastsView({ stored, teams }: Props) {
   const selectedDriver = drivers.find((d) => d.code === selectedCode);
   const selectedElo = elos[selectedCode] ?? 1500;
 
+  const ROUND_ORDER = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"];
+
+  // Determine which round the selected team is currently in
+  const R32_DEFS_MAP: Record<string, { home: TeamCode; away: TeamCode }> = {
+    "ko-73": { home: "GER", away: "PAR" }, "ko-74": { home: "FRA", away: "SWE" },
+    "ko-75": { home: "RSA", away: "CAN" }, "ko-76": { home: "NED", away: "MAR" },
+    "ko-77": { home: "POR", away: "CRO" }, "ko-78": { home: "ESP", away: "AUT" },
+    "ko-79": { home: "USA", away: "BIH" }, "ko-80": { home: "BEL", away: "SEN" },
+    "ko-81": { home: "BRA", away: "JPN" }, "ko-82": { home: "CIV", away: "NOR" },
+    "ko-83": { home: "MEX", away: "ECU" }, "ko-84": { home: "ENG", away: "COD" },
+    "ko-85": { home: "ARG", away: "CPV" }, "ko-86": { home: "AUS", away: "EGY" },
+    "ko-87": { home: "SUI", away: "ALG" }, "ko-88": { home: "COL", away: "GHA" },
+  };
+
+  const firstRound = useMemo(() => {
+    const r32Entry = Object.entries(R32_DEFS_MAP).find(
+      ([, m]) => m.home === selectedCode || m.away === selectedCode
+    );
+    if (!r32Entry) return "Round of 32";
+    const [matchId, r32Match] = r32Entry;
+    const result = stored.knockoutMatches?.[matchId];
+    if (!result) return "Round of 32";
+    const isHome = r32Match.home === selectedCode;
+    const homeWon = result.homeGoals > result.awayGoals || result.penaltyWinner === "home";
+    return (isHome ? homeWon : !homeWon) ? "Round of 16" : "eliminated";
+  }, [selectedCode, stored]);
+
   // Most likely opponents at each knockout round for the selected team
   const likelyOpponents = useMemo(() => {
-    const roundOrder = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"];
+    if (firstRound === "eliminated") return [];
 
-    // R32 matchups to determine confirmed results
-    const R32_DEFS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
-      { id: "ko-73", home: "GER", away: "PAR" },
-      { id: "ko-74", home: "FRA", away: "SWE" },
-      { id: "ko-75", home: "RSA", away: "CAN" },
-      { id: "ko-76", home: "NED", away: "MAR" },
-      { id: "ko-77", home: "POR", away: "CRO" },
-      { id: "ko-78", home: "ESP", away: "AUT" },
-      { id: "ko-79", home: "USA", away: "BIH" },
-      { id: "ko-80", home: "BEL", away: "SEN" },
-      { id: "ko-81", home: "BRA", away: "JPN" },
-      { id: "ko-82", home: "CIV", away: "NOR" },
-      { id: "ko-83", home: "MEX", away: "ECU" },
-      { id: "ko-84", home: "ENG", away: "COD" },
-      { id: "ko-85", home: "ARG", away: "CPV" },
-      { id: "ko-86", home: "AUS", away: "EGY" },
-      { id: "ko-87", home: "SUI", away: "ALG" },
-      { id: "ko-88", home: "COL", away: "GHA" },
+    const firstRoundIdx = ROUND_ORDER.indexOf(firstRound);
+
+    // The R16 fixture structure — who plays whom in R16 (winners of which R32 pairs)
+    // From the official fixture file: R16 matches pair specific R32 winners
+    const R16_PAIRS: Array<[string, string]> = [
+      ["ko-74", "ko-77"], // W74 vs W77
+      ["ko-73", "ko-75"], // W73 vs W75
+      ["ko-76", "ko-78"], // W76 vs W78
+      ["ko-79", "ko-80"], // W79 vs W80
+      ["ko-81", "ko-82"], // W81 vs W82 (approx)
+      ["ko-83", "ko-84"], // W83 vs W84
+      ["ko-85", "ko-86"], // W85 vs W86
+      ["ko-87", "ko-88"], // W87 vs W88
     ];
 
-    // Find the round this team has already been confirmed to win/lose in R32
-    // A team that won R32 should start from R16; one that hasn't played starts at R32
-    const r32Match = R32_DEFS.find((m) => m.home === selectedCode || m.away === selectedCode);
-    const r32Result = r32Match ? stored.knockoutMatches?.[r32Match.id] : undefined;
-
-    let firstRound = "Round of 32";
-    if (r32Result && r32Match) {
-      const isHome = r32Match.home === selectedCode;
-      const homeWon = r32Result.homeGoals > r32Result.awayGoals || r32Result.penaltyWinner === "home";
-      const selectedWon = isHome ? homeWon : !homeWon;
-      if (selectedWon) {
-        firstRound = "Round of 16"; // already past R32
-      } else {
-        return []; // eliminated — no future opponents
-      }
-    }
-
-    const firstRoundIdx = roundOrder.indexOf(firstRound);
-
-    // Get confirmed R16 opponent if known (from bracket definition)
-    // For now we only hardcode R32 — R16 matchups come from simulation
-    // Confirmed R32 winner who faces selected team in R16
+    // Find confirmed R16 opponent using bracket pairing structure
     let confirmedR16Opponent: TeamCode | null = null;
-    if (r32Match && r32Result) {
-      // Find who won the paired R32 match (the one that feeds into R16 alongside ours)
-      // This is determined by bracket structure — we look through matchups for R16
-      const r16Matchup = matchups.find((m) =>
-        m.round === "Round of 16" &&
-        (m.teamA === selectedCode || m.teamB === selectedCode)
-      );
-      if (r16Matchup) {
-        confirmedR16Opponent = r16Matchup.teamA === selectedCode ? r16Matchup.teamB : r16Matchup.teamA;
+    if (firstRound === "Round of 16") {
+      // Find which R32 match the selected team won
+      const myR32Id = Object.entries(R32_DEFS_MAP).find(
+        ([, m]) => m.home === selectedCode || m.away === selectedCode
+      )?.[0];
+
+      if (myR32Id) {
+        // Find the R16 pair containing our R32 match
+        const pair = R16_PAIRS.find((p) => p[0] === myR32Id || p[1] === myR32Id);
+        if (pair) {
+          const opponentR32Id = pair[0] === myR32Id ? pair[1] : pair[0];
+          const opponentR32 = R32_DEFS_MAP[opponentR32Id];
+          const opponentResult = stored.knockoutMatches?.[opponentR32Id];
+          if (opponentResult && opponentR32) {
+            const homeWon = opponentResult.homeGoals > opponentResult.awayGoals ||
+              opponentResult.penaltyWinner === "home";
+            confirmedR16Opponent = homeWon ? opponentR32.home : opponentR32.away;
+          }
+        }
       }
     }
 
-    // Filter matchups: only future rounds, never show the selected team as opponent
+    // Teams that CANNOT be future opponents because they already played us
+    // or are confirmed to play us in an earlier round
+    const excludedOpponents = new Set<TeamCode>([selectedCode]);
+    if (confirmedR16Opponent) excludedOpponents.add(confirmedR16Opponent);
+
+    // Filter matchups: only future rounds, exclude impossible opponents
     const futureMatchups = matchups
       .filter((m) => {
-        const roundIdx = roundOrder.indexOf(m.round);
-        if (roundIdx < firstRoundIdx) return false; // already played this round
+        const roundIdx = ROUND_ORDER.indexOf(m.round);
+        if (roundIdx < firstRoundIdx) return false;
         const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
-        return opponent !== selectedCode; // never show self
+        if (excludedOpponents.has(opponent) && m.round !== "Round of 16") return false;
+        return opponent !== selectedCode;
       })
-      .sort((a, b) => roundOrder.indexOf(a.round) - roundOrder.indexOf(b.round));
+      .sort((a, b) => ROUND_ORDER.indexOf(a.round) - ROUND_ORDER.indexOf(b.round));
 
     // Group by round
     const byRound = new Map<string, Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>>();
@@ -150,7 +167,7 @@ export function ForecastsView({ stored, teams }: Props) {
     }
 
     return Array.from(byRound.entries())
-      .sort(([a], [b]) => roundOrder.indexOf(a) - roundOrder.indexOf(b))
+      .sort(([a], [b]) => ROUND_ORDER.indexOf(a) - ROUND_ORDER.indexOf(b))
       .map(([round, items]) => ({
         round,
         opponents: items
@@ -290,16 +307,25 @@ export function ForecastsView({ stored, teams }: Props) {
         {/* Section 2 — Round-by-round path */}
         <section className={s.card}>
           <h2>Path to the Title</h2>
+          <p className={s.cardSub}>Probability of reaching each round · green = already achieved</p>
           <div className={s.roundPath}>
-            {ROUND_KEYS.map(({ key, label }) => {
+            {ROUND_KEYS.map(({ key, label, koRound }) => {
               const prob = pct(selected[key as RoundKey]);
               if (prob < 0.1) return null;
               const width = Math.max(4, prob);
+              // A round is "completed" if the team has already advanced past it
+              const isCompleted = koRound !== null &&
+                firstRound !== "Round of 32" &&
+                firstRound !== "eliminated" &&
+                ROUND_ORDER.indexOf(firstRound) > ROUND_ORDER.indexOf(koRound);
               return (
                 <div key={key} className={s.roundRow}>
                   <span className={s.roundLabel}>{label}</span>
                   <div className={s.roundBar}>
-                    <div className={s.roundFill} style={{ width: `${width}%` }} />
+                    <div
+                      className={`${s.roundFill} ${isCompleted ? s.roundFillDone : ""}`}
+                      style={{ width: `${width}%` }}
+                    />
                   </div>
                   <span className={s.roundPct}>{prob.toFixed(1)}%</span>
                 </div>

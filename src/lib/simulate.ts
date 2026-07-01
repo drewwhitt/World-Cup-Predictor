@@ -90,32 +90,40 @@ export function runSimulation(
   const baseElos = computeElosFromResults(groupMatches, settings);
   const rng = mulberry32(seed);
 
-  // Build W-key map from confirmed knockout results so the simulation
-  // never re-draws eliminated teams. W73 = winner of ko-73, etc.
+  // Real 2026 R32 matchups from FIFA's published bracket.
+  // We use these directly instead of resolving from group slot strings
+  // because the official draw doesn't follow a simple 1A-vs-2B pattern.
+  const REAL_R32: Record<string, { home: TeamCode; away: TeamCode }> = {
+    "ko-73": { home: "GER", away: "PAR" },
+    "ko-74": { home: "FRA", away: "SWE" },
+    "ko-75": { home: "RSA", away: "CAN" },
+    "ko-76": { home: "NED", away: "MAR" },
+    "ko-77": { home: "POR", away: "CRO" },
+    "ko-78": { home: "ESP", away: "AUT" },
+    "ko-79": { home: "USA", away: "BIH" },
+    "ko-80": { home: "BEL", away: "SEN" },
+    "ko-81": { home: "BRA", away: "JPN" },
+    "ko-82": { home: "CIV", away: "NOR" },
+    "ko-83": { home: "MEX", away: "ECU" },
+    "ko-84": { home: "ENG", away: "COD" },
+    "ko-85": { home: "ARG", away: "CPV" },
+    "ko-86": { home: "AUS", away: "EGY" },
+    "ko-87": { home: "SUI", away: "ALG" },
+    "ko-88": { home: "COL", away: "GHA" },
+  };
+
+  // Build confirmedWinners from stored knockout results using real team codes
   const confirmedWinners: Record<string, TeamCode> = {};
   for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
+    const def = REAL_R32[matchId];
     const num = matchId.match(/ko-(\d+)/)?.[1];
-    if (!num) continue;
-    // We need to know home/away codes — hardcoded R32 matchups
-    const R32_HOME: Record<string, TeamCode> = {
-      "73":"GER","74":"FRA","75":"RSA","76":"NED","77":"POR","78":"ESP",
-      "79":"USA","80":"BEL","81":"BRA","82":"CIV","83":"MEX","84":"ENG",
-      "85":"ARG","86":"AUS","87":"SUI","88":"COL",
-    };
-    const R32_AWAY: Record<string, TeamCode> = {
-      "73":"PAR","74":"SWE","75":"CAN","76":"MAR","77":"CRO","78":"AUT",
-      "79":"BIH","80":"SEN","81":"JPN","82":"NOR","83":"ECU","84":"COD",
-      "85":"CPV","86":"EGY","87":"ALG","88":"GHA",
-    };
-    const home = R32_HOME[num];
-    const away = R32_AWAY[num];
-    if (!home || !away) continue;
+    if (!def || !num) continue;
     let winner: TeamCode;
     if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
-      winner = home;
+      winner = def.home;
     } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
-      winner = away;
-    } else continue; // unresolved draw — shouldn't happen in knockout
+      winner = def.away;
+    } else continue;
     confirmedWinners[`W${num}`] = winner;
   }
 
@@ -162,7 +170,13 @@ function simulateOnce(
   settings: SimulationSettings,
   rng: () => number,
   confirmedWinners: Record<string, TeamCode> = {},
-) {
+): {
+  groups: ReturnType<typeof summarizeGroups>;
+  qualifiedThird: ReturnType<typeof qualifyingThirdGroups>;
+  champion: TeamCode;
+  reached: Partial<Record<TeamCode, Set<string>>>;
+  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>;
+} {
   const elos = { ...startElos };
   const simulatedMatches = groupMatches.map((m) => ({ ...m }));
 
@@ -283,20 +297,21 @@ function finalizeProbabilities(
 }
 
 function matchupKey(
+  id: string,
   round: KnockoutMatchDef["round"],
   teamA: TeamCode,
   teamB: TeamCode,
 ): string {
   const [a, b] = [teamA, teamB].sort();
-  return `${round}|${a}|${b}`;
+  return `${id}|${round}|${a}|${b}`;
 }
 
 function accumulateMatchups(
   matchupCounts: Map<string, number>,
-  matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>,
+  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>,
 ) {
   for (const matchup of matchups) {
-    const key = matchupKey(matchup.round, matchup.home, matchup.away);
+    const key = matchupKey(matchup.id, matchup.round, matchup.home, matchup.away);
     matchupCounts.set(key, (matchupCounts.get(key) ?? 0) + 1);
   }
 }
@@ -307,13 +322,14 @@ function finalizeMatchups(
 ): KnockoutMatchupProbability[] {
   return Array.from(matchupCounts.entries())
     .map(([key, count]) => {
-      const [round, teamA, teamB] = key.split("|") as [
+      const [id, round, teamA, teamB] = key.split("|") as [
+        string,
         KnockoutMatchDef["round"],
         TeamCode,
         TeamCode,
       ];
-
       return {
+        id,
         round,
         teamA,
         teamB,

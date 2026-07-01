@@ -314,3 +314,7 @@
   text-align: right;
   flex-shrink: 0;
 }
+
+.roundFillDone {
+  background: #2d8a4e;
+}
