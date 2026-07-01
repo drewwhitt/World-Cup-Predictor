@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { computeDrivers, getUpcomingKnockoutOdds } from "../../lib/drivers";
 import { runSimulation, computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
-import { TEAM_BY_CODE, TEAMS } from "../../lib/teams";
+import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import type { Team } from "../../data/worldCup";
 import s from "./ForecastsView.module.css";
@@ -57,21 +57,15 @@ export function ForecastsView({ stored, teams }: Props) {
   // Most likely opponents at each knockout round for the selected team
   const likelyOpponents = useMemo(() => {
     const result: Array<{ round: string; opponent: TeamCode; opponentName: string; prob: number }> = [];
-    const roundLabels: Record<string, string> = {
-      "r32": "Round of 32", "r16": "Round of 16",
-      "qf": "Quarterfinal", "sf": "Semifinal", "final": "Final",
-    };
+    const roundOrder = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"];
     const myMatchups = matchups
       .filter((m) => m.teamA === selectedCode || m.teamB === selectedCode)
-      .sort((a, b) => {
-        const order = ["r32","r16","qf","sf","final"];
-        return order.indexOf(a.round) - order.indexOf(b.round);
-      });
+      .sort((a, b) => roundOrder.indexOf(a.round) - roundOrder.indexOf(b.round));
 
     for (const m of myMatchups) {
       const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
       result.push({
-        round: roundLabels[m.round] ?? m.round,
+        round: m.round, // use the actual string directly — no remapping needed
         opponent,
         opponentName: TEAM_BY_CODE[opponent]?.name ?? opponent,
         prob: m.probability,
@@ -264,7 +258,7 @@ export function ForecastsView({ stored, teams }: Props) {
             </div>
             <div className={s.eloRow}>
               <span>Confederation</span>
-              <strong>{TEAMS.find((t) => t.code === selectedCode)?.group ?? "—"}</strong>
+              <strong>{TEAM_CONFEDERATION[selectedCode] ?? "—"}</strong>
             </div>
           </div>
           <p className={s.eloNote}>
