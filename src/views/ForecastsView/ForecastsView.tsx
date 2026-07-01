@@ -56,41 +56,109 @@ export function ForecastsView({ stored, teams }: Props) {
 
   // Most likely opponents at each knockout round for the selected team
   const likelyOpponents = useMemo(() => {
-    const result: Array<{ round: string; opponent: TeamCode; opponentName: string; prob: number }> = [];
     const roundOrder = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"];
-    const myMatchups = matchups
-      .filter((m) => m.teamA === selectedCode || m.teamB === selectedCode)
+
+    // R32 matchups to determine confirmed results
+    const R32_DEFS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
+      { id: "ko-73", home: "GER", away: "PAR" },
+      { id: "ko-74", home: "FRA", away: "SWE" },
+      { id: "ko-75", home: "RSA", away: "CAN" },
+      { id: "ko-76", home: "NED", away: "MAR" },
+      { id: "ko-77", home: "POR", away: "CRO" },
+      { id: "ko-78", home: "ESP", away: "AUT" },
+      { id: "ko-79", home: "USA", away: "BIH" },
+      { id: "ko-80", home: "BEL", away: "SEN" },
+      { id: "ko-81", home: "BRA", away: "JPN" },
+      { id: "ko-82", home: "CIV", away: "NOR" },
+      { id: "ko-83", home: "MEX", away: "ECU" },
+      { id: "ko-84", home: "ENG", away: "COD" },
+      { id: "ko-85", home: "ARG", away: "CPV" },
+      { id: "ko-86", home: "AUS", away: "EGY" },
+      { id: "ko-87", home: "SUI", away: "ALG" },
+      { id: "ko-88", home: "COL", away: "GHA" },
+    ];
+
+    // Find the round this team has already been confirmed to win/lose in R32
+    // A team that won R32 should start from R16; one that hasn't played starts at R32
+    const r32Match = R32_DEFS.find((m) => m.home === selectedCode || m.away === selectedCode);
+    const r32Result = r32Match ? stored.knockoutMatches?.[r32Match.id] : undefined;
+
+    let firstRound = "Round of 32";
+    if (r32Result && r32Match) {
+      const isHome = r32Match.home === selectedCode;
+      const homeWon = r32Result.homeGoals > r32Result.awayGoals || r32Result.penaltyWinner === "home";
+      const selectedWon = isHome ? homeWon : !homeWon;
+      if (selectedWon) {
+        firstRound = "Round of 16"; // already past R32
+      } else {
+        return []; // eliminated — no future opponents
+      }
+    }
+
+    const firstRoundIdx = roundOrder.indexOf(firstRound);
+
+    // Get confirmed R16 opponent if known (from bracket definition)
+    // For now we only hardcode R32 — R16 matchups come from simulation
+    // Confirmed R32 winner who faces selected team in R16
+    let confirmedR16Opponent: TeamCode | null = null;
+    if (r32Match && r32Result) {
+      // Find who won the paired R32 match (the one that feeds into R16 alongside ours)
+      // This is determined by bracket structure — we look through matchups for R16
+      const r16Matchup = matchups.find((m) =>
+        m.round === "Round of 16" &&
+        (m.teamA === selectedCode || m.teamB === selectedCode)
+      );
+      if (r16Matchup) {
+        confirmedR16Opponent = r16Matchup.teamA === selectedCode ? r16Matchup.teamB : r16Matchup.teamA;
+      }
+    }
+
+    // Filter matchups: only future rounds, never show the selected team as opponent
+    const futureMatchups = matchups
+      .filter((m) => {
+        const roundIdx = roundOrder.indexOf(m.round);
+        if (roundIdx < firstRoundIdx) return false; // already played this round
+        const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
+        return opponent !== selectedCode; // never show self
+      })
       .sort((a, b) => roundOrder.indexOf(a.round) - roundOrder.indexOf(b.round));
 
-    for (const m of myMatchups) {
+    // Group by round
+    const byRound = new Map<string, Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>>();
+
+    for (const m of futureMatchups) {
+      if (m.teamA !== selectedCode && m.teamB !== selectedCode) continue;
       const opponent = m.teamA === selectedCode ? m.teamB : m.teamA;
-      result.push({
-        round: m.round, // use the actual string directly — no remapping needed
+      const roundItems = byRound.get(m.round) ?? [];
+      roundItems.push({
         opponent,
         opponentName: TEAM_BY_CODE[opponent]?.name ?? opponent,
         prob: m.probability,
+        advancePct: pct(m.probability),
       });
+      byRound.set(m.round, roundItems);
     }
 
-    // Group by round, keep top 3 opponents per round
-    const byRound = new Map<string, typeof result>();
-    for (const item of result) {
-      const existing = byRound.get(item.round) ?? [];
-      existing.push(item);
-      byRound.set(item.round, existing);
+    // For the confirmed next opponent, override with 100%
+    if (confirmedR16Opponent && byRound.has("Round of 16")) {
+      byRound.set("Round of 16", [{
+        opponent: confirmedR16Opponent,
+        opponentName: TEAM_BY_CODE[confirmedR16Opponent]?.name ?? confirmedR16Opponent,
+        prob: 1,
+        advancePct: 100,
+      }]);
     }
 
-    return Array.from(byRound.entries()).map(([round, items]) => ({
-      round,
-      opponents: items
-        .sort((a, b) => b.prob - a.prob)
-        .slice(0, 3)
-        .map((item) => ({
-          ...item,
-          advancePct: pct(item.prob),
-        })),
-    }));
-  }, [selectedCode, matchups]);
+    return Array.from(byRound.entries())
+      .sort(([a], [b]) => roundOrder.indexOf(a) - roundOrder.indexOf(b))
+      .map(([round, items]) => ({
+        round,
+        opponents: items
+          .sort((a, b) => b.prob - a.prob)
+          .slice(0, 3),
+      }))
+      .filter(({ opponents }) => opponents.length > 0);
+  }, [selectedCode, matchups, stored]);
 
   // Build form from stored results
   const recentResults = useMemo(() => {
