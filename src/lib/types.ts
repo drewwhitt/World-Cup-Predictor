@@ -31,6 +31,13 @@ export interface GroupMatch {
   played: boolean;
   homeGoals?: number;
   awayGoals?: number;
+  /**
+   * True only when the "home" team is an actual 2026 host nation
+   * (USA/MEX/CAN) playing in one of their own host cities. Used to apply
+   * genuine host-nation Elo advantage rather than a flat bonus for
+   * whichever team happens to be listed first in the fixture.
+   */
+  isHostMatch?: boolean;
 }
 
 export interface KnockoutMatchDef {

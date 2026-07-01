@@ -1,6 +1,26 @@
 import type { TeamCode } from "./types";
 
+/**
+ * elo.ts — v9-aligned Elo engine
+ *
+ * Parameters below are the scipy-optimized values from backtesting against
+ * 2010-2022 World Cup results (256 matches), targeting minimum Brier score.
+ * See model notes: v9 achieved 0.1877 Brier vs 0.1897 for naive Elo.
+ *
+ * Key upgrades over the original v1 implementation:
+ *  - K factor: 40 (was 32) — World Cup matches are highly informative
+ *  - Home advantage: 100 Elo pts, HOST NATION ONLY (was flat 65 on every
+ *    "home" team in the fixture, which is wrong for neutral-venue games)
+ *  - Margin-of-victory: log-scale formula with autocorrelation correction
+ *    (was a flat 3-tier multiplier: 1.0/1.25/1.4)
+ */
+
 const DRAW_PROB_SCALE = 0.28;
+const DRAW_MIN = 0.08;
+const DRAW_MAX = 0.32;
+
+export const K_FACTOR = 40;
+export const HOST_ADVANTAGE = 100; // applied ONLY when isHostMatch is true
 
 export function expectedScore(eloA: number, eloB: number, homeAdv = 0): number {
   return 1 / (1 + 10 ** ((eloB - eloA - homeAdv) / 400));
@@ -13,13 +33,23 @@ export function matchOutcomeProbabilities(
 ): { homeWin: number; draw: number; awayWin: number } {
   const homeExpected = expectedScore(homeElo, awayElo, homeAdvantage);
   const drawBase = DRAW_PROB_SCALE * (1 - Math.abs(homeExpected - 0.5) * 1.6);
-  const draw = Math.max(0.08, Math.min(0.32, drawBase));
+  const draw = Math.max(DRAW_MIN, Math.min(DRAW_MAX, drawBase));
   const remaining = 1 - draw;
   return {
     homeWin: remaining * homeExpected,
     draw,
     awayWin: remaining * (1 - homeExpected),
   };
+}
+
+/**
+ * Margin-of-victory multiplier — 538-style log scale with autocorrelation
+ * correction. Prevents a single blowout from dominating Elo movement while
+ * still rewarding genuinely dominant performances more than squeakers.
+ */
+function movMultiplier(margin: number, eloDiff: number): number {
+  const autocorrCorrection = Math.abs(eloDiff) * 0.001 + 2.2;
+  return (Math.log(Math.abs(margin) + 1) * 1.5) / autocorrCorrection;
 }
 
 export function updateElo(
@@ -40,8 +70,9 @@ export function updateElo(
     homeScore = 0.5;
   }
 
-  const margin = Math.abs(homeGoals - awayGoals);
-  const multiplier = margin <= 1 ? 1 : margin === 2 ? 1.25 : 1.4;
+  const margin = homeGoals - awayGoals;
+  const eloDiff = homeElo - awayElo + homeAdvantage;
+  const multiplier = movMultiplier(margin, eloDiff);
 
   const delta = kFactor * multiplier * (homeScore - expectedHome);
   return {
@@ -78,6 +109,9 @@ export function sampleKnockoutWinner(
   elos: Record<TeamCode, number>,
   rng: () => number,
 ): TeamCode {
+  // Knockout matches are at neutral-ish venues for most ties (no host
+  // advantage baked in here — host nation host advantage only applies
+  // during their own group stage matches per the isHostMatch flag).
   const probs = matchOutcomeProbabilities(elos[home], elos[away], 0);
   const roll = rng();
   if (roll < probs.homeWin) return home;

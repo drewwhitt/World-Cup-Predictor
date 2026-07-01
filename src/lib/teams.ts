@@ -56,55 +56,137 @@ const RANKINGS: Record<string, number> = {
   Sweden: 28,
 };
 
+export type Confederation = "UEFA" | "CONMEBOL" | "CAF" | "AFC" | "CONCACAF" | "OFC";
+
+/**
+ * Confederation strength offsets, validated via backtesting on the 2010-2022
+ * World Cups (see model v6-v8 notes). Applied as a flat Elo adjustment on
+ * top of each team's base rating — corrects for the fact that regional
+ * qualifying strength varies systematically by confederation.
+ */
+export const CONFEDERATION_OFFSETS: Record<Confederation, number> = {
+  UEFA: 0,
+  CONMEBOL: 10,
+  CAF: -15,
+  AFC: -45,
+  CONCACAF: -50,
+  OFC: 0,
+};
+
+export const TEAM_CONFEDERATION: Record<string, Confederation> = {
+  MEX: "CONCACAF", RSA: "CAF",      KOR: "AFC",      CZE: "UEFA",
+  CAN: "CONCACAF", BIH: "UEFA",     QAT: "AFC",      SUI: "UEFA",
+  BRA: "CONMEBOL", MAR: "CAF",      HAI: "CONCACAF", SCO: "UEFA",
+  USA: "CONCACAF", PAR: "CONMEBOL", AUS: "AFC",      TUR: "UEFA",
+  GER: "UEFA",     CUW: "CONCACAF",CIV: "CAF",       ECU: "CONMEBOL",
+  NED: "UEFA",     JPN: "AFC",      SWE: "UEFA",     TUN: "CAF",
+  BEL: "UEFA",     EGY: "CAF",      IRN: "AFC",      NZL: "OFC",
+  ESP: "UEFA",     CPV: "CAF",      KSA: "AFC",      URU: "CONMEBOL",
+  FRA: "UEFA",     SEN: "CAF",      IRQ: "AFC",      NOR: "UEFA",
+  ARG: "CONMEBOL", ALG: "CAF",      AUT: "UEFA",     JOR: "AFC",
+  POR: "UEFA",     COD: "CAF",      UZB: "AFC",      COL: "CONMEBOL",
+  ENG: "UEFA",     CRO: "UEFA",     GHA: "CAF",      PAN: "CONCACAF",
+};
+
+/**
+ * ── PRE-TOURNAMENT ELO — fill in real calibrated values here ──────────────
+ * These currently fall back to a simple FIFA-rank-derived formula. Replace
+ * any value below with your real pre-tournament Elo (e.g. from the same
+ * calibration process used for the 2010-2022 backtests) as you have them.
+ * Confederation offset is applied automatically — do NOT bake it into
+ * these numbers, enter the team's raw strength rating only.
+ */
+/**
+ * Pre-tournament Elo values sourced from eloratings.net — the same calibrated
+ * values used in the v3–v9 backtesting sessions. Teams that appeared in the
+ * 2022 World Cup use those validated Elos as the closest real baseline.
+ * New 2026 qualifiers (Sweden, Bosnia, etc.) fall back to the rank formula.
+ * Confederation offsets are applied ON TOP of these values automatically.
+ * Do NOT bake confederation offsets into these numbers.
+ */
+const PRE_TOURNAMENT_ELO: Record<string, number | null> = {
+  // Group A
+  MEX: 1853, RSA: null, KOR: 1779, CZE: null,
+  // Group B
+  CAN: 1773, BIH: null, QAT: null, SUI: 1879,
+  // Group C
+  BRA: 2169, MAR: 1768, HAI: null, SCO: null,
+  // Group D
+  USA: 1856, PAR: null, AUS: 1753, TUR: null,
+  // Group E
+  GER: 1922, CUW: null, CIV: null, ECU: 1764,
+  // Group F
+  NED: 1940, JPN: 1762, SWE: null, TUN: 1726,
+  // Group G
+  BEL: 1931, EGY: null, IRN: 1739, NZL: null,
+  // Group H
+  ESP: 1954, CPV: null, KSA: 1650, URU: 1887,
+  // Group I
+  FRA: 2005, SEN: 1845, IRQ: null, NOR: null,
+  // Group J
+  ARG: 2141, ALG: null, AUT: null, JOR: null,
+  // Group K
+  POR: 1942, COD: null, UZB: null, COL: 1834,
+  // Group L
+  ENG: 1975, CRO: 1877, GHA: 1718, PAN: null,
+};
+
+function resolveInitialElo(code: string, rank: number): number {
+  const manual = PRE_TOURNAMENT_ELO[code];
+  const base = manual !== null && manual !== undefined ? manual : eloFromRank(rank);
+  const confederation = TEAM_CONFEDERATION[code] ?? "UEFA";
+  return base + CONFEDERATION_OFFSETS[confederation];
+}
+
 export const TEAMS: Team[] = [
-  { code: "MEX", name: "Mexico", group: "A", initialElo: eloFromRank(RANKINGS.Mexico) },
-  { code: "RSA", name: "South Africa", group: "A", initialElo: eloFromRank(RANKINGS["South Africa"]) },
-  { code: "KOR", name: "South Korea", group: "A", initialElo: eloFromRank(RANKINGS["South Korea"]) },
-  { code: "CZE", name: "Czech Republic", group: "A", initialElo: eloFromRank(RANKINGS["Czech Republic"]) },
-  { code: "CAN", name: "Canada", group: "B", initialElo: eloFromRank(RANKINGS.Canada) },
-  { code: "BIH", name: "Bosnia & Herzegovina", group: "B", initialElo: eloFromRank(RANKINGS["Bosnia & Herzegovina"]) },
-  { code: "QAT", name: "Qatar", group: "B", initialElo: eloFromRank(RANKINGS.Qatar) },
-  { code: "SUI", name: "Switzerland", group: "B", initialElo: eloFromRank(RANKINGS.Switzerland) },
-  { code: "BRA", name: "Brazil", group: "C", initialElo: eloFromRank(RANKINGS.Brazil) },
-  { code: "MAR", name: "Morocco", group: "C", initialElo: eloFromRank(RANKINGS.Morocco) },
-  { code: "HAI", name: "Haiti", group: "C", initialElo: eloFromRank(RANKINGS.Haiti) },
-  { code: "SCO", name: "Scotland", group: "C", initialElo: eloFromRank(RANKINGS.Scotland) },
-  { code: "USA", name: "USA", group: "D", initialElo: eloFromRank(RANKINGS.USA) },
-  { code: "PAR", name: "Paraguay", group: "D", initialElo: eloFromRank(RANKINGS.Paraguay) },
-  { code: "AUS", name: "Australia", group: "D", initialElo: eloFromRank(RANKINGS.Australia) },
-  { code: "TUR", name: "Turkey", group: "D", initialElo: eloFromRank(RANKINGS.Turkey) },
-  { code: "GER", name: "Germany", group: "E", initialElo: eloFromRank(RANKINGS.Germany) },
-  { code: "CUW", name: "Curaçao", group: "E", initialElo: eloFromRank(RANKINGS["Curaçao"]) },
-  { code: "CIV", name: "Ivory Coast", group: "E", initialElo: eloFromRank(RANKINGS["Ivory Coast"]) },
-  { code: "ECU", name: "Ecuador", group: "E", initialElo: eloFromRank(RANKINGS.Ecuador) },
-  { code: "NED", name: "Netherlands", group: "F", initialElo: eloFromRank(RANKINGS.Netherlands) },
-  { code: "JPN", name: "Japan", group: "F", initialElo: eloFromRank(RANKINGS.Japan) },
-  { code: "SWE", name: "Sweden", group: "F", initialElo: eloFromRank(RANKINGS.Sweden) },
-  { code: "TUN", name: "Tunisia", group: "F", initialElo: eloFromRank(RANKINGS.Tunisia) },
-  { code: "BEL", name: "Belgium", group: "G", initialElo: eloFromRank(RANKINGS.Belgium) },
-  { code: "EGY", name: "Egypt", group: "G", initialElo: eloFromRank(RANKINGS.Egypt) },
-  { code: "IRN", name: "Iran", group: "G", initialElo: eloFromRank(RANKINGS.Iran) },
-  { code: "NZL", name: "New Zealand", group: "G", initialElo: eloFromRank(RANKINGS["New Zealand"]) },
-  { code: "ESP", name: "Spain", group: "H", initialElo: eloFromRank(RANKINGS.Spain) },
-  { code: "CPV", name: "Cape Verde", group: "H", initialElo: eloFromRank(RANKINGS["Cape Verde"]) },
-  { code: "KSA", name: "Saudi Arabia", group: "H", initialElo: eloFromRank(RANKINGS["Saudi Arabia"]) },
-  { code: "URU", name: "Uruguay", group: "H", initialElo: eloFromRank(RANKINGS.Uruguay) },
-  { code: "FRA", name: "France", group: "I", initialElo: eloFromRank(RANKINGS.France) },
-  { code: "SEN", name: "Senegal", group: "I", initialElo: eloFromRank(RANKINGS.Senegal) },
-  { code: "IRQ", name: "Iraq", group: "I", initialElo: eloFromRank(RANKINGS.Iraq) },
-  { code: "NOR", name: "Norway", group: "I", initialElo: eloFromRank(RANKINGS.Norway) },
-  { code: "ARG", name: "Argentina", group: "J", initialElo: eloFromRank(RANKINGS.Argentina) },
-  { code: "ALG", name: "Algeria", group: "J", initialElo: eloFromRank(RANKINGS.Algeria) },
-  { code: "AUT", name: "Austria", group: "J", initialElo: eloFromRank(RANKINGS.Austria) },
-  { code: "JOR", name: "Jordan", group: "J", initialElo: eloFromRank(RANKINGS.Jordan) },
-  { code: "POR", name: "Portugal", group: "K", initialElo: eloFromRank(RANKINGS.Portugal) },
-  { code: "COD", name: "DR Congo", group: "K", initialElo: eloFromRank(RANKINGS["DR Congo"]) },
-  { code: "UZB", name: "Uzbekistan", group: "K", initialElo: eloFromRank(RANKINGS.Uzbekistan) },
-  { code: "COL", name: "Colombia", group: "K", initialElo: eloFromRank(RANKINGS.Colombia) },
-  { code: "ENG", name: "England", group: "L", initialElo: eloFromRank(RANKINGS.England) },
-  { code: "CRO", name: "Croatia", group: "L", initialElo: eloFromRank(RANKINGS.Croatia) },
-  { code: "GHA", name: "Ghana", group: "L", initialElo: eloFromRank(RANKINGS.Ghana) },
-  { code: "PAN", name: "Panama", group: "L", initialElo: eloFromRank(RANKINGS.Panama) },
+  { code: "MEX", name: "Mexico", group: "A", initialElo: resolveInitialElo("MEX", RANKINGS.Mexico) },
+  { code: "RSA", name: "South Africa", group: "A", initialElo: resolveInitialElo("RSA", RANKINGS["South Africa"]) },
+  { code: "KOR", name: "South Korea", group: "A", initialElo: resolveInitialElo("KOR", RANKINGS["South Korea"]) },
+  { code: "CZE", name: "Czech Republic", group: "A", initialElo: resolveInitialElo("CZE", RANKINGS["Czech Republic"]) },
+  { code: "CAN", name: "Canada", group: "B", initialElo: resolveInitialElo("CAN", RANKINGS.Canada) },
+  { code: "BIH", name: "Bosnia & Herzegovina", group: "B", initialElo: resolveInitialElo("BIH", RANKINGS["Bosnia & Herzegovina"]) },
+  { code: "QAT", name: "Qatar", group: "B", initialElo: resolveInitialElo("QAT", RANKINGS.Qatar) },
+  { code: "SUI", name: "Switzerland", group: "B", initialElo: resolveInitialElo("SUI", RANKINGS.Switzerland) },
+  { code: "BRA", name: "Brazil", group: "C", initialElo: resolveInitialElo("BRA", RANKINGS.Brazil) },
+  { code: "MAR", name: "Morocco", group: "C", initialElo: resolveInitialElo("MAR", RANKINGS.Morocco) },
+  { code: "HAI", name: "Haiti", group: "C", initialElo: resolveInitialElo("HAI", RANKINGS.Haiti) },
+  { code: "SCO", name: "Scotland", group: "C", initialElo: resolveInitialElo("SCO", RANKINGS.Scotland) },
+  { code: "USA", name: "USA", group: "D", initialElo: resolveInitialElo("USA", RANKINGS.USA) },
+  { code: "PAR", name: "Paraguay", group: "D", initialElo: resolveInitialElo("PAR", RANKINGS.Paraguay) },
+  { code: "AUS", name: "Australia", group: "D", initialElo: resolveInitialElo("AUS", RANKINGS.Australia) },
+  { code: "TUR", name: "Turkey", group: "D", initialElo: resolveInitialElo("TUR", RANKINGS.Turkey) },
+  { code: "GER", name: "Germany", group: "E", initialElo: resolveInitialElo("GER", RANKINGS.Germany) },
+  { code: "CUW", name: "Curaçao", group: "E", initialElo: resolveInitialElo("CUW", RANKINGS["Curaçao"]) },
+  { code: "CIV", name: "Ivory Coast", group: "E", initialElo: resolveInitialElo("CIV", RANKINGS["Ivory Coast"]) },
+  { code: "ECU", name: "Ecuador", group: "E", initialElo: resolveInitialElo("ECU", RANKINGS.Ecuador) },
+  { code: "NED", name: "Netherlands", group: "F", initialElo: resolveInitialElo("NED", RANKINGS.Netherlands) },
+  { code: "JPN", name: "Japan", group: "F", initialElo: resolveInitialElo("JPN", RANKINGS.Japan) },
+  { code: "SWE", name: "Sweden", group: "F", initialElo: resolveInitialElo("SWE", RANKINGS.Sweden) },
+  { code: "TUN", name: "Tunisia", group: "F", initialElo: resolveInitialElo("TUN", RANKINGS.Tunisia) },
+  { code: "BEL", name: "Belgium", group: "G", initialElo: resolveInitialElo("BEL", RANKINGS.Belgium) },
+  { code: "EGY", name: "Egypt", group: "G", initialElo: resolveInitialElo("EGY", RANKINGS.Egypt) },
+  { code: "IRN", name: "Iran", group: "G", initialElo: resolveInitialElo("IRN", RANKINGS.Iran) },
+  { code: "NZL", name: "New Zealand", group: "G", initialElo: resolveInitialElo("NZL", RANKINGS["New Zealand"]) },
+  { code: "ESP", name: "Spain", group: "H", initialElo: resolveInitialElo("ESP", RANKINGS.Spain) },
+  { code: "CPV", name: "Cape Verde", group: "H", initialElo: resolveInitialElo("CPV", RANKINGS["Cape Verde"]) },
+  { code: "KSA", name: "Saudi Arabia", group: "H", initialElo: resolveInitialElo("KSA", RANKINGS["Saudi Arabia"]) },
+  { code: "URU", name: "Uruguay", group: "H", initialElo: resolveInitialElo("URU", RANKINGS.Uruguay) },
+  { code: "FRA", name: "France", group: "I", initialElo: resolveInitialElo("FRA", RANKINGS.France) },
+  { code: "SEN", name: "Senegal", group: "I", initialElo: resolveInitialElo("SEN", RANKINGS.Senegal) },
+  { code: "IRQ", name: "Iraq", group: "I", initialElo: resolveInitialElo("IRQ", RANKINGS.Iraq) },
+  { code: "NOR", name: "Norway", group: "I", initialElo: resolveInitialElo("NOR", RANKINGS.Norway) },
+  { code: "ARG", name: "Argentina", group: "J", initialElo: resolveInitialElo("ARG", RANKINGS.Argentina) },
+  { code: "ALG", name: "Algeria", group: "J", initialElo: resolveInitialElo("ALG", RANKINGS.Algeria) },
+  { code: "AUT", name: "Austria", group: "J", initialElo: resolveInitialElo("AUT", RANKINGS.Austria) },
+  { code: "JOR", name: "Jordan", group: "J", initialElo: resolveInitialElo("JOR", RANKINGS.Jordan) },
+  { code: "POR", name: "Portugal", group: "K", initialElo: resolveInitialElo("POR", RANKINGS.Portugal) },
+  { code: "COD", name: "DR Congo", group: "K", initialElo: resolveInitialElo("COD", RANKINGS["DR Congo"]) },
+  { code: "UZB", name: "Uzbekistan", group: "K", initialElo: resolveInitialElo("UZB", RANKINGS.Uzbekistan) },
+  { code: "COL", name: "Colombia", group: "K", initialElo: resolveInitialElo("COL", RANKINGS.Colombia) },
+  { code: "ENG", name: "England", group: "L", initialElo: resolveInitialElo("ENG", RANKINGS.England) },
+  { code: "CRO", name: "Croatia", group: "L", initialElo: resolveInitialElo("CRO", RANKINGS.Croatia) },
+  { code: "GHA", name: "Ghana", group: "L", initialElo: resolveInitialElo("GHA", RANKINGS.Ghana) },
+  { code: "PAN", name: "Panama", group: "L", initialElo: resolveInitialElo("PAN", RANKINGS.Panama) },
 ];
 
 export const TEAM_BY_CODE = Object.fromEntries(

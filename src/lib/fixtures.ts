@@ -52,6 +52,20 @@ const NAME_TO_CODE: Record<string, TeamCode> = {
   Panama: "PAN",
 };
 
+const HOST_CITIES = [
+  "Atlanta", "Boston", "Dallas", "Houston", "Kansas City", "Los Angeles",
+  "Miami", "New York", "Philadelphia", "San Francisco", "Seattle",
+  "Mexico City", "Guadalajara", "Monterrey",
+  "Toronto", "Vancouver",
+];
+
+const HOST_NATION_CODES = new Set(["USA", "MEX", "CAN"]);
+
+function isHostCity(ground: string | undefined): boolean {
+  if (!ground) return false;
+  return HOST_CITIES.some((city) => ground.startsWith(city));
+}
+
 function groupFromLabel(label: string): GroupLetter {
   const match = label.match(/Group ([A-L])/);
   return (match?.[1] ?? "A") as GroupLetter;
@@ -69,6 +83,7 @@ export function buildGroupFixtures(raw: {
     team1: string;
     team2: string;
     group?: string;
+    ground?: string;
   }>;
 }) {
   return raw.matches
@@ -76,7 +91,17 @@ export function buildGroupFixtures(raw: {
     .map((m, i) => {
       const home = NAME_TO_CODE[m.team1];
       const away = NAME_TO_CODE[m.team2];
-      const group = groupFromLabel(m.group);
+      const group = groupFromLabel(m.group ?? "Group A");
+
+      // Genuine host advantage only applies if:
+      // 1. The match is played in a host nation's city, AND
+      // 2. The "home" team in the fixture is that host nation
+      // This avoids applying +HA to e.g. a Brazil vs Serbia match
+      // just because it happens to be hosted in Mexico City.
+      const isHostMatch =
+        isHostCity(m.ground) &&
+        HOST_NATION_CODES.has(home);
+
       return {
         id: `g-${group}-${i}`,
         group,
@@ -85,6 +110,7 @@ export function buildGroupFixtures(raw: {
         date: m.date,
         matchday: matchdayFromRound(m.round),
         played: false,
+        isHostMatch,
       };
     });
 }

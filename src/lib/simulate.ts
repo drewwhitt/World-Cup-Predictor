@@ -61,13 +61,17 @@ export function computeElosFromResults(
     .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday);
 
   for (const match of played) {
+    // Host advantage applies only when this specific match is a genuine
+    // host-nation fixture (see fixtures.ts isHostMatch). Otherwise treat
+    // as neutral — group stage venues are mostly not "home" for either side.
+    const ha = match.isHostMatch ? settings.homeAdvantage : 0;
     const updated = updateElo(
       elos[match.home],
       elos[match.away],
       match.homeGoals!,
       match.awayGoals!,
       settings.kFactor,
-      settings.homeAdvantage,
+      ha,
     );
     elos[match.home] = updated.home;
     elos[match.away] = updated.away;
@@ -133,10 +137,11 @@ function simulateOnce(
 
   for (const match of simulatedMatches) {
     if (match.played) continue;
+    const ha = match.isHostMatch ? settings.homeAdvantage : 0;
     const outcome = sampleMatchOutcome(
       elos[match.home],
       elos[match.away],
-      settings.homeAdvantage,
+      ha,
       rng,
     );
     match.played = true;
@@ -148,7 +153,7 @@ function simulateOnce(
       outcome.homeGoals,
       outcome.awayGoals,
       settings.kFactor,
-      settings.homeAdvantage,
+      ha,
     );
     elos[match.home] = updated.home;
     elos[match.away] = updated.away;
@@ -296,7 +301,8 @@ export function predictUpcoming(
   .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday)
   .slice(0, 8)
   .map((m) => {
-      const probs = matchOutcomeProbabilities(elos[m.home], elos[m.away], settings.homeAdvantage);
+      const ha = m.isHostMatch ? settings.homeAdvantage : 0;
+      const probs = matchOutcomeProbabilities(elos[m.home], elos[m.away], ha);
       return {
         id: m.id,
         home: m.home,
