@@ -95,7 +95,7 @@ function computeChampionPcts(stored: StoredResults): Map<TeamCode, number> {
     const r = stored.matches[m.id];
     return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
   });
-  const result = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS);
+  const result = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS, 42, stored.knockoutMatches);
   return new Map(result.probabilities.map((r) => [r.code as TeamCode, pct(r.champion)]));
 }
 

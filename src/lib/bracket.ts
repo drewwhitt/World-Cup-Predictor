@@ -96,12 +96,13 @@ export function simulateKnockout(
     elos: Record<TeamCode, number>,
     rng: () => number,
   ) => TeamCode,
+  confirmedWinners: Record<string, TeamCode> = {}, // pre-seeded from stored results
 ): {
   champion: TeamCode;
   reached: Partial<Record<TeamCode, Set<string>>>;
   matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>;
 } {
-  const winners: Record<string, TeamCode> = {};
+  const winners: Record<string, TeamCode> = { ...confirmedWinners };
   const reached: Partial<Record<TeamCode, Set<string>>> = {};
   let champion: TeamCode | null = null;
   const matchups: Array<{ round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }> = [];
@@ -113,20 +114,23 @@ export function simulateKnockout(
     const home = resolveSlot(def.homeSlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
     const away = resolveSlot(def.awaySlot, groupWinners, groupRunnersUp, thirdAssignments, winners);
     if (!home || !away) continue;
-    matchups.push({
-  round: def.round,
-  home,
-  away,
-});
+    matchups.push({ round: def.round, home, away });
     track(home, def.round);
     track(away, def.round);
 
-    const winner = sampleWinner(home, away, elos, rng);
     const matchNum = def.id.match(/ko-(\d+)/);
+    const winnerKey = matchNum ? `W${matchNum[1]}` : null;
+
+    // If this match is already confirmed (pre-seeded), don't re-simulate it
+    const alreadyConfirmed = winnerKey && confirmedWinners[winnerKey];
+    const winner = alreadyConfirmed
+      ? (confirmedWinners[winnerKey] as TeamCode)
+      : sampleWinner(home, away, elos, rng);
+
     if (def.round === "Final") {
       champion = winner;
-    } else if (matchNum) {
-      winners[`W${matchNum[1]}`] = winner;
+    } else if (winnerKey) {
+      winners[winnerKey] = winner;
     }
 
     track(winner, nextRound(def.round));

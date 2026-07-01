@@ -47,7 +47,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
       ? { ...match, played: true, homeGoals: result.homeGoals, awayGoals: result.awayGoals }
       : match;
   });
-  const current = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS);
+  const current = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS, 42, stored.knockoutMatches);
   const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
   const baselineByCode = new Map(baselineRows.map((row) => [row.code, row]));
 

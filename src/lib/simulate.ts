@@ -84,25 +84,55 @@ export function runSimulation(
   knockoutDefs: KnockoutMatchDef[],
   settings: SimulationSettings,
   seed = 42,
+  storedKnockout: StoredResults["knockoutMatches"] = {},
 ): SimulationResult {
   const playedCount = groupMatches.filter((m) => m.played).length;
   const baseElos = computeElosFromResults(groupMatches, settings);
   const rng = mulberry32(seed);
 
+  // Build W-key map from confirmed knockout results so the simulation
+  // never re-draws eliminated teams. W73 = winner of ko-73, etc.
+  const confirmedWinners: Record<string, TeamCode> = {};
+  for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
+    const num = matchId.match(/ko-(\d+)/)?.[1];
+    if (!num) continue;
+    // We need to know home/away codes — hardcoded R32 matchups
+    const R32_HOME: Record<string, TeamCode> = {
+      "73":"GER","74":"FRA","75":"RSA","76":"NED","77":"POR","78":"ESP",
+      "79":"USA","80":"BEL","81":"BRA","82":"CIV","83":"MEX","84":"ENG",
+      "85":"ARG","86":"AUS","87":"SUI","88":"COL",
+    };
+    const R32_AWAY: Record<string, TeamCode> = {
+      "73":"PAR","74":"SWE","75":"CAN","76":"MAR","77":"CRO","78":"AUT",
+      "79":"BIH","80":"SEN","81":"JPN","82":"NOR","83":"ECU","84":"COD",
+      "85":"CPV","86":"EGY","87":"ALG","88":"GHA",
+    };
+    const home = R32_HOME[num];
+    const away = R32_AWAY[num];
+    if (!home || !away) continue;
+    let winner: TeamCode;
+    if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
+      winner = home;
+    } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
+      winner = away;
+    } else continue; // unresolved draw — shouldn't happen in knockout
+    confirmedWinners[`W${num}`] = winner;
+  }
+
   const counts = initCounts();
   const matchupCounts = new Map<string, number>();
   for (let i = 0; i < settings.simulations; i++) {
-    const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng);
+    const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng, confirmedWinners);
     accumulate(counts, sim);
     accumulateMatchups(matchupCounts, sim.matchups);
   }
 
   return {
-  simulations: settings.simulations,
-  playedMatches: playedCount,
-  probabilities: finalizeProbabilities(counts, settings.simulations),
-  knockoutMatchups: finalizeMatchups(matchupCounts, settings.simulations),
-};
+    simulations: settings.simulations,
+    playedMatches: playedCount,
+    probabilities: finalizeProbabilities(counts, settings.simulations),
+    knockoutMatchups: finalizeMatchups(matchupCounts, settings.simulations),
+  };
 }
 
 function initCounts(): Record<TeamCode, Omit<TeamProbabilities, "code" | "name">> {
@@ -131,6 +161,7 @@ function simulateOnce(
   startElos: Record<TeamCode, number>,
   settings: SimulationSettings,
   rng: () => number,
+  confirmedWinners: Record<string, TeamCode> = {},
 ) {
   const elos = { ...startElos };
   const simulatedMatches = groupMatches.map((m) => ({ ...m }));
@@ -180,6 +211,7 @@ function simulateOnce(
     elos,
     rng,
     sampleKnockoutWinner,
+    confirmedWinners,
   );
 
   return { groups, qualifiedThird, champion, reached, matchups };

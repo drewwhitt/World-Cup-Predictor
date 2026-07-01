@@ -38,7 +38,7 @@ export function ForecastsView({ stored, teams }: Props) {
       const r = stored.matches[m.id];
       return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
     });
-    const result = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS);
+    const result = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS, 42, stored.knockoutMatches);
     const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
     const drivers = computeDrivers(stored);
     return {
