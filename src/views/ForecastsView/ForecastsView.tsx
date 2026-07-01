@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { computeDrivers } from "../../lib/drivers";
+import { toAdvancementProbabilities } from "../../lib/elo";
 import { runSimulation, computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
@@ -99,16 +100,50 @@ export function ForecastsView({ stored, teams }: Props) {
 
     // Which rounds are still ahead?
     const firstRoundIdx = ROUND_ORDER.indexOf(firstRound);
-    const futureRounds = ["Round of 16", "Quarter-final", "Semi-final", "Final"]
+    const futureRounds = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"]
       .filter((r) => ROUND_ORDER.indexOf(r) >= firstRoundIdx);
 
     // Build result: for each future round, derive opponent probabilities
-    // directly from TeamProbabilities rather than simulation matchup counts
-    // (matchup counts can be stale if bracket structure changed mid-session)
     const result: Array<{
       round: string;
       opponents: Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>;
     }> = [];
+
+    // Handle R32 specially — show the actual opponent with 100% since matchup is fixed
+    if (firstRound === "Round of 32" && zones.r16) {
+      const r32OpponentDef = R32_MATCHUPS[zones.r16];
+      if (r32OpponentDef) {
+        // Both teams in the R32 opponent match are possible — show whichever is confirmed,
+        // or both with Elo-derived probabilities if unplayed
+        const r32Result = stored.knockoutMatches?.[zones.r16];
+        if (r32Result) {
+          // Opponent's R32 match is already played — one team is confirmed
+          const homeWon = r32Result.homeGoals > r32Result.awayGoals || r32Result.penaltyWinner === "home";
+          const confirmedOpp = homeWon ? r32OpponentDef.home : r32OpponentDef.away;
+          result.push({ round: "Round of 32", opponents: [{
+            opponent: confirmedOpp,
+            opponentName: TEAM_BY_CODE[confirmedOpp]?.name ?? confirmedOpp,
+            prob: 1, advancePct: 100,
+          }]});
+        } else {
+          // Both teams still alive — show with relative Elo probabilities
+          const myR32 = Object.entries(R32_MATCHUPS).find(
+            ([, m]) => m.home === selectedCode || m.away === selectedCode
+          );
+          const myMatchDef = myR32?.[1];
+          if (myMatchDef) {
+            const { home: h, away: a } = toAdvancementProbabilities(
+              elos[r32OpponentDef.home] ?? 1500,
+              elos[r32OpponentDef.away] ?? 1500, 0
+            );
+            result.push({ round: "Round of 32", opponents: [
+              { opponent: r32OpponentDef.home, opponentName: TEAM_BY_CODE[r32OpponentDef.home]?.name ?? r32OpponentDef.home, prob: h, advancePct: pct(h) },
+              { opponent: r32OpponentDef.away, opponentName: TEAM_BY_CODE[r32OpponentDef.away]?.name ?? r32OpponentDef.away, prob: a, advancePct: pct(a) },
+            ].sort((x,y) => y.prob - x.prob)});
+          }
+        }
+      }
+    }
 
     // Map round name → TeamProbabilities field
     const roundToField: Record<string, "roundOf16" | "quarterFinal" | "semiFinal" | "final"> = {
@@ -170,7 +205,7 @@ export function ForecastsView({ stored, teams }: Props) {
     }
 
     return result;
-  }, [selectedCode, matchups, stored, firstRound, teamProbs]);
+  }, [selectedCode, matchups, stored, firstRound, teamProbs, elos]);
 
   // Build form from stored results
   const recentResults = useMemo(() => {
