@@ -1,11 +1,12 @@
 import type { MorningForecast as MorningForecastData } from "../../data/worldCup";
 import s from "./MorningForecast.module.css";
 
-type Props = {
-  forecast: MorningForecastData;
-};
+type Props = { forecast: MorningForecastData };
 
 export function MorningForecast({ forecast: mf }: Props) {
+  const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  const time  = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
   return (
     <section className={s.panel}>
       <header className={s.header}>
@@ -13,7 +14,7 @@ export function MorningForecast({ forecast: mf }: Props) {
           <span>The Morning Forecast</span>
           <em>Daily Briefing</em>
         </div>
-        <time>June 24 · 6:45 AM</time>
+        <time>{today} · {time}</time>
       </header>
       <div className={s.grid}>
         <div className={s.cell}>

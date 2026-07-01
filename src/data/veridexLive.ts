@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from ".";
 import { computeElosFromResults, runSimulation } from "../lib/simulate";
 import { computeStandings } from "../lib/groups";
 import { TEAM_BY_CODE } from "../lib/teams";
+import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
 import type { StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
 import type { Headline, MorningForecast, Team } from "./worldCup";
 
@@ -74,32 +75,72 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
   });
 }
 
-export function buildLiveMorningForecast(liveTeams: Team[]): MorningForecast {
+export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResults): MorningForecast {
   const rows = [...liveTeams].sort((a, b) => b.current - a.current);
-  const byDelta = [...liveTeams].map((team) => ({
-    ...team,
-    delta: Number((team.current - team.baseline).toFixed(1)),
-  }));
-  const riser = [...byDelta].sort((a, b) => b.delta - a.delta)[0];
-  const faller = [...byDelta].sort((a, b) => a.delta - b.delta)[0];
   const champ = rows[0];
+
+  // Use driver attribution for riser/faller — compares current vs pre-last-result
+  const drivers = computeDrivers(stored);
+  const riserDriver = drivers.find((d) => d.delta > 0);
+  const fallerDriver = [...drivers].reverse().find((d) => d.delta < 0);
+
+  // Fallback to baseline delta if no drivers yet
+  const byDelta = [...liveTeams].map((t) => ({
+    ...t, delta: Number((t.current - t.baseline).toFixed(1)),
+  }));
+  const baseRiser = [...byDelta].sort((a, b) => b.delta - a.delta)[0];
+  const baseFaller = [...byDelta].sort((a, b) => a.delta - b.delta)[0];
+
+  const riser = riserDriver ?? { name: baseRiser.name, currentPct: baseRiser.current, delta: baseRiser.delta, primaryDriver: "from pre-tournament baseline" };
+  const faller = fallerDriver ?? { name: baseFaller.name, currentPct: baseFaller.current, delta: Math.abs(baseFaller.delta), primaryDriver: "from pre-tournament baseline" };
+
+  // Live upcoming match odds — most uncertain match = most important
+  const upcoming = getUpcomingKnockoutOdds(stored);
+  const mostImportant = upcoming[0]; // sorted by upset risk (closest to 50/50)
+  const biggestUpset = upcoming[0];  // same — highest upset risk IS the biggest upset threat
+
+  const matchName = mostImportant
+    ? mostImportant.label
+    : "All matches complete";
+
+  const matchNote = mostImportant
+    ? `${Math.round(mostImportant.homeAdvance * 100)}% vs ${Math.round(mostImportant.awayAdvance * 100)}% advancement odds · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations`
+    : `${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`;
+
+  const upsetTeam = biggestUpset
+    ? (biggestUpset.homeAdvance < 0.5 ? biggestUpset.homeName : biggestUpset.awayName)
+    : rows[8]?.name ?? "";
+  const upsetFavName = biggestUpset
+    ? (biggestUpset.homeAdvance >= 0.5 ? biggestUpset.homeName : biggestUpset.awayName)
+    : "";
+  const upsetOdds = biggestUpset
+    ? Math.round(Math.min(biggestUpset.homeAdvance, biggestUpset.awayAdvance) * 100)
+    : 0;
+
+  // Build insight sentence using actual driver data
+  const riserDelta = Math.abs(riser.delta).toFixed(1);
+  const insight = riserDriver
+    ? `${riser.name} is the biggest mover since the last result (+${riserDelta} pp). ${riser.primaryDriver}.${champ.name !== riser.name ? ` ${champ.name} remains the model's most likely champion at ${champ.current.toFixed(1)}%.` : ""}`
+    : `${champ.name} leads with ${champ.current.toFixed(1)}% championship odds after ${Object.keys(stored.matches).length} group + ${Object.keys(stored.knockoutMatches ?? {}).length} knockout results. ${riser.name} has gained the most ground from the pre-tournament baseline (+${riserDelta} pp).`;
 
   return {
     riser: riser.name,
-    riserVal: `+${Math.max(0, riser.delta).toFixed(1)} pp`,
-    riserNote: `to ${riser.current.toFixed(1)}% title odds`,
+    riserVal: `+${Math.abs(riser.delta).toFixed(1)} pp`,
+    riserNote: `to ${riser.currentPct.toFixed(1)}% title odds · ${riser.primaryDriver}`,
     faller: faller.name,
-    fallerVal: `-${Math.abs(Math.min(0, faller.delta)).toFixed(1)} pp`,
-    fallerNote: `to ${faller.current.toFixed(1)}% title odds`,
-    matchName: "Next recorded result",
-    matchNote: `${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`,
+    fallerVal: `-${Math.abs(faller.delta).toFixed(1)} pp`,
+    fallerNote: `to ${faller.currentPct.toFixed(1)}% title odds · ${faller.primaryDriver}`,
+    matchName,
+    matchNote,
     champ: champ.name,
     champVal: `${champ.current.toFixed(1)}%`,
-    champNote: "most likely champion",
-    upset: rows[8]?.name ?? rows[rows.length - 1].name,
-    upsetVal: `${(rows[8]?.current ?? rows[rows.length - 1].current).toFixed(1)}%`,
-    upsetNote: "highest long-tail contender in current table",
-    insight: `${champ.name} leads the current model after your manually entered results. The largest move belongs to ${riser.name}, up ${Math.max(0, riser.delta).toFixed(1)} percentage points from the pre-tournament baseline.`,
+    champNote: `most likely champion · ${rows[1]?.name ?? ""} at ${rows[1]?.current.toFixed(1) ?? ""}% is nearest rival`,
+    upset: upsetTeam,
+    upsetVal: `${upsetOdds}%`,
+    upsetNote: upsetFavName
+      ? `${upsetOdds}% advancement odds vs ${upsetFavName} — closest to a coin flip in the current bracket`
+      : "no upcoming matches",
+    insight,
   };
 }
 

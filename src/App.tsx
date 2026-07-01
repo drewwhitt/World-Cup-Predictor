@@ -42,7 +42,7 @@ export default function App() {
   }, []);
 
   const liveTeams     = useMemo(() => buildLiveTeams(stored), [stored]);
-  const liveMorning   = useMemo(() => buildLiveMorningForecast(liveTeams), [liveTeams]);
+  const liveMorning   = useMemo(() => buildLiveMorningForecast(liveTeams, stored), [liveTeams, stored]);
   const liveHeadlines = useMemo(() => buildLiveHeadlines(liveTeams, stored), [liveTeams, stored]);
   const liveBreaking  = useMemo(() => buildLiveBreakingText(liveTeams, stored), [liveTeams, stored]);
   const playedCount   = Object.keys(stored.matches).length;
