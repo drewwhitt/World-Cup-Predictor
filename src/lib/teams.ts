@@ -69,7 +69,7 @@ export const CONFEDERATION_OFFSETS: Record<Confederation, number> = {
   CONMEBOL: 10,
   CAF: -15,
   AFC: -45,
-  CONCACAF: -50,
+  CONCACAF: -45,
   OFC: 0,
 };
 
