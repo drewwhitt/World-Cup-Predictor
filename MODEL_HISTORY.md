@@ -144,6 +144,32 @@ The equal-weight optimum has stronger historical accuracy but overly penalizes 2
 
 ## Version Changelog
 
+### v1.10 — R16 bracket structure fix (post-R32)
+**Status:** Deployed. Fixes a structural bug affecting R16-onward projections for the entire tournament, not just a display panel.
+
+**What was wrong:**
+The v1.09 changelog entry below describes correcting `bracketTree.ts`'s zones "from consecutive pairing assumption to actual fixture file W-key structure" — but the fixture file itself had the bug for R16 matches 89-91 (`worldcup-fixtures.json`: `W74 vs W77` instead of the real `W73 vs W74`, etc.), so that earlier fix just moved the error from one wrong source to another. It happened to get R16 matches 92-96 right (fixture file was correct there) while being wrong for 89-91 — which is why the bug wasn't obvious end-to-end, only on specific teams (e.g. Portugal, whose real R16 opponent is Spain, was projected to face the France/Sweden winner instead).
+
+A second, independent bug was also found in the same pass: the SF wiring (`ko-101`/`ko-102`) cross-wired QFs from opposite halves of the bracket into the same semifinal, instead of keeping each half of the draw intact until the Final.
+
+**Root cause was in three places, not one:**
+1. `worldcup-fixtures.json` — the raw data feeding the actual Monte Carlo simulation via `resolveSlot()`. R16 matches 89-91 had swapped W-keys; SF matches 101-102 cross-wired the two bracket halves.
+2. `simulate.ts`'s `R16_FROM_R32`/`QF_FROM_R16`/`SF_FROM_QF` hardcoded override maps (used to resolve confirmed results into `confirmedWinners`) — same two bugs, and additionally didn't even agree with the raw fixture file's own QF numbering (`QF_FROM_R16` had 98/99 swapped relative to the JSON).
+3. `bracketTree.ts`'s `ZONES` table (drives ForecastsView's "Projected Opponents" panel) — same wrong R16/SF grouping.
+
+Because (1) and (2) feed the actual simulation, this wasn't just a display bug — BracketView's R16-onward win probabilities and the Home/Forecasts championship odds were computed against a bracket structure that never existed in the real tournament, for every team, for the entire second half of the competition.
+
+**Fix verified against live 2026 tournament reporting**, not just re-derived logically: Portugal v Spain, Paraguay v France, Canada v Morocco, Brazil v Norway, Mexico v England, and USA v Belgium were all confirmed as real, already-scheduled R16 fixtures at the time of the fix, and the corrected zone structure was checked to reproduce every one of them exactly, plus the correct QF/SF/Final zones downstream.
+
+**Corrected structure:**
+- R16: (73,74), (75,76), (77,78), (79,80), (81,82), (83,84), (86,88), (85,87)
+- QF: ko-97=W89vW90, ko-98=W93vW94, ko-99=W91vW92, ko-100=W95vW96 (unchanged — already correct)
+- SF: ko-101=W97vW99 (73-80 side), ko-102=W98vW100 (81-88 side) — previously W97vW98 and W99vW100, wrongly merging the two halves
+
+**Practical implication:** any accuracy scoring or Brier analysis done on R16+ predictions before this fix (including anything already logged toward the "Scoring v1.09" effort below) was scored against the wrong opponent structure and should be treated as unreliable for R16 onward. R32 scoring is unaffected. `baseline.json` was regenerated after this fix.
+
+---
+
 ### v1.09 — Live, 2026 World Cup Round of 32
 **Status:** Deployed. Used to predict all 72 group stage matches and all 16 R32 matches.
 
@@ -270,4 +296,4 @@ The Veridex engine is sport-agnostic. For NFL/NBA/NHL expansion:
 
 ---
 
-*Last updated: July 3, 2026 — after 2026 World Cup Round of 32*
+*Last updated: July 3, 2026 — after Round of 16 bracket structure fix (v1.10)*
