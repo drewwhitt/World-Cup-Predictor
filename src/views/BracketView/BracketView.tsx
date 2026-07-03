@@ -130,10 +130,13 @@ export function BracketView({ stored }: Props) {
       const top = toSlotTeam(m.home, true);
       const bot = toSlotTeam(m.away, true);
       const topWinPct = liveWinPct(m.id, top, bot, matchupById, elos);
+      const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[m.id];
       const winnerCode = isConfirmed ? confirmedWinner(m.id, top, bot, stored) : null;
-      // preMatchTopPct = odds at kickoff = post-group-stage Elo (no KO results fed back)
-      return { id: m.id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
+      // preMatchTopPct = odds at kickoff, from Elo alone — must never reflect
+      // this match's own result, even after it's confirmed, or "upset"
+      // detection and the pre-match % shown on played cards both break.
+      return { id: m.id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
     });
 
     function getWinner(node: MatchNode): SlotTeam {
@@ -152,37 +155,41 @@ export function BracketView({ stored }: Props) {
       const top = getWinner(r32[i * 2]);
       const bot = getWinner(r32[i * 2 + 1]);
       const topWinPct = liveWinPct(id, top, bot, matchupById, elos);
+      const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
-      return { id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
+      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
     });
 
     const qf: MatchNode[] = QF_IDS.map((id, i) => {
       const top = getWinner(r16[i * 2]);
       const bot = getWinner(r16[i * 2 + 1]);
       const topWinPct = liveWinPct(id, top, bot, matchupById, elos);
+      const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
-      return { id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
+      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
     });
 
     const sf: MatchNode[] = SF_IDS.map((id, i) => {
       const top = getWinner(qf[i * 2]);
       const bot = getWinner(qf[i * 2 + 1]);
       const topWinPct = liveWinPct(id, top, bot, matchupById, elos);
+      const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
-      return { id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
+      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
     });
 
     const finTop = getWinner(sf[0]);
     const finBot = getWinner(sf[1]);
     const finWinPct = liveWinPct(FIN_ID, finTop, finBot, matchupById, elos);
+    const finPreMatchTopPct = winPct(finTop, finBot, elos);
     const finIsConfirmed = !!stored.knockoutMatches?.[FIN_ID];
     const confWin = confirmedWinner(FIN_ID, finTop, finBot, stored);
     const fin: MatchNode = {
       id: FIN_ID, top: finTop, bot: finBot, topWinPct: finWinPct,
-      preMatchTopPct: finWinPct,
+      preMatchTopPct: finPreMatchTopPct,
       confirmed: finIsConfirmed, winnerCode: finIsConfirmed ? confWin : null,
     };
 
