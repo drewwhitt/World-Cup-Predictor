@@ -69,7 +69,7 @@ export const CONFEDERATION_OFFSETS: Record<Confederation, number> = {
   CONMEBOL: 10,
   CAF: -15,
   AFC: -45,
-  CONCACAF: -50,
+  CONCACAF: -45,
   OFC: 0,
 };
 
@@ -106,29 +106,29 @@ export const TEAM_CONFEDERATION: Record<string, Confederation> = {
  */
 const PRE_TOURNAMENT_ELO: Record<string, number | null> = {
   // Group A
-  MEX: 1853, RSA: null, KOR: 1779, CZE: null,
+  MEX: 1853, RSA: 1517, KOR: 1779, CZE: 1740,
   // Group B
-  CAN: 1773, BIH: null, QAT: null, SUI: 1879,
+  CAN: 1773, BIH: 1595, QAT: 1421, SUI: 1879,
   // Group C
-  BRA: 2169, MAR: 1768, HAI: null, SCO: null,
+  BRA: 2169, MAR: 1768, HAI: 1548, SCO: 1782,
   // Group D
-  USA: 1856, PAR: null, AUS: 1753, TUR: null,
+  USA: 1856, PAR: 1834, AUS: 1753, TUR: 1911,
   // Group E
-  GER: 1922, CUW: null, CIV: null, ECU: 1764,
+  GER: 1922, CUW: 1434, CIV: 1695, ECU: 1764,
   // Group F
-  NED: 1940, JPN: 1762, SWE: null, TUN: 1726,
+  NED: 1940, JPN: 1762, SWE: 1712, TUN: 1726,
   // Group G
-  BEL: 1931, EGY: null, IRN: 1739, NZL: null,
+  BEL: 1931, EGY: 1696, IRN: 1739, NZL: 1562,
   // Group H
-  ESP: 1954, CPV: null, KSA: 1650, URU: 1887,
+  ESP: 1954, CPV: 1578, KSA: 1650, URU: 1887,
   // Group I
-  FRA: 2005, SEN: 1845, IRQ: null, NOR: null,
+  FRA: 2005, SEN: 1845, IRQ: 1607, NOR: 1914,
   // Group J
-  ARG: 2141, ALG: null, AUT: null, JOR: null,
+  ARG: 2141, ALG: 1772, AUT: 1830, JOR: 1680,
   // Group K
-  POR: 1942, COD: null, UZB: null, COL: 1834,
+  POR: 1942, COD: 1652, UZB: 1714, COL: 1834,
   // Group L
-  ENG: 1975, CRO: 1877, GHA: 1718, PAN: null,
+  ENG: 1975, CRO: 1877, GHA: 1718, PAN: 1730,
 };
 
 function resolveInitialElo(code: string, rank: number): number {
