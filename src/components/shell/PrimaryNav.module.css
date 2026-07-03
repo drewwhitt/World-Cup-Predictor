@@ -4,7 +4,8 @@
   border-bottom: 2px solid var(--ink);
 }
 
-.nav button {
+.nav button,
+.nav a {
   position: relative;
   padding: 0 0 13px;
   cursor: pointer;
@@ -13,9 +14,11 @@
   letter-spacing: 0.01em;
   background: none;
   border: 0;
+  text-decoration: none;
 }
 
-.nav button:hover {
+.nav button:hover,
+.nav a:hover {
   color: var(--ink);
 }
 

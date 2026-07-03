@@ -1,5 +1,5 @@
 export type Edition = "wire" | "desk";
-export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab";
+export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab" | "insights";
 export type SimOutcome = "home" | "draw" | "away";
 
 export type Team = {
@@ -134,7 +134,7 @@ export const morningForecast: MorningForecast = {
 
 export const breakingText = "Brazil reclaims #1 at 24.5% · Portugal slides 1.7pp after Group A draw · France vs Brazil kicks off 3:00 PM ET · Veridex model refreshed with 50,000 new simulations · USA's advance odds climb to 61%";
 
-export const navItems: Array<{ id: TabId; label: string }> = [
+export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "home", label: "Home" },
   { id: "forecasts", label: "Forecasts" },
   { id: "rankings", label: "Rankings" },
@@ -142,6 +142,7 @@ export const navItems: Array<{ id: TabId; label: string }> = [
   { id: "match", label: "Match Center" },
   { id: "sim", label: "Simulations" },
   { id: "lab", label: "Model Lab" },
+  { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
 export const sports = ["World Cup", "NFL", "NBA", "NHL", "MLB", "MLS", "Premier League", "Champions League"];

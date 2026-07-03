@@ -9,16 +9,22 @@ type Props = {
 export function PrimaryNav({ activeTab, onTabChange }: Props) {
   return (
     <nav className={s.nav} aria-label="Primary">
-      {navItems.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          className={item.id === activeTab ? s.active : undefined}
-          onClick={() => onTabChange?.(item.id)}
-        >
-          {item.label}
-        </button>
-      ))}
+      {navItems.map((item) =>
+        item.href ? (
+          <a key={item.id} href={item.href}>
+            {item.label}
+          </a>
+        ) : (
+          <button
+            key={item.id}
+            type="button"
+            className={item.id === activeTab ? s.active : undefined}
+            onClick={() => onTabChange?.(item.id)}
+          >
+            {item.label}
+          </button>
+        ),
+      )}
     </nav>
   );
 }
