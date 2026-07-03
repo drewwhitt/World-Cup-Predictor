@@ -105,8 +105,14 @@ export interface StoredResults {
   knockoutMatches?: Record<string, MatchScore>;  // knockout: key = "ko-73" etc
 }
 export interface KnockoutMatchupProbability {
+  id: string;
   round: KnockoutMatchDef["round"];
   teamA: TeamCode;
   teamB: TeamCode;
+  /** How often teamA and teamB specifically met in this bracket slot, across all simulations. */
   probability: number;
+  /** Whichever team won most often *when teamA and teamB met in this exact slot* (not their overall title odds). */
+  projectedWinner: TeamCode;
+  /** projectedWinner's win rate conditional on this exact pairing occurring, i.e. wins / timesTheyMet. */
+  winnerProbability: number;
 }

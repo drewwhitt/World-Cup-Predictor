@@ -4,7 +4,7 @@ import { computeElosFromResults, runSimulation } from "../lib/simulate";
 import { computeStandings } from "../lib/groups";
 import { TEAM_BY_CODE } from "../lib/teams";
 import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
-import type { StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
+import type { KnockoutMatchupProbability, StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
 import type { Headline, MorningForecast, Team } from "./worldCup";
 
 type BaselineRow = TeamProbabilities;
@@ -38,6 +38,37 @@ function ratingFromElo(elo: number): number {
 function timeAgo(index: number): string {
   const times = ["Just now", "12 min ago", "34 min ago", "1 hr ago", "2 hr ago", "3 hr ago"];
   return times[index] ?? "Today";
+}
+
+/**
+ * Per-bracket-slot projections straight from the same 10,000-sim Monte
+ * Carlo run that powers the championship odds elsewhere in the app (Home,
+ * Forecasts). For each remaining knockout slot, this reports the pairing
+ * that occurred there most often across all simulations, and — critically
+ * — which of those two teams won *when that specific pairing happened*
+ * (not either team's overall title odds).
+ *
+ * This is what BracketView should use to project future rounds, instead
+ * of a raw pairwise Elo comparison. A raw two-team Elo check ignores how
+ * a team actually got there across the branching bracket, which is why
+ * the old bracket logic could show a different projected champion than
+ * the Home/Forecasts tabs — this pulls from the exact same simulation.
+ *
+ * NOTE: this re-runs the same 10,000 simulations buildLiveTeams() already
+ * runs (same fixed seed, so results are always identical, not just
+ * similar). If both are called on the same page render, that's the full
+ * Monte Carlo run happening twice — fine for now, but worth caching or
+ * merging into a single call if it ever becomes a perf issue.
+ */
+export function buildLiveKnockoutMatchups(stored: StoredResults): KnockoutMatchupProbability[] {
+  const playedMatches = GROUP_MATCHES.map((match) => {
+    const result = stored.matches[match.id];
+    return result
+      ? { ...match, played: true, homeGoals: result.homeGoals, awayGoals: result.awayGoals }
+      : match;
+  });
+  const current = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS, 42, stored.knockoutMatches);
+  return current.knockoutMatchups;
 }
 
 export function buildLiveTeams(stored: StoredResults): Team[] {

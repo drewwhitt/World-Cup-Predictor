@@ -219,17 +219,18 @@ export function runSimulation(
 
   const counts = initCounts();
   const matchupCounts = new Map<string, number>();
+  const matchupWinnerCounts = new Map<string, Map<TeamCode, number>>();
   for (let i = 0; i < settings.simulations; i++) {
     const sim = simulateOnce(groupMatches, knockoutDefs, baseElos, settings, rng, confirmedWinners, REAL_R32);
     accumulate(counts, sim);
-    accumulateMatchups(matchupCounts, sim.matchups);
+    accumulateMatchups(matchupCounts, matchupWinnerCounts, sim.matchups);
   }
 
   return {
     simulations: settings.simulations,
     playedMatches: playedCount,
     probabilities: finalizeProbabilities(counts, settings.simulations),
-    knockoutMatchups: finalizeMatchups(matchupCounts, settings.simulations),
+    knockoutMatchups: finalizeMatchups(matchupCounts, matchupWinnerCounts, settings.simulations),
   };
 }
 
@@ -266,7 +267,7 @@ function simulateOnce(
   qualifiedThird: ReturnType<typeof qualifyingThirdGroups>;
   champion: TeamCode;
   reached: Partial<Record<TeamCode, Set<string>>>;
-  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>;
+  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode; winner: TeamCode }>;
 } {
   const elos = { ...startElos };
   const simulatedMatches = groupMatches.map((m) => ({ ...m }));
@@ -400,16 +401,25 @@ function matchupKey(
 
 function accumulateMatchups(
   matchupCounts: Map<string, number>,
-  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode }>,
+  matchupWinnerCounts: Map<string, Map<TeamCode, number>>,
+  matchups: Array<{ id: string; round: KnockoutMatchDef["round"]; home: TeamCode; away: TeamCode; winner: TeamCode }>,
 ) {
   for (const matchup of matchups) {
     const key = matchupKey(matchup.id, matchup.round, matchup.home, matchup.away);
     matchupCounts.set(key, (matchupCounts.get(key) ?? 0) + 1);
+
+    // Track who won *this specific pairing in this specific slot* — this is
+    // what lets the bracket project a real conditional winner instead of a
+    // raw pairwise Elo comparison.
+    const winnerCounts = matchupWinnerCounts.get(key) ?? new Map<TeamCode, number>();
+    winnerCounts.set(matchup.winner, (winnerCounts.get(matchup.winner) ?? 0) + 1);
+    matchupWinnerCounts.set(key, winnerCounts);
   }
 }
 
 function finalizeMatchups(
   matchupCounts: Map<string, number>,
+  matchupWinnerCounts: Map<string, Map<TeamCode, number>>,
   simulations: number,
 ): KnockoutMatchupProbability[] {
   return Array.from(matchupCounts.entries())
@@ -420,12 +430,32 @@ function finalizeMatchups(
         TeamCode,
         TeamCode,
       ];
+
+      const winnerCounts = matchupWinnerCounts.get(key);
+      let projectedWinner: TeamCode = teamA;
+      let winnerProbability = 0.5;
+      if (winnerCounts) {
+        const timesTheyMet = count;
+        let bestTeam: TeamCode = teamA;
+        let bestCount = 0;
+        for (const [team, teamWinCount] of winnerCounts.entries()) {
+          if (teamWinCount > bestCount) {
+            bestCount = teamWinCount;
+            bestTeam = team;
+          }
+        }
+        projectedWinner = bestTeam;
+        winnerProbability = bestCount / timesTheyMet;
+      }
+
       return {
         id,
         round,
         teamA,
         teamB,
         probability: count / simulations,
+        projectedWinner,
+        winnerProbability,
       };
     })
     .sort((a, b) => b.probability - a.probability);

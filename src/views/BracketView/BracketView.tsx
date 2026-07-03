@@ -4,7 +4,8 @@ import { GROUP_MATCHES } from "../../data";
 import { toAdvancementProbabilities } from "../../lib/elo";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import { DEFAULT_SETTINGS } from "../../data";
-import type { StoredResults, TeamCode } from "../../lib/types";
+import { buildLiveKnockoutMatchups, buildLiveTeams } from "../../data/veridexLive";
+import type { KnockoutMatchupProbability, StoredResults, TeamCode } from "../../lib/types";
 import s from "./BracketView.module.css";
 
 type Props = { stored: StoredResults };
@@ -69,6 +70,30 @@ function winPct(top: SlotTeam, bot: SlotTeam, elos: Record<TeamCode, number>): n
   return home;
 }
 
+/**
+ * Win% for the "top" slot in this specific bracket match, sourced from the
+ * real 10,000-sim Monte Carlo run (matchupById), not a raw two-team Elo
+ * comparison. This is what makes the bracket's projections agree with the
+ * championship odds shown on Home/Forecasts — both now come from the same
+ * simulation. Falls back to a raw Elo comparison only if this exact pairing
+ * never occurred in any of the 10,000 simulated tournaments (rare, but
+ * possible for very deep long-shot combinations).
+ */
+function liveWinPct(
+  id: string,
+  top: SlotTeam,
+  bot: SlotTeam,
+  matchupById: Map<string, KnockoutMatchupProbability>,
+  elos: Record<TeamCode, number>,
+): number {
+  if (!top || !bot) return 0.5;
+  const entry = matchupById.get(id);
+  if (!entry) return winPct(top, bot, elos);
+  if (entry.projectedWinner === top.code) return entry.winnerProbability;
+  if (entry.projectedWinner === bot.code) return 1 - entry.winnerProbability;
+  return winPct(top, bot, elos);
+}
+
 function confirmedWinner(
   id: string,
   top: SlotTeam,
@@ -86,18 +111,25 @@ function confirmedWinner(
 }
 
 export function BracketView({ stored }: Props) {
-  const { r32, r16, qf, sf, fin, champ } = useMemo(() => {
+  const { r32, r16, qf, sf, fin, champ, overallChampion } = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
       const r = stored.matches[m.id];
       return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
     });
     const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
 
+    // Real per-slot projections from the same 10,000-sim Monte Carlo run
+    // that powers the Home/Forecasts championship odds. This is what makes
+    // "most likely champion" here agree with those tabs instead of being a
+    // separate, naive pairwise-Elo greedy walk.
+    const liveMatchups = buildLiveKnockoutMatchups(stored);
+    const matchupById = new Map(liveMatchups.map((m) => [m.id, m]));
+
     // ── R32 — fixed matchups from the real bracket, no guessing ─────────────
     const r32: MatchNode[] = R32_MATCHUPS.map((m) => {
       const top = toSlotTeam(m.home, true);
       const bot = toSlotTeam(m.away, true);
-      const topWinPct = winPct(top, bot, elos);
+      const topWinPct = liveWinPct(m.id, top, bot, matchupById, elos);
       const isConfirmed = !!stored.knockoutMatches?.[m.id];
       const winnerCode = isConfirmed ? confirmedWinner(m.id, top, bot, stored) : null;
       // preMatchTopPct = odds at kickoff = post-group-stage Elo (no KO results fed back)
@@ -110,6 +142,8 @@ export function BracketView({ stored }: Props) {
       if (!node.bot) return node.top;
       const confWin = confirmedWinner(node.id, node.top, node.bot, stored);
       if (confWin) return toSlotTeam(confWin, true);
+      // Use the simulation's projected winner for this exact slot, rather
+      // than a standalone pairwise Elo comparison of node.top vs node.bot.
       const predCode = node.topWinPct >= 0.5 ? node.top.code : node.bot.code;
       return toSlotTeam(predCode, false);
     }
@@ -117,7 +151,7 @@ export function BracketView({ stored }: Props) {
     const r16: MatchNode[] = R16_IDS.map((id, i) => {
       const top = getWinner(r32[i * 2]);
       const bot = getWinner(r32[i * 2 + 1]);
-      const topWinPct = winPct(top, bot, elos);
+      const topWinPct = liveWinPct(id, top, bot, matchupById, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
       return { id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
@@ -126,7 +160,7 @@ export function BracketView({ stored }: Props) {
     const qf: MatchNode[] = QF_IDS.map((id, i) => {
       const top = getWinner(r16[i * 2]);
       const bot = getWinner(r16[i * 2 + 1]);
-      const topWinPct = winPct(top, bot, elos);
+      const topWinPct = liveWinPct(id, top, bot, matchupById, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
       return { id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
@@ -135,7 +169,7 @@ export function BracketView({ stored }: Props) {
     const sf: MatchNode[] = SF_IDS.map((id, i) => {
       const top = getWinner(qf[i * 2]);
       const bot = getWinner(qf[i * 2 + 1]);
-      const topWinPct = winPct(top, bot, elos);
+      const topWinPct = liveWinPct(id, top, bot, matchupById, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
       return { id, top, bot, topWinPct, preMatchTopPct: topWinPct, confirmed: isConfirmed, winnerCode };
@@ -143,7 +177,7 @@ export function BracketView({ stored }: Props) {
 
     const finTop = getWinner(sf[0]);
     const finBot = getWinner(sf[1]);
-    const finWinPct = winPct(finTop, finBot, elos);
+    const finWinPct = liveWinPct(FIN_ID, finTop, finBot, matchupById, elos);
     const finIsConfirmed = !!stored.knockoutMatches?.[FIN_ID];
     const confWin = confirmedWinner(FIN_ID, finTop, finBot, stored);
     const fin: MatchNode = {
@@ -156,7 +190,21 @@ export function BracketView({ stored }: Props) {
       ? toSlotTeam(confWin, true)
       : toSlotTeam(finWinPct >= 0.5 ? finTop?.code ?? null : finBot?.code ?? null, false);
 
-    return { r32, r16, qf, sf, fin, champ };
+    // The model's actual highest title-probability team (same number shown
+    // on Home/Forecasts), which can legitimately differ from `champ` above.
+    // `champ` traces a single most-likely PATH through the bracket step by
+    // step; `overallChampion` is whoever wins the tournament most often
+    // across all 10,000 simulated outcomes, correlated branches and all.
+    // A team can be favored to win *if* they reach the final while still
+    // being less likely than a rival to reach — and win — the title overall.
+    let overallChampion: { code: TeamCode; name: string; pct: number } | null = null;
+    if (!confWin) {
+      const liveTeams = buildLiveTeams(stored);
+      const top = [...liveTeams].sort((a, b) => b.current - a.current)[0];
+      if (top) overallChampion = { code: top.code as TeamCode, name: top.name, pct: top.current };
+    }
+
+    return { r32, r16, qf, sf, fin, champ, overallChampion };
   }, [stored]);
 
   // ── Layout geometry — clean vertical tree, reads left to right ──────────────
@@ -219,9 +267,15 @@ export function BracketView({ stored }: Props) {
         {champ && (
           <div className={s.champBanner}>
             <span className={s.champLabel}>
-              {champ.confirmed ? "Champion" : "Most likely champion"}
+              {champ.confirmed ? "Champion" : "Most likely Final winner"}
             </span>
             <span className={s.champName}>{champ.name}</span>
+            {!champ.confirmed && overallChampion && overallChampion.code !== champ.code && (
+              <span className={s.champNote}>
+                {overallChampion.name} leads the model's overall title odds at {overallChampion.pct}%
+                — {champ.name} is favored specifically if these two meet in the Final.
+              </span>
+            )}
           </div>
         )}
       </div>
