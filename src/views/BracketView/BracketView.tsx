@@ -83,11 +83,12 @@ function liveWinPct(
   id: string,
   top: SlotTeam,
   bot: SlotTeam,
-  matchupById: Map<string, KnockoutMatchupProbability>,
+  matchupById: Map<string, Map<string, KnockoutMatchupProbability>>,
   elos: Record<TeamCode, number>,
 ): number {
   if (!top || !bot) return 0.5;
-  const entry = matchupById.get(id);
+  const pairKey = [top.code, bot.code].sort().join("-");
+  const entry = matchupById.get(id)?.get(pairKey);
   if (!entry) return winPct(top, bot, elos);
   if (entry.projectedWinner === top.code) return entry.winnerProbability;
   if (entry.projectedWinner === bot.code) return 1 - entry.winnerProbability;
@@ -123,7 +124,20 @@ export function BracketView({ stored }: Props) {
     // "most likely champion" here agree with those tabs instead of being a
     // separate, naive pairwise-Elo greedy walk.
     const liveMatchups = buildLiveKnockoutMatchups(stored);
-    const matchupById = new Map(liveMatchups.map((m) => [m.id, m]));
+    // Each bracket slot can be reached by dozens of different pairings
+    // across the 10,000 simulations (e.g. a semifinal slot might see
+    // Argentina-vs-Brazil in some runs and Ghana-vs-Japan in one freak
+    // run out of 10,000). Keying only by slot id and letting later
+    // entries overwrite earlier ones would silently keep whichever
+    // pairing happened to load last — not the one actually being shown.
+    // Index by (id, exact pairing) so lookups always match what's
+    // genuinely displayed as top/bot, not just whatever won the id key.
+    const matchupById = new Map<string, Map<string, KnockoutMatchupProbability>>();
+    for (const m of liveMatchups) {
+      const pairKey = [m.teamA, m.teamB].sort().join("-");
+      if (!matchupById.has(m.id)) matchupById.set(m.id, new Map());
+      matchupById.get(m.id)!.set(pairKey, m);
+    }
 
     // ── R32 — fixed matchups from the real bracket, no guessing ─────────────
     const r32: MatchNode[] = R32_MATCHUPS.map((m) => {
