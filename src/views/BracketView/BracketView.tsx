@@ -204,11 +204,43 @@ export function BracketView({ stored }: Props) {
     // across all 10,000 simulated outcomes, correlated branches and all.
     // A team can be favored to win *if* they reach the final while still
     // being less likely than a rival to reach — and win — the title overall.
-    let overallChampion: { code: TeamCode; name: string; pct: number } | null = null;
+    let overallChampion:
+      | { code: TeamCode; name: string; pct: number; eliminatedBy: string | null; eliminatedRound: string | null }
+      | null = null;
     if (!confWin) {
       const liveTeams = buildLiveTeams(stored);
       const top = [...liveTeams].sort((a, b) => b.current - a.current)[0];
-      if (top) overallChampion = { code: top.code as TeamCode, name: top.name, pct: top.current };
+      if (top && top.code !== champ?.code) {
+        // Walk the traced path in order and find the exact match (and
+        // opponent) where this team is knocked out — don't assume it's
+        // the Final, since the two teams being compared here often meet
+        // (and one gets eliminated) much earlier in the bracket.
+        const roundsInOrder: Array<{ label: string; matches: MatchNode[] }> = [
+          { label: "Round of 32", matches: r32 },
+          { label: "Round of 16", matches: r16 },
+          { label: "Quarterfinal", matches: qf },
+          { label: "Semifinal", matches: sf },
+          { label: "Final", matches: [fin] },
+        ];
+
+        let eliminatedBy: string | null = null;
+        let eliminatedRound: string | null = null;
+        for (const { label, matches } of roundsInOrder) {
+          for (const m of matches) {
+            const isTop = m.top?.code === top.code;
+            const isBot = m.bot?.code === top.code;
+            if (!isTop && !isBot) continue;
+            const winnerCode = m.confirmed ? m.winnerCode : (m.topWinPct >= 0.5 ? m.top?.code : m.bot?.code);
+            if (winnerCode !== top.code) {
+              eliminatedBy = isTop ? m.bot?.name ?? null : m.top?.name ?? null;
+              eliminatedRound = label;
+            }
+          }
+          if (eliminatedRound) break;
+        }
+
+        overallChampion = { code: top.code as TeamCode, name: top.name, pct: top.current, eliminatedBy, eliminatedRound };
+      }
     }
 
     return { r32, r16, qf, sf, fin, champ, overallChampion };
@@ -273,15 +305,19 @@ export function BracketView({ stored }: Props) {
         <h1 className={s.title}>Tournament Bracket</h1>
         {champ && (
           <div className={s.champBanner}>
-            <span className={s.champLabel}>
-              {champ.confirmed ? "Champion" : "Most likely Final winner"}
-            </span>
-            <span className={s.champName}>{champ.name}</span>
-            {!champ.confirmed && overallChampion && overallChampion.code !== champ.code && (
-              <span className={s.champNote}>
-                {overallChampion.name} leads the model's overall title odds at {overallChampion.pct}%
-                — {champ.name} is favored specifically if these two meet in the Final.
+            <div className={s.champHeadline}>
+              <span className={s.champLabel}>
+                {champ.confirmed ? "Champion" : "Most likely Final winner"}
               </span>
+              <span className={s.champName}>{champ.name}</span>
+            </div>
+            {!champ.confirmed && overallChampion && (
+              <div className={s.champNote}>
+                {overallChampion.name} leads the model's overall title odds at {overallChampion.pct}%
+                {overallChampion.eliminatedRound && overallChampion.eliminatedBy
+                  ? ` — but this path has them losing to ${overallChampion.eliminatedBy} in the ${overallChampion.eliminatedRound}.`
+                  : "."}
+              </div>
             )}
           </div>
         )}

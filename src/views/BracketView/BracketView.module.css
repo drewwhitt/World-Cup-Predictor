@@ -23,13 +23,20 @@
 }
 
 .champBanner {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px 16px;
   background: var(--navy);
   border-radius: 4px;
   color: var(--on-dark);
+}
+
+.champHeadline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
 .champLabel {
@@ -41,6 +48,12 @@
 
 .champName {
   font: 700 15px/1 var(--font-sans);
+}
+
+.champNote {
+  font: 400 11px/1.4 var(--font-sans);
+  color: var(--text-muted, rgba(255, 255, 255, 0.55));
+  max-width: 640px;
 }
 
 .scrollWrap {
