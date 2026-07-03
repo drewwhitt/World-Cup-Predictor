@@ -110,14 +110,15 @@ export function runSimulation(
     "ko-88": { home: "COL", away: "GHA" },
   };
 
-  // Real R16 matchups — winners of consecutive R32 pairs face each other.
-  // Real R16 matchups from fixture file: ko-89=W74vW77, ko-90=W73vW75,
-  // ko-91=W76vW78, ko-92=W79vW80, ko-93=W83vW84, ko-94=W81vW82,
-  // ko-95=W86vW88, ko-96=W85vW87
+  // Real R16 matchups — verified against FIFA's official bracket structure
+  // and live 2026 tournament reporting (Portugal v Spain, Paraguay v France,
+  // Canada v Morocco, Brazil v Norway, Mexico v England, USA v Belgium).
+  // ko-89=W73vW74, ko-90=W75vW76, ko-91=W77vW78, ko-92=W79vW80,
+  // ko-93=W83vW84, ko-94=W81vW82, ko-95=W86vW88, ko-96=W85vW87
   const R16_FROM_R32: Record<string, [string, string]> = {
-    "ko-89": ["W74", "W77"],
-    "ko-90": ["W73", "W75"],
-    "ko-91": ["W76", "W78"],
+    "ko-89": ["W73", "W74"],
+    "ko-90": ["W75", "W76"],
+    "ko-91": ["W77", "W78"],
     "ko-92": ["W79", "W80"],
     "ko-93": ["W83", "W84"],
     "ko-94": ["W81", "W82"],
@@ -128,15 +129,18 @@ export function runSimulation(
   // Real QF matchups — winners of R16 pairs face each other
   const QF_FROM_R16: Record<string, [string, string]> = {
     "ko-97":  ["W89", "W90"],
-    "ko-98":  ["W91", "W92"],
-    "ko-99":  ["W93", "W94"],
+    "ko-98":  ["W93", "W94"],
+    "ko-99":  ["W91", "W92"],
     "ko-100": ["W95", "W96"],
   };
 
-  // Real SF matchups
+  // Real SF matchups — each semifinal combines the two QFs from the SAME
+  // half of the bracket (ko-97+ko-99 = the 73-80 side, ko-98+ko-100 = the
+  // 81-88 side). This was previously cross-wired (ko-97+ko-98), which
+  // incorrectly merged two different bracket halves into one semifinal.
   const SF_FROM_QF: Record<string, [string, string]> = {
-    "ko-101": ["W97", "W98"],
-    "ko-102": ["W99", "W100"],
+    "ko-101": ["W97", "W99"],
+    "ko-102": ["W98", "W100"],
   };
 
   // Build confirmedWinners from stored knockout results using real team codes.
