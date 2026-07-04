@@ -123,7 +123,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
               )}
               {accuracy.knockout.upsetExamples.length > 0 && (
                 <>
-                  <h2>Biggest Upsets So Far</h2>
+                  <h2>Biggest Knockout Stage Upsets So Far</h2>
                   <ul className="upset-list">
                     {accuracy.knockout.upsetExamples.map((u, i) => (
                       <li key={i}>

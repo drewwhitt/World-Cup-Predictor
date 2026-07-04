@@ -144,6 +144,19 @@ The equal-weight optimum has stronger historical accuracy but overly penalizes 2
 
 ## Version Changelog
 
+### v1.11 candidate — Draw probability under-prediction (found post-group-stage, not yet actioned)
+**Status:** Diagnosed, not fixed. Flagged for a proper recalibration pass after the tournament, not a mid-tournament hotfix.
+
+**What was found:** once all 72 group-stage matches were played and scored, the live 2026 group-stage Brier score came in at ~0.554 — nearly 3x worse than the 0.1877 backtest baseline and worse than even picking every match as a coin flip (0.1667). A per-match diagnostic (`scripts/diagnose-accuracy.ts`) showed this wasn't a scoring bug or a structural error: 13 of the 15 worst-scoring matches were draws, in every case with the model assigning only 8-16% draw probability beforehand. Matches with decisive results scored close to the historical norm. The `/insights/how-accurate-is-veridex` page was updated to break this out explicitly (decisive vs draw Brier, observed draw rate vs historical ~25%) rather than showing one misleading aggregate number.
+
+**What's still unknown:** whether 2026's group stage was genuinely, unusually draw-heavy (real tournament variance) or whether `matchOutcomeProbabilities()`'s draw formula (`elo.ts`: `DRAW_PROB_SCALE=0.28`, `DRAW_MIN=0.08`, `DRAW_MAX=0.32`, scaled down as the Elo gap widens via `* 1.6`) is systematically too aggressive at reducing draw likelihood for lopsided matchups. The formula performed acceptably across the 2010-2022 backtest, so this may be specific to 2026 — but it's exactly the kind of pattern that should be checked against this tournament's full data once it's complete, the same way v3-v9 were calibrated against 2010-2022.
+
+**Deliberately not fixed now:** `matchOutcomeProbabilities()` is used live by Home/Forecasts/BracketView for every remaining match. Changing draw-probability weighting mid-tournament, based on one tournament's partial data, risks destabilizing already-working predictions on a hunch. This belongs in a real backtesting pass (same methodology as `## Backtesting Methodology` below) once 2026's full results are available to calibrate against, alongside 2010-2022.
+
+**If revisited:** consider whether the `* 1.6` sensitivity multiplier is too aggressive, whether `DRAW_MAX=0.32` needs raising, or whether draw likelihood should account for factors beyond Elo gap (e.g. group-stage dead-rubber incentives, which already get partial treatment via the matchday-3 pressure flattening mentioned below).
+
+---
+
 ### v1.10 — R16 bracket structure fix (post-R32)
 **Status:** Deployed. Fixes a structural bug affecting R16-onward projections for the entire tournament, not just a display panel.
 
@@ -296,4 +309,4 @@ The Veridex engine is sport-agnostic. For NFL/NBA/NHL expansion:
 
 ---
 
-*Last updated: July 3, 2026 — after Round of 16 bracket structure fix (v1.10)*
+*Last updated: July 4, 2026 — draw probability under-prediction diagnosed post-group-stage (v1.11 candidate, not yet actioned)*
