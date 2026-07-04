@@ -1,5 +1,6 @@
 .wrap {
   overflow-x: auto;
+  padding-bottom: 8px;
 }
 
 .hint {
@@ -12,114 +13,115 @@
 .columns {
   display: flex;
   gap: 16px;
-  min-width: 900px;
+  min-width: 960px;
 }
 
 .column {
   flex: 1;
-  min-width: 160px;
+  min-width: 190px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
 .columnHeader {
-  font: 600 11px/1 var(--font-mono);
-  letter-spacing: 0.08em;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
   margin-bottom: 4px;
-  text-align: center;
+  text-align: left;
 }
 
 .card {
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.matchup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.matchupNote {
-  font: 500 10px/1 var(--font-mono);
-  color: var(--ink-3);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: 2px 6px;
-}
-
-.teamBtn {
   width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 10px;
+}
+
+.team {
+  all: unset;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  text-align: left;
-  padding: 8px 10px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--ink-2);
-  font: 500 13px var(--font-sans);
+  gap: 6px;
+  padding: 5px 0;
+  line-height: 1.3;
   cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.team:hover:not(:disabled) {
+  background: var(--hairline-2);
+}
+
+.team:disabled {
+  cursor: default;
+}
+
+.teamName {
+  font: 400 11.5px/1.2 var(--font-sans);
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pct {
-  font: 700 12px var(--font-mono);
+  font: 600 10px/1 var(--font-mono);
   color: var(--ink-3);
   flex-shrink: 0;
 }
 
-.teamBtn.winner .pct {
-  color: var(--gold);
-}
-
-.tbdCard {
-  padding: 12px 10px;
-  color: var(--ink-3);
-  font-size: 13px;
-  font-style: italic;
-  text-align: center;
-}
-
-.teamBtn:hover:not(:disabled) {
-  background: var(--paper);
-  border-color: var(--hairline);
-}
-
-.teamBtn:disabled {
-  cursor: default;
-  opacity: 0.75;
-}
-
-.teamBtn.winner {
-  background: var(--navy);
-  color: var(--on-dark);
+.fav .teamName {
   font-weight: 700;
+  color: var(--ink);
+}
+
+.fav .pct {
+  color: var(--ink);
+}
+
+.divider {
+  height: 1px;
+  background: var(--hairline);
+}
+
+.cardFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 18px;
+  padding: 4px 0 2px;
+}
+
+.switchBtn {
+  border: none;
+  background: none;
+  color: var(--home-win, #3B6CA8);
+  font: 500 10px var(--font-mono);
+  cursor: pointer;
+  padding: 0;
 }
 
 .clearBtn {
   border: none;
   background: none;
   color: var(--gold);
-  font: 600 11px var(--font-mono);
+  font: 600 10px var(--font-mono);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   cursor: pointer;
-  padding: 4px 6px 0;
-  text-align: left;
+  padding: 0;
 }
 
 .realTag {
   font: 500 10px var(--font-mono);
   color: var(--ink-3);
-  padding: 2px 6px 0;
 }
