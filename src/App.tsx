@@ -14,6 +14,7 @@ import type { StoredResults } from "./lib/types";
 import { HomeView } from "./views/HomeView/HomeView";
 import { BracketView } from "./views/BracketView/BracketView";
 import { ForecastsView } from "./views/ForecastsView/ForecastsView";
+import { ComingSoonView } from "./views/ComingSoonView/ComingSoonView";
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
@@ -55,6 +56,14 @@ export default function App() {
         return <ForecastsView stored={stored} teams={liveTeams} />;
       case "bracket":
         return <BracketView stored={stored} />;
+      case "rankings":
+        return <ComingSoonView title="Rankings" onNavigate={setActiveTab} />;
+      case "match":
+        return <ComingSoonView title="Match Center" onNavigate={setActiveTab} />;
+      case "sim":
+        return <ComingSoonView title="Simulations" onNavigate={setActiveTab} />;
+      case "lab":
+        return <ComingSoonView title="Model Lab" onNavigate={setActiveTab} />;
       case "home":
       default:
         return (

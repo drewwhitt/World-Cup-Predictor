@@ -16,7 +16,7 @@ export function Masthead() {
         <span>{liveDate()}</span>
         <span className={s.utilityRight}>
           <span>Vol. III · No. 176</span>
-          <span className={s.subscribe}>✦ Subscribe to Premium</span>
+          <span className={s.subscribe} title="Coming soon">✦ Premium (Coming Soon)</span>
         </span>
       </div>
       <div className={s.masthead}>
