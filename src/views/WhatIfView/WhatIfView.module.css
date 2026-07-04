@@ -1,0 +1,262 @@
+.page {
+  padding: 24px 0 64px;
+}
+
+.eyebrow {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  margin: 0 0 12px;
+}
+
+.dek {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink-2);
+  max-width: 640px;
+  margin: 0 0 32px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  margin: 0 0 14px;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 14px/1.4 var(--font-sans);
+  color: var(--ink);
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.toggleRow input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.row {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.row select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  font: 500 13px var(--font-sans);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.row button {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 600 13px var(--font-sans);
+  cursor: pointer;
+}
+
+.row button:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sliderRow input[type="range"] {
+  flex: 1;
+}
+
+.sliderValue {
+  font: 600 13px var(--font-mono);
+  color: var(--ink-2);
+  min-width: 72px;
+  text-align: right;
+}
+
+.panel > button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 13px var(--font-sans);
+  cursor: pointer;
+}
+
+.panel > button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pending {
+  color: var(--ink-3);
+  font-size: 13px;
+  font-style: italic;
+  margin: 0;
+}
+
+.chipList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  font: 500 12px var(--font-mono);
+}
+
+.chip button {
+  border: none;
+  background: none;
+  color: var(--negative);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+}
+
+.resetBtn {
+  padding: 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 600 13px var(--font-sans);
+  cursor: pointer;
+}
+
+.resetBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.results {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 24px;
+}
+
+.results h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.liveTag {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--navy);
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.resultRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.rank {
+  font: 600 13px var(--font-mono);
+  color: var(--ink-3);
+  width: 20px;
+}
+
+.teamName {
+  flex: 1;
+  font: 600 15px var(--font-sans);
+  color: var(--ink);
+}
+
+.pct {
+  font: 700 16px var(--font-mono);
+  color: var(--ink);
+  min-width: 56px;
+  text-align: right;
+}
+
+.deltaUp {
+  font: 600 12px var(--font-mono);
+  color: var(--positive);
+  min-width: 64px;
+  text-align: right;
+}
+
+.deltaDown {
+  font: 600 12px var(--font-mono);
+  color: var(--negative);
+  min-width: 64px;
+  text-align: right;
+}

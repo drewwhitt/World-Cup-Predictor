@@ -54,8 +54,12 @@ export function applyStoredResults(
 export function computeElosFromResults(
   matches: GroupMatch[],
   settings: SimulationSettings,
+  eloAdjustments: Partial<Record<TeamCode, number>> = {},
 ): Record<TeamCode, number> {
   const elos = buildInitialElos();
+  for (const code of Object.keys(eloAdjustments) as TeamCode[]) {
+    elos[code] = (elos[code] ?? 1500) + (eloAdjustments[code] ?? 0);
+  }
   const played = [...matches]
     .filter((m) => m.played && m.homeGoals !== undefined && m.awayGoals !== undefined)
     .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday);
@@ -85,9 +89,10 @@ export function runSimulation(
   settings: SimulationSettings,
   seed = 42,
   storedKnockout: StoredResults["knockoutMatches"] = {},
+  eloAdjustments: Partial<Record<TeamCode, number>> = {},
 ): SimulationResult {
   const playedCount = groupMatches.filter((m) => m.played).length;
-  const baseElos = computeElosFromResults(groupMatches, settings);
+  const baseElos = computeElosFromResults(groupMatches, settings, eloAdjustments);
   const rng = mulberry32(seed);
 
   // Real 2026 R32 matchups from FIFA's published bracket.

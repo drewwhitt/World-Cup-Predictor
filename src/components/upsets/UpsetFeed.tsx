@@ -2,36 +2,9 @@ import { TEAM_BY_CODE } from "../../lib/teams";
 import { toAdvancementProbabilities } from "../../lib/elo";
 import { computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./UpsetFeed.module.css";
-
-const R32_MATCHUPS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
-  { id: "ko-73", home: "GER", away: "PAR" },
-  { id: "ko-74", home: "FRA", away: "SWE" },
-  { id: "ko-75", home: "RSA", away: "CAN" },
-  { id: "ko-76", home: "NED", away: "MAR" },
-  { id: "ko-77", home: "POR", away: "CRO" },
-  { id: "ko-78", home: "ESP", away: "AUT" },
-  { id: "ko-79", home: "USA", away: "BIH" },
-  { id: "ko-80", home: "BEL", away: "SEN" },
-  { id: "ko-81", home: "BRA", away: "JPN" },
-  { id: "ko-82", home: "CIV", away: "NOR" },
-  { id: "ko-83", home: "MEX", away: "ECU" },
-  { id: "ko-84", home: "ENG", away: "COD" },
-  { id: "ko-85", home: "ARG", away: "CPV" },
-  { id: "ko-86", home: "AUS", away: "EGY" },
-  { id: "ko-87", home: "SUI", away: "ALG" },
-  { id: "ko-88", home: "COL", away: "GHA" },
-];
-
-function getRound(id: string): string {
-  const n = parseInt(id.replace("ko-", ""));
-  if (n <= 88) return "Round of 32";
-  if (n <= 96) return "Round of 16";
-  if (n <= 100) return "Quarterfinals";
-  if (n <= 102) return "Semifinals";
-  return "Final";
-}
 
 type Props = { stored: StoredResults; limit?: number };
 
@@ -53,24 +26,30 @@ export function UpsetFeed({ stored, limit = 5 }: Props) {
     round: string;
   }> = [];
 
-  for (const m of R32_MATCHUPS) {
-    const result = stored.knockoutMatches?.[m.id];
+  // Every knockout match, R32 through Final — not just R32 — so R16 onward
+  // (which start once the Round of 32 wraps up) actually get scored here
+  // instead of being silently invisible in this feed.
+  for (const id of Object.keys(KNOCKOUT_STRUCTURE)) {
+    const result = stored.knockoutMatches?.[id];
     if (!result) continue;
 
+    const { home, away, round } = resolveKnockoutMatch(id, stored);
+    if (!home || !away || !round) continue; // shouldn't happen if a result was actually recorded
+
     // Same advancement probability the bracket uses — model base + penalty redistribution
-    const { home: homeWinPct } = toAdvancementProbabilities(elos[m.home] ?? 1500, elos[m.away] ?? 1500, 0);
+    const { home: homeWinPct } = toAdvancementProbabilities(elos[home] ?? 1500, elos[away] ?? 1500, 0);
 
     let winner: TeamCode, loser: TeamCode;
     let winnerGoals: number, loserGoals: number;
     if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
-      winner = m.home; loser = m.away;
+      winner = home; loser = away;
       winnerGoals = result.homeGoals; loserGoals = result.awayGoals;
     } else {
-      winner = m.away; loser = m.home;
+      winner = away; loser = home;
       winnerGoals = result.awayGoals; loserGoals = result.homeGoals;
     }
 
-    const winnerPct = winner === m.home ? homeWinPct : 1 - homeWinPct;
+    const winnerPct = winner === home ? homeWinPct : 1 - homeWinPct;
     const isUpset = winnerPct < 0.5;
     const upsetSeverity = isUpset ? Math.round((0.5 - winnerPct) * 200) : 0;
     const score = result.penaltyWinner
@@ -78,10 +57,10 @@ export function UpsetFeed({ stored, limit = 5 }: Props) {
       : `${winnerGoals}–${loserGoals}`;
 
     results.push({
-      id: m.id, winner, loser,
+      id, winner, loser,
       winnerPct: Math.round(winnerPct * 100),
       score, isUpset, upsetSeverity,
-      round: getRound(m.id),
+      round,
     });
   }
 

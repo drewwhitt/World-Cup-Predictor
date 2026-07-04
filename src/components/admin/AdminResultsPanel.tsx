@@ -4,6 +4,7 @@ import { saveOfficialResult } from "../../lib/supabase";
 import { recordSnapshot } from "../../lib/snapshots";
 import { buildLiveTeams } from "../../data/veridexLive";
 import { TEAM_BY_CODE } from "../../lib/teams";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch, type KnockoutRound } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./AdminResultsPanel.module.css";
 
@@ -12,87 +13,11 @@ type Props = {
   onChange: (next: StoredResults) => void;
 };
 
-type Round = "Round of 32" | "Round of 16" | "Quarterfinal" | "Semifinal" | "Final";
-
-/** Either a fixed R32 team, or "whoever wins another match" (resolved recursively below). */
-type Source = { type: "team"; code: TeamCode } | { type: "winner"; matchId: string };
-
-/**
- * The full knockout bracket, R32 through Final. R16/QF/SF/Final entries
- * reference the match(es) that feed them rather than fixed teams, since
- * those teams aren't known until earlier rounds are actually played.
- *
- * Pairing verified against FIFA's official bracket and live 2026
- * reporting (see MODEL_HISTORY.md v1.10 and src/lib/bracketTree.ts for
- * the full verification) — this must stay in sync with bracketTree.ts
- * and simulate.ts's R16_FROM_R32/QF_FROM_R16/SF_FROM_QF if the bracket
- * structure ever needs correcting again.
- */
-const KNOCKOUT_STRUCTURE: Record<string, { round: Round; home: Source; away: Source }> = {
-  "ko-73": { round: "Round of 32", home: { type: "team", code: "GER" }, away: { type: "team", code: "PAR" } },
-  "ko-74": { round: "Round of 32", home: { type: "team", code: "FRA" }, away: { type: "team", code: "SWE" } },
-  "ko-75": { round: "Round of 32", home: { type: "team", code: "RSA" }, away: { type: "team", code: "CAN" } },
-  "ko-76": { round: "Round of 32", home: { type: "team", code: "NED" }, away: { type: "team", code: "MAR" } },
-  "ko-77": { round: "Round of 32", home: { type: "team", code: "POR" }, away: { type: "team", code: "CRO" } },
-  "ko-78": { round: "Round of 32", home: { type: "team", code: "ESP" }, away: { type: "team", code: "AUT" } },
-  "ko-79": { round: "Round of 32", home: { type: "team", code: "USA" }, away: { type: "team", code: "BIH" } },
-  "ko-80": { round: "Round of 32", home: { type: "team", code: "BEL" }, away: { type: "team", code: "SEN" } },
-  "ko-81": { round: "Round of 32", home: { type: "team", code: "BRA" }, away: { type: "team", code: "JPN" } },
-  "ko-82": { round: "Round of 32", home: { type: "team", code: "CIV" }, away: { type: "team", code: "NOR" } },
-  "ko-83": { round: "Round of 32", home: { type: "team", code: "MEX" }, away: { type: "team", code: "ECU" } },
-  "ko-84": { round: "Round of 32", home: { type: "team", code: "ENG" }, away: { type: "team", code: "COD" } },
-  "ko-85": { round: "Round of 32", home: { type: "team", code: "ARG" }, away: { type: "team", code: "CPV" } },
-  "ko-86": { round: "Round of 32", home: { type: "team", code: "AUS" }, away: { type: "team", code: "EGY" } },
-  "ko-87": { round: "Round of 32", home: { type: "team", code: "SUI" }, away: { type: "team", code: "ALG" } },
-  "ko-88": { round: "Round of 32", home: { type: "team", code: "COL" }, away: { type: "team", code: "GHA" } },
-
-  "ko-89": { round: "Round of 16", home: { type: "winner", matchId: "ko-73" }, away: { type: "winner", matchId: "ko-74" } },
-  "ko-90": { round: "Round of 16", home: { type: "winner", matchId: "ko-75" }, away: { type: "winner", matchId: "ko-76" } },
-  "ko-91": { round: "Round of 16", home: { type: "winner", matchId: "ko-77" }, away: { type: "winner", matchId: "ko-78" } },
-  "ko-92": { round: "Round of 16", home: { type: "winner", matchId: "ko-79" }, away: { type: "winner", matchId: "ko-80" } },
-  "ko-93": { round: "Round of 16", home: { type: "winner", matchId: "ko-83" }, away: { type: "winner", matchId: "ko-84" } },
-  "ko-94": { round: "Round of 16", home: { type: "winner", matchId: "ko-81" }, away: { type: "winner", matchId: "ko-82" } },
-  "ko-95": { round: "Round of 16", home: { type: "winner", matchId: "ko-86" }, away: { type: "winner", matchId: "ko-88" } },
-  "ko-96": { round: "Round of 16", home: { type: "winner", matchId: "ko-85" }, away: { type: "winner", matchId: "ko-87" } },
-
-  "ko-97":  { round: "Quarterfinal", home: { type: "winner", matchId: "ko-89" }, away: { type: "winner", matchId: "ko-90" } },
-  "ko-98":  { round: "Quarterfinal", home: { type: "winner", matchId: "ko-93" }, away: { type: "winner", matchId: "ko-94" } },
-  "ko-99":  { round: "Quarterfinal", home: { type: "winner", matchId: "ko-91" }, away: { type: "winner", matchId: "ko-92" } },
-  "ko-100": { round: "Quarterfinal", home: { type: "winner", matchId: "ko-95" }, away: { type: "winner", matchId: "ko-96" } },
-
-  "ko-101": { round: "Semifinal", home: { type: "winner", matchId: "ko-97" }, away: { type: "winner", matchId: "ko-99" } },
-  "ko-102": { round: "Semifinal", home: { type: "winner", matchId: "ko-98" }, away: { type: "winner", matchId: "ko-100" } },
-
-  "ko-104": { round: "Final", home: { type: "winner", matchId: "ko-101" }, away: { type: "winner", matchId: "ko-102" } },
-};
-
-const ROUND_ORDER: Round[] = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
-
-/** Recursively resolves a source to an actual team code, or null if that round hasn't been played yet. */
-function resolveTeam(source: Source, stored: StoredResults): TeamCode | null {
-  if (source.type === "team") return source.code;
-  const result = stored.knockoutMatches?.[source.matchId];
-  const structure = KNOCKOUT_STRUCTURE[source.matchId];
-  if (!result || !structure) return null;
-
-  const homeCode = resolveTeam(structure.home, stored);
-  const awayCode = resolveTeam(structure.away, stored);
-  if (!homeCode || !awayCode) return null;
-
-  if (result.homeGoals > result.awayGoals) return homeCode;
-  if (result.awayGoals > result.homeGoals) return awayCode;
-  if (result.penaltyWinner === "home") return homeCode;
-  if (result.penaltyWinner === "away") return awayCode;
-  return null; // drawn, no penalty result recorded yet
-}
+const ROUND_ORDER: KnockoutRound[] = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
 
 function resolveMatch(id: string, stored: StoredResults): { home: TeamCode | null; away: TeamCode | null } {
-  const structure = KNOCKOUT_STRUCTURE[id];
-  if (!structure) return { home: null, away: null };
-  return {
-    home: resolveTeam(structure.home, stored),
-    away: resolveTeam(structure.away, stored),
-  };
+  const { home, away } = resolveKnockoutMatch(id, stored);
+  return { home, away };
 }
 
 function teamLabel(code: TeamCode | null): string {
@@ -101,7 +26,7 @@ function teamLabel(code: TeamCode | null): string {
 
 export function AdminResultsPanel({ stored, onChange }: Props) {
   const [tab, setTab] = useState<"group" | "knockout">("group");
-  const [round, setRound] = useState<Round>("Round of 32");
+  const [round, setRound] = useState<KnockoutRound>("Round of 32");
   const [selectedGroup, setSelectedGroup] = useState(GROUP_MATCHES[0]?.id ?? "");
   const [selectedKO, setSelectedKO] = useState<string>("ko-73");
   const [homeGoals, setHomeGoals] = useState("0");
@@ -120,7 +45,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
     [round],
   );
 
-  function selectRound(next: Round) {
+  function selectRound(next: KnockoutRound) {
     setRound(next);
     const firstId = Object.keys(KNOCKOUT_STRUCTURE).find((id) => KNOCKOUT_STRUCTURE[id].round === next);
     if (firstId) selectKO(firstId);
@@ -280,7 +205,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
         <div className={s.form}>
           <label>
             Round
-            <select value={round} onChange={(e) => selectRound(e.target.value as Round)}>
+            <select value={round} onChange={(e) => selectRound(e.target.value as KnockoutRound)}>
               {ROUND_ORDER.map((r) => (
                 <option key={r} value={r}>{r}</option>
               ))}
