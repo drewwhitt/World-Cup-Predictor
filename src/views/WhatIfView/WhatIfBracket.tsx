@@ -1,19 +1,15 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactElement } from "react";
 import { resolveWhatIfBracket, currentElos, type MatchOverride, type ResolvedSide } from "../../lib/whatIf";
 import { toAdvancementProbabilities } from "../../lib/elo";
 import { TEAM_BY_CODE } from "../../lib/teams";
-import type { KnockoutRound } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./WhatIfBracket.module.css";
 
-const ROUND_ORDER: KnockoutRound[] = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
-const ROUND_LABELS: Record<KnockoutRound, string> = {
-  "Round of 32": "Round of 32",
-  "Round of 16": "Round of 16",
-  Quarterfinal: "Quarterfinals",
-  Semifinal: "Semifinals",
-  Final: "Final",
-};
+const R32_IDS = ["ko-73","ko-74","ko-75","ko-76","ko-77","ko-78","ko-79","ko-80","ko-81","ko-82","ko-83","ko-84","ko-85","ko-86","ko-87","ko-88"];
+const R16_IDS = ["ko-89","ko-90","ko-91","ko-92","ko-93","ko-94","ko-95","ko-96"];
+const QF_IDS  = ["ko-97","ko-98","ko-99","ko-100"];
+const SF_IDS  = ["ko-101","ko-102"];
+const FIN_ID  = "ko-104";
 
 function name(code: TeamCode): string {
   return TEAM_BY_CODE[code]?.name ?? code;
@@ -24,6 +20,7 @@ function winPct(elos: Record<TeamCode, number>, home: TeamCode, away: TeamCode):
 }
 
 type Match = ReturnType<typeof resolveWhatIfBracket>[number];
+type PendingSide = ResolvedSide & { kind: "pending" };
 
 export function WhatIfBracket({
   stored,
@@ -38,37 +35,28 @@ export function WhatIfBracket({
 }) {
   const elos = useMemo(() => currentElos(stored), [stored]);
   const matches = useMemo(() => resolveWhatIfBracket(stored, overrides), [stored, overrides]);
+  const byId = useMemo(() => new Map(matches.map((m) => [m.id, m])), [matches]);
 
   // Which of the two candidates is currently shown for a still-undecided
-  // opponent slot (e.g. Spain vs Portugal — display preference only, not
-  // part of the scenario itself, so it lives here rather than upstream).
+  // opponent slot — display preference only, not part of the scenario.
   const [focused, setFocused] = useState<Record<string, TeamCode>>({});
 
-  const byRound = useMemo(() => {
-    const grouped = new Map<KnockoutRound, Match[]>();
-    for (const round of ROUND_ORDER) grouped.set(round, []);
-    for (const m of matches) grouped.get(m.round)?.push(m);
-    return grouped;
-  }, [matches]);
-
-  function focusedCandidate(side: ResolvedSide & { kind: "pending" }): TeamCode {
+  function focusedCandidate(side: PendingSide): TeamCode {
     return focused[side.feederMatchId] ?? side.candidates[0];
   }
 
-  function toggleFocus(side: ResolvedSide & { kind: "pending" }) {
+  function toggleFocus(side: PendingSide) {
     const current = focusedCandidate(side);
     const other = current === side.candidates[0] ? side.candidates[1] : side.candidates[0];
     setFocused((prev) => ({ ...prev, [side.feederMatchId]: other }));
   }
 
-  /** Resolve a side to a concrete code for DISPLAY (real, override, or the currently-focused candidate). */
   function displayCode(side: ResolvedSide): TeamCode | null {
     if (side.kind === "team") return side.code;
     if (side.kind === "pending") return focusedCandidate(side);
     return null;
   }
 
-  /** Clicking a team declares them the winner — resolving any still-pending side(s) to whichever candidate is currently shown first. */
   function pickWinner(m: Match, side: "home" | "away") {
     const chosen = side === "home" ? m.home : m.away;
     const other = side === "home" ? m.away : m.home;
@@ -84,71 +72,138 @@ export function WhatIfBracket({
     if (other.kind === "pending") {
       onSetOverride(other.feederMatchId, focusedCandidate(other));
     }
-
     onSetOverride(m.id, chosenCode);
+  }
+
+  // ── Layout geometry — same algorithm as BracketView, sized a bit taller
+  // to fit the "switch team" links this bracket needs that the real one doesn't.
+  const CARD_W = 190;
+  const CARD_H = 100;
+  const ROW_GAP = 14;
+  const COL_GAP = 40;
+
+  function layoutRound(prevYs: number[], count: number): number[] {
+    if (prevYs.length === 0) {
+      return Array.from({ length: count }, (_, i) => i * (CARD_H + ROW_GAP));
+    }
+    const ys: number[] = [];
+    for (let i = 0; i < count; i++) ys.push((prevYs[i * 2] + prevYs[i * 2 + 1]) / 2);
+    return ys;
+  }
+
+  const r32Ys = layoutRound([], 16);
+  const r16Ys = layoutRound(r32Ys, 8);
+  const qfYs = layoutRound(r16Ys, 4);
+  const sfYs = layoutRound(qfYs, 2);
+  const finY = (sfYs[0] + sfYs[1]) / 2;
+  const totalHeight = r32Ys[r32Ys.length - 1] + CARD_H + 24;
+
+  const colX = {
+    r32: 0,
+    r16: CARD_W + COL_GAP,
+    qf: (CARD_W + COL_GAP) * 2,
+    sf: (CARD_W + COL_GAP) * 3,
+    fin: (CARD_W + COL_GAP) * 4,
+  };
+  const totalWidth = colX.fin + CARD_W;
+
+  function renderConnectors(srcX: number, srcYs: number[], dstX: number, dstYs: number[]): ReactElement[] {
+    const midX = srcX + CARD_W + COL_GAP / 2;
+    const lines: ReactElement[] = [];
+    for (let i = 0; i < dstYs.length; i++) {
+      const y1 = srcYs[i * 2] + CARD_H / 2;
+      const y2 = srcYs[i * 2 + 1] + CARD_H / 2;
+      const yMid = dstYs[i] + CARD_H / 2;
+      lines.push(
+        <path key={`${srcX}-${i}-a`} d={`M ${srcX + CARD_W} ${y1} H ${midX} V ${yMid}`} className={s.connector} />,
+        <path key={`${srcX}-${i}-b`} d={`M ${srcX + CARD_W} ${y2} H ${midX} V ${yMid}`} className={s.connector} />,
+        <path key={`${srcX}-${i}-c`} d={`M ${midX} ${yMid} H ${dstX}`} className={s.connector} />,
+      );
+    }
+    return lines;
+  }
+
+  function PositionedCard({ id, x, y }: { id: string; x: number; y: number }) {
+    const m = byId.get(id);
+    if (!m) return null;
+    const homeCode = displayCode(m.home);
+    const awayCode = displayCode(m.away);
+    const bothKnown = !!homeCode && !!awayCode;
+    const pct = bothKnown ? winPct(elos, homeCode!, awayCode!) : 0.5;
+
+    return (
+      <div className={s.card} style={{ left: x, top: y, width: CARD_W, height: CARD_H }}>
+        <button
+          type="button"
+          disabled={!homeCode}
+          className={[s.team, m.winner === homeCode ? s.fav : ""].join(" ")}
+          onClick={() => pickWinner(m, "home")}
+        >
+          <span className={s.teamName}>{homeCode ? name(homeCode) : "TBD"}</span>
+          {bothKnown && <span className={s.pct}>{Math.round(pct * 100)}%</span>}
+        </button>
+        {m.home.kind === "pending" && (
+          <button type="button" className={s.switchBtn} onClick={() => toggleFocus(m.home as PendingSide)}>
+            ⇄ switch team
+          </button>
+        )}
+
+        <div className={s.divider} />
+
+        <button
+          type="button"
+          disabled={!awayCode}
+          className={[s.team, m.winner === awayCode ? s.fav : ""].join(" ")}
+          onClick={() => pickWinner(m, "away")}
+        >
+          <span className={s.teamName}>{awayCode ? name(awayCode) : "TBD"}</span>
+          {bothKnown && <span className={s.pct}>{Math.round((1 - pct) * 100)}%</span>}
+        </button>
+        {m.away.kind === "pending" && (
+          <button type="button" className={s.switchBtn} onClick={() => toggleFocus(m.away as PendingSide)}>
+            ⇄ switch team
+          </button>
+        )}
+
+        <div className={s.cardFooter}>
+          {m.isOverridden && (
+            <button type="button" className={s.clearBtn} onClick={() => onClearOverride(m.id)}>
+              Reset to real result
+            </button>
+          )}
+          {!m.isOverridden && m.hasRealResult && <span className={s.realTag}>Real result</span>}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className={s.wrap}>
       <p className={s.hint}>
         Click a team to make them the winner. If an opponent is still undecided, the most likely
-        candidate shows first — use "switch opponent" to see the other one before picking.
+        candidate shows first — use "switch team" to see the other one before picking.
       </p>
-      <div className={s.columns}>
-        {ROUND_ORDER.map((round) => (
-          <div key={round} className={s.column}>
-            <div className={s.columnHeader}>{ROUND_LABELS[round]}</div>
-            {byRound.get(round)?.map((m) => {
-              const homeCode = displayCode(m.home);
-              const awayCode = displayCode(m.away);
-              const bothKnown = !!homeCode && !!awayCode;
-              const pct = bothKnown ? winPct(elos, homeCode!, awayCode!) : 0.5;
+      <div className={s.scrollWrap}>
+        <div className={s.canvas} style={{ width: totalWidth, height: totalHeight }}>
+          <div className={s.colLabel} style={{ left: colX.r32, width: CARD_W }}>Round of 32</div>
+          <div className={s.colLabel} style={{ left: colX.r16, width: CARD_W }}>Round of 16</div>
+          <div className={s.colLabel} style={{ left: colX.qf, width: CARD_W }}>Quarterfinals</div>
+          <div className={s.colLabel} style={{ left: colX.sf, width: CARD_W }}>Semifinals</div>
+          <div className={s.colLabel} style={{ left: colX.fin, width: CARD_W }}>Final</div>
 
-              return (
-                <div key={m.id} className={s.card}>
-                  <button
-                    type="button"
-                    disabled={!homeCode}
-                    className={[s.team, m.winner === homeCode ? s.fav : ""].join(" ")}
-                    onClick={() => pickWinner(m, "home")}
-                  >
-                    <span className={s.teamName}>{homeCode ? name(homeCode) : "TBD"}</span>
-                    {bothKnown && <span className={s.pct}>{Math.round(pct * 100)}%</span>}
-                  </button>
-                  <div className={s.divider} />
-                  <button
-                    type="button"
-                    disabled={!awayCode}
-                    className={[s.team, m.winner === awayCode ? s.fav : ""].join(" ")}
-                    onClick={() => pickWinner(m, "away")}
-                  >
-                    <span className={s.teamName}>{awayCode ? name(awayCode) : "TBD"}</span>
-                    {bothKnown && <span className={s.pct}>{Math.round((1 - pct) * 100)}%</span>}
-                  </button>
+          <svg className={s.connectorLayer} width={totalWidth} height={totalHeight}>
+            {renderConnectors(colX.r32, r32Ys, colX.r16, r16Ys)}
+            {renderConnectors(colX.r16, r16Ys, colX.qf, qfYs)}
+            {renderConnectors(colX.qf, qfYs, colX.sf, sfYs)}
+            {renderConnectors(colX.sf, sfYs, colX.fin, [finY])}
+          </svg>
 
-                  <div className={s.cardFooter}>
-                    {m.home.kind === "pending" && (
-                      <button type="button" className={s.switchBtn} onClick={() => toggleFocus(m.home as ResolvedSide & { kind: "pending" })}>
-                        ⇄ switch opponent
-                      </button>
-                    )}
-                    {m.away.kind === "pending" && (
-                      <button type="button" className={s.switchBtn} onClick={() => toggleFocus(m.away as ResolvedSide & { kind: "pending" })}>
-                        ⇄ switch opponent
-                      </button>
-                    )}
-                    {m.isOverridden && (
-                      <button type="button" className={s.clearBtn} onClick={() => onClearOverride(m.id)}>
-                        Reset to real result
-                      </button>
-                    )}
-                    {!m.isOverridden && m.hasRealResult && <span className={s.realTag}>Real result</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+          {R32_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.r32} y={r32Ys[i]} />)}
+          {R16_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.r16} y={r16Ys[i]} />)}
+          {QF_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.qf} y={qfYs[i]} />)}
+          {SF_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.sf} y={sfYs[i]} />)}
+          <PositionedCard id={FIN_ID} x={colX.fin} y={finY} />
+        </div>
       </div>
     </div>
   );
