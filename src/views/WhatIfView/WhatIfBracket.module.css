@@ -1,0 +1,125 @@
+.wrap {
+  overflow-x: auto;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--ink-2);
+  max-width: 720px;
+  margin: 0 0 20px;
+}
+
+.columns {
+  display: flex;
+  gap: 16px;
+  min-width: 900px;
+}
+
+.column {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.columnHeader {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.matchup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.matchupNote {
+  font: 500 10px/1 var(--font-mono);
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+}
+
+.teamBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 500 13px var(--font-sans);
+  cursor: pointer;
+}
+
+.pct {
+  font: 700 12px var(--font-mono);
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.teamBtn.winner .pct {
+  color: var(--gold);
+}
+
+.tbdCard {
+  padding: 12px 10px;
+  color: var(--ink-3);
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+}
+
+.teamBtn:hover:not(:disabled) {
+  background: var(--paper);
+  border-color: var(--hairline);
+}
+
+.teamBtn:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.teamBtn.winner {
+  background: var(--navy);
+  color: var(--on-dark);
+  font-weight: 700;
+}
+
+.clearBtn {
+  border: none;
+  background: none;
+  color: var(--gold);
+  font: 600 11px var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 4px 6px 0;
+  text-align: left;
+}
+
+.realTag {
+  font: 500 10px var(--font-mono);
+  color: var(--ink-3);
+  padding: 2px 6px 0;
+}
