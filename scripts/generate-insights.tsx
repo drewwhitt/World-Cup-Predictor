@@ -27,7 +27,7 @@ function writePage(slug: string, html: string) {
   writeFileSync(join(dir, "index.html"), `<!doctype html>\n${html}`, "utf-8");
 }
 
-function main() {
+async function main() {
   if (!existsSync(join(process.cwd(), "dist"))) {
     console.error(
       "dist/ doesn't exist yet — run `vite build` first (or just `npm run build`, which does both in order).",
@@ -37,9 +37,10 @@ function main() {
 
   // Individual pages
   for (const page of INSIGHT_PAGES) {
+    const data = page.loadData ? await page.loadData() : undefined;
     const html = renderToStaticMarkup(
       <Document title={page.title} description={page.description} slug={page.slug}>
-        <page.Content />
+        <page.Content data={data} />
       </Document>,
     );
     writePage(page.slug, html);
@@ -58,4 +59,7 @@ function main() {
   console.log(`\nGenerated ${INSIGHT_PAGES.length + 1} static pages in dist/insights/`);
 }
 
-main();
+main().catch((err) => {
+  console.error("generate-insights failed:", err);
+  process.exit(1);
+});

@@ -130,6 +130,62 @@ const INSIGHTS_CSS = `
     margin-top: 48px;
     margin-bottom: 8px;
   }
+  .note {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-top: -8px;
+  }
+  .brier-chart {
+    margin: 20px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .brier-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brier-label {
+    width: 190px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .brier-track {
+    flex: 1;
+    height: 10px;
+    background: var(--hairline);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .brier-fill {
+    height: 100%;
+    background: var(--ink-3);
+    border-radius: 5px;
+  }
+  .brier-fill-highlight {
+    background: var(--gold);
+  }
+  .brier-value {
+    width: 56px;
+    flex-shrink: 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .upset-list {
+    padding-left: 20px;
+    margin: 0 0 16px;
+  }
+  .upset-list li {
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
   footer {
     text-align: center;
     padding: 32px 24px;
