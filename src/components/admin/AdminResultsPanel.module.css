@@ -100,6 +100,12 @@
   color: var(--negative);
 }
 
+.pending {
+  color: var(--ink-3);
+  font-size: 13px;
+  font-style: italic;
+}
+
 .tabs {
   display: flex;
   gap: 8px;

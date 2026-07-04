@@ -12,44 +12,119 @@ type Props = {
   onChange: (next: StoredResults) => void;
 };
 
+type Round = "Round of 32" | "Round of 16" | "Quarterfinal" | "Semifinal" | "Final";
+
+/** Either a fixed R32 team, or "whoever wins another match" (resolved recursively below). */
+type Source = { type: "team"; code: TeamCode } | { type: "winner"; matchId: string };
+
 /**
- * Confirmed Round of 32 matchups for the 2026 World Cup, taken from FIFA's
- * published bracket. Same fixed list used in BracketView.tsx — kept in sync
- * manually since this is the real, locked draw (not something we compute).
+ * The full knockout bracket, R32 through Final. R16/QF/SF/Final entries
+ * reference the match(es) that feed them rather than fixed teams, since
+ * those teams aren't known until earlier rounds are actually played.
+ *
+ * Pairing verified against FIFA's official bracket and live 2026
+ * reporting (see MODEL_HISTORY.md v1.10 and src/lib/bracketTree.ts for
+ * the full verification) — this must stay in sync with bracketTree.ts
+ * and simulate.ts's R16_FROM_R32/QF_FROM_R16/SF_FROM_QF if the bracket
+ * structure ever needs correcting again.
  */
-const R32_MATCHUPS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
-  { id: "ko-73", home: "GER", away: "PAR" },
-  { id: "ko-74", home: "FRA", away: "SWE" },
-  { id: "ko-75", home: "RSA", away: "CAN" },
-  { id: "ko-76", home: "NED", away: "MAR" },
-  { id: "ko-77", home: "POR", away: "CRO" },
-  { id: "ko-78", home: "ESP", away: "AUT" },
-  { id: "ko-79", home: "USA", away: "BIH" },
-  { id: "ko-80", home: "BEL", away: "SEN" },
-  { id: "ko-81", home: "BRA", away: "JPN" },
-  { id: "ko-82", home: "CIV", away: "NOR" },
-  { id: "ko-83", home: "MEX", away: "ECU" },
-  { id: "ko-84", home: "ENG", away: "COD" },
-  { id: "ko-85", home: "ARG", away: "CPV" },
-  { id: "ko-86", home: "AUS", away: "EGY" },
-  { id: "ko-87", home: "SUI", away: "ALG" },
-  { id: "ko-88", home: "COL", away: "GHA" },
-];
+const KNOCKOUT_STRUCTURE: Record<string, { round: Round; home: Source; away: Source }> = {
+  "ko-73": { round: "Round of 32", home: { type: "team", code: "GER" }, away: { type: "team", code: "PAR" } },
+  "ko-74": { round: "Round of 32", home: { type: "team", code: "FRA" }, away: { type: "team", code: "SWE" } },
+  "ko-75": { round: "Round of 32", home: { type: "team", code: "RSA" }, away: { type: "team", code: "CAN" } },
+  "ko-76": { round: "Round of 32", home: { type: "team", code: "NED" }, away: { type: "team", code: "MAR" } },
+  "ko-77": { round: "Round of 32", home: { type: "team", code: "POR" }, away: { type: "team", code: "CRO" } },
+  "ko-78": { round: "Round of 32", home: { type: "team", code: "ESP" }, away: { type: "team", code: "AUT" } },
+  "ko-79": { round: "Round of 32", home: { type: "team", code: "USA" }, away: { type: "team", code: "BIH" } },
+  "ko-80": { round: "Round of 32", home: { type: "team", code: "BEL" }, away: { type: "team", code: "SEN" } },
+  "ko-81": { round: "Round of 32", home: { type: "team", code: "BRA" }, away: { type: "team", code: "JPN" } },
+  "ko-82": { round: "Round of 32", home: { type: "team", code: "CIV" }, away: { type: "team", code: "NOR" } },
+  "ko-83": { round: "Round of 32", home: { type: "team", code: "MEX" }, away: { type: "team", code: "ECU" } },
+  "ko-84": { round: "Round of 32", home: { type: "team", code: "ENG" }, away: { type: "team", code: "COD" } },
+  "ko-85": { round: "Round of 32", home: { type: "team", code: "ARG" }, away: { type: "team", code: "CPV" } },
+  "ko-86": { round: "Round of 32", home: { type: "team", code: "AUS" }, away: { type: "team", code: "EGY" } },
+  "ko-87": { round: "Round of 32", home: { type: "team", code: "SUI" }, away: { type: "team", code: "ALG" } },
+  "ko-88": { round: "Round of 32", home: { type: "team", code: "COL" }, away: { type: "team", code: "GHA" } },
+
+  "ko-89": { round: "Round of 16", home: { type: "winner", matchId: "ko-73" }, away: { type: "winner", matchId: "ko-74" } },
+  "ko-90": { round: "Round of 16", home: { type: "winner", matchId: "ko-75" }, away: { type: "winner", matchId: "ko-76" } },
+  "ko-91": { round: "Round of 16", home: { type: "winner", matchId: "ko-77" }, away: { type: "winner", matchId: "ko-78" } },
+  "ko-92": { round: "Round of 16", home: { type: "winner", matchId: "ko-79" }, away: { type: "winner", matchId: "ko-80" } },
+  "ko-93": { round: "Round of 16", home: { type: "winner", matchId: "ko-83" }, away: { type: "winner", matchId: "ko-84" } },
+  "ko-94": { round: "Round of 16", home: { type: "winner", matchId: "ko-81" }, away: { type: "winner", matchId: "ko-82" } },
+  "ko-95": { round: "Round of 16", home: { type: "winner", matchId: "ko-86" }, away: { type: "winner", matchId: "ko-88" } },
+  "ko-96": { round: "Round of 16", home: { type: "winner", matchId: "ko-85" }, away: { type: "winner", matchId: "ko-87" } },
+
+  "ko-97":  { round: "Quarterfinal", home: { type: "winner", matchId: "ko-89" }, away: { type: "winner", matchId: "ko-90" } },
+  "ko-98":  { round: "Quarterfinal", home: { type: "winner", matchId: "ko-93" }, away: { type: "winner", matchId: "ko-94" } },
+  "ko-99":  { round: "Quarterfinal", home: { type: "winner", matchId: "ko-91" }, away: { type: "winner", matchId: "ko-92" } },
+  "ko-100": { round: "Quarterfinal", home: { type: "winner", matchId: "ko-95" }, away: { type: "winner", matchId: "ko-96" } },
+
+  "ko-101": { round: "Semifinal", home: { type: "winner", matchId: "ko-97" }, away: { type: "winner", matchId: "ko-99" } },
+  "ko-102": { round: "Semifinal", home: { type: "winner", matchId: "ko-98" }, away: { type: "winner", matchId: "ko-100" } },
+
+  "ko-104": { round: "Final", home: { type: "winner", matchId: "ko-101" }, away: { type: "winner", matchId: "ko-102" } },
+};
+
+const ROUND_ORDER: Round[] = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
+
+/** Recursively resolves a source to an actual team code, or null if that round hasn't been played yet. */
+function resolveTeam(source: Source, stored: StoredResults): TeamCode | null {
+  if (source.type === "team") return source.code;
+  const result = stored.knockoutMatches?.[source.matchId];
+  const structure = KNOCKOUT_STRUCTURE[source.matchId];
+  if (!result || !structure) return null;
+
+  const homeCode = resolveTeam(structure.home, stored);
+  const awayCode = resolveTeam(structure.away, stored);
+  if (!homeCode || !awayCode) return null;
+
+  if (result.homeGoals > result.awayGoals) return homeCode;
+  if (result.awayGoals > result.homeGoals) return awayCode;
+  if (result.penaltyWinner === "home") return homeCode;
+  if (result.penaltyWinner === "away") return awayCode;
+  return null; // drawn, no penalty result recorded yet
+}
+
+function resolveMatch(id: string, stored: StoredResults): { home: TeamCode | null; away: TeamCode | null } {
+  const structure = KNOCKOUT_STRUCTURE[id];
+  if (!structure) return { home: null, away: null };
+  return {
+    home: resolveTeam(structure.home, stored),
+    away: resolveTeam(structure.away, stored),
+  };
+}
+
+function teamLabel(code: TeamCode | null): string {
+  return code ? TEAM_BY_CODE[code]?.name ?? code : "TBD";
+}
 
 export function AdminResultsPanel({ stored, onChange }: Props) {
-  const [tab, setTab]               = useState<"group" | "knockout">("group");
+  const [tab, setTab] = useState<"group" | "knockout">("group");
+  const [round, setRound] = useState<Round>("Round of 32");
   const [selectedGroup, setSelectedGroup] = useState(GROUP_MATCHES[0]?.id ?? "");
-  const [selectedKO, setSelectedKO] = useState<string>(R32_MATCHUPS[0].id);
-  const [homeGoals, setHomeGoals]   = useState("0");
-  const [awayGoals, setAwayGoals]   = useState("0");
+  const [selectedKO, setSelectedKO] = useState<string>("ko-73");
+  const [homeGoals, setHomeGoals] = useState("0");
+  const [awayGoals, setAwayGoals] = useState("0");
   const [penaltyWinner, setPenaltyWinner] = useState<"home" | "away" | "">("");
-  const [status, setStatus]         = useState<"idle"|"saving"|"saved"|"error">("idle");
-  const [snapStatus, setSnapStatus] = useState<"idle"|"saving"|"saved"|"error">("idle");
+  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [snapStatus, setSnapStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   const groupMatches = useMemo(
     () => [...GROUP_MATCHES].sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday),
     [],
   );
+
+  const matchesInRound = useMemo(
+    () => Object.keys(KNOCKOUT_STRUCTURE).filter((id) => KNOCKOUT_STRUCTURE[id].round === round),
+    [round],
+  );
+
+  function selectRound(next: Round) {
+    setRound(next);
+    const firstId = Object.keys(KNOCKOUT_STRUCTURE).find((id) => KNOCKOUT_STRUCTURE[id].round === next);
+    if (firstId) selectKO(firstId);
+  }
 
   function selectKO(id: string) {
     setSelectedKO(id);
@@ -88,7 +163,8 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
         setStatus("saved");
       } catch { setStatus("error"); }
     } else {
-      const koMatch = R32_MATCHUPS.find((m) => m.id === selectedKO);
+      const { home: homeCode, away: awayCode } = resolveMatch(selectedKO, stored);
+      if (!homeCode || !awayCode) return; // shouldn't happen — UI disables this case
       const next: StoredResults = {
         ...stored,
         knockoutMatches: {
@@ -108,8 +184,8 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
           selectedKO,
           home,
           away,
-          koMatch ? TEAM_BY_CODE[koMatch.home]?.name : undefined,
-          koMatch ? TEAM_BY_CODE[koMatch.away]?.name : undefined,
+          TEAM_BY_CODE[homeCode]?.name,
+          TEAM_BY_CODE[awayCode]?.name,
           undefined,
           home === away && penaltyWinner ? penaltyWinner : undefined,
         );
@@ -137,7 +213,8 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
   }
 
   const currentGroupMatch = groupMatches.find((m) => m.id === selectedGroup);
-  const currentKOMatch    = R32_MATCHUPS.find((m) => m.id === selectedKO);
+  const { home: currentHome, away: currentAway } = resolveMatch(selectedKO, stored);
+  const bothTeamsKnown = !!currentHome && !!currentAway;
 
   return (
     <section className={s.panel}>
@@ -172,7 +249,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
           className={tab === "knockout" ? s.tabActive : s.tabInactive}
           onClick={() => { setTab("knockout"); setStatus("idle"); }}
         >
-          Round of 32
+          Knockout
         </button>
       </div>
 
@@ -202,37 +279,51 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
       ) : (
         <div className={s.form}>
           <label>
+            Round
+            <select value={round} onChange={(e) => selectRound(e.target.value as Round)}>
+              {ROUND_ORDER.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </label>
+          <label>
             Match
             <select value={selectedKO} onChange={(e) => selectKO(e.target.value)}>
-              {R32_MATCHUPS.map((m) => {
-                const isDone = !!(stored.knockoutMatches?.[m.id]);
+              {matchesInRound.map((id) => {
+                const isDone = !!(stored.knockoutMatches?.[id]);
+                const { home, away } = resolveMatch(id, stored);
                 return (
-                  <option key={m.id} value={m.id}>
-                    {TEAM_BY_CODE[m.home]?.name} vs {TEAM_BY_CODE[m.away]?.name}{isDone ? " ✓" : ""}
+                  <option key={id} value={id} disabled={!home || !away}>
+                    {teamLabel(home)} vs {teamLabel(away)}{isDone ? " ✓" : ""}
                   </option>
                 );
               })}
             </select>
           </label>
+          {!bothTeamsKnown && (
+            <p className={s.pending}>
+              Both teams for this match aren't determined yet — enter the earlier round's result first.
+            </p>
+          )}
           <label>
-            {currentKOMatch ? TEAM_BY_CODE[currentKOMatch.home]?.name : "Home"}
-            <input min={0} type="number" value={homeGoals} onChange={(e) => setHomeGoals(e.target.value)} />
+            {teamLabel(currentHome)}
+            <input min={0} type="number" value={homeGoals} onChange={(e) => setHomeGoals(e.target.value)} disabled={!bothTeamsKnown} />
           </label>
           <label>
-            {currentKOMatch ? TEAM_BY_CODE[currentKOMatch.away]?.name : "Away"}
-            <input min={0} type="number" value={awayGoals} onChange={(e) => setAwayGoals(e.target.value)} />
+            {teamLabel(currentAway)}
+            <input min={0} type="number" value={awayGoals} onChange={(e) => setAwayGoals(e.target.value)} disabled={!bothTeamsKnown} />
           </label>
-          {homeGoals === awayGoals && currentKOMatch && (
+          {homeGoals === awayGoals && bothTeamsKnown && (
             <label>
               Won on penalties
               <select value={penaltyWinner} onChange={(e) => setPenaltyWinner(e.target.value as "home" | "away" | "")}>
                 <option value="">Select penalty winner</option>
-                <option value="home">{TEAM_BY_CODE[currentKOMatch.home]?.name}</option>
-                <option value="away">{TEAM_BY_CODE[currentKOMatch.away]?.name}</option>
+                <option value="home">{teamLabel(currentHome)}</option>
+                <option value="away">{teamLabel(currentAway)}</option>
               </select>
             </label>
           )}
-          <button type="button" onClick={saveResult}>Save result</button>
+          <button type="button" onClick={saveResult} disabled={!bothTeamsKnown}>Save result</button>
         </div>
       )}
 
