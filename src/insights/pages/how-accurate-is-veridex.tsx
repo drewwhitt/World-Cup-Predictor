@@ -1,6 +1,12 @@
 import type { InsightPage } from "../types";
 import { loadResultsForBuild } from "../buildTimeData";
-import { computeAccuracy, RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BACKTESTED_BRIER } from "../../lib/accuracy";
+import {
+  computeAccuracy,
+  RANDOM_BASELINE_BRIER,
+  COIN_FLIP_BRIER,
+  BACKTESTED_BRIER,
+  HISTORICAL_DRAW_RATE,
+} from "../../lib/accuracy";
 
 async function loadData() {
   const stored = await loadResultsForBuild();
@@ -55,12 +61,42 @@ function Content({ data }: { data?: Record<string, unknown> }) {
             regardless of the teams involved ({RANDOM_BASELINE_BRIER}).
           </p>
           {accuracy.group.brierScore !== null ? (
-            <div className="brier-chart">
-              <BrierBar label="2026 (live, this page)" value={accuracy.group.brierScore} highlight />
-              <BrierBar label="2010–2022 backtest" value={BACKTESTED_BRIER} />
-              <BrierBar label="Coin flip" value={COIN_FLIP_BRIER} />
-              <BrierBar label="Random baseline" value={RANDOM_BASELINE_BRIER} />
-            </div>
+            <>
+              <div className="brier-chart">
+                <BrierBar label="2026 (live, this page)" value={accuracy.group.brierScore} highlight />
+                <BrierBar label="2010–2022 backtest" value={BACKTESTED_BRIER} />
+                <BrierBar label="Coin flip" value={COIN_FLIP_BRIER} />
+                <BrierBar label="Random baseline" value={RANDOM_BASELINE_BRIER} />
+              </div>
+              <p>
+                That number is worse than the historical backtest, and it's worth explaining why
+                rather than leaving it unexplained: it's concentrated almost entirely in one place.
+                Decisive results (a team actually winning) are scoring close to the historical norm.
+                Draws are where the model is struggling —{" "}
+                {accuracy.group.draws.observedRate !== null
+                  ? `${(accuracy.group.draws.observedRate * 100).toFixed(0)}%`
+                  : "a higher-than-usual share"}{" "}
+                of this tournament's group matches have ended in a draw, against a historical rate
+                closer to {(HISTORICAL_DRAW_RATE * 100).toFixed(0)}%, and the model hasn't been giving
+                draws enough credit as a result.
+              </p>
+              <div className="brier-chart">
+                <BrierBar
+                  label={`Decisive results (${accuracy.group.decisive.count})`}
+                  value={accuracy.group.decisive.brierScore ?? 0}
+                />
+                <BrierBar
+                  label={`Draws (${accuracy.group.draws.count})`}
+                  value={accuracy.group.draws.brierScore ?? 0}
+                />
+              </div>
+              <p className="note">
+                Whether that's this tournament genuinely running unusually draw-heavy, or a real gap
+                in how the model weighs draw likelihood, is exactly the kind of question worth
+                revisiting with a proper recalibration pass once the tournament wraps — not something
+                to patch mid-tournament based on one data point.
+              </p>
+            </>
           ) : (
             <p>No group-stage results recorded yet.</p>
           )}

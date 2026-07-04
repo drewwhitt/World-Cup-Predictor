@@ -9,6 +9,8 @@ export interface AccuracyResult {
   group: {
     matchesScored: number;
     brierScore: number | null;
+    decisive: { count: number; brierScore: number | null };
+    draws: { count: number; brierScore: number | null; observedRate: number | null };
   };
   knockout: {
     matchesScored: number;
@@ -23,8 +25,9 @@ export interface AccuracyResult {
 const RANDOM_BASELINE_BRIER = 0.2222;
 const COIN_FLIP_BRIER = 0.1667;
 const BACKTESTED_BRIER = 0.1877; // v9, validated across 2010/2014/2018/2022 — see MODEL_HISTORY.md
+const HISTORICAL_DRAW_RATE = 0.25; // roughly typical for World Cup group-stage matches historically
 
-export { RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BACKTESTED_BRIER };
+export { RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BACKTESTED_BRIER, HISTORICAL_DRAW_RATE };
 
 /**
  * Group-stage Brier score using the same 3-way formula documented in
@@ -32,8 +35,13 @@ export { RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BACKTESTED_BRIER };
  * historical backtest figure — walks matches in chronological order,
  * scoring each one on the Elo ratings as they stood BEFORE that match
  * (not after), same as the live model actually predicts.
+ *
+ * Also splits the score into decisive-result matches vs draws. A single
+ * aggregate number can hide a lot — the model can be scoring fine on
+ * decisive results while badly under-predicting draws (or vice versa),
+ * and that's a much more useful, honest thing to show than one number.
  */
-function scoreGroupStage(stored: StoredResults): { matchesScored: number; brierScore: number | null } {
+function scoreGroupStage(stored: StoredResults): AccuracyResult["group"] {
   const elos = buildInitialElos();
   const played = [...GROUP_MATCHES]
     .filter((m) => stored.matches[m.id])
@@ -41,6 +49,10 @@ function scoreGroupStage(stored: StoredResults): { matchesScored: number; brierS
 
   let totalBrier = 0;
   let count = 0;
+  let decisiveBrier = 0;
+  let decisiveCount = 0;
+  let drawBrier = 0;
+  let drawCount = 0;
 
   for (const match of played) {
     const result = stored.matches[match.id];
@@ -53,12 +65,32 @@ function scoreGroupStage(stored: StoredResults): { matchesScored: number; brierS
     totalBrier += brier;
     count += 1;
 
+    if (actual === "draw") {
+      drawBrier += brier;
+      drawCount += 1;
+    } else {
+      decisiveBrier += brier;
+      decisiveCount += 1;
+    }
+
     const updated = updateElo(elos[match.home], elos[match.away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, ha);
     elos[match.home] = updated.home;
     elos[match.away] = updated.away;
   }
 
-  return { matchesScored: count, brierScore: count > 0 ? Number((totalBrier / count).toFixed(4)) : null };
+  return {
+    matchesScored: count,
+    brierScore: count > 0 ? Number((totalBrier / count).toFixed(4)) : null,
+    decisive: {
+      count: decisiveCount,
+      brierScore: decisiveCount > 0 ? Number((decisiveBrier / decisiveCount).toFixed(4)) : null,
+    },
+    draws: {
+      count: drawCount,
+      brierScore: drawCount > 0 ? Number((drawBrier / drawCount).toFixed(4)) : null,
+      observedRate: count > 0 ? Number((drawCount / count).toFixed(3)) : null,
+    },
+  };
 }
 
 /**
