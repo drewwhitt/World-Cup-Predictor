@@ -39,7 +39,6 @@
 }
 
 .card {
-  position: absolute;
   background: var(--paper);
   border: 1px solid var(--hairline);
   border-radius: 3px;
@@ -49,6 +48,18 @@
   padding: 4px 10px;
   box-sizing: border-box;
   overflow: visible;
+  width: 100%;
+  height: 100%;
+}
+
+.mobileList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobileList .card {
+  height: auto;
 }
 
 .team {

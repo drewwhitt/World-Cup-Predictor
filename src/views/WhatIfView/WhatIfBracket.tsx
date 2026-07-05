@@ -1,7 +1,9 @@
-import { useMemo, useState, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { resolveWhatIfBracket, currentElos, type MatchOverride, type ResolvedSide } from "../../lib/whatIf";
 import { toAdvancementProbabilities } from "../../lib/elo";
 import { TEAM_BY_CODE } from "../../lib/teams";
+import { useIsMobile } from "../../lib/hooks/useIsMobile";
+import { RoundCarousel, type RoundCarouselHandle } from "../../components/bracket/RoundCarousel";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./WhatIfBracket.module.css";
 
@@ -11,6 +13,10 @@ const QF_IDS  = ["ko-97","ko-99","ko-98","ko-100"];
 const SF_IDS  = ["ko-101","ko-102"];
 const FIN_ID  = "ko-104";
 
+/** Round groupings in order — used both for layout and for figuring out which round a match belongs to, for auto-advance. */
+const ROUND_ID_GROUPS = [R32_IDS, R16_IDS, QF_IDS, SF_IDS, [FIN_ID]];
+const ROUND_LABELS = ["R32", "R16", "QF", "SF", "F"];
+
 function name(code: TeamCode): string {
   return TEAM_BY_CODE[code]?.name ?? code;
 }
@@ -19,8 +25,17 @@ function winPct(elos: Record<TeamCode, number>, home: TeamCode, away: TeamCode):
   return toAdvancementProbabilities(elos[home] ?? 1500, elos[away] ?? 1500, 0).home;
 }
 
+function roundIndexOf(matchId: string): number {
+  return ROUND_ID_GROUPS.findIndex((group) => group.includes(matchId));
+}
+
 type Match = ReturnType<typeof resolveWhatIfBracket>[number];
 type PendingSide = ResolvedSide & { kind: "pending" };
+
+function isRoundComplete(roundIndex: number, byId: Map<string, Match>): boolean {
+  const ids = ROUND_ID_GROUPS[roundIndex];
+  return ids.every((id) => byId.get(id)?.winner !== null);
+}
 
 export function WhatIfBracket({
   stored,
@@ -33,6 +48,10 @@ export function WhatIfBracket({
   onSetOverride: (matchId: string, winner: TeamCode) => void;
   onClearOverride: (matchId: string) => void;
 }) {
+  const isMobile = useIsMobile();
+  const carouselRef = useRef<RoundCarouselHandle>(null);
+  const lastPickedRoundRef = useRef<number | null>(null);
+
   const elos = useMemo(() => currentElos(stored), [stored]);
   const matches = useMemo(() => resolveWhatIfBracket(stored, overrides), [stored, overrides]);
   const byId = useMemo(() => new Map(matches.map((m) => [m.id, m])), [matches]);
@@ -73,7 +92,27 @@ export function WhatIfBracket({
       onSetOverride(other.feederMatchId, focusedCandidate(other));
     }
     onSetOverride(m.id, chosenCode);
+
+    // Recorded here, checked in the effect below once `byId` has actually
+    // been recomputed with this pick applied — state updates aren't
+    // synchronous, so checking "is this round done" against the current
+    // (pre-pick) byId would always be one pick behind.
+    lastPickedRoundRef.current = roundIndexOf(m.id);
   }
+
+  // Auto-advance to the next round, but ONLY when the round just picked in
+  // has no undecided matches left — picking one match in a round that still
+  // has another undecided match (e.g. USA v Belgium decided, Portugal v
+  // Spain still open) should NOT jump ahead, since the other match is
+  // right there on the same page with no scrolling needed to reach it.
+  useEffect(() => {
+    const roundIndex = lastPickedRoundRef.current;
+    if (roundIndex === null) return;
+    lastPickedRoundRef.current = null;
+    if (roundIndex < ROUND_ID_GROUPS.length - 1 && isRoundComplete(roundIndex, byId)) {
+      carouselRef.current?.scrollToRound(roundIndex + 1);
+    }
+  }, [byId]);
 
   // ── Layout geometry — same algorithm as BracketView, sized a bit taller
   // to fit the "switch team" links this bracket needs that the real one doesn't.
@@ -123,7 +162,8 @@ export function WhatIfBracket({
     return lines;
   }
 
-  function PositionedCard({ id, x, y }: { id: string; x: number; y: number }) {
+  /** Card content — no positioning, reused by both the desktop absolute canvas and the plain-flow mobile list. */
+  function CardContent({ id }: { id: string }) {
     const m = byId.get(id);
     if (!m) return null;
     const homeCode = displayCode(m.home);
@@ -132,7 +172,7 @@ export function WhatIfBracket({
     const pct = bothKnown ? winPct(elos, homeCode!, awayCode!) : 0.5;
 
     return (
-      <div className={s.card} style={{ left: x, top: y, width: CARD_W, height: CARD_H }}>
+      <div className={s.card}>
         <button
           type="button"
           disabled={!homeCode}
@@ -177,34 +217,53 @@ export function WhatIfBracket({
     );
   }
 
+  function PositionedCard({ id, x, y }: { id: string; x: number; y: number }) {
+    return (
+      <div style={{ position: "absolute", left: x, top: y, width: CARD_W, height: CARD_H }}>
+        <CardContent id={id} />
+      </div>
+    );
+  }
+
   return (
     <div className={s.wrap}>
       <p className={s.hint}>
         Click a team to make them the winner. If an opponent is still undecided, the most likely
         candidate shows first — use "switch team" to see the other one before picking.
       </p>
-      <div className={s.scrollWrap}>
-        <div className={s.canvas} style={{ width: totalWidth, height: totalHeight }}>
-          <div className={s.colLabel} style={{ left: colX.r32, width: CARD_W }}>Round of 32</div>
-          <div className={s.colLabel} style={{ left: colX.r16, width: CARD_W }}>Round of 16</div>
-          <div className={s.colLabel} style={{ left: colX.qf, width: CARD_W }}>Quarterfinals</div>
-          <div className={s.colLabel} style={{ left: colX.sf, width: CARD_W }}>Semifinals</div>
-          <div className={s.colLabel} style={{ left: colX.fin, width: CARD_W }}>Final</div>
 
-          <svg className={s.connectorLayer} width={totalWidth} height={totalHeight}>
-            {renderConnectors(colX.r32, r32Ys, colX.r16, r16Ys)}
-            {renderConnectors(colX.r16, r16Ys, colX.qf, qfYs)}
-            {renderConnectors(colX.qf, qfYs, colX.sf, sfYs)}
-            {renderConnectors(colX.sf, sfYs, colX.fin, [finY])}
-          </svg>
+      {isMobile ? (
+        <RoundCarousel ref={carouselRef} roundLabels={ROUND_LABELS}>
+          {ROUND_ID_GROUPS.map((ids, i) => (
+            <div className={s.mobileList} key={ROUND_LABELS[i]}>
+              {ids.map((id) => <CardContent key={id} id={id} />)}
+            </div>
+          ))}
+        </RoundCarousel>
+      ) : (
+        <div className={s.scrollWrap}>
+          <div className={s.canvas} style={{ width: totalWidth, height: totalHeight }}>
+            <div className={s.colLabel} style={{ left: colX.r32, width: CARD_W }}>Round of 32</div>
+            <div className={s.colLabel} style={{ left: colX.r16, width: CARD_W }}>Round of 16</div>
+            <div className={s.colLabel} style={{ left: colX.qf, width: CARD_W }}>Quarterfinals</div>
+            <div className={s.colLabel} style={{ left: colX.sf, width: CARD_W }}>Semifinals</div>
+            <div className={s.colLabel} style={{ left: colX.fin, width: CARD_W }}>Final</div>
 
-          {R32_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.r32} y={r32Ys[i]} />)}
-          {R16_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.r16} y={r16Ys[i]} />)}
-          {QF_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.qf} y={qfYs[i]} />)}
-          {SF_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.sf} y={sfYs[i]} />)}
-          <PositionedCard id={FIN_ID} x={colX.fin} y={finY} />
+            <svg className={s.connectorLayer} width={totalWidth} height={totalHeight}>
+              {renderConnectors(colX.r32, r32Ys, colX.r16, r16Ys)}
+              {renderConnectors(colX.r16, r16Ys, colX.qf, qfYs)}
+              {renderConnectors(colX.qf, qfYs, colX.sf, sfYs)}
+              {renderConnectors(colX.sf, sfYs, colX.fin, [finY])}
+            </svg>
+
+            {R32_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.r32} y={r32Ys[i]} />)}
+            {R16_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.r16} y={r16Ys[i]} />)}
+            {QF_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.qf} y={qfYs[i]} />)}
+            {SF_IDS.map((id, i) => <PositionedCard key={id} id={id} x={colX.sf} y={sfYs[i]} />)}
+            <PositionedCard id={FIN_ID} x={colX.fin} y={finY} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

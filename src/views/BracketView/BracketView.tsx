@@ -5,6 +5,8 @@ import { toAdvancementProbabilities } from "../../lib/elo";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import { DEFAULT_SETTINGS } from "../../data";
 import { buildLiveKnockoutMatchups, buildLiveTeams } from "../../data/veridexLive";
+import { useIsMobile } from "../../lib/hooks/useIsMobile";
+import { RoundCarousel } from "../../components/bracket/RoundCarousel";
 import type { KnockoutMatchupProbability, StoredResults, TeamCode } from "../../lib/types";
 import s from "./BracketView.module.css";
 
@@ -312,6 +314,8 @@ export function BracketView({ stored }: Props) {
     return lines;
   }
 
+  const isMobile = useIsMobile();
+
   return (
     <div className={s.page}>
       <div className={s.header}>
@@ -337,35 +341,46 @@ export function BracketView({ stored }: Props) {
         )}
       </div>
 
-      <div className={s.scrollWrap}>
-        <div className={s.canvas} style={{ width: totalWidth, height: totalHeight }}>
-          <div className={s.colLabel} style={{ left: colX.r32, width: CARD_W }}>Round of 32</div>
-          <div className={s.colLabel} style={{ left: colX.r16, width: CARD_W }}>Round of 16</div>
-          <div className={s.colLabel} style={{ left: colX.qf,  width: CARD_W }}>Quarterfinals</div>
-          <div className={s.colLabel} style={{ left: colX.sf,  width: CARD_W }}>Semifinals</div>
-          <div className={s.colLabel} style={{ left: colX.fin, width: CARD_W }}>Final</div>
+      {isMobile ? (
+        <RoundCarousel roundLabels={["R32", "R16", "QF", "SF", "F"]}>
+          {[
+            <MobileRoundList matches={r32} key="r32" />,
+            <MobileRoundList matches={r16} key="r16" />,
+            <MobileRoundList matches={qf} key="qf" />,
+            <MobileRoundList matches={sf} key="sf" />,
+            <MobileRoundList matches={[fin]} key="fin" highlightLast />,
+          ]}
+        </RoundCarousel>
+      ) : (
+        <div className={s.scrollWrap}>
+          <div className={s.canvas} style={{ width: totalWidth, height: totalHeight }}>
+            <div className={s.colLabel} style={{ left: colX.r32, width: CARD_W }}>Round of 32</div>
+            <div className={s.colLabel} style={{ left: colX.r16, width: CARD_W }}>Round of 16</div>
+            <div className={s.colLabel} style={{ left: colX.qf,  width: CARD_W }}>Quarterfinals</div>
+            <div className={s.colLabel} style={{ left: colX.sf,  width: CARD_W }}>Semifinals</div>
+            <div className={s.colLabel} style={{ left: colX.fin, width: CARD_W }}>Final</div>
 
-          <svg className={s.connectorLayer} width={totalWidth} height={totalHeight}>
-            {renderConnectors(colX.r32, r32Ys, colX.r16, r16Ys)}
-            {renderConnectors(colX.r16, r16Ys, colX.qf,  qfYs)}
-            {renderConnectors(colX.qf,  qfYs,  colX.sf,  sfYs)}
-            {renderConnectors(colX.sf,  sfYs,  colX.fin, [finY])}
-          </svg>
+            <svg className={s.connectorLayer} width={totalWidth} height={totalHeight}>
+              {renderConnectors(colX.r32, r32Ys, colX.r16, r16Ys)}
+              {renderConnectors(colX.r16, r16Ys, colX.qf,  qfYs)}
+              {renderConnectors(colX.qf,  qfYs,  colX.sf,  sfYs)}
+              {renderConnectors(colX.sf,  sfYs,  colX.fin, [finY])}
+            </svg>
 
-          {r32.map((m, i) => <PositionedCard key={m.id} match={m} x={colX.r32} y={r32Ys[i]} />)}
-          {r16.map((m, i) => <PositionedCard key={m.id} match={m} x={colX.r16} y={r16Ys[i]} />)}
-          {qf.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.qf}  y={qfYs[i]} />)}
-          {sf.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.sf}  y={sfYs[i]} />)}
-          <PositionedCard match={fin} x={colX.fin} y={finY} highlight />
+            {r32.map((m, i) => <PositionedCard key={m.id} match={m} x={colX.r32} y={r32Ys[i]} />)}
+            {r16.map((m, i) => <PositionedCard key={m.id} match={m} x={colX.r16} y={r16Ys[i]} />)}
+            {qf.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.qf}  y={qfYs[i]} />)}
+            {sf.map((m, i)  => <PositionedCard key={m.id} match={m} x={colX.sf}  y={sfYs[i]} />)}
+            <PositionedCard match={fin} x={colX.fin} y={finY} highlight />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
-function PositionedCard({
-  match, x, y, highlight,
-}: { match: MatchNode; x: number; y: number; highlight?: boolean }) {
+/** The card's actual visual content — team names, percentages, upset/confirmed styling — with no positioning, so it can be reused for both the absolutely-positioned desktop canvas and the plain-flow mobile list. */
+function MatchCardContent({ match, highlight }: { match: MatchNode; highlight?: boolean }) {
   const { top, bot, topWinPct, preMatchTopPct, confirmed, winnerCode } = match;
   const topPct = Math.round(topWinPct * 100);
   const botPct = 100 - topPct;
@@ -373,22 +388,17 @@ function PositionedCard({
   const topIsWinner = confirmed ? top?.code === winnerCode : topWinPct >= 0.5;
   const botIsWinner = confirmed ? bot?.code === winnerCode : topWinPct < 0.5;
 
-  // Upset: the pre-match underdog won (< 50% chance)
   const topWasUnderdog = preMatchTopPct < 0.5;
   const isUpset = confirmed && winnerCode && (
     (top?.code === winnerCode && topWasUnderdog) ||
     (bot?.code === winnerCode && !topWasUnderdog)
   );
 
-  // Pre-match odds to display on confirmed cards
   const preMatchTopPct100 = Math.round(preMatchTopPct * 100);
   const preMatchBotPct100 = 100 - preMatchTopPct100;
 
   return (
-    <div
-      className={`${s.matchCard} ${confirmed ? s.matchConfirmed : ""} ${highlight ? s.matchFinal : ""} ${isUpset ? s.matchUpset : ""}`}
-      style={{ left: x, top: y }}
-    >
+    <div className={`${s.matchCard} ${confirmed ? s.matchConfirmed : ""} ${highlight ? s.matchFinal : ""} ${isUpset ? s.matchUpset : ""}`}>
       <div className={`${s.team} ${topIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{top?.name ?? "TBD"}</span>
         <span className={`${s.pct} ${isUpset && topIsWinner ? s.upsetPct : ""}`}>
@@ -409,6 +419,27 @@ function PositionedCard({
             : ""}
         </span>
       </div>
+    </div>
+  );
+}
+
+function PositionedCard({
+  match, x, y, highlight,
+}: { match: MatchNode; x: number; y: number; highlight?: boolean }) {
+  return (
+    <div style={{ position: "absolute", left: x, top: y }}>
+      <MatchCardContent match={match} highlight={highlight} />
+    </div>
+  );
+}
+
+/** One round's matches, stacked vertically — this is what fills a single "page" of the mobile carousel. */
+function MobileRoundList({ matches, highlightLast }: { matches: MatchNode[]; highlightLast?: boolean }) {
+  return (
+    <div className={s.mobileList}>
+      {matches.map((m, i) => (
+        <MatchCardContent key={m.id} match={m} highlight={highlightLast && i === matches.length - 1} />
+      ))}
     </div>
   );
 }
