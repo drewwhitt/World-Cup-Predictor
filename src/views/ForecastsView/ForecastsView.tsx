@@ -269,6 +269,11 @@ export function ForecastsView({ stored, teams }: Props) {
     return allPlayed;
   }, [selectedCode, stored]);
 
+  const powerRank = useMemo(() => {
+    const ranked = [...teams].sort((a, b) => (elos[b.code as TeamCode] ?? 1500) - (elos[a.code as TeamCode] ?? 1500));
+    return ranked.findIndex((t) => t.code === selectedCode) + 1;
+  }, [teams, elos, selectedCode]);
+
   if (!selected || !selectedTeam) return null;
 
   const isEliminated = eliminatedTeams.has(selectedCode);
@@ -277,6 +282,12 @@ export function ForecastsView({ stored, teams }: Props) {
     ? Number((0 - selectedTeam.baseline).toFixed(1))
     : Number((selectedTeam.current - selectedTeam.baseline).toFixed(1));
   const eloRating = Math.round(selectedElo);
+
+  function ordinal(n: number): string {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] ?? s[v] ?? s[0]);
+  }
 
   return (
     <div className={s.page}>
@@ -351,7 +362,7 @@ export function ForecastsView({ stored, teams }: Props) {
         {/* Section 2 — Round-by-round path */}
         <section className={s.card}>
           <h2>Path to the Title</h2>
-          <p className={s.cardSub}>Probability of reaching each round · green = already achieved</p>
+          <p className={s.cardSub}>Probability of reaching each round · green = confirmed by a result already played, not just a high probability</p>
           <div className={s.roundPath}>
             {ROUND_KEYS.map(({ key, label, koRound }) => {
               const prob = pct(selected[key as RoundKey]);
@@ -388,7 +399,7 @@ export function ForecastsView({ stored, teams }: Props) {
           <div className={s.eloContext}>
             <div className={s.eloRow}>
               <span>Power rating</span>
-              <strong>{selectedTeam.rating}</strong>
+              <strong>{ordinal(powerRank)} of {teams.length}</strong>
             </div>
             <div className={s.eloRow}>
               <span>Pre-tournament</span>

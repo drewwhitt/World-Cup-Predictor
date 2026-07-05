@@ -47,7 +47,7 @@ function getMostRecentResult(stored: StoredResults): {
   isKnockout: boolean;
 } | null {
   // Knockout results take priority — they're always more recent than group
-  const koIds = Object.keys(stored.knockoutMatches ?? {});
+  const koIds = Object.keys(stored.knockoutMatches ?? {}).filter((id) => id in KNOCKOUT_STRUCTURE);
   if (koIds.length > 0) {
     // The last entered knockout match (highest ID number = most recent)
     const sorted = koIds.sort((a, b) => {
@@ -145,8 +145,24 @@ function buildDriverText(
   delta: number,
   context: ReturnType<typeof getRecentMatchContext>,
 ): { text: string; type: "result" | "path" | "neutral" } {
-  if (!context || Math.abs(delta) < 0.1) {
+  // "Not significant" specifically means the number itself barely moved —
+  // anything at or above 0.1pp is treated as a real change and must never
+  // be labeled "no change," even if we can't pin it to one specific match.
+  if (Math.abs(delta) < 0.1) {
     return { text: "No significant change from latest result", type: "neutral" };
+  }
+
+  if (!context) {
+    // The odds genuinely moved, just not attributable to one specific
+    // match context (e.g. a bracket-wide ripple effect from a result
+    // elsewhere) — say so honestly instead of defaulting to "no change,"
+    // which would directly contradict the nonzero delta shown alongside it.
+    return {
+      text: delta > 0
+        ? "Odds improved based on other recent tournament results"
+        : "Odds declined based on other recent tournament results",
+      type: "path",
+    };
   }
 
   const teamName = TEAM_BY_CODE[code]?.name ?? code;

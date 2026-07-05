@@ -39,7 +39,7 @@ const R32_MATCHUPS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
 ];
 
 const R16_IDS = ["ko-89","ko-90","ko-91","ko-92","ko-93","ko-94","ko-95","ko-96"];
-const QF_IDS  = ["ko-97","ko-98","ko-99","ko-100"];
+const QF_IDS  = ["ko-97","ko-99","ko-98","ko-100"];
 const SF_IDS  = ["ko-101","ko-102"];
 const FIN_ID  = "ko-final";
 
