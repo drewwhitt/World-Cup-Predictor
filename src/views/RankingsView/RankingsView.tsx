@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
-import { computeElosFromResults } from "../../lib/simulate";
+import { computeElosIncludingKnockouts } from "../../lib/simulate";
 import { TEAMS, TEAM_CONFEDERATION, CONFEDERATION_OFFSETS, type Confederation } from "../../lib/teams";
 import { getTeamKnockoutStatus } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
@@ -31,7 +31,7 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
       const r = stored.matches[m.id];
       return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
     });
-    const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
+    const elos = computeElosIncludingKnockouts(playedMatches, stored, DEFAULT_SETTINGS);
 
     const result: RankingRow[] = TEAMS.map((t) => {
       const confederation = TEAM_CONFEDERATION[t.code] ?? "UEFA";
@@ -115,11 +115,11 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
       <div className={s.tableWrap}>
         <div className={s.tableHeader}>
           <span className={s.colRank}>#</span>
-          <span className={s.colTeam}>Team</span>
+          <span className={s.colTeam}><span className={s.headerLabel}>Team</span></span>
           <span className={s.colElo}><SortHeader label="Elo" k="elo" /></span>
           <span className={s.colDelta}><SortHeader label="Since Start" k="delta" /></span>
           <span className={s.colOffset}><SortHeader label="Confederation" k="offset" /></span>
-          <span className={s.colStatus}>Status</span>
+          <span className={s.colStatus}><span className={s.headerLabel}>Status</span></span>
         </div>
 
         {sorted.map((row, i) => (

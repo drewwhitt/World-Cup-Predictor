@@ -8,7 +8,7 @@
  * This is the core of the "driver" concept — the thing that makes
  * Veridex feel like analysis rather than just a scoreboard.
  */
-import { runSimulation, computeElosFromResults } from "./simulate";
+import { runSimulation, computeElosIncludingKnockouts } from "./simulate";
 import { GROUP_MATCHES, DEFAULT_SETTINGS, KNOCKOUT_MATCHES } from "../data";
 import { toAdvancementProbabilities } from "./elo";
 import { TEAM_BY_CODE } from "./teams";
@@ -246,7 +246,7 @@ export function getUpcomingKnockoutOdds(stored: StoredResults): UpcomingMatchOdd
     const r = stored.matches[m.id];
     return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
   });
-  const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
+  const elos = computeElosIncludingKnockouts(playedMatches, stored, DEFAULT_SETTINGS);
 
   // Every knockout match at any round whose two participants are already
   // known (via real results) but hasn't been played yet itself — not just

@@ -8,6 +8,7 @@ import {
 } from "./groups";
 import { assignThirdPlaceSlots, simulateKnockout } from "./bracket";
 import { TEAMS, TEAM_BY_CODE } from "./teams";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree";
 import type {
   GroupLetter,
   GroupMatch,
@@ -83,6 +84,59 @@ export function computeElosFromResults(
   return elos;
 }
 
+// Knockout rounds in bracket order — real knockout matches are processed
+// in this order so a team's R16 rating update happens after their (already
+// processed) R32 result, matching how the bracket is actually played.
+const KNOCKOUT_ROUND_ORDER = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
+
+/**
+ * Same as computeElosFromResults, but ALSO processes real, already-decided
+ * knockout results — group-stage Elo only reflects a team's group-stage
+ * form, but every external tracker (FIFA's official ranking, eloratings.net)
+ * credits teams for knockout wins too. Without this, a team's displayed
+ * "current Elo" — and every forward-looking win% calculation that uses it —
+ * stays frozen at their group-stage level even after they've won two
+ * knockout rounds, understating their real current strength.
+ *
+ * This is the function that should represent "how strong is this team
+ * right now" anywhere in the app — Rankings, Model Rating, win% for a
+ * team's next match, What If. Knockout venues are neutral, so no host
+ * advantage is applied here regardless of settings.
+ */
+export function computeElosIncludingKnockouts(
+  groupMatches: GroupMatch[],
+  stored: StoredResults,
+  settings: SimulationSettings,
+  eloAdjustments: Partial<Record<TeamCode, number>> = {},
+): Record<TeamCode, number> {
+  const elos = computeElosFromResults(groupMatches, settings, eloAdjustments);
+
+  const decidedKnockouts = Object.keys(KNOCKOUT_STRUCTURE)
+    .map((id) => {
+      const result = stored.knockoutMatches?.[id];
+      if (!result) return null;
+      const { home, away, round } = resolveKnockoutMatch(id, stored);
+      if (!home || !away || !round) return null;
+      return { id, home, away, round, result };
+    })
+    .filter((m) => m !== null)
+    .sort((a, b) => KNOCKOUT_ROUND_ORDER.indexOf(a.round) - KNOCKOUT_ROUND_ORDER.indexOf(b.round));
+
+  for (const match of decidedKnockouts) {
+    // Penalty shootouts don't reflect a real goal margin, so treat a
+    // penalty-decided match as the smallest possible decisive margin (1)
+    // rather than the actual shootout score — same spirit as the draw fix,
+    // avoiding a degenerate/misleading margin input to the MOV curve.
+    const homeGoals = match.result.penaltyWinner === "home" ? 1 : match.result.penaltyWinner === "away" ? 0 : match.result.homeGoals;
+    const awayGoals = match.result.penaltyWinner === "away" ? 1 : match.result.penaltyWinner === "home" ? 0 : match.result.awayGoals;
+    const updated = updateElo(elos[match.home], elos[match.away], homeGoals, awayGoals, settings.kFactor, 0);
+    elos[match.home] = updated.home;
+    elos[match.away] = updated.away;
+  }
+
+  return elos;
+}
+
 export function runSimulation(
   groupMatches: GroupMatch[],
   knockoutDefs: KnockoutMatchDef[],
@@ -92,7 +146,12 @@ export function runSimulation(
   eloAdjustments: Partial<Record<TeamCode, number>> = {},
 ): SimulationResult {
   const playedCount = groupMatches.filter((m) => m.played).length;
-  const baseElos = computeElosFromResults(groupMatches, settings, eloAdjustments);
+  const baseElos = computeElosIncludingKnockouts(
+    groupMatches,
+    { matches: {}, knockoutMatches: storedKnockout },
+    settings,
+    eloAdjustments,
+  );
   const rng = mulberry32(seed);
 
   // Real 2026 R32 matchups from FIFA's published bracket.

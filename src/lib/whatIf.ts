@@ -1,5 +1,5 @@
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "../data";
-import { runSimulation, computeElosFromResults } from "./simulate";
+import { runSimulation, computeElosIncludingKnockouts } from "./simulate";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION, type Confederation } from "./teams";
 import { KNOCKOUT_STRUCTURE, type KnockoutSource, type KnockoutRound } from "./bracketTree";
 import type { StoredResults, TeamCode } from "./types";
@@ -166,7 +166,7 @@ export function currentElos(stored: StoredResults): Record<TeamCode, number> {
       ? { ...match, played: true, homeGoals: result.homeGoals, awayGoals: result.awayGoals }
       : match;
   });
-  return computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
+  return computeElosIncludingKnockouts(playedMatches, stored, DEFAULT_SETTINGS);
 }
 
 /**

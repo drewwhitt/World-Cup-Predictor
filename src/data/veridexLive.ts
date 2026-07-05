@@ -1,6 +1,6 @@
 import baselineData from "./baseline.json";
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from ".";
-import { computeElosFromResults, runSimulation } from "../lib/simulate";
+import { computeElosIncludingKnockouts, runSimulation } from "../lib/simulate";
 import { computeStandings } from "../lib/groups";
 import { TEAM_BY_CODE } from "../lib/teams";
 import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
@@ -79,7 +79,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
       : match;
   });
   const current = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS, 42, stored.knockoutMatches);
-  const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
+  const elos = computeElosIncludingKnockouts(playedMatches, stored, DEFAULT_SETTINGS);
   const baselineByCode = new Map(baselineRows.map((row) => [row.code, row]));
 
   return current.probabilities.map((row) => {

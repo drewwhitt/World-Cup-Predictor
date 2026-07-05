@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { computeDrivers } from "../../lib/drivers";
 import { toAdvancementProbabilities } from "../../lib/elo";
-import { runSimulation, computeElosFromResults } from "../../lib/simulate";
+import { runSimulation, computeElosIncludingKnockouts } from "../../lib/simulate";
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
 import { getReachableZoneByRound, teamsInZone, getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE, type KnockoutRound } from "../../lib/bracketTree";
@@ -68,7 +68,7 @@ export function ForecastsView({ stored, teams }: Props) {
       return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
     });
     const result = runSimulation(playedMatches, KNOCKOUT_MATCHES, DEFAULT_SETTINGS, 42, stored.knockoutMatches);
-    const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
+    const elos = computeElosIncludingKnockouts(playedMatches, stored, DEFAULT_SETTINGS);
     const drivers = computeDrivers(stored);
     return {
       teamProbs: new Map(result.probabilities.map((r) => [r.code as TeamCode, r])),
