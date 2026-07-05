@@ -1,11 +1,9 @@
 import { headlines as mockHeadlines, morningForecast, teams as mockTeams, type Headline, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
 import { DailyMovers } from "../../components/movers/DailyMovers";
-import { UpsetFeed } from "../../components/upsets/UpsetFeed";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults } from "../../lib/types";
 import { Hero } from "./Hero";
 import { HeadlineCard } from "./HeadlineCard";
-import { Leaderboard } from "./Leaderboard";
 import { MorningForecast } from "./MorningForecast";
 import { QuickStrip } from "./QuickStrip";
 import s from "./HomeView.module.css";
@@ -16,20 +14,33 @@ type Props = {
   headlines?: Headline[];
   playedCount?: number;
   stored?: StoredResults;
+  onNavigateToRankings?: () => void;
 };
 
 const TEAM_NAMES: Record<string, string> = Object.fromEntries(
   Object.entries(TEAM_BY_CODE).map(([code, t]) => [code, t.name]),
 );
 
-export function HomeView({ teams = mockTeams, morning = morningForecast, headlines = mockHeadlines, playedCount = 0, stored }: Props) {
+export function HomeView({
+  teams = mockTeams,
+  morning = morningForecast,
+  headlines = mockHeadlines,
+  playedCount = 0,
+  stored,
+  onNavigateToRankings,
+}: Props) {
   return (
     <>
-      <Hero teams={teams} playedCount={playedCount} />
-      <QuickStrip teams={teams} />
+      <Hero teams={teams} playedCount={playedCount} stored={stored} />
+      <QuickStrip teams={teams} onNavigate={onNavigateToRankings} />
+
+      <section className={s.latestHeader}>
+        <h2>Today's Briefing</h2>
+        <span>Updated continuously</span>
+      </section>
       <MorningForecast forecast={morning} />
       <DailyMovers sport="world_cup" teamNames={TEAM_NAMES} limit={6} title="Today's Movers — World Cup" />
-      {stored && <UpsetFeed stored={stored} limit={8} />}
+
       <section className={s.latestHeader}>
         <h2>Latest from the model</h2>
         <span>Updated continuously</span>
@@ -39,7 +50,6 @@ export function HomeView({ teams = mockTeams, morning = morningForecast, headlin
           <HeadlineCard headline={headline} key={headline.title} />
         ))}
       </section>
-      <Leaderboard teams={teams} stored={stored} />
     </>
   );
 }

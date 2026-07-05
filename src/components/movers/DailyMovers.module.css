@@ -131,3 +131,15 @@
   font: 400 11px/1.4 var(--font-sans);
   color: rgba(244, 239, 227, 0.7);
 }
+
+@media (max-width: 720px) {
+  .panel { padding: 14px 16px; }
+  .row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 4px;
+  }
+  .values { grid-column: 1; font-size: 10px; }
+  .delta { grid-column: 2; grid-row: 1 / 3; }
+  .reason { grid-column: 1 / 3; }
+}

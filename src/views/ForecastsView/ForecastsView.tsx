@@ -5,6 +5,7 @@ import { runSimulation, computeElosIncludingKnockouts } from "../../lib/simulate
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
 import { getReachableZoneByRound, teamsInZone, getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE, type KnockoutRound } from "../../lib/bracketTree";
+import { UpsetFeed } from "../../components/upsets/UpsetFeed";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import type { Team } from "../../data/worldCup";
 import s from "./ForecastsView.module.css";
@@ -462,6 +463,8 @@ export function ForecastsView({ stored, teams }: Props) {
         )}
 
       </div>
+
+      <UpsetFeed stored={stored} limit={8} />
     </div>
   );
 }

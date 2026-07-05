@@ -75,6 +75,7 @@ export default function App() {
             headlines={liveHeadlines}
             playedCount={playedCount}
             stored={stored}
+            onNavigateToRankings={() => setActiveTab("rankings")}
           />
         );
     }

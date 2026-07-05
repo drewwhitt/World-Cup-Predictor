@@ -84,3 +84,24 @@
   color: var(--paper);
   background: var(--ink);
 }
+
+@media (max-width: 720px) {
+  .utility {
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 10px;
+  }
+  .utilityRight {
+    gap: 12px;
+  }
+  .masthead {
+    padding: 18px 0 16px;
+  }
+  .wordmark {
+    font-size: 32px;
+  }
+  .tagline {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+  }
+}

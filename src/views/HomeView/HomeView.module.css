@@ -29,3 +29,15 @@
   background: var(--hairline);
   border: 1px solid var(--hairline);
 }
+
+@media (max-width: 860px) {
+  .headlineGrid {
+    grid-template-columns: 1fr;
+  }
+  .latestHeader {
+    margin: 32px 0 14px;
+  }
+  .latestHeader h2 {
+    font-size: 21px;
+  }
+}

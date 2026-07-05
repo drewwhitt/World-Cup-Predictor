@@ -35,3 +35,10 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+@media (max-width: 720px) {
+  .container, .footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
