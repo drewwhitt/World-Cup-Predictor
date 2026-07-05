@@ -145,7 +145,7 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
               {row.isChampion ? (
                 <span className={s.champTag}>Champion</span>
               ) : row.eliminated ? (
-                <span className={s.outTag}>{row.eliminatedRound ? `Out · ${row.eliminatedRound}` : "Out"}</span>
+                <span className={s.outTag}>Out · {row.eliminatedRound ?? "Group Stage"}</span>
               ) : (
                 <span className={s.aliveTag}>Alive</span>
               )}
