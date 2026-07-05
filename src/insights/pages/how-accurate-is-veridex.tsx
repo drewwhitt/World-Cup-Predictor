@@ -4,6 +4,7 @@ import {
   computeAccuracy,
   RANDOM_BASELINE_BRIER,
   COIN_FLIP_BRIER,
+  BINARY_COIN_FLIP_BRIER,
   BACKTESTED_BRIER,
   HISTORICAL_DRAW_RATE,
 } from "../../lib/accuracy";
@@ -56,45 +57,57 @@ function Content({ data }: { data?: Record<string, unknown> }) {
           <p>
             Group-stage predictions are scored with a Brier score — the same method used to validate
             the model against real results from the 2010, 2014, 2018, and 2022 World Cups before this
-            tournament started. Lower is better: 0 is a perfect prediction, and two useful reference
-            points are a coin-flip guess ({COIN_FLIP_BRIER}) and picking every match as a toss-up
-            regardless of the teams involved ({RANDOM_BASELINE_BRIER}).
+            tournament started. Lower is better: 0 is a perfect prediction, and a fair reference point
+            for any group match — decisive or draw — is treating every outcome as an equal three-way
+            toss-up ({RANDOM_BASELINE_BRIER}).
           </p>
           {accuracy.group.brierScore !== null ? (
             <>
               <div className="brier-chart">
                 <BrierBar label="2026 (live, this page)" value={accuracy.group.brierScore} highlight />
                 <BrierBar label="2010–2022 backtest" value={BACKTESTED_BRIER} />
-                <BrierBar label="Coin flip" value={COIN_FLIP_BRIER} />
-                <BrierBar label="Random baseline" value={RANDOM_BASELINE_BRIER} />
+                <BrierBar label="Random baseline (equal 3-way)" value={RANDOM_BASELINE_BRIER} />
               </div>
               <p>
-                That number is worse than the historical backtest, and it's worth explaining why
-                rather than leaving it unexplained: it's concentrated almost entirely in one place.
-                Decisive results (a team actually winning) are scoring close to the historical norm.
-                Draws are where the model is struggling —{" "}
-                {accuracy.group.draws.observedRate !== null
-                  ? `${(accuracy.group.draws.observedRate * 100).toFixed(0)}%`
-                  : "a higher-than-usual share"}{" "}
-                of this tournament's group matches have ended in a draw, against a historical rate
-                closer to {(HISTORICAL_DRAW_RATE * 100).toFixed(0)}%, and the model hasn't been giving
-                draws enough credit as a result.
+                {accuracy.group.brierScore <= BACKTESTED_BRIER * 1.15 ? (
+                  <>
+                    That's in line with the historical backtest — the model is performing about as
+                    well on real 2026 results as it did validating against 2010-2022.
+                  </>
+                ) : (
+                  <>
+                    That's higher than the historical backtest, and it's worth explaining why rather
+                    than leaving it unexplained: it's concentrated almost entirely in one place.
+                    Decisive results (a team actually winning) are scoring close to the historical
+                    norm. Draws are where the model is struggling —{" "}
+                    {accuracy.group.draws.observedRate !== null
+                      ? `${(accuracy.group.draws.observedRate * 100).toFixed(0)}%`
+                      : "a higher-than-usual share"}{" "}
+                    of this tournament's group matches have ended in a draw, against a historical rate
+                    closer to {(HISTORICAL_DRAW_RATE * 100).toFixed(0)}%, and the model hasn't been
+                    giving draws enough credit as a result.
+                  </>
+                )}
               </p>
               <div className="brier-chart">
                 <BrierBar
                   label={`Decisive results (${accuracy.group.decisive.count})`}
                   value={accuracy.group.decisive.brierScore ?? 0}
                 />
+                <BrierBar label="Coin flip, decisive matches only" value={COIN_FLIP_BRIER} />
                 <BrierBar
                   label={`Draws (${accuracy.group.draws.count})`}
                   value={accuracy.group.draws.brierScore ?? 0}
                 />
               </div>
               <p className="note">
-                Whether that's this tournament genuinely running unusually draw-heavy, or a real gap
-                in how the model weighs draw likelihood, is exactly the kind of question worth
-                revisiting with a proper recalibration pass once the tournament wraps — not something
-                to patch mid-tournament based on one data point.
+                The coin-flip line above is only a fair comparison against decisive results
+                specifically — draws are a real third outcome, not a coin flip between two, so it's
+                shown here rather than against the overall number. Whether the draw gap above reflects
+                this tournament genuinely running unusually draw-heavy, or a real gap in how the model
+                weighs draw likelihood, is exactly the kind of question worth revisiting with a proper
+                recalibration pass once the tournament wraps — not something to patch mid-tournament
+                based on one data point.
               </p>
             </>
           ) : (
@@ -118,7 +131,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
               {accuracy.knockout.brierScore !== null && (
                 <div className="brier-chart">
                   <BrierBar label="2026 knockout stage (live)" value={accuracy.knockout.brierScore} highlight />
-                  <BrierBar label="Coin flip" value={COIN_FLIP_BRIER} />
+                  <BrierBar label="Coin flip" value={BINARY_COIN_FLIP_BRIER} />
                 </div>
               )}
               {accuracy.knockout.upsetExamples.length > 0 && (

@@ -22,19 +22,24 @@ export interface AccuracyResult {
   };
 }
 
-const RANDOM_BASELINE_BRIER = 0.2222;
-const COIN_FLIP_BRIER = 0.1667;
+const RANDOM_BASELINE_BRIER = 0.2222; // uniform 1/3-1/3-1/3 guess, 3-way scale — valid for any group-stage comparison
+const COIN_FLIP_BRIER = 0.1667; // 3-way-scaled coin flip, but ONLY valid when compared against decisive (non-draw) results specifically — see note below
+const BINARY_COIN_FLIP_BRIER = 0.25; // p=0.5 on a genuine binary (win/lose) outcome — the correct comparison for knockout matches, which have no draw option
 const BACKTESTED_BRIER = 0.1877; // v9, validated across 2010/2014/2018/2022 — see MODEL_HISTORY.md
 const HISTORICAL_DRAW_RATE = 0.25; // roughly typical for World Cup group-stage matches historically
 
-export { RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BACKTESTED_BRIER, HISTORICAL_DRAW_RATE };
+export { RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BINARY_COIN_FLIP_BRIER, BACKTESTED_BRIER, HISTORICAL_DRAW_RATE };
 
 /**
  * Group-stage Brier score using the same 3-way formula documented in
- * MODEL_HISTORY.md, so this is directly comparable to the 0.1877
- * historical backtest figure — walks matches in chronological order,
- * scoring each one on the Elo ratings as they stood BEFORE that match
- * (not after), same as the live model actually predicts.
+ * MODEL_HISTORY.md (sum of squared errors across all 3 outcomes, DIVIDED
+ * BY 3) — this /3 step was missing in an earlier version of this file,
+ * which made every group-stage number here read ~3x worse than it really
+ * was relative to the 0.1877 backtest baseline and the 0.2222/0.1667
+ * reference constants (both of which were already on the correct /3
+ * scale). Walks matches in chronological order, scoring each one on the
+ * Elo ratings as they stood BEFORE that match (not after), same as the
+ * live model actually predicts.
  *
  * Also splits the score into decisive-result matches vs draws. A single
  * aggregate number can hide a lot — the model can be scoring fine on
@@ -61,7 +66,7 @@ function scoreGroupStage(stored: StoredResults): AccuracyResult["group"] {
     const { homeWin, draw, awayWin } = matchOutcomeProbabilities(elos[match.home], elos[match.away], ha);
     const actual = result.homeGoals > result.awayGoals ? "home" : result.homeGoals < result.awayGoals ? "away" : "draw";
     const outcome = { home: actual === "home" ? 1 : 0, draw: actual === "draw" ? 1 : 0, away: actual === "away" ? 1 : 0 };
-    const brier = (homeWin - outcome.home) ** 2 + (draw - outcome.draw) ** 2 + (awayWin - outcome.away) ** 2;
+    const brier = ((homeWin - outcome.home) ** 2 + (draw - outcome.draw) ** 2 + (awayWin - outcome.away) ** 2) / 3;
     totalBrier += brier;
     count += 1;
 
