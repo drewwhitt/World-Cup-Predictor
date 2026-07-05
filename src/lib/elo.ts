@@ -46,10 +46,20 @@ export function matchOutcomeProbabilities(
  * Margin-of-victory multiplier — 538-style log scale with autocorrelation
  * correction. Prevents a single blowout from dominating Elo movement while
  * still rewarding genuinely dominant performances more than squeakers.
+ *
+ * Draws are a special case: margin is 0 by definition, and log(0+1)=0
+ * would make the ENTIRE update zero for every draw, regardless of the Elo
+ * gap between the two teams — silently erasing the (homeScore-expectedHome)
+ * signal in updateElo, which is what actually captures whether a draw was
+ * a big upset (huge underdog holds a favorite) or fully expected (two
+ * evenly-matched teams). A draw isn't "no information" — it's simply not
+ * a blowout, so it gets the smallest non-degenerate value on the curve
+ * (the same one a 1-goal decisive result gets) rather than a hard zero.
  */
 function movMultiplier(margin: number, eloDiff: number): number {
+  const effectiveMargin = margin === 0 ? 1 : Math.abs(margin);
   const autocorrCorrection = Math.abs(eloDiff) * 0.001 + 2.2;
-  return (Math.log(Math.abs(margin) + 1) * 1.5) / autocorrCorrection;
+  return (Math.log(effectiveMargin + 1) * 1.5) / autocorrCorrection;
 }
 
 export function updateElo(
