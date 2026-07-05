@@ -16,6 +16,7 @@ import { BracketView } from "./views/BracketView/BracketView";
 import { ForecastsView } from "./views/ForecastsView/ForecastsView";
 import { ComingSoonView } from "./views/ComingSoonView/ComingSoonView";
 import { WhatIfView } from "./views/WhatIfView/WhatIfView";
+import { RankingsView } from "./views/RankingsView/RankingsView";
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
@@ -58,7 +59,7 @@ export default function App() {
       case "bracket":
         return <BracketView stored={stored} />;
       case "rankings":
-        return <ComingSoonView title="Rankings" onNavigate={setActiveTab} />;
+        return <RankingsView stored={stored} />;
       case "match":
         return <ComingSoonView title="Match Center" onNavigate={setActiveTab} />;
       case "sim":
