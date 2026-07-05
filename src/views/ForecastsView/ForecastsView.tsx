@@ -4,7 +4,7 @@ import { toAdvancementProbabilities } from "../../lib/elo";
 import { runSimulation, computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
-import { getReachableZoneByRound, teamsInZone, R32_MATCHUPS } from "../../lib/bracketTree";
+import { getReachableZoneByRound, teamsInZone, getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE, type KnockoutRound } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import type { Team } from "../../data/worldCup";
 import s from "./ForecastsView.module.css";
@@ -26,32 +26,32 @@ const ROUND_KEYS = [
 
 type RoundKey = typeof ROUND_KEYS[number]["key"];
 
+// This file's existing convention uses hyphenated round names ("Quarter-final")
+// in several places below; the shared bracketTree.ts helper returns
+// unhyphenated ones ("Quarterfinal") — this maps between them so the fix
+// doesn't require touching every downstream reference.
+const ROUND_LABEL_MAP: Record<KnockoutRound, string> = {
+  "Round of 32": "Round of 32",
+  "Round of 16": "Round of 16",
+  Quarterfinal: "Quarter-final",
+  Semifinal: "Semi-final",
+  Final: "Final",
+};
+
 function pct(v: number) { return Number((v * 100).toFixed(1)); }
 
 export function ForecastsView({ stored, teams }: Props) {
   // Default to the current most likely champion
   const sortedTeams = [...teams].sort((a, b) => b.current - a.current);
 
-  // Compute eliminated teams using R32 matchups + stored knockout results
+  // Eliminated teams — walks EVERY round for each team (not just R32), so a
+  // team knocked out in the R16 or later is correctly marked eliminated
+  // instead of silently still showing as active.
   const eliminatedTeams = useMemo(() => {
     const eliminated = new Set<TeamCode>();
-    const r32Teams = new Set<TeamCode>();
-    for (const m of Object.values(R32_MATCHUPS)) {
-      r32Teams.add(m.home); r32Teams.add(m.away);
-    }
-    // Group stage eliminations
     for (const t of sortedTeams) {
-      if (!r32Teams.has(t.code as TeamCode)) eliminated.add(t.code as TeamCode);
-    }
-    // Knockout eliminations
-    for (const [matchId, result] of Object.entries(stored.knockoutMatches ?? {})) {
-      const def = R32_MATCHUPS[matchId];
-      if (!def) continue;
-      if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
-        eliminated.add(def.away);
-      } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
-        eliminated.add(def.home);
-      }
+      const status = getTeamKnockoutStatus(t.code as TeamCode, stored);
+      if (!status.isRealParticipant || status.eliminated) eliminated.add(t.code as TeamCode);
     }
     return eliminated;
   }, [sortedTeams, stored]);
@@ -85,19 +85,16 @@ export function ForecastsView({ stored, teams }: Props) {
 
   const ROUND_ORDER = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"];
 
-  // Determine which round the selected team is currently in
+  // Which round is the selected team CURRENTLY sitting in — walks the whole
+  // bracket via the shared helper, so a team who's advanced past the R16
+  // (or further) correctly shows their real current round, not always
+  // "Round of 16" the moment their R32 match is decided.
+  const teamStatus = useMemo(() => getTeamKnockoutStatus(selectedCode, stored), [selectedCode, stored]);
   const firstRound = useMemo(() => {
-    const r32Entry = Object.entries(R32_MATCHUPS).find(
-      ([, m]) => m.home === selectedCode || m.away === selectedCode
-    );
-    if (!r32Entry) return "Round of 32";
-    const [matchId, r32Match] = r32Entry;
-    const result = stored.knockoutMatches?.[matchId];
-    if (!result) return "Round of 32";
-    const isHome = r32Match.home === selectedCode;
-    const homeWon = result.homeGoals > result.awayGoals || result.penaltyWinner === "home";
-    return (isHome ? homeWon : !homeWon) ? "Round of 16" : "eliminated";
-  }, [selectedCode, stored]);
+    if (!teamStatus.isRealParticipant || teamStatus.eliminated) return "eliminated";
+    if (teamStatus.isChampion) return "Final";
+    return teamStatus.currentRound ? ROUND_LABEL_MAP[teamStatus.currentRound] : "Round of 32";
+  }, [teamStatus]);
 
   // Most likely opponents at each knockout round for the selected team
   const likelyOpponents = useMemo(() => {
@@ -113,60 +110,55 @@ export function ForecastsView({ stored, teams }: Props) {
     if (zones.sf)     allowedByRound["Semi-final"]     = teamsInZone(zones.sf);
     if (zones.final)  allowedByRound["Final"]          = teamsInZone(zones.final);
 
-    // For confirmed R16 opponent, use direct bracket lookup instead of simulation
-    let confirmedR16Opponent: TeamCode | null = null;
-    if (firstRound === "Round of 16" && zones.r16) {
-      const opponentDef = R32_MATCHUPS[zones.r16];
-      const opponentResult = stored.knockoutMatches?.[zones.r16];
-      if (opponentResult && opponentDef) {
-        const homeWon = opponentResult.homeGoals > opponentResult.awayGoals ||
-          opponentResult.penaltyWinner === "home";
-        confirmedR16Opponent = homeWon ? opponentDef.home : opponentDef.away;
-      }
-    }
-
     // Which rounds are still ahead?
     const firstRoundIdx = ROUND_ORDER.indexOf(firstRound);
     const futureRounds = ["Round of 32", "Round of 16", "Quarter-final", "Semi-final", "Final"]
       .filter((r) => ROUND_ORDER.indexOf(r) >= firstRoundIdx);
 
-    // Build result: for each future round, derive opponent probabilities
     const result: Array<{
       round: string;
       opponents: Array<{ opponent: TeamCode; opponentName: string; prob: number; advancePct: number }>;
     }> = [];
 
-    // Handle R32 specially — show the actual opponent with 100% since matchup is fixed
-    if (firstRound === "Round of 32" && zones.r16) {
-      const r32OpponentDef = R32_MATCHUPS[zones.r16];
-      if (r32OpponentDef) {
-        // Both teams in the R32 opponent match are possible — show whichever is confirmed,
-        // or both with Elo-derived probabilities if unplayed
-        const r32Result = stored.knockoutMatches?.[zones.r16];
-        if (r32Result) {
-          // Opponent's R32 match is already played — one team is confirmed
-          const homeWon = r32Result.homeGoals > r32Result.awayGoals || r32Result.penaltyWinner === "home";
-          const confirmedOpp = homeWon ? r32OpponentDef.home : r32OpponentDef.away;
-          result.push({ round: "Round of 32", opponents: [{
-            opponent: confirmedOpp,
-            opponentName: TEAM_BY_CODE[confirmedOpp]?.name ?? confirmedOpp,
-            prob: 1, advancePct: 100,
-          }]});
-        } else {
-          // Both teams still alive — show with relative Elo probabilities
-          const myR32 = Object.entries(R32_MATCHUPS).find(
-            ([, m]) => m.home === selectedCode || m.away === selectedCode
-          );
-          const myMatchDef = myR32?.[1];
-          if (myMatchDef) {
-            const { home: h, away: a } = toAdvancementProbabilities(
-              elos[r32OpponentDef.home] ?? 1500,
-              elos[r32OpponentDef.away] ?? 1500, 0
-            );
-            result.push({ round: "Round of 32", opponents: [
-              { opponent: r32OpponentDef.home, opponentName: TEAM_BY_CODE[r32OpponentDef.home]?.name ?? r32OpponentDef.home, prob: h, advancePct: pct(h) },
-              { opponent: r32OpponentDef.away, opponentName: TEAM_BY_CODE[r32OpponentDef.away]?.name ?? r32OpponentDef.away, prob: a, advancePct: pct(a) },
-            ].sort((x,y) => y.prob - x.prob)});
+    // The team's CURRENT round gets a precise answer — either a fully
+    // confirmed opponent (real result already in), or, if the opponent's
+    // own feeder match hasn't been decided yet, the exact head-to-head
+    // odds between the two teams who could still become that opponent.
+    // This replaces separate R32-only and R16-only special cases that
+    // stopped working the moment a team advanced past the R16 — this one
+    // works at whatever round the team is actually in.
+    let handledCurrentRound: string | null = null;
+    if (teamStatus.currentMatchId && teamStatus.currentRound) {
+      const { home, away } = resolveKnockoutMatch(teamStatus.currentMatchId, stored);
+      const currentRoundLabel = ROUND_LABEL_MAP[teamStatus.currentRound];
+      handledCurrentRound = currentRoundLabel;
+
+      if (home === selectedCode && away) {
+        result.push({ round: currentRoundLabel, opponents: [{
+          opponent: away, opponentName: TEAM_BY_CODE[away]?.name ?? away, prob: 1, advancePct: 100,
+        }]});
+      } else if (away === selectedCode && home) {
+        result.push({ round: currentRoundLabel, opponents: [{
+          opponent: home, opponentName: TEAM_BY_CODE[home]?.name ?? home, prob: 1, advancePct: 100,
+        }]});
+      } else {
+        // Opponent slot not resolved yet — find the two teams who could
+        // still fill it and use their real head-to-head odds.
+        const structure = KNOCKOUT_STRUCTURE[teamStatus.currentMatchId];
+        const oppSource = structure.home.type === "team" && structure.home.code === selectedCode
+          ? structure.away
+          : structure.away.type === "team" && structure.away.code === selectedCode
+          ? structure.home
+          : (home === selectedCode ? structure.away : structure.home);
+
+        if (oppSource.type === "winner") {
+          const feeder = resolveKnockoutMatch(oppSource.matchId, stored);
+          if (feeder.home && feeder.away) {
+            const { home: h } = toAdvancementProbabilities(elos[feeder.home] ?? 1500, elos[feeder.away] ?? 1500, 0);
+            result.push({ round: currentRoundLabel, opponents: [
+              { opponent: feeder.home, opponentName: TEAM_BY_CODE[feeder.home]?.name ?? feeder.home, prob: h, advancePct: pct(h) },
+              { opponent: feeder.away, opponentName: TEAM_BY_CODE[feeder.away]?.name ?? feeder.away, prob: 1 - h, advancePct: pct(1 - h) },
+            ].sort((x, y) => y.prob - x.prob) });
           }
         }
       }
@@ -181,22 +173,9 @@ export function ForecastsView({ stored, teams }: Props) {
     };
 
     for (const round of futureRounds) {
+      if (round === handledCurrentRound) continue; // already handled precisely above
       const allowed = allowedByRound[round];
       if (!allowed) continue;
-
-      // Confirmed R16 opponent — 100% certainty
-      if (round === "Round of 16" && confirmedR16Opponent) {
-        result.push({
-          round,
-          opponents: [{
-            opponent: confirmedR16Opponent,
-            opponentName: TEAM_BY_CODE[confirmedR16Opponent]?.name ?? confirmedR16Opponent,
-            prob: 1,
-            advancePct: 100,
-          }],
-        });
-        continue;
-      }
 
       const field = roundToField[round];
       if (!field) continue;
@@ -232,7 +211,7 @@ export function ForecastsView({ stored, teams }: Props) {
     }
 
     return result;
-  }, [selectedCode, matchups, stored, firstRound, teamProbs, elos]);
+  }, [selectedCode, matchups, stored, firstRound, teamStatus, teamProbs, elos]);
 
   // Build form from stored results
   const recentResults = useMemo(() => {
@@ -240,26 +219,20 @@ export function ForecastsView({ stored, teams }: Props) {
       .filter((m) => stored.matches[m.id] && (m.home === selectedCode || m.away === selectedCode))
       .sort((a, b) => b.date.localeCompare(a.date));
 
-    const koPlayed = [
-      { id: "ko-73", home: "GER" as TeamCode, away: "PAR" as TeamCode },
-      { id: "ko-74", home: "FRA" as TeamCode, away: "SWE" as TeamCode },
-      { id: "ko-75", home: "RSA" as TeamCode, away: "CAN" as TeamCode },
-      { id: "ko-76", home: "NED" as TeamCode, away: "MAR" as TeamCode },
-      { id: "ko-77", home: "POR" as TeamCode, away: "CRO" as TeamCode },
-      { id: "ko-78", home: "ESP" as TeamCode, away: "AUT" as TeamCode },
-      { id: "ko-79", home: "USA" as TeamCode, away: "BIH" as TeamCode },
-      { id: "ko-80", home: "BEL" as TeamCode, away: "SEN" as TeamCode },
-      { id: "ko-81", home: "BRA" as TeamCode, away: "JPN" as TeamCode },
-      { id: "ko-82", home: "CIV" as TeamCode, away: "NOR" as TeamCode },
-      { id: "ko-83", home: "MEX" as TeamCode, away: "ECU" as TeamCode },
-      { id: "ko-84", home: "ENG" as TeamCode, away: "COD" as TeamCode },
-      { id: "ko-85", home: "ARG" as TeamCode, away: "CPV" as TeamCode },
-      { id: "ko-86", home: "AUS" as TeamCode, away: "EGY" as TeamCode },
-      { id: "ko-87", home: "SUI" as TeamCode, away: "ALG" as TeamCode },
-      { id: "ko-88", home: "COL" as TeamCode, away: "GHA" as TeamCode },
-    ].filter((m) =>
-      stored.knockoutMatches?.[m.id] && (m.home === selectedCode || m.away === selectedCode)
-    );
+    // Every knockout match the selected team has actually played, at any
+    // round — resolved via the shared bracket structure instead of a
+    // hardcoded R32-only list, so R16-onward results (like a team that's
+    // already won two knockout rounds) actually show up here.
+    const koPlayed = Object.keys(KNOCKOUT_STRUCTURE)
+      .map((id) => {
+        const result = stored.knockoutMatches?.[id];
+        if (!result) return null;
+        const { home, away } = resolveKnockoutMatch(id, stored);
+        if (!home || !away) return null;
+        if (home !== selectedCode && away !== selectedCode) return null;
+        return { id, home, away };
+      })
+      .filter((m): m is { id: string; home: TeamCode; away: TeamCode } => m !== null);
 
     const allPlayed = [
       ...koPlayed.map((m) => {

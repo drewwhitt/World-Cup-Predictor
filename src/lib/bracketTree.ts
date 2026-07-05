@@ -184,3 +184,97 @@ export function resolveKnockoutMatch(
     round: structure.round,
   };
 }
+
+/**
+ * Finds the match id whose winner feeds directly into `matchId` — i.e.
+ * the next round's match this team would play in if they win. Null if
+ * `matchId` is the Final (nothing feeds forward from there).
+ */
+function nextMatchAfter(matchId: string): string | null {
+  for (const [id, structure] of Object.entries(KNOCKOUT_STRUCTURE)) {
+    if (
+      (structure.home.type === "winner" && structure.home.matchId === matchId) ||
+      (structure.away.type === "winner" && structure.away.matchId === matchId)
+    ) {
+      return id;
+    }
+  }
+  return null;
+}
+
+export interface TeamKnockoutStatus {
+  /** False if the team never actually made the real R32 at all. */
+  isRealParticipant: boolean;
+  eliminated: boolean;
+  eliminatedRound: KnockoutRound | null;
+  eliminatedBy: TeamCode | null;
+  /** True only if they've won the Final. */
+  isChampion: boolean;
+  /** The match they're CURRENTLY waiting to play (first round without a real result yet) — null if eliminated or champion. */
+  currentMatchId: string | null;
+  currentRound: KnockoutRound | null;
+}
+
+/**
+ * Walks a team through the ENTIRE bracket, round by round, following real
+ * results only (no what-if overrides) — this is the single source of
+ * truth for "what round is this team actually in right now" and "were
+ * they eliminated, and when." Previously several places (ForecastsView,
+ * drivers.ts) only ever checked a team's R32 match, so a team eliminated
+ * in the R16 or later still showed as fully active with a stale R32-based
+ * opponent projection.
+ */
+export function getTeamKnockoutStatus(code: TeamCode, stored: StoredResults): TeamKnockoutStatus {
+  let matchId = getR32MatchId(code);
+  if (!matchId) {
+    return {
+      isRealParticipant: false, eliminated: true, eliminatedRound: null, eliminatedBy: null,
+      isChampion: false, currentMatchId: null, currentRound: null,
+    };
+  }
+
+  while (matchId) {
+    const structure = KNOCKOUT_STRUCTURE[matchId];
+    const result = stored.knockoutMatches?.[matchId];
+    if (!result) {
+      // Not played yet — team is alive and currently sitting in this round.
+      return {
+        isRealParticipant: true, eliminated: false, eliminatedRound: null, eliminatedBy: null,
+        isChampion: false, currentMatchId: matchId, currentRound: structure.round,
+      };
+    }
+
+    const { home, away } = resolveKnockoutMatch(matchId, stored);
+    if (!home || !away) {
+      // Shouldn't happen for a match with a recorded result, but guard anyway.
+      return {
+        isRealParticipant: true, eliminated: false, eliminatedRound: null, eliminatedBy: null,
+        isChampion: false, currentMatchId: matchId, currentRound: structure.round,
+      };
+    }
+
+    const winner = result.homeGoals > result.awayGoals || result.penaltyWinner === "home" ? home : away;
+    if (winner !== code) {
+      return {
+        isRealParticipant: true, eliminated: true, eliminatedRound: structure.round, eliminatedBy: winner,
+        isChampion: false, currentMatchId: null, currentRound: null,
+      };
+    }
+
+    const next = nextMatchAfter(matchId);
+    if (!next) {
+      // Won the Final.
+      return {
+        isRealParticipant: true, eliminated: false, eliminatedRound: null, eliminatedBy: null,
+        isChampion: true, currentMatchId: null, currentRound: null,
+      };
+    }
+    matchId = next;
+  }
+
+  // Unreachable, but keeps TypeScript happy about the while loop's exit.
+  return {
+    isRealParticipant: true, eliminated: false, eliminatedRound: null, eliminatedBy: null,
+    isChampion: false, currentMatchId: null, currentRound: null,
+  };
+}

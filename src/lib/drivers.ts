@@ -12,6 +12,7 @@ import { runSimulation, computeElosFromResults } from "./simulate";
 import { GROUP_MATCHES, DEFAULT_SETTINGS, KNOCKOUT_MATCHES } from "../data";
 import { toAdvancementProbabilities } from "./elo";
 import { TEAM_BY_CODE } from "./teams";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree";
 import type { StoredResults, TeamCode } from "./types";
 
 function pct(v: number) { return Number((v * 100).toFixed(1)); }
@@ -113,36 +114,17 @@ function getRecentMatchContext(stored: StoredResults): {
   if (!recent) return null;
 
   if (recent.isKnockout) {
-    // Find match in R32 definitions
-    const R32 = [
-      { id: "ko-73", home: "GER" as TeamCode, away: "PAR" as TeamCode },
-      { id: "ko-74", home: "FRA" as TeamCode, away: "SWE" as TeamCode },
-      { id: "ko-75", home: "RSA" as TeamCode, away: "CAN" as TeamCode },
-      { id: "ko-76", home: "NED" as TeamCode, away: "MAR" as TeamCode },
-      { id: "ko-77", home: "POR" as TeamCode, away: "CRO" as TeamCode },
-      { id: "ko-78", home: "ESP" as TeamCode, away: "AUT" as TeamCode },
-      { id: "ko-79", home: "USA" as TeamCode, away: "BIH" as TeamCode },
-      { id: "ko-80", home: "BEL" as TeamCode, away: "SEN" as TeamCode },
-      { id: "ko-81", home: "BRA" as TeamCode, away: "JPN" as TeamCode },
-      { id: "ko-82", home: "CIV" as TeamCode, away: "NOR" as TeamCode },
-      { id: "ko-83", home: "MEX" as TeamCode, away: "ECU" as TeamCode },
-      { id: "ko-84", home: "ENG" as TeamCode, away: "COD" as TeamCode },
-      { id: "ko-85", home: "ARG" as TeamCode, away: "CPV" as TeamCode },
-      { id: "ko-86", home: "AUS" as TeamCode, away: "EGY" as TeamCode },
-      { id: "ko-87", home: "SUI" as TeamCode, away: "ALG" as TeamCode },
-      { id: "ko-88", home: "COL" as TeamCode, away: "GHA" as TeamCode },
-    ];
-    const def = R32.find((m) => m.id === recent.matchId);
-    if (!def) return null;
+    const { home, away } = resolveKnockoutMatch(recent.matchId, stored);
+    if (!home || !away) return null;
     const result = stored.knockoutMatches![recent.matchId];
     let winner: TeamCode | null = null;
     let loser: TeamCode | null = null;
     if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
-      winner = def.home; loser = def.away;
+      winner = home; loser = away;
     } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
-      winner = def.away; loser = def.home;
+      winner = away; loser = home;
     }
-    return { homeCode: def.home, awayCode: def.away, winner, loser, wasKnockout: true };
+    return { homeCode: home, awayCode: away, winner, loser, wasKnockout: true };
   }
 
   const match = GROUP_MATCHES.find((m) => m.id === recent.matchId);
@@ -250,46 +232,29 @@ export function getUpcomingKnockoutOdds(stored: StoredResults): UpcomingMatchOdd
   });
   const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
 
-  // All knockout matchups we know about — R32 hardcoded, R16+ TBD as we enter results
-  const R32 = [
-    { id: "ko-73", home: "GER" as TeamCode, away: "PAR" as TeamCode },
-    { id: "ko-74", home: "FRA" as TeamCode, away: "SWE" as TeamCode },
-    { id: "ko-75", home: "RSA" as TeamCode, away: "CAN" as TeamCode },
-    { id: "ko-76", home: "NED" as TeamCode, away: "MAR" as TeamCode },
-    { id: "ko-77", home: "POR" as TeamCode, away: "CRO" as TeamCode },
-    { id: "ko-78", home: "ESP" as TeamCode, away: "AUT" as TeamCode },
-    { id: "ko-79", home: "USA" as TeamCode, away: "BIH" as TeamCode },
-    { id: "ko-80", home: "BEL" as TeamCode, away: "SEN" as TeamCode },
-    { id: "ko-81", home: "BRA" as TeamCode, away: "JPN" as TeamCode },
-    { id: "ko-82", home: "CIV" as TeamCode, away: "NOR" as TeamCode },
-    { id: "ko-83", home: "MEX" as TeamCode, away: "ECU" as TeamCode },
-    { id: "ko-84", home: "ENG" as TeamCode, away: "COD" as TeamCode },
-    { id: "ko-85", home: "ARG" as TeamCode, away: "CPV" as TeamCode },
-    { id: "ko-86", home: "AUS" as TeamCode, away: "EGY" as TeamCode },
-    { id: "ko-87", home: "SUI" as TeamCode, away: "ALG" as TeamCode },
-    { id: "ko-88", home: "COL" as TeamCode, away: "GHA" as TeamCode },
-  ];
-
-  return R32
-    .filter((m) => !stored.knockoutMatches?.[m.id]) // only unplayed
-    .map((m) => {
-      const { home, away } = toAdvancementProbabilities(
-        elos[m.home] ?? 1500,
-        elos[m.away] ?? 1500,
-        0,
-      );
-      // Upset risk: how close to 50/50 (max at exactly 50/50)
-      const upsetRisk = 1 - Math.abs(home - away);
+  // Every knockout match at any round whose two participants are already
+  // known (via real results) but hasn't been played yet itself — not just
+  // R32. Previously this stopped at R32, so an already-decided R16+
+  // matchup (e.g. the winners of two confirmed R32 games) never showed up
+  // here even though both teams — and the match itself — were real.
+  return Object.keys(KNOCKOUT_STRUCTURE)
+    .filter((id) => !stored.knockoutMatches?.[id]) // only unplayed
+    .map((id) => {
+      const { home, away } = resolveKnockoutMatch(id, stored);
+      if (!home || !away) return null;
+      const { home: h, away: a } = toAdvancementProbabilities(elos[home] ?? 1500, elos[away] ?? 1500, 0);
+      const upsetRisk = 1 - Math.abs(h - a);
       return {
-        homeCode: m.home,
-        awayCode: m.away,
-        homeName: TEAM_BY_CODE[m.home]?.name ?? m.home,
-        awayName: TEAM_BY_CODE[m.away]?.name ?? m.away,
-        homeAdvance: home,
-        awayAdvance: away,
+        homeCode: home,
+        awayCode: away,
+        homeName: TEAM_BY_CODE[home]?.name ?? home,
+        awayName: TEAM_BY_CODE[away]?.name ?? away,
+        homeAdvance: h,
+        awayAdvance: a,
         upsetRisk,
-        label: `${TEAM_BY_CODE[m.home]?.name} vs ${TEAM_BY_CODE[m.away]?.name}`,
+        label: `${TEAM_BY_CODE[home]?.name} vs ${TEAM_BY_CODE[away]?.name}`,
       };
     })
+    .filter((m): m is UpcomingMatchOdds => m !== null)
     .sort((a, b) => b.upsetRisk - a.upsetRisk); // most uncertain first
 }
