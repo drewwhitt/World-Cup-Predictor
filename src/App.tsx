@@ -24,6 +24,7 @@ const BracketView = lazy(() => import("./views/BracketView/BracketView").then((m
 const ForecastsView = lazy(() => import("./views/ForecastsView/ForecastsView").then((m) => ({ default: m.ForecastsView })));
 const WhatIfView = lazy(() => import("./views/WhatIfView/WhatIfView").then((m) => ({ default: m.WhatIfView })));
 const RankingsView = lazy(() => import("./views/RankingsView/RankingsView").then((m) => ({ default: m.RankingsView })));
+const MatchCenterView = lazy(() => import("./views/MatchCenterView/MatchCenterView").then((m) => ({ default: m.MatchCenterView })));
 
 function TabLoading() {
   return <div style={{ padding: "60px 0", textAlign: "center", color: "var(--ink-3)" }}>Loading…</div>;
@@ -127,7 +128,7 @@ export default function App() {
       case "rankings":
         return <RankingsView stored={stored} />;
       case "match":
-        return <ComingSoonView title="Match Center" onNavigate={changeTab} />;
+        return <MatchCenterView stored={stored} />;
       case "sim":
         return <WhatIfView stored={stored} />;
       case "lab":
