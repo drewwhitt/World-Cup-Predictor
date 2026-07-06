@@ -20,6 +20,12 @@ import { RankingsView } from "./views/RankingsView/RankingsView";
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
+const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "match", "sim", "lab"];
+
+function getTabFromHash(): TabId {
+  const hash = window.location.hash.slice(1) as TabId;
+  return VALID_TABS.includes(hash) ? hash : "home";
+}
 
 function loadLocalResults(): StoredResults {
   try {
@@ -31,7 +37,38 @@ function loadLocalResults(): StoredResults {
 
 export default function App() {
   const [stored, setStored] = useState<StoredResults>(loadLocalResults);
-  const [activeTab, setActiveTab] = useState<TabId>("home");
+  const [activeTab, setActiveTab] = useState<TabId>(getTabFromHash);
+
+  // Real browser history integration — without this, switching tabs never
+  // touches the URL or history stack at all, so the phone's back button has
+  // nothing of ours to go back TO and falls through to wherever the user
+  // was before opening the app (Google, a text message, etc.) instead of
+  // the previous tab. changeTab() pushes a real history entry per tab
+  // switch; the popstate listener below syncs state back when the user
+  // actually presses back/forward, without pushing another entry itself
+  // (that would create an infinite back-forward loop).
+  function changeTab(tab: TabId) {
+    if (tab === activeTab) return;
+    window.history.pushState({ tab }, "", `#${tab}`);
+    setActiveTab(tab);
+  }
+
+  useEffect(() => {
+    function handlePopState() {
+      setActiveTab(getTabFromHash());
+    }
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  // If the app loads with no hash yet (first visit), replace (not push) so
+  // there isn't an extra back-stop before "home" — an actual tab switch is
+  // what should create the first real history entry, not the initial load.
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.history.replaceState({ tab: "home" }, "", "#home");
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -61,11 +98,11 @@ export default function App() {
       case "rankings":
         return <RankingsView stored={stored} />;
       case "match":
-        return <ComingSoonView title="Match Center" onNavigate={setActiveTab} />;
+        return <ComingSoonView title="Match Center" onNavigate={changeTab} />;
       case "sim":
         return <WhatIfView stored={stored} />;
       case "lab":
-        return <ComingSoonView title="Model Lab" onNavigate={setActiveTab} />;
+        return <ComingSoonView title="Model Lab" onNavigate={changeTab} />;
       case "home":
       default:
         return (
@@ -75,7 +112,7 @@ export default function App() {
             headlines={liveHeadlines}
             playedCount={playedCount}
             stored={stored}
-            onNavigateToRankings={() => setActiveTab("rankings")}
+            onNavigateToRankings={() => changeTab("rankings")}
           />
         );
     }
@@ -87,7 +124,7 @@ export default function App() {
         activeTab={activeTab}
         edition={edition}
         breakingText={liveBreaking}
-        onTabChange={setActiveTab}
+        onTabChange={changeTab}
       >
         {renderContent()}
       </AppShell>

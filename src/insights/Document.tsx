@@ -283,6 +283,133 @@ const INSIGHTS_CSS = `
     color: var(--ink);
   }
 
+  .match-log {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0;
+  }
+  .match-log-row {
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: var(--surface);
+  }
+  .match-log-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .match-log-teams {
+    font: 600 14px var(--font-sans);
+    color: var(--ink-2);
+  }
+  .match-log-winner {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .match-log-score {
+    font-family: var(--font-mono);
+    color: var(--ink);
+  }
+  .match-log-tag-expected,
+  .match-log-tag-upset {
+    font: 600 9px/1 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 7px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .match-log-tag-expected {
+    color: var(--ink-3);
+    background: var(--hairline-2);
+  }
+  .match-log-tag-upset {
+    color: #a03b2e;
+    background: #f7e6e2;
+  }
+  .match-log-predicted {
+    display: flex;
+    gap: 14px;
+    margin-top: 6px;
+    font: 500 11.5px var(--font-mono);
+    color: var(--ink-3);
+    flex-wrap: wrap;
+  }
+  .match-log-hit {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  @media (max-width: 720px) {
+    .ticker .tag {
+      padding: 9px 10px;
+      font-size: 10px;
+    }
+    .ticker .track {
+      font-size: 11.5px;
+    }
+    .utility {
+      gap: 8px;
+      padding: 9px 0;
+      font-size: 9.5px;
+    }
+    .vol-tag {
+      display: none;
+    }
+    .utility-right {
+      gap: 10px;
+    }
+    .subscribe {
+      display: none;
+    }
+    .masthead {
+      padding: 16px 0 14px;
+    }
+    .wordmark {
+      font-size: 30px;
+    }
+    .tagline {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+    }
+    main {
+      padding: 32px var(--container-pad) 56px;
+    }
+    h1 {
+      font-size: 26px;
+    }
+    .dek {
+      font-size: 16px;
+    }
+    .brier-label {
+      width: 130px;
+      font-size: 11px;
+    }
+    .container {
+      padding: 0 18px;
+    }
+    .match-log-teams {
+      font-size: 12.5px;
+    }
+    .match-log-predicted {
+      gap: 10px;
+      font-size: 10.5px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .utility {
+      font-size: 9px;
+    }
+    .back-link {
+      font-size: 10px;
+    }
+  }
+
   footer {
     text-align: center;
     padding: 32px 24px;
@@ -336,7 +463,7 @@ export function Document({
           <div className="utility">
             <span>{buildDate()}</span>
             <span className="utility-right">
-              <span>Vol. III · No. 176</span>
+              <span className="vol-tag">Vol. III · No. 176</span>
               <span className="subscribe" title="Coming soon">✦ Premium (Coming Soon)</span>
               <a href="/" className="back-link">← Back to the Model</a>
             </span>
