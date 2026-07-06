@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense, lazy } from "react";
 import { AdminResultsPanel } from "./components/admin/AdminResultsPanel";
 import { AppShell } from "./components/shell/AppShell";
 import type { Edition, TabId } from "./data/worldCup";
@@ -12,11 +12,22 @@ import {
 import { loadOfficialResults } from "./lib/supabase";
 import type { StoredResults } from "./lib/types";
 import { HomeView } from "./views/HomeView/HomeView";
-import { BracketView } from "./views/BracketView/BracketView";
-import { ForecastsView } from "./views/ForecastsView/ForecastsView";
 import { ComingSoonView } from "./views/ComingSoonView/ComingSoonView";
-import { WhatIfView } from "./views/WhatIfView/WhatIfView";
-import { RankingsView } from "./views/RankingsView/RankingsView";
+
+// Lazy-loaded — Home is the default landing tab and stays in the main
+// bundle so it appears instantly, but nobody needs Bracket's SVG/canvas
+// code, Forecasts' driver logic, What-If's whole simulator, or Rankings
+// until they actually click that tab. Splits one 539KB bundle into
+// pieces fetched on demand instead of all upfront, which matters more on
+// a phone on cellular than on wifi during development.
+const BracketView = lazy(() => import("./views/BracketView/BracketView").then((m) => ({ default: m.BracketView })));
+const ForecastsView = lazy(() => import("./views/ForecastsView/ForecastsView").then((m) => ({ default: m.ForecastsView })));
+const WhatIfView = lazy(() => import("./views/WhatIfView/WhatIfView").then((m) => ({ default: m.WhatIfView })));
+const RankingsView = lazy(() => import("./views/RankingsView/RankingsView").then((m) => ({ default: m.RankingsView })));
+
+function TabLoading() {
+  return <div style={{ padding: "60px 0", textAlign: "center", color: "var(--ink-3)" }}>Loading…</div>;
+}
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
@@ -27,12 +38,29 @@ function getTabFromHash(): TabId {
   return VALID_TABS.includes(hash) ? hash : "home";
 }
 
+/**
+ * Guarantees matches/knockoutMatches are always at least {} — never
+ * missing or null. Without this, stale localStorage from before a schema
+ * change (or any unexpected shape) crashes immediately on load: several
+ * places do `stored.matches[id]` directly, which throws if `matches`
+ * itself is undefined or null, before anything can even render. Fixing
+ * it once here is far more reliable than trying to defensively guard
+ * every individual call site that reads from `stored`.
+ */
+function normalizeStoredResults(raw: unknown): StoredResults {
+  const obj = (raw && typeof raw === "object" ? raw : {}) as Partial<StoredResults>;
+  return {
+    matches: obj.matches && typeof obj.matches === "object" ? obj.matches : {},
+    knockoutMatches: obj.knockoutMatches && typeof obj.knockoutMatches === "object" ? obj.knockoutMatches : {},
+  };
+}
+
 function loadLocalResults(): StoredResults {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as StoredResults;
+    if (raw) return normalizeStoredResults(JSON.parse(raw));
   } catch { /* use seed */ }
-  return seedResults as StoredResults;
+  return normalizeStoredResults(seedResults);
 }
 
 export default function App() {
@@ -75,8 +103,9 @@ export default function App() {
     loadOfficialResults()
       .then((results) => {
         if (!active) return;
-        setStored(results);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+        const normalized = normalizeStoredResults(results);
+        setStored(normalized);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
       })
       .catch((err) => console.error("Failed to load official results", err));
     return () => { active = false; };
@@ -126,7 +155,7 @@ export default function App() {
         breakingText={liveBreaking}
         onTabChange={changeTab}
       >
-        {renderContent()}
+        <Suspense fallback={<TabLoading />}>{renderContent()}</Suspense>
       </AppShell>
       {isAdmin && <AdminResultsPanel stored={stored} onChange={setStored} />}
     </>
