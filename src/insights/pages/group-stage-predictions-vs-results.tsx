@@ -2,6 +2,7 @@ import type { InsightPage } from "../types";
 import { loadResultsForBuild } from "../buildTimeData";
 import { getGroupStageMatchLog, type GroupMatchLogEntry } from "../../lib/accuracy";
 import { computeStandings, type StandingRow } from "../../lib/groups";
+import { getRealR32Qualifiers } from "../../lib/bracketTree";
 import { GROUP_MATCHES } from "../../data";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { GroupLetter } from "../../lib/types";
@@ -60,15 +61,19 @@ function MatchRow({ m }: { m: GroupMatchLogEntry }) {
 
 function StandingsTable({ rows }: { rows: StandingRow[] }) {
   const sorted = [...rows].sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf);
+  const qualifiers = getRealR32Qualifiers();
   return (
     <div className="standings-table">
       <div className="standings-header-row">
         <span className="standings-team-col">Team</span>
         <span>P</span><span>W</span><span>D</span><span>L</span><span>GD</span><span>Pts</span>
       </div>
-      {sorted.map((r, i) => (
-        <div key={r.team} className={i < 2 ? "standings-row standings-qualified" : "standings-row"}>
-          <span className="standings-team-col">{TEAM_BY_CODE[r.team]?.name ?? r.team}</span>
+      {sorted.map((r) => (
+        <div key={r.team} className={qualifiers.has(r.team) ? "standings-row standings-qualified" : "standings-row"}>
+          <span className="standings-team-col">
+            {TEAM_BY_CODE[r.team]?.name ?? r.team}
+            {qualifiers.has(r.team) && <span className="standings-qualified-tag">Q</span>}
+          </span>
           <span>{r.played}</span><span>{r.won}</span><span>{r.drawn}</span><span>{r.lost}</span>
           <span>{r.gd > 0 ? "+" : ""}{r.gd}</span><span>{r.points}</span>
         </div>
@@ -150,8 +155,13 @@ function Content({ data }: { data?: Record<string, unknown> }) {
         <>
           <p className="note">
             Percentages are what the model said BEFORE each match — never adjusted after the fact.
-            The bolded number is what actually happened. Elo changes shown are this match's effect
-            only, not the team's total movement since the tournament began.
+            The bolded number is what actually happened. Elo changes are this specific match's
+            effect on top of wherever that team's Elo already stood — not a comparison back to
+            their pre-tournament baseline, so a team's second result adds to (or cuts into) what
+            their first result already did, rather than restarting from zero each time.
+            <strong> Q</strong> marks every team that actually qualified for the real Round of 32,
+            including the 8 best third-place teams across all 12 groups — not just the top 2 by
+            rank in their own group.
           </p>
 
           <div className="match-log-filter">

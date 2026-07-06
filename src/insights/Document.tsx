@@ -272,8 +272,8 @@ const INSIGHTS_CSS = `
   .brier-label {
     width: 190px;
     flex-shrink: 0;
-    font-family: var(--font-mono);
-    font-size: 12px;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 13px;
     color: var(--ink-2);
   }
   .brier-track {
@@ -381,7 +381,7 @@ const INSIGHTS_CSS = `
     display: flex;
     gap: 14px;
     margin-top: 6px;
-    font: 500 11.5px var(--font-mono);
+    font: 500 13px "IBM Plex Sans", system-ui, sans-serif;
     color: var(--ink-3);
     flex-wrap: wrap;
   }
@@ -410,7 +410,7 @@ const INSIGHTS_CSS = `
     display: flex;
     gap: 16px;
     margin-top: 6px;
-    font: 500 11px var(--font-mono);
+    font: 500 12.5px "IBM Plex Sans", system-ui, sans-serif;
     color: var(--ink-3);
     flex-wrap: wrap;
   }
@@ -468,6 +468,16 @@ const INSIGHTS_CSS = `
   }
   .standings-qualified .standings-team-col {
     font-weight: 700;
+  }
+  .standings-qualified-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 5px;
+    font: 700 9px/1.4 var(--font-mono);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    vertical-align: middle;
   }
 
   @media (max-width: 720px) {

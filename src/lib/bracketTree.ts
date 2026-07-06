@@ -278,3 +278,20 @@ export function getTeamKnockoutStatus(code: TeamCode, stored: StoredResults): Te
     isChampion: false, currentMatchId: null, currentRound: null,
   };
 }
+
+/**
+ * The 32 teams who actually qualified for the real Round of 32 — this
+ * includes the 8 best third-place teams across all 12 groups, not just
+ * the top 2 from each group. Useful for correctly highlighting who
+ * advanced in a group standings table: rank alone (top 2) misses the 8
+ * third-place teams who also made it through.
+ */
+export function getRealR32Qualifiers(): Set<TeamCode> {
+  const qualifiers = new Set<TeamCode>();
+  for (const structure of Object.values(KNOCKOUT_STRUCTURE)) {
+    if (structure.round !== "Round of 32") continue;
+    if (structure.home.type === "team") qualifiers.add(structure.home.code);
+    if (structure.away.type === "team") qualifiers.add(structure.away.code);
+  }
+  return qualifiers;
+}

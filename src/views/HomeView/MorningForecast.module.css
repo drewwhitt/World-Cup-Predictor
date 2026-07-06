@@ -70,13 +70,13 @@
 .cell p {
   margin: 5px 0 0;
   color: var(--ink-3);
-  font: 500 13px var(--font-mono);
+  font: 400 14px/1.5 var(--font-sans);
 }
 
 .cell .insight {
   margin-top: 10px;
   color: #46403A;
-  font: 400 13.5px/1.5 var(--font-sans);
+  font: 400 14px/1.5 var(--font-sans);
 }
 
 .cell .pos,
