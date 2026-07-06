@@ -156,6 +156,81 @@ function scoreKnockoutStage(stored: StoredResults): AccuracyResult["knockout"] {
   };
 }
 
+export interface GroupMatchLogEntry {
+  id: string;
+  group: string;
+  homeCode: TeamCode;
+  awayCode: TeamCode;
+  homeName: string;
+  awayName: string;
+  homeWinPct: number; // 0-100, predicted BEFORE this match
+  drawPct: number;
+  awayWinPct: number;
+  homeGoals: number;
+  awayGoals: number;
+  actual: "home" | "draw" | "away";
+  brierScore: number;
+  matchday: number;
+  homeEloDelta: number;
+  awayEloDelta: number;
+  homeEloAfter: number;
+  awayEloAfter: number;
+}
+
+/**
+ * Every played group-stage match with its predicted probabilities (as of
+ * right before that match, not after) alongside the real result — the
+ * full detail behind the aggregate Brier numbers above. Walks matches in
+ * the same chronological order as scoreGroupStage so the Elo used for
+ * each match's prediction matches what scoreGroupStage actually scored.
+ */
+export function getGroupStageMatchLog(stored: StoredResults): GroupMatchLogEntry[] {
+  const elos = buildInitialElos();
+  const played = [...GROUP_MATCHES]
+    .filter((m) => stored.matches[m.id])
+    .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday);
+
+  const log: GroupMatchLogEntry[] = [];
+
+  for (const match of played) {
+    const result = stored.matches[match.id];
+    const ha = match.isHostMatch ? DEFAULT_SETTINGS.homeAdvantage : 0;
+    const { homeWin, draw, awayWin } = matchOutcomeProbabilities(elos[match.home], elos[match.away], ha);
+    const actual = result.homeGoals > result.awayGoals ? "home" : result.homeGoals < result.awayGoals ? "away" : "draw";
+    const outcome = { home: actual === "home" ? 1 : 0, draw: actual === "draw" ? 1 : 0, away: actual === "away" ? 1 : 0 };
+    const brier = ((homeWin - outcome.home) ** 2 + (draw - outcome.draw) ** 2 + (awayWin - outcome.away) ** 2) / 3;
+
+    const beforeHomeElo = elos[match.home];
+    const beforeAwayElo = elos[match.away];
+    const updated = updateElo(elos[match.home], elos[match.away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, ha);
+    elos[match.home] = updated.home;
+    elos[match.away] = updated.away;
+
+    log.push({
+      id: match.id,
+      group: TEAM_BY_CODE[match.home]?.group ?? "?",
+      homeCode: match.home,
+      awayCode: match.away,
+      homeName: TEAM_BY_CODE[match.home]?.name ?? match.home,
+      awayName: TEAM_BY_CODE[match.away]?.name ?? match.away,
+      homeWinPct: Math.round(homeWin * 100),
+      drawPct: Math.round(draw * 100),
+      awayWinPct: Math.round(awayWin * 100),
+      homeGoals: result.homeGoals,
+      awayGoals: result.awayGoals,
+      actual,
+      brierScore: Number(brier.toFixed(4)),
+      matchday: match.matchday,
+      homeEloDelta: Math.round(updated.home - beforeHomeElo),
+      awayEloDelta: Math.round(updated.away - beforeAwayElo),
+      homeEloAfter: Math.round(updated.home),
+      awayEloAfter: Math.round(updated.away),
+    });
+  }
+
+  return log;
+}
+
 export function computeAccuracy(stored: StoredResults): AccuracyResult {
   return {
     group: scoreGroupStage(stored),

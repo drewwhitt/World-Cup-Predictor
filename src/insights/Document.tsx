@@ -469,6 +469,12 @@ const INSIGHTS_CSS = `
   .standings-qualified .standings-team-col {
     font-weight: 700;
   }
+  .standings-elo {
+    display: inline-block;
+    margin-left: 8px;
+    font: 500 12px var(--font-mono);
+    color: var(--ink-3);
+  }
   .standings-qualified-tag {
     display: inline-block;
     margin-left: 6px;

@@ -2,6 +2,7 @@ import type { InsightPage } from "./types";
 import { page as whatIsEloRating } from "./pages/what-is-elo-rating";
 import { page as franceVsSpain } from "./pages/france-vs-spain-quarterfinal-odds";
 import { page as howAccurate } from "./pages/how-accurate-is-veridex.tsx";
+import { page as groupStageMatchLog } from "./pages/group-stage-predictions-vs-results";
 
 /**
  * Every /insights page, in one place. Add a new page by:
@@ -16,4 +17,5 @@ export const INSIGHT_PAGES: InsightPage[] = [
   whatIsEloRating,
   franceVsSpain,
   howAccurate,
+  groupStageMatchLog,
 ];

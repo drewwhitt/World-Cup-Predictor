@@ -211,7 +211,6 @@ export function WhatIfBracket({
               Reset to real result
             </button>
           )}
-          {!m.isOverridden && m.hasRealResult && <span className={s.realTag}>Real result</span>}
         </div>
       </div>
     );
@@ -230,6 +229,8 @@ export function WhatIfBracket({
       <p className={s.hint}>
         Click a team to make them the winner. If an opponent is still undecided, the most likely
         candidate shows first — use "switch team" to see the other one before picking.
+        <strong> Bolded teams</strong> have already advanced, whether from a real result or your
+        own pick.
       </p>
 
       {isMobile ? (

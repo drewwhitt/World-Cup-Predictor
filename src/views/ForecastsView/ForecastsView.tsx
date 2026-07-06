@@ -5,7 +5,6 @@ import { runSimulation, computeElosIncludingKnockouts } from "../../lib/simulate
 import { GROUP_MATCHES, KNOCKOUT_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE, TEAM_CONFEDERATION } from "../../lib/teams";
 import { getReachableZoneByRound, teamsInZone, getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE, type KnockoutRound } from "../../lib/bracketTree";
-import { UpsetFeed } from "../../components/upsets/UpsetFeed";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import type { Team } from "../../data/worldCup";
 import s from "./ForecastsView.module.css";
@@ -224,16 +223,24 @@ export function ForecastsView({ stored, teams }: Props) {
     // round — resolved via the shared bracket structure instead of a
     // hardcoded R32-only list, so R16-onward results (like a team that's
     // already won two knockout rounds) actually show up here.
+    //
+    // IMPORTANT: Object.keys(KNOCKOUT_STRUCTURE) iterates in definition
+    // order (ko-73, ko-74, ... ko-104), which is R32-then-R16-then-QF...
+    // — NOT recency order. Without an explicit round-based sort, an R32
+    // match always displayed before a team's R16 match regardless of
+    // which was actually played more recently.
+    const ROUND_RECENCY = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
     const koPlayed = Object.keys(KNOCKOUT_STRUCTURE)
       .map((id) => {
         const result = stored.knockoutMatches?.[id];
         if (!result) return null;
-        const { home, away } = resolveKnockoutMatch(id, stored);
+        const { home, away, round } = resolveKnockoutMatch(id, stored);
         if (!home || !away) return null;
         if (home !== selectedCode && away !== selectedCode) return null;
-        return { id, home, away };
+        return { id, home, away, round };
       })
-      .filter((m): m is { id: string; home: TeamCode; away: TeamCode } => m !== null);
+      .filter((m): m is { id: string; home: TeamCode; away: TeamCode; round: KnockoutRound | null } => m !== null)
+      .sort((a, b) => ROUND_RECENCY.indexOf(b.round ?? "") - ROUND_RECENCY.indexOf(a.round ?? ""));
 
     const allPlayed = [
       ...koPlayed.map((m) => {
@@ -464,7 +471,9 @@ export function ForecastsView({ stored, teams }: Props) {
 
       </div>
 
-      <UpsetFeed stored={stored} limit={8} />
+      <a href="/insights/group-stage-predictions-vs-results/" className={s.insightsLink}>
+        See every group-stage prediction vs result →
+      </a>
     </div>
   );
 }

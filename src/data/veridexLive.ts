@@ -1,9 +1,9 @@
 import baselineData from "./baseline.json";
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from ".";
 import { computeElosIncludingKnockouts, runSimulation } from "../lib/simulate";
-import { computeStandings } from "../lib/groups";
 import { TEAM_BY_CODE } from "../lib/teams";
 import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
+import { getTeamKnockoutStatus, KNOCKOUT_STRUCTURE } from "../lib/bracketTree";
 import type { KnockoutMatchupProbability, StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
 import type { Headline, MorningForecast, Team } from "./worldCup";
 
@@ -175,8 +175,29 @@ export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResult
   };
 }
 
+/**
+ * Deterministic-but-varied phrase selection — same team/situation always
+ * gets the same phrasing within one build (so it doesn't flicker between
+ * renders), but different teams/situations land on different phrasings
+ * instead of every headline reading like the same mail-merge template.
+ */
+function pickVariant<T>(options: T[], seed: string): T {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) | 0;
+  return options[Math.abs(hash) % options.length];
+}
+
+const ROUND_LABEL: Record<string, string> = {
+  "Round of 32": "Round of 32",
+  "Round of 16": "Round of 16",
+  Quarterfinal: "Quarterfinals",
+  Semifinal: "Semifinals",
+  Final: "Final",
+};
+
 export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): Headline[] {
   const playedCount = Object.keys(stored.matches).length;
+  const knockoutPlayedCount = Object.keys(stored.knockoutMatches ?? {}).length;
   if (playedCount === 0) return [];
 
   const byDelta = [...liveTeams]
@@ -184,90 +205,149 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
 
   const sorted = [...liveTeams].sort((a, b) => b.current - a.current);
-
-  // Compute group standings to find group leaders
-  const playedMatches = GROUP_MATCHES.map((m) => {
-    const r = stored.matches[m.id];
-    return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
-  });
-  const standings = computeStandings(playedMatches);
-  const groupLeaders: string[] = [];
-  for (const group of Object.values(standings)) {
-    const sorted_g = [...group].sort((a, b) => b.points - a.points || (b.gf - b.ga) - (a.gf - a.ga));
-    if (sorted_g[0]) groupLeaders.push(TEAM_BY_CODE[sorted_g[0].team]?.name ?? "");
-  }
+  const statusByCode = new Map(liveTeams.map((t) => [t.code, getTeamKnockoutStatus(t.code as TeamCode, stored)]));
 
   const headlines: Headline[] = [];
+  const usedCodes = new Set<string>(); // avoid the same team headlining twice in one refresh
 
-  // Headline 1 — biggest riser
-  const riser = byDelta.find((t) => t.delta > 0);
-  if (riser) {
-    headlines.push({
-      title: `${riser.name} Makes Biggest Move In Latest Model Update`,
-      summary: `A strong run of results has pushed ${riser.name} up ${riser.delta.toFixed(1)} percentage points in title probability since the pre-tournament baseline.`,
-      metric: `+${riser.delta.toFixed(1)} pp`,
-      metricLabel: "CHANGE",
-      time: timeAgo(0),
-      up: true,
-    });
+  // ── Slot 1: biggest mover — eliminated, knockout advance, or group-stage riser, whichever is most newsworthy ──
+  const biggestFaller = byDelta.filter((t) => t.delta < 0).sort((a, b) => a.delta - b.delta)[0];
+  const fallerStatus = biggestFaller ? statusByCode.get(biggestFaller.code) : undefined;
+
+  if (biggestFaller && fallerStatus?.eliminated && fallerStatus.eliminatedRound) {
+    const round = ROUND_LABEL[fallerStatus.eliminatedRound] ?? fallerStatus.eliminatedRound;
+    const opponent = fallerStatus.eliminatedBy ? TEAM_BY_CODE[fallerStatus.eliminatedBy]?.name ?? fallerStatus.eliminatedBy : "their opponent";
+    const variants = [
+      {
+        title: `${biggestFaller.name} Eliminated: ${opponent} Ends Their Run in the ${round}`,
+        summary: `${opponent} knocked ${biggestFaller.name} out of the tournament in the ${round}. Their championship odds fall to 0%, down ${Math.abs(biggestFaller.delta).toFixed(1)} points from their pre-tournament projection.`,
+      },
+      {
+        title: `${biggestFaller.name}'s World Cup Is Over, Beaten By ${opponent} in the ${round}`,
+        summary: `A ${round} loss to ${opponent} ends ${biggestFaller.name}'s tournament. The model had them as high as ${biggestFaller.baseline.toFixed(1)}% before the bracket caught up with them.`,
+      },
+      {
+        title: `${opponent} Send ${biggestFaller.name} Home in the ${round}`,
+        summary: `${biggestFaller.name}'s title hopes are finished — ${opponent} eliminated them in the ${round}, closing out a run that peaked at ${biggestFaller.baseline.toFixed(1)}% pre-tournament.`,
+      },
+    ];
+    const v = pickVariant(variants, biggestFaller.code + fallerStatus.eliminatedRound);
+    headlines.push({ ...v, metric: "OUT", metricLabel: "ELIMINATED", time: timeAgo(0), up: false });
+    usedCodes.add(biggestFaller.code);
+  } else if (biggestFaller) {
+    const variants = [
+      {
+        title: `${biggestFaller.name}'s Title Hopes Fade After Group Stage Results`,
+        summary: `Results so far have knocked ${biggestFaller.name} down ${Math.abs(biggestFaller.delta).toFixed(1)} percentage points from their pre-tournament probability.`,
+      },
+      {
+        title: `${biggestFaller.name} Slipping After a Rough Group Stage`,
+        summary: `${biggestFaller.name}'s championship odds have dropped ${Math.abs(biggestFaller.delta).toFixed(1)} points since the pre-tournament baseline, the steepest fall in the field right now.`,
+      },
+    ];
+    const v = pickVariant(variants, biggestFaller.code);
+    headlines.push({ ...v, metric: `${biggestFaller.delta.toFixed(1)} pp`, metricLabel: "CHANGE", time: timeAgo(0), up: false });
+    usedCodes.add(biggestFaller.code);
   }
 
-  // Headline 2 — current leader
-  const leader = sorted[0];
+  // ── Slot 2: biggest riser — knockout advance vs group-stage improvement ──
+  const biggestRiser = byDelta.filter((t) => t.delta > 0 && !usedCodes.has(t.code))[0];
+  const riserStatus = biggestRiser ? statusByCode.get(biggestRiser.code) : undefined;
+  const riserAdvancedInKnockout = riserStatus && !riserStatus.eliminated && riserStatus.currentRound && riserStatus.currentRound !== "Round of 32";
+
+  if (biggestRiser && riserAdvancedInKnockout) {
+    const round = ROUND_LABEL[riserStatus!.currentRound!] ?? riserStatus!.currentRound!;
+    const variants = [
+      {
+        title: `${biggestRiser.name} Advances to the ${round}, Odds Climb to ${biggestRiser.current.toFixed(1)}%`,
+        summary: `A knockout-stage win pushes ${biggestRiser.name} into the ${round} and lifts their title probability ${biggestRiser.delta.toFixed(1)} points to ${biggestRiser.current.toFixed(1)}%.`,
+      },
+      {
+        title: `${biggestRiser.name} Powers Into the ${round} After Big Win`,
+        summary: `${biggestRiser.name}'s knockout run continues — now into the ${round} with championship odds up ${biggestRiser.delta.toFixed(1)} points to ${biggestRiser.current.toFixed(1)}%.`,
+      },
+    ];
+    const v = pickVariant(variants, biggestRiser.code + round);
+    headlines.push({ ...v, metric: `+${biggestRiser.delta.toFixed(1)} pp`, metricLabel: "CHANGE", time: timeAgo(1), up: true });
+    usedCodes.add(biggestRiser.code);
+  } else if (biggestRiser) {
+    const variants = [
+      {
+        title: `${biggestRiser.name} Makes Biggest Move In Latest Model Update`,
+        summary: `A strong run of results has pushed ${biggestRiser.name} up ${biggestRiser.delta.toFixed(1)} percentage points in title probability since the pre-tournament baseline.`,
+      },
+      {
+        title: `${biggestRiser.name} Surging After Group Stage Form`,
+        summary: `${biggestRiser.name}'s title odds have climbed ${biggestRiser.delta.toFixed(1)} points since the pre-tournament baseline — the biggest gain in the field right now.`,
+      },
+    ];
+    const v = pickVariant(variants, biggestRiser.code);
+    headlines.push({ ...v, metric: `+${biggestRiser.delta.toFixed(1)} pp`, metricLabel: "CHANGE", time: timeAgo(1), up: true });
+    usedCodes.add(biggestRiser.code);
+  }
+
+  // ── Slot 3: current leader ──
+  const leader = sorted.find((t) => !usedCodes.has(t.code)) ?? sorted[0];
   if (leader) {
-    headlines.push({
-      title: `${leader.name} Holds Top Spot With ${leader.current.toFixed(1)}% Championship Odds`,
-      summary: `The Veridex model rates ${leader.name} as the most likely champion after ${playedCount} group stage results recorded.`,
-      metric: `${leader.current.toFixed(1)}%`,
-      metricLabel: "TITLE ODDS",
-      time: timeAgo(1),
-      up: leader.current > leader.baseline,
-    });
+    const variants = [
+      {
+        title: `${leader.name} Holds Top Spot With ${leader.current.toFixed(1)}% Championship Odds`,
+        summary: `The Veridex model rates ${leader.name} as the most likely champion after ${playedCount} group stage and ${knockoutPlayedCount} knockout results recorded.`,
+      },
+      {
+        title: `${leader.name} Remains the Model's Favorite at ${leader.current.toFixed(1)}%`,
+        summary: `No team has displaced ${leader.name} atop the championship odds, currently sitting at ${leader.current.toFixed(1)}% after the latest round of results.`,
+      },
+    ];
+    const v = pickVariant(variants, leader.code + "leader");
+    headlines.push({ ...v, metric: `${leader.current.toFixed(1)}%`, metricLabel: "TITLE ODDS", time: timeAgo(2), up: leader.current > leader.baseline });
+    usedCodes.add(leader.code);
   }
 
-  // Headline 3 — biggest faller
-  const faller = byDelta.filter((t) => t.delta < 0).sort((a, b) => a.delta - b.delta)[0];
-  if (faller) {
-    headlines.push({
-      title: `${faller.name}'s Title Hopes Fade After Group Stage Results`,
-      summary: `Results so far have knocked ${faller.name} down ${Math.abs(faller.delta).toFixed(1)} percentage points from their pre-tournament probability.`,
-      metric: `${faller.delta.toFixed(1)} pp`,
-      metricLabel: "CHANGE",
-      time: timeAgo(2),
-      up: false,
-    });
-  }
-
-  // Headline 4 — #2 team
-  const second = sorted[1];
+  // ── Slot 4: #2 in the title race ──
+  const second = sorted.find((t) => !usedCodes.has(t.code));
   if (second) {
     headlines.push({
       title: `${second.name} Sits Second In Championship Race`,
-      summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention heading into the knockout rounds.`,
+      summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention.`,
       metric: `${second.current.toFixed(1)}%`,
       metricLabel: "TITLE ODDS",
       time: timeAgo(3),
       up: second.current > second.baseline,
     });
+    usedCodes.add(second.code);
   }
 
-  // Headline 5 — group stage completion
-  headlines.push({
-    title: `Model Refreshed: ${playedCount} Group Stage Results Recorded`,
-    summary: `The Veridex model has processed ${playedCount} of 72 group stage matches. Probabilities reflect ${DEFAULT_SETTINGS.simulations.toLocaleString()} Monte Carlo simulations of the remaining tournament.`,
-    metric: `${playedCount}/72`,
-    metricLabel: "RESULTS IN",
-    time: timeAgo(4),
-    up: true,
-  });
+  // ── Slot 5: model status, accurately reflecting the current stage ──
+  const totalKnockoutMatches = Object.keys(KNOCKOUT_STRUCTURE).length;
+  if (playedCount < 72) {
+    headlines.push({
+      title: `Model Refreshed: ${playedCount} Group Stage Results Recorded`,
+      summary: `The Veridex model has processed ${playedCount} of 72 group stage matches. Probabilities reflect ${DEFAULT_SETTINGS.simulations.toLocaleString()} Monte Carlo simulations of the remaining tournament.`,
+      metric: `${playedCount}/72`,
+      metricLabel: "RESULTS IN",
+      time: timeAgo(4),
+      up: true,
+    });
+  } else {
+    headlines.push({
+      title: `Model Refreshed: ${knockoutPlayedCount} of ${totalKnockoutMatches} Knockout Matches Played`,
+      summary: `The group stage is complete. The Veridex model has processed ${knockoutPlayedCount} of ${totalKnockoutMatches} knockout matches, reflecting ${DEFAULT_SETTINGS.simulations.toLocaleString()} Monte Carlo simulations of the remaining bracket.`,
+      metric: `${knockoutPlayedCount}/${totalKnockoutMatches}`,
+      metricLabel: "KNOCKOUT",
+      time: timeAgo(4),
+      up: true,
+    });
+  }
 
-  // Headline 6 — surprise team
-  const surprise = byDelta.filter((t) => t.delta > 0).sort((a, b) => {
-    // highest current % relative to baseline
-    const aRatio = a.current / Math.max(0.1, a.baseline);
-    const bRatio = b.current / Math.max(0.1, b.baseline);
-    return bRatio - aRatio;
-  })[1]; // [0] is already the riser headline
+  // ── Slot 6: quiet contender — biggest riser NOT already featured, and NOT eliminated ──
+  const surprise = byDelta
+    .filter((t) => t.delta > 0 && !usedCodes.has(t.code) && !statusByCode.get(t.code)?.eliminated)
+    .sort((a, b) => {
+      const aRatio = a.current / Math.max(0.1, a.baseline);
+      const bRatio = b.current / Math.max(0.1, b.baseline);
+      return bRatio - aRatio;
+    })[0];
   if (surprise) {
     headlines.push({
       title: `${surprise.name} Emerging As Quiet Contender`,
