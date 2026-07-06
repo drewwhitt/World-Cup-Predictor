@@ -3,9 +3,10 @@ import { loadResultsForBuild } from "../buildTimeData";
 import { getGroupStageMatchLog, type GroupMatchLogEntry } from "../../lib/accuracy";
 import { computeStandings, type StandingRow } from "../../lib/groups";
 import { getRealR32Qualifiers } from "../../lib/bracketTree";
-import { GROUP_MATCHES } from "../../data";
+import { computeElosFromResults } from "../../lib/simulate";
+import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { TEAM_BY_CODE } from "../../lib/teams";
-import type { GroupLetter } from "../../lib/types";
+import type { GroupLetter, TeamCode } from "../../lib/types";
 
 async function loadData() {
   const stored = await loadResultsForBuild();
@@ -16,7 +17,8 @@ async function loadData() {
     return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
   });
   const standings = computeStandings(playedMatches);
-  return { available: true, matches, standings };
+  const elos = computeElosFromResults(playedMatches, DEFAULT_SETTINGS);
+  return { available: true, matches, standings, elos };
 }
 
 function ProbabilityBar({ home, draw, away }: { home: number; draw: number; away: number }) {
@@ -64,7 +66,7 @@ function MatchRow({ m }: { m: GroupMatchLogEntry }) {
   );
 }
 
-function StandingsTable({ rows }: { rows: StandingRow[] }) {
+function StandingsTable({ rows, elos }: { rows: StandingRow[]; elos: Record<TeamCode, number> }) {
   const sorted = [...rows].sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf);
   const qualifiers = getRealR32Qualifiers();
   return (
@@ -77,6 +79,7 @@ function StandingsTable({ rows }: { rows: StandingRow[] }) {
         <div key={r.team} className={qualifiers.has(r.team) ? "standings-row standings-qualified" : "standings-row"}>
           <span className="standings-team-col">
             {TEAM_BY_CODE[r.team]?.name ?? r.team}
+            <span className="standings-elo">{Math.round(elos[r.team] ?? 0)}</span>
             {qualifiers.has(r.team) && <span className="standings-qualified-tag">Q</span>}
           </span>
           <span>{r.played}</span><span>{r.won}</span><span>{r.drawn}</span><span>{r.lost}</span>
@@ -120,6 +123,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
   const available = data?.available as boolean | undefined;
   const matches = data?.matches as GroupMatchLogEntry[] | undefined;
   const standings = data?.standings as Record<GroupLetter, StandingRow[]> | undefined;
+  const elos = data?.elos as Record<TeamCode, number> | undefined;
 
   const groups = new Map<string, GroupMatchLogEntry[]>();
   const teamOptions = new Map<string, string>(); // code -> name
@@ -183,7 +187,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
             <div className="match-log-group" key={letter}>
               <h2 className="match-log-group-header">Group {letter}</h2>
               {standings?.[letter as GroupLetter] && (
-                <StandingsTable rows={standings[letter as GroupLetter]} />
+                <StandingsTable rows={standings[letter as GroupLetter]} elos={elos ?? {} as Record<TeamCode, number>} />
               )}
               <div className="match-log">
                 {groups.get(letter)!.map((m) => <MatchRow key={m.id} m={m} />)}
