@@ -173,6 +173,8 @@ export interface GroupMatchLogEntry {
   matchday: number;
   homeEloDelta: number;
   awayEloDelta: number;
+  homeEloAfter: number;
+  awayEloAfter: number;
 }
 
 /**
@@ -221,6 +223,8 @@ export function getGroupStageMatchLog(stored: StoredResults): GroupMatchLogEntry
       matchday: match.matchday,
       homeEloDelta: Math.round(updated.home - beforeHomeElo),
       awayEloDelta: Math.round(updated.away - beforeAwayElo),
+      homeEloAfter: Math.round(updated.home),
+      awayEloAfter: Math.round(updated.away),
     });
   }
 

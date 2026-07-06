@@ -29,9 +29,14 @@ function ProbabilityBar({ home, draw, away }: { home: number; draw: number; away
   );
 }
 
-function EloChange({ delta }: { delta: number }) {
-  if (delta === 0) return <span className="elo-flat">±0</span>;
-  return <span className={delta > 0 ? "elo-up" : "elo-down"}>{delta > 0 ? "+" : ""}{delta}</span>;
+function EloChange({ delta, after }: { delta: number; after: number }) {
+  if (delta === 0) return <span className="elo-flat">±0 <span className="elo-value">({after})</span></span>;
+  const cls = delta > 0 ? "elo-up" : "elo-down";
+  return (
+    <span className={cls}>
+      {delta > 0 ? "+" : ""}{delta} <span className="elo-value">({after})</span>
+    </span>
+  );
 }
 
 function MatchRow({ m }: { m: GroupMatchLogEntry }) {
@@ -52,8 +57,8 @@ function MatchRow({ m }: { m: GroupMatchLogEntry }) {
         <span className={m.actual === "away" ? "match-log-hit" : ""}>{m.awayName} {m.awayWinPct}%</span>
       </div>
       <div className="match-log-elo">
-        <span>{m.homeName} Elo <EloChange delta={m.homeEloDelta} /></span>
-        <span>{m.awayName} Elo <EloChange delta={m.awayEloDelta} /></span>
+        <span>{m.homeName} Elo <EloChange delta={m.homeEloDelta} after={m.homeEloAfter} /></span>
+        <span>{m.awayName} Elo <EloChange delta={m.awayEloDelta} after={m.awayEloAfter} /></span>
       </div>
     </div>
   );

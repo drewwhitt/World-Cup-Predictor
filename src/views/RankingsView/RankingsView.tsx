@@ -25,6 +25,7 @@ interface RankingRow {
 export function RankingsView({ stored }: { stored: StoredResults }) {
   const [sortKey, setSortKey] = useState<SortKey>("elo");
   const [confFilter, setConfFilter] = useState<Confederation | "all">("all");
+  const [hideEliminated, setHideEliminated] = useState(false);
 
   const rows = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
@@ -55,7 +56,9 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
     return result;
   }, [stored]);
 
-  const filtered = confFilter === "all" ? rows : rows.filter((r) => r.confederation === confFilter);
+  const filtered = rows
+    .filter((r) => confFilter === "all" || r.confederation === confFilter)
+    .filter((r) => !hideEliminated || !r.eliminated);
 
   const sorted = useMemo(() => {
     const copy = [...filtered];
@@ -110,6 +113,16 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
             {c === "all" ? "All" : c}
           </button>
         ))}
+      </div>
+
+      <div className={s.filters}>
+        <button
+          type="button"
+          className={hideEliminated ? s.filterActive : s.filterBtn}
+          onClick={() => setHideEliminated((v) => !v)}
+        >
+          {hideEliminated ? "✓ Hiding eliminated teams" : "Hide eliminated teams"}
+        </button>
       </div>
 
       <div className={s.tableWrap}>
