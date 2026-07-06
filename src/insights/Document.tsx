@@ -1,10 +1,8 @@
 import type { ReactElement } from "react";
+import { navItems } from "../data/worldCup";
 
 const SITE_NAME = "Veridex";
 const SITE_URL = "https://world-cup-predictor-inky-two.vercel.app"; // update if/when you move to a custom domain
-
-const BREAKING_TEXT =
-  "Brazil reclaims #1 at 24.5% · Portugal slides 1.7pp after Group A draw · France vs Brazil kicks off 3:00 PM ET · Veridex model refreshed with 50,000 new simulations · USA's advance odds climb to 61%";
 
 function buildDate(): string {
   return new Date()
@@ -124,7 +122,6 @@ const INSIGHTS_CSS = `
     align-items: flex-end;
     justify-content: space-between;
     padding: 26px 0 22px;
-    border-bottom: 1px solid var(--ink);
   }
   .wordmark {
     display: inline-block;
@@ -134,6 +131,35 @@ const INSIGHTS_CSS = `
     line-height: 0.92;
     letter-spacing: 0.04em;
     text-decoration: none;
+  }
+  .nav {
+    display: flex;
+    gap: 34px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .nav a {
+    position: relative;
+    padding: 0 0 13px;
+    color: #3A352E;
+    font: 600 14px/1 "IBM Plex Sans", system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav a:hover {
+    color: var(--ink);
+  }
+  .nav a.nav-current {
+    color: var(--ink);
+  }
+  .nav a.nav-current::after {
+    position: absolute;
+    right: 0;
+    bottom: -2px;
+    left: 0;
+    height: 3px;
+    content: "";
+    background: var(--ink);
   }
   .tagline {
     margin-top: 9px;
@@ -283,11 +309,41 @@ const INSIGHTS_CSS = `
     color: var(--ink);
   }
 
+  .match-log-group {
+    margin-top: 32px;
+  }
+  .match-log-group-header {
+    font-family: var(--font-display);
+    font-size: 19px;
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .match-log-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 8px;
+  }
+  .match-log-filter label {
+    font: 600 11px/1 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+  .match-log-filter select {
+    padding: 7px 10px;
+    font: 500 13px var(--font-sans);
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+  }
   .match-log {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 20px 0;
+    margin: 0 0 8px;
   }
   .match-log-row {
     border: 1px solid var(--hairline);
@@ -313,23 +369,6 @@ const INSIGHTS_CSS = `
   .match-log-score {
     font-family: var(--font-mono);
     color: var(--ink);
-  }
-  .match-log-tag-expected,
-  .match-log-tag-upset {
-    font: 600 9px/1 var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 3px 7px;
-    border-radius: 3px;
-    flex-shrink: 0;
-  }
-  .match-log-tag-expected {
-    color: var(--ink-3);
-    background: var(--hairline-2);
-  }
-  .match-log-tag-upset {
-    color: #a03b2e;
-    background: #f7e6e2;
   }
   .match-log-predicted {
     display: flex;
@@ -399,6 +438,21 @@ const INSIGHTS_CSS = `
       gap: 10px;
       font-size: 10.5px;
     }
+    .nav {
+      gap: 22px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      touch-action: pan-x;
+    }
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+    .nav a {
+      font-size: 13px;
+    }
   }
 
   @media (max-width: 380px) {
@@ -423,11 +477,13 @@ export function Document({
   title,
   description,
   slug,
+  breakingText,
   children,
 }: {
   title: string;
   description: string;
   slug: string; // "" for the hub page itself
+  breakingText: string;
   children: ReactElement;
 }) {
   const canonical = `${SITE_URL}/insights/${slug ? slug + "/" : ""}`;
@@ -453,8 +509,8 @@ export function Document({
           <span className="tag">Breaking</span>
           <div className="window">
             <div className="track">
-              <span>{BREAKING_TEXT}</span>
-              <span>{BREAKING_TEXT}</span>
+              <span>{breakingText}</span>
+              <span>{breakingText}</span>
             </div>
           </div>
         </div>
@@ -474,6 +530,17 @@ export function Document({
               <div className="tagline">Predictive Sports Intelligence</div>
             </div>
           </div>
+          <nav className="nav">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={item.href ?? `/#${item.id}`}
+                className={item.id === "insights" ? "nav-current" : undefined}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
         </header>
 
         <main>{children}</main>

@@ -158,6 +158,7 @@ function scoreKnockoutStage(stored: StoredResults): AccuracyResult["knockout"] {
 
 export interface GroupMatchLogEntry {
   id: string;
+  group: string;
   homeCode: TeamCode;
   awayCode: TeamCode;
   homeName: string;
@@ -197,6 +198,7 @@ export function getGroupStageMatchLog(stored: StoredResults): GroupMatchLogEntry
 
     log.push({
       id: match.id,
+      group: TEAM_BY_CODE[match.home]?.group ?? "?",
       homeCode: match.home,
       awayCode: match.away,
       homeName: TEAM_BY_CODE[match.home]?.name ?? match.home,

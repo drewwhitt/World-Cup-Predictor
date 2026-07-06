@@ -18,6 +18,8 @@ import { join } from "path";
 import { Document } from "../src/insights/Document";
 import { HubPage } from "../src/insights/HubPage";
 import { INSIGHT_PAGES } from "../src/insights/manifest";
+import { loadResultsForBuild } from "../src/insights/buildTimeData";
+import { buildLiveTeams, buildLiveBreakingText } from "../src/data/veridexLive";
 
 const OUT_DIR = join(process.cwd(), "dist", "insights");
 
@@ -35,11 +37,19 @@ async function main() {
     process.exit(1);
   }
 
+  // Same live ticker text the main app shows — computed once here so every
+  // Insights page reflects the same real results, not a hardcoded sample
+  // string that never changes no matter how many times the site rebuilds.
+  const stored = await loadResultsForBuild();
+  const breakingText = stored
+    ? buildLiveBreakingText(buildLiveTeams(stored), stored)
+    : "World Cup 2026 is underway · Veridex model live";
+
   // Individual pages
   for (const page of INSIGHT_PAGES) {
     const data = page.loadData ? await page.loadData() : undefined;
     const html = renderToStaticMarkup(
-      <Document title={page.title} description={page.description} slug={page.slug}>
+      <Document title={page.title} description={page.description} slug={page.slug} breakingText={breakingText}>
         <page.Content data={data} />
       </Document>,
     );
@@ -49,7 +59,7 @@ async function main() {
 
   // Hub page
   const hubHtml = renderToStaticMarkup(
-    <Document title="Insights" description="Plain-language explanations of the Veridex model." slug="">
+    <Document title="Insights" description="Plain-language explanations of the Veridex model." slug="" breakingText={breakingText}>
       <HubPage pages={INSIGHT_PAGES} />
     </Document>,
   );
