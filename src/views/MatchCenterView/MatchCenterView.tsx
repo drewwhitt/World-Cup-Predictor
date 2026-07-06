@@ -5,7 +5,7 @@ import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./MatchCenterView.module.css";
 
-function MatchRow({ m }: { m: MatchCenterEntry }) {
+function MatchRow({ m, periodLabel }: { m: MatchCenterEntry; periodLabel?: string }) {
   const played = m.played && m.homeGoals !== undefined && m.awayGoals !== undefined;
   return (
     <div className={s.row}>
@@ -19,6 +19,7 @@ function MatchRow({ m }: { m: MatchCenterEntry }) {
         <span className={played && m.awayGoals! > m.homeGoals! ? s.winner : ""}>{m.awayName}</span>
       </div>
       <div className={s.meta}>
+        {periodLabel && <span className={s.periodTag}>{periodLabel}</span>}
         <span>{m.date}</span>
         {!played && <span className={s.upcomingTag}>Upcoming</span>}
         {played && !m.isKnockout && <span className={s.playedTag}>Final</span>}
@@ -58,6 +59,7 @@ export function MatchCenterView({ stored }: { stored: StoredResults }) {
   }, [entries, teamFilter, activePeriodId]);
 
   const activePeriod = periods.find((p) => p.id === activePeriodId);
+  const periodLabelById = useMemo(() => new Map(periods.map((p) => [p.id, p.label])), [periods]);
 
   return (
     <div className={s.page}>
@@ -110,7 +112,9 @@ export function MatchCenterView({ stored }: { stored: StoredResults }) {
         <p className={s.empty}>No matches to show here yet.</p>
       ) : (
         <div className={s.list}>
-          {visibleMatches.map((m) => <MatchRow key={m.id} m={m} />)}
+          {visibleMatches.map((m) => (
+            <MatchRow key={m.id} m={m} periodLabel={teamFilter !== "ALL" ? periodLabelById.get(m.periodId) : undefined} />
+          ))}
         </div>
       )}
     </div>
