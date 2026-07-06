@@ -171,6 +171,8 @@ export interface GroupMatchLogEntry {
   actual: "home" | "draw" | "away";
   brierScore: number;
   matchday: number;
+  homeEloDelta: number;
+  awayEloDelta: number;
 }
 
 /**
@@ -196,6 +198,12 @@ export function getGroupStageMatchLog(stored: StoredResults): GroupMatchLogEntry
     const outcome = { home: actual === "home" ? 1 : 0, draw: actual === "draw" ? 1 : 0, away: actual === "away" ? 1 : 0 };
     const brier = ((homeWin - outcome.home) ** 2 + (draw - outcome.draw) ** 2 + (awayWin - outcome.away) ** 2) / 3;
 
+    const beforeHomeElo = elos[match.home];
+    const beforeAwayElo = elos[match.away];
+    const updated = updateElo(elos[match.home], elos[match.away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, ha);
+    elos[match.home] = updated.home;
+    elos[match.away] = updated.away;
+
     log.push({
       id: match.id,
       group: TEAM_BY_CODE[match.home]?.group ?? "?",
@@ -211,11 +219,9 @@ export function getGroupStageMatchLog(stored: StoredResults): GroupMatchLogEntry
       actual,
       brierScore: Number(brier.toFixed(4)),
       matchday: match.matchday,
+      homeEloDelta: Math.round(updated.home - beforeHomeElo),
+      awayEloDelta: Math.round(updated.away - beforeAwayElo),
     });
-
-    const updated = updateElo(elos[match.home], elos[match.away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, ha);
-    elos[match.home] = updated.home;
-    elos[match.away] = updated.away;
   }
 
   return log;
