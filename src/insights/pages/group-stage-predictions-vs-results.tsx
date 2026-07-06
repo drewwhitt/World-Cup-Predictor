@@ -114,6 +114,8 @@ const FILTER_SCRIPT = `
         if (show) anyVisible = true;
       });
       group.style.display = anyVisible ? '' : 'none';
+      var details = group.querySelector('.match-log-details');
+      if (details && code !== 'ALL' && anyVisible) details.open = true;
     });
   });
 })();
@@ -189,9 +191,12 @@ function Content({ data }: { data?: Record<string, unknown> }) {
               {standings?.[letter as GroupLetter] && (
                 <StandingsTable rows={standings[letter as GroupLetter]} elos={elos ?? {} as Record<TeamCode, number>} />
               )}
-              <div className="match-log">
-                {groups.get(letter)!.map((m) => <MatchRow key={m.id} m={m} />)}
-              </div>
+              <details className="match-log-details">
+                <summary>Show matches</summary>
+                <div className="match-log">
+                  {groups.get(letter)!.map((m) => <MatchRow key={m.id} m={m} />)}
+                </div>
+              </details>
             </div>
           ))}
 

@@ -346,11 +346,35 @@ const INSIGHTS_CSS = `
     background-repeat: no-repeat;
     background-position: right 12px center;
   }
+  .match-log-details {
+    margin-top: 4px;
+  }
+  .match-log-details summary {
+    cursor: pointer;
+    padding: 8px 4px;
+    font: 600 12px/1 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--home-win, #3B6CA8);
+    list-style: none;
+  }
+  .match-log-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .match-log-details summary::before {
+    content: "▸ ";
+  }
+  .match-log-details[open] summary::before {
+    content: "▾ ";
+  }
+  .match-log-details summary:hover {
+    color: var(--ink);
+  }
   .match-log {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 0 0 8px;
+    margin: 8px 0 8px;
   }
   .match-log-row {
     border: 1px solid var(--hairline);

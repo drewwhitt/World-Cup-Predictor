@@ -47,19 +47,22 @@ export function matchOutcomeProbabilities(
  * correction. Prevents a single blowout from dominating Elo movement while
  * still rewarding genuinely dominant performances more than squeakers.
  *
- * Draws are a special case: margin is 0 by definition, and log(0+1)=0
- * would make the ENTIRE update zero for every draw, regardless of the Elo
- * gap between the two teams — silently erasing the (homeScore-expectedHome)
- * signal in updateElo, which is what actually captures whether a draw was
- * a big upset (huge underdog holds a favorite) or fully expected (two
- * evenly-matched teams). A draw isn't "no information" — it's simply not
- * a blowout, so it gets the smallest non-degenerate value on the curve
- * (the same one a 1-goal decisive result gets) rather than a hard zero.
+ * Draws are a genuine special case, not just a small margin: there IS no
+ * margin of victory in a draw, so running one through the same dampening
+ * curve built for decisive results — even substituting in the smallest
+ * possible margin, as an earlier version of this function did — still
+ * conservatively under-weights a draw relative to how much it actually
+ * upset expectations. FIFA's own official ranking formula uses no MOV
+ * adjustment at all, for any result; for a draw specifically, that's the
+ * right model — the surprise is already fully captured by
+ * (actual − expected) in updateElo, and a draw doesn't need a separate
+ * margin-based discount on top of that. So: multiplier = 1, flat, no
+ * dampening, for margin === 0.
  */
 function movMultiplier(margin: number, eloDiff: number): number {
-  const effectiveMargin = margin === 0 ? 1 : Math.abs(margin);
+  if (margin === 0) return 1;
   const autocorrCorrection = Math.abs(eloDiff) * 0.001 + 2.2;
-  return (Math.log(effectiveMargin + 1) * 1.5) / autocorrCorrection;
+  return (Math.log(Math.abs(margin) + 1) * 1.5) / autocorrCorrection;
 }
 
 export function updateElo(
