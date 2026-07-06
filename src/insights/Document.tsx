@@ -1,10 +1,8 @@
 import type { ReactElement } from "react";
+import { navItems } from "../data/worldCup";
 
 const SITE_NAME = "Veridex";
 const SITE_URL = "https://world-cup-predictor-inky-two.vercel.app"; // update if/when you move to a custom domain
-
-const BREAKING_TEXT =
-  "Brazil reclaims #1 at 24.5% · Portugal slides 1.7pp after Group A draw · France vs Brazil kicks off 3:00 PM ET · Veridex model refreshed with 50,000 new simulations · USA's advance odds climb to 61%";
 
 function buildDate(): string {
   return new Date()
@@ -124,7 +122,6 @@ const INSIGHTS_CSS = `
     align-items: flex-end;
     justify-content: space-between;
     padding: 26px 0 22px;
-    border-bottom: 1px solid var(--ink);
   }
   .wordmark {
     display: inline-block;
@@ -134,6 +131,35 @@ const INSIGHTS_CSS = `
     line-height: 0.92;
     letter-spacing: 0.04em;
     text-decoration: none;
+  }
+  .nav {
+    display: flex;
+    gap: 34px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .nav a {
+    position: relative;
+    padding: 0 0 13px;
+    color: #3A352E;
+    font: 600 14px/1 "IBM Plex Sans", system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav a:hover {
+    color: var(--ink);
+  }
+  .nav a.nav-current {
+    color: var(--ink);
+  }
+  .nav a.nav-current::after {
+    position: absolute;
+    right: 0;
+    bottom: -2px;
+    left: 0;
+    height: 3px;
+    content: "";
+    background: var(--ink);
   }
   .tagline {
     margin-top: 9px;
@@ -246,8 +272,8 @@ const INSIGHTS_CSS = `
   .brier-label {
     width: 190px;
     flex-shrink: 0;
-    font-family: var(--font-mono);
-    font-size: 12px;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 13px;
     color: var(--ink-2);
   }
   .brier-track {
@@ -283,6 +309,268 @@ const INSIGHTS_CSS = `
     color: var(--ink);
   }
 
+  .match-log-group {
+    margin-top: 32px;
+  }
+  .match-log-group-header {
+    font-family: var(--font-display);
+    font-size: 19px;
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .match-log-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 8px;
+  }
+  .match-log-filter label {
+    font: 600 11px/1 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+  }
+  .match-log-filter select {
+    font: 500 14px "IBM Plex Sans", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    padding: 8px 32px 8px 12px;
+    cursor: pointer;
+    max-width: 320px;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+  .match-log {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 8px;
+  }
+  .match-log-row {
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    padding: 10px 14px;
+    background: var(--surface);
+  }
+  .match-log-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .match-log-teams {
+    font: 600 14px var(--font-sans);
+    color: var(--ink-2);
+  }
+  .match-log-winner {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .match-log-score {
+    font-family: var(--font-mono);
+    color: var(--ink);
+  }
+  .match-log-predicted {
+    display: flex;
+    gap: 14px;
+    margin-top: 6px;
+    font: 500 13px "IBM Plex Sans", system-ui, sans-serif;
+    color: var(--ink-3);
+    flex-wrap: wrap;
+  }
+  .match-log-hit {
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .prob-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 8px 0 6px;
+    background: var(--hairline);
+  }
+  .prob-bar-home {
+    background: var(--home-win, #3B6CA8);
+  }
+  .prob-bar-draw {
+    background: var(--ink-4);
+  }
+  .prob-bar-away {
+    background: var(--gold);
+  }
+  .match-log-elo {
+    display: flex;
+    gap: 16px;
+    margin-top: 6px;
+    font: 500 12.5px "IBM Plex Sans", system-ui, sans-serif;
+    color: var(--ink-3);
+    flex-wrap: wrap;
+  }
+  .elo-up {
+    color: var(--positive, #2f7d4f);
+    font-weight: 700;
+  }
+  .elo-down {
+    color: var(--negative, #a03b2e);
+    font-weight: 700;
+  }
+  .elo-flat {
+    color: var(--ink-3);
+  }
+  .standings-table {
+    margin: 4px 0 16px;
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .standings-header-row,
+  .standings-row {
+    display: grid;
+    grid-template-columns: 1fr 28px 28px 28px 28px 40px 40px;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 12px;
+    font: 500 12px var(--font-mono);
+    text-align: right;
+  }
+  .standings-header-row {
+    color: var(--ink-3);
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .standings-row {
+    border-bottom: 1px solid var(--hairline-2);
+    color: var(--ink-2);
+  }
+  .standings-row:last-child {
+    border-bottom: none;
+  }
+  .standings-qualified {
+    color: var(--ink);
+    font-weight: 700;
+    background: rgba(215, 178, 84, 0.08);
+  }
+  .standings-team-col {
+    text-align: left;
+    font: 600 13px var(--font-sans);
+  }
+  .standings-qualified .standings-team-col {
+    font-weight: 700;
+  }
+  .standings-qualified-tag {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 5px;
+    font: 700 9px/1.4 var(--font-mono);
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    vertical-align: middle;
+  }
+
+  @media (max-width: 720px) {
+    .ticker .tag {
+      padding: 9px 10px;
+      font-size: 10px;
+    }
+    .ticker .track {
+      font-size: 11.5px;
+    }
+    .utility {
+      gap: 8px;
+      padding: 9px 0;
+      font-size: 9.5px;
+    }
+    .vol-tag {
+      display: none;
+    }
+    .utility-right {
+      gap: 10px;
+    }
+    .subscribe {
+      display: none;
+    }
+    .masthead {
+      padding: 16px 0 14px;
+    }
+    .wordmark {
+      font-size: 30px;
+    }
+    .tagline {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+    }
+    main {
+      padding: 32px var(--container-pad) 56px;
+    }
+    h1 {
+      font-size: 26px;
+    }
+    .dek {
+      font-size: 16px;
+    }
+    .brier-label {
+      width: 130px;
+      font-size: 11px;
+    }
+    .container {
+      padding: 0 18px;
+    }
+    .match-log-teams {
+      font-size: 12.5px;
+    }
+    .match-log-predicted {
+      gap: 10px;
+      font-size: 10.5px;
+    }
+    .standings-header-row,
+    .standings-row {
+      grid-template-columns: 1fr 22px 22px 22px 22px 32px 32px;
+      font-size: 10.5px;
+      padding: 6px 8px;
+    }
+    .match-log-elo {
+      gap: 10px;
+      font-size: 10px;
+    }
+    .nav {
+      gap: 22px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      touch-action: pan-x;
+    }
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
+    .nav a {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .utility {
+      font-size: 9px;
+    }
+    .back-link {
+      font-size: 10px;
+    }
+  }
+
   footer {
     text-align: center;
     padding: 32px 24px;
@@ -296,11 +584,13 @@ export function Document({
   title,
   description,
   slug,
+  breakingText,
   children,
 }: {
   title: string;
   description: string;
   slug: string; // "" for the hub page itself
+  breakingText: string;
   children: ReactElement;
 }) {
   const canonical = `${SITE_URL}/insights/${slug ? slug + "/" : ""}`;
@@ -326,8 +616,8 @@ export function Document({
           <span className="tag">Breaking</span>
           <div className="window">
             <div className="track">
-              <span>{BREAKING_TEXT}</span>
-              <span>{BREAKING_TEXT}</span>
+              <span>{breakingText}</span>
+              <span>{breakingText}</span>
             </div>
           </div>
         </div>
@@ -336,7 +626,7 @@ export function Document({
           <div className="utility">
             <span>{buildDate()}</span>
             <span className="utility-right">
-              <span>Vol. III · No. 176</span>
+              <span className="vol-tag">Vol. III · No. 176</span>
               <span className="subscribe" title="Coming soon">✦ Premium (Coming Soon)</span>
               <a href="/" className="back-link">← Back to the Model</a>
             </span>
@@ -347,6 +637,17 @@ export function Document({
               <div className="tagline">Predictive Sports Intelligence</div>
             </div>
           </div>
+          <nav className="nav">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={item.href ?? `/#${item.id}`}
+                className={item.id === "insights" ? "nav-current" : undefined}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
         </header>
 
         <main>{children}</main>
