@@ -172,7 +172,7 @@ export function WhatIfBracket({
     const pct = bothKnown ? winPct(elos, homeCode!, awayCode!) : 0.5;
 
     return (
-      <div className={s.card}>
+      <div className={[s.card, m.hasRealResult && !m.isOverridden ? s.matchConfirmed : ""].join(" ")}>
         <button
           type="button"
           disabled={!homeCode}
@@ -205,13 +205,13 @@ export function WhatIfBracket({
           </button>
         )}
 
-        <div className={s.cardFooter}>
-          {m.isOverridden && (
+        {m.isOverridden && (
+          <div className={s.cardFooter}>
             <button type="button" className={s.clearBtn} onClick={() => onClearOverride(m.id)}>
               Reset to real result
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   }

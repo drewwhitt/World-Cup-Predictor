@@ -179,7 +179,7 @@ const INSIGHTS_CSS = `
   .back-link:hover { color: var(--ink); }
 
   main {
-    max-width: 720px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 48px var(--container-pad) 80px;
   }
