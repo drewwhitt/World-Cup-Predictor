@@ -7,16 +7,18 @@ import s from "./MatchCenterView.module.css";
 
 function MatchRow({ m, periodLabel }: { m: MatchCenterEntry; periodLabel?: string }) {
   const played = m.played && m.homeGoals !== undefined && m.awayGoals !== undefined;
+  const homeWins = played && (m.homeGoals! > m.awayGoals! || m.penaltyWinner === "home");
+  const awayWins = played && (m.awayGoals! > m.homeGoals! || m.penaltyWinner === "away");
   return (
     <div className={s.row}>
       <div className={s.teams}>
-        <span className={played && m.homeGoals! > m.awayGoals! ? s.winner : ""}>{m.homeName}</span>
+        <span className={homeWins ? s.winner : ""}>{m.homeName}</span>
         {played ? (
           <span className={s.score}>{m.homeGoals}–{m.awayGoals}{m.penaltyWinner ? " (pens)" : ""}</span>
         ) : (
           <span className={s.vs}>vs</span>
         )}
-        <span className={played && m.awayGoals! > m.homeGoals! ? s.winner : ""}>{m.awayName}</span>
+        <span className={awayWins ? s.winner : ""}>{m.awayName}</span>
       </div>
       <div className={s.meta}>
         {periodLabel && <span className={s.periodTag}>{periodLabel}</span>}

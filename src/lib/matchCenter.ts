@@ -35,10 +35,33 @@ function dateRangeFor(dates: string[]): { startDate?: string; endDate?: string }
   return { startDate: sorted[0], endDate: sorted[sorted.length - 1] };
 }
 
+/**
+ * GroupMatch.matchday is a GLOBAL sequential counter across the whole
+ * tournament's calendar (values 1 through ~17 in the current fixture
+ * data) — it does NOT mean "1st/2nd/3rd match for this group," since
+ * different groups' fixtures are staggered across different real
+ * calendar days. Using it directly as "Matchday 1/2/3" was the bug: only
+ * whichever 1-2 matches happened to literally have matchday===1 showed
+ * up under "Matchday 1," missing the other ~22 group-openers that
+ * happened on other calendar days. This derives the real per-group round
+ * (every team's 1st, 2nd, and 3rd group match) by sorting each group's
+ * own 6 matches by date, independent of the raw global counter.
+ */
+function getRoundWithinGroup(): Map<string, number> {
+  const result = new Map<string, number>();
+  const groups = new Set(GROUP_MATCHES.map((m) => m.group));
+  for (const group of groups) {
+    const matches = GROUP_MATCHES.filter((m) => m.group === group).sort((a, b) => a.date.localeCompare(b.date));
+    matches.forEach((m, i) => result.set(m.id, Math.floor(i / 2) + 1));
+  }
+  return result;
+}
+
 export function getWorldCupPeriods(): Period[] {
+  const roundMap = getRoundWithinGroup();
   const periods: Period[] = [];
   for (const md of [1, 2, 3]) {
-    const dates = GROUP_MATCHES.filter((m) => m.matchday === md).map((m) => m.date);
+    const dates = GROUP_MATCHES.filter((m) => roundMap.get(m.id) === md).map((m) => m.date);
     periods.push({ id: `md${md}`, label: `Matchday ${md}`, order: md, ...dateRangeFor(dates) });
   }
   const roundOrder = [
@@ -57,12 +80,13 @@ export function getWorldCupPeriods(): Period[] {
 
 export function buildMatchCenterEntries(stored: StoredResults): MatchCenterEntry[] {
   const entries: MatchCenterEntry[] = [];
+  const roundMap = getRoundWithinGroup();
 
   for (const m of GROUP_MATCHES) {
     const result = stored.matches[m.id];
     entries.push({
       id: m.id,
-      periodId: `md${m.matchday}`,
+      periodId: `md${roundMap.get(m.id) ?? 1}`,
       isKnockout: false,
       date: m.date,
       homeCode: m.home,
