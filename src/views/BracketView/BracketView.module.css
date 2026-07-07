@@ -115,6 +115,23 @@
   padding: 8px 14px;
 }
 
+.projectedTag {
+  display: none;
+}
+
+.mobileList .projectedTag {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 7px;
+  align-self: flex-start;
+  font: 600 9px/1.4 var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--hairline-2);
+  border-radius: 3px;
+}
+
 .mobileList .team {
   padding: 6px 0;
 }

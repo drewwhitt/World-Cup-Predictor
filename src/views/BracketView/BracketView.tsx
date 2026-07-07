@@ -419,6 +419,7 @@ function MatchCardContent({ match, highlight }: { match: MatchNode; highlight?: 
             : ""}
         </span>
       </div>
+      {!confirmed && top && bot && <span className={s.projectedTag}>Projected</span>}
     </div>
   );
 }
