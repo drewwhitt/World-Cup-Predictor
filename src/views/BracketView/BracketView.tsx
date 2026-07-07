@@ -29,15 +29,19 @@ const R32_MATCHUPS: Array<{ id: string; home: TeamCode; away: TeamCode }> = [
   { id: "ko-78", home: "ESP", away: "AUT" },
   { id: "ko-79", home: "USA", away: "BIH" },
   { id: "ko-80", home: "BEL", away: "SEN" },
-  // Right half
-  { id: "ko-81", home: "BRA", away: "JPN" },
-  { id: "ko-82", home: "CIV", away: "NOR" },
+  // Right half — order derived from KNOCKOUT_STRUCTURE's real feeder
+  // relationships, not the naive ko-81..ko-88 sequence. ko-93 (R16) is
+  // actually fed by ko-83/ko-84, and ko-94 by ko-81/ko-82 — the reverse
+  // of what sequential order would suggest — and ko-95/ko-96 pair up
+  // ko-86-with-ko-88 and ko-85-with-ko-87, not adjacent pairs at all.
   { id: "ko-83", home: "MEX", away: "ECU" },
   { id: "ko-84", home: "ENG", away: "COD" },
-  { id: "ko-85", home: "ARG", away: "CPV" },
+  { id: "ko-81", home: "BRA", away: "JPN" },
+  { id: "ko-82", home: "CIV", away: "NOR" },
   { id: "ko-86", home: "AUS", away: "EGY" },
-  { id: "ko-87", home: "SUI", away: "ALG" },
   { id: "ko-88", home: "COL", away: "GHA" },
+  { id: "ko-85", home: "ARG", away: "CPV" },
+  { id: "ko-87", home: "SUI", away: "ALG" },
 ];
 
 const R16_IDS = ["ko-89","ko-90","ko-91","ko-92","ko-93","ko-94","ko-95","ko-96"];
