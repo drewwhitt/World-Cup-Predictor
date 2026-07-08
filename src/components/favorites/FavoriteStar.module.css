@@ -1,0 +1,29 @@
+.star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink-4);
+  flex-shrink: 0;
+}
+
+.star:hover {
+  color: var(--gold);
+}
+
+.star.active {
+  color: var(--gold);
+}
+
+.star.sm {
+  width: 18px;
+  height: 18px;
+  font-size: 13px;
+}

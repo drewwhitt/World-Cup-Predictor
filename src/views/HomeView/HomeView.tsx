@@ -6,6 +6,7 @@ import { Hero } from "./Hero";
 import { HeadlineCard } from "./HeadlineCard";
 import { MorningForecast } from "./MorningForecast";
 import { QuickStrip } from "./QuickStrip";
+import { FavoritesStrip } from "./FavoritesStrip";
 import s from "./HomeView.module.css";
 
 type Props = {
@@ -33,6 +34,7 @@ export function HomeView({
     <>
       <Hero teams={teams} playedCount={playedCount} stored={stored} />
       <QuickStrip teams={teams} onNavigate={onNavigateToRankings} />
+      <FavoritesStrip teams={teams} />
 
       <section className={s.latestHeader}>
         <h2>Today's Briefing</h2>

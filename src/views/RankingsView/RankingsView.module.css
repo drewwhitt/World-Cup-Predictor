@@ -122,6 +122,12 @@
   gap: 2px;
 }
 
+.teamNameRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .teamName {
   font: 700 14px var(--font-sans);
   color: var(--ink);

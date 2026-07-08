@@ -3,6 +3,8 @@ import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { computeElosIncludingKnockouts } from "../../lib/simulate";
 import { TEAMS, TEAM_CONFEDERATION, CONFEDERATION_OFFSETS, type Confederation } from "../../lib/teams";
 import { getTeamKnockoutStatus } from "../../lib/bracketTree";
+import { FavoriteStar } from "../../components/favorites/FavoriteStar";
+import { useFavorites } from "../../lib/favorites";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./RankingsView.module.css";
 
@@ -26,6 +28,8 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
   const [sortKey, setSortKey] = useState<SortKey>("elo");
   const [confFilter, setConfFilter] = useState<Confederation | "all">("all");
   const [hideEliminated, setHideEliminated] = useState(false);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const favorites = useFavorites();
 
   const rows = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
@@ -58,7 +62,8 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
 
   const filtered = rows
     .filter((r) => confFilter === "all" || r.confederation === confFilter)
-    .filter((r) => !hideEliminated || !r.eliminated);
+    .filter((r) => !hideEliminated || !r.eliminated)
+    .filter((r) => !favoritesOnly || favorites.has(r.code));
 
   const sorted = useMemo(() => {
     const copy = [...filtered];
@@ -123,6 +128,13 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
         >
           {hideEliminated ? "✓ Hiding eliminated teams" : "Hide eliminated teams"}
         </button>
+        <button
+          type="button"
+          className={favoritesOnly ? s.filterActive : s.filterBtn}
+          onClick={() => setFavoritesOnly((v) => !v)}
+        >
+          {favoritesOnly ? "★ Favorites only" : "☆ Favorites only"}
+        </button>
       </div>
 
       <div className={s.tableWrap}>
@@ -139,7 +151,10 @@ export function RankingsView({ stored }: { stored: StoredResults }) {
           <div key={row.code} className={[s.row, row.eliminated ? s.rowEliminated : ""].join(" ")}>
             <span className={s.colRank}>{i + 1}</span>
             <span className={s.colTeam}>
-              <span className={s.teamName}>{row.name}</span>
+              <span className={s.teamNameRow}>
+                <FavoriteStar code={row.code} size="sm" />
+                <span className={s.teamName}>{row.name}</span>
+              </span>
               <span className={s.groupTag}>Group {row.group}</span>
             </span>
             <span className={s.colElo}>{Math.round(row.currentElo)}</span>

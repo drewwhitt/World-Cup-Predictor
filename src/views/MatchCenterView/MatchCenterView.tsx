@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { getWorldCupPeriods, buildMatchCenterEntries, getPeriodStatuses, type MatchCenterEntry } from "../../lib/matchCenter";
 import { getCurrentPeriodId } from "../../lib/periods";
 import { TEAM_BY_CODE } from "../../lib/teams";
+import { FavoriteStar } from "../../components/favorites/FavoriteStar";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./MatchCenterView.module.css";
 
@@ -12,12 +13,14 @@ function MatchRow({ m, periodLabel }: { m: MatchCenterEntry; periodLabel?: strin
   return (
     <div className={s.row}>
       <div className={s.teams}>
+        {m.homeCode && <FavoriteStar code={m.homeCode} size="sm" />}
         <span className={homeWins ? s.winner : ""}>{m.homeName}</span>
         {played ? (
           <span className={s.score}>{m.homeGoals}–{m.awayGoals}{m.penaltyWinner ? " (pens)" : ""}</span>
         ) : (
           <span className={s.vs}>vs</span>
         )}
+        {m.awayCode && <FavoriteStar code={m.awayCode} size="sm" />}
         <span className={awayWins ? s.winner : ""}>{m.awayName}</span>
       </div>
       <div className={s.meta}>
