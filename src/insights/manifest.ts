@@ -1,6 +1,6 @@
 import type { InsightPage } from "./types";
 import { page as whatIsEloRating } from "./pages/what-is-elo-rating";
-import { page as franceVsSpain } from "./pages/france-vs-spain-semifinal-odds.tsx";
+import { page as franceVsSpain } from "./pages/france-vs-spain-semifinal-odds";
 import { page as howAccurate } from "./pages/how-accurate-is-veridex.tsx";
 import { page as groupStageMatchLog } from "./pages/group-stage-predictions-vs-results";
 

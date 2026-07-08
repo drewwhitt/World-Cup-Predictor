@@ -56,7 +56,7 @@ function Content() {
 }
 
 export const page: InsightPage = {
-  slug: "france-vs-spain-quarterfinal-odds",
+  slug: "france-vs-spain-semifinal-odds",
   title: "Why Does Veridex Favor France Over Spain?",
   description:
     "Veridex's model gives France a 57% chance over Spain in a projected World Cup Semifinal. Here's the reasoning behind the number.",
