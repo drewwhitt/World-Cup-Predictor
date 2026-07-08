@@ -96,6 +96,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
       current: currentChampion,
       rating: ratingFromElo(elos[row.code]),
       formStr: formForTeam(row.code, stored),
+      initialElo: team.initialElo,
       trend: [
         baseChampion,
         Number((baseChampion * 0.7 + currentChampion * 0.3).toFixed(1)),

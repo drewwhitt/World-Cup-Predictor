@@ -11,6 +11,7 @@ export type Team = {
   rating: number;
   formStr: string;
   trend: number[];
+  initialElo: number;
 };
 
 export type Headline = {

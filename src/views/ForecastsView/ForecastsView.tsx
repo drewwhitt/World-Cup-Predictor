@@ -411,7 +411,7 @@ export function ForecastsView({ stored, teams }: Props) {
             </div>
             <div className={s.eloRow}>
               <span>Pre-tournament</span>
-              <strong>{eloRating} pts</strong>
+              <strong>{Math.round(selectedTeam.initialElo)} pts</strong>
             </div>
             <div className={s.eloRow}>
               <span>Confederation</span>

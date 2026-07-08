@@ -218,7 +218,17 @@ export function WhatIfBracket({
 
   function PositionedCard({ id, x, y }: { id: string; x: number; y: number }) {
     return (
-      <div style={{ position: "absolute", left: x, top: y, width: CARD_W, height: CARD_H }}>
+      <div
+        style={{
+          position: "absolute",
+          left: x,
+          top: y,
+          width: CARD_W,
+          height: CARD_H,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <CardContent id={id} />
       </div>
     );
