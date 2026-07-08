@@ -1,4 +1,4 @@
-import { headlines as mockHeadlines, morningForecast, teams as mockTeams, type Headline, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
+import { type Headline, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
 import { DailyMovers } from "../../components/movers/DailyMovers";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults } from "../../lib/types";
@@ -10,11 +10,11 @@ import { FavoritesStrip } from "./FavoritesStrip";
 import s from "./HomeView.module.css";
 
 type Props = {
-  teams?: Team[];
-  morning?: MorningForecastData;
-  headlines?: Headline[];
-  playedCount?: number;
-  stored?: StoredResults;
+  teams: Team[];
+  morning: MorningForecastData;
+  headlines: Headline[];
+  playedCount: number;
+  stored: StoredResults;
   onNavigateToRankings?: () => void;
 };
 
@@ -23,10 +23,10 @@ const TEAM_NAMES: Record<string, string> = Object.fromEntries(
 );
 
 export function HomeView({
-  teams = mockTeams,
-  morning = morningForecast,
-  headlines = mockHeadlines,
-  playedCount = 0,
+  teams,
+  morning,
+  headlines,
+  playedCount,
   stored,
   onNavigateToRankings,
 }: Props) {

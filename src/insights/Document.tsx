@@ -10,6 +10,17 @@ function buildDate(): string {
     .toUpperCase();
 }
 
+// Same live day-of-year computation as Masthead.tsx in the main app —
+// kept as a separate small copy here since these static pages don't share
+// a runtime with the live app, matching how buildDate() above is also a
+// local copy rather than an import.
+function issueNumber(): number {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now.getTime() - start.getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
 /**
  * Same design tokens AND the same masthead/ticker treatment as the main
  * app (src/styles/tokens.css, src/components/shell/*) so /insights pages
@@ -656,7 +667,7 @@ export function Document({
           <div className="utility">
             <span>{buildDate()}</span>
             <span className="utility-right">
-              <span className="vol-tag">Vol. III · No. 176</span>
+              <span className="vol-tag">Vol. I · No. {issueNumber()}</span>
               <span className="subscribe" title="Coming soon">✦ Premium (Coming Soon)</span>
               <a href="/" className="back-link">← Back to the Model</a>
             </span>

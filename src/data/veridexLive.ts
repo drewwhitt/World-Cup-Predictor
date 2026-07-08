@@ -304,11 +304,13 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
     usedCodes.add(leader.code);
   }
 
-  // ── Slot 4: #2 in the title race ──
+  // ── Slot 4: next-most-notable team not already featured, labeled with their ACTUAL rank ──
   const second = sorted.find((t) => !usedCodes.has(t.code));
   if (second) {
+    const actualRank = sorted.findIndex((t) => t.code === second.code) + 1;
+    const ordinal = actualRank === 2 ? "Second" : actualRank === 3 ? "Third" : actualRank === 4 ? "Fourth" : `${actualRank}th`;
     headlines.push({
-      title: `${second.name} Sits Second In Championship Race`,
+      title: `${second.name} Sits ${ordinal} In Championship Race`,
       summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention.`,
       metric: `${second.current.toFixed(1)}%`,
       metricLabel: "TITLE ODDS",

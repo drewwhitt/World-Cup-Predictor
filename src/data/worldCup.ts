@@ -80,60 +80,6 @@ export type LabStep = {
   description: string;
 };
 
-export const teams: Team[] = [
-  { name: "Brazil", code: "BRA", group: "Group A", baseline: 23.2, current: 24.5, rating: 92.4, formStr: "WWWDW", trend: [21.0, 22.4, 23.2, 24.5] },
-  { name: "France", code: "FRA", group: "Group B", baseline: 19.1, current: 18.9, rating: 91.0, formStr: "WWDWL", trend: [20.2, 19.6, 19.1, 18.9] },
-  { name: "Argentina", code: "ARG", group: "Group C", baseline: 16.4, current: 16.7, rating: 90.2, formStr: "WDWWW", trend: [17.1, 16.0, 16.4, 16.7] },
-  { name: "Spain", code: "ESP", group: "Group D", baseline: 9.6, current: 9.8, rating: 87.5, formStr: "WWWWD", trend: [8.4, 9.1, 9.6, 9.8] },
-  { name: "Portugal", code: "POR", group: "Group A", baseline: 10.9, current: 9.3, rating: 86.1, formStr: "WLDWL", trend: [11.5, 11.2, 10.9, 9.3] },
-  { name: "England", code: "ENG", group: "Group E", baseline: 6.8, current: 7.1, rating: 85.0, formStr: "DWWDW", trend: [6.1, 6.5, 6.8, 7.1] },
-  { name: "Germany", code: "GER", group: "Group F", baseline: 4.9, current: 5.2, rating: 83.8, formStr: "WDWWW", trend: [4.2, 4.6, 4.9, 5.2] },
-  { name: "Netherlands", code: "NED", group: "Group C", baseline: 3.6, current: 3.4, rating: 82.9, formStr: "DWLDW", trend: [3.9, 3.7, 3.6, 3.4] },
-  { name: "USA", code: "USA", group: "Group B", baseline: 1.8, current: 2.1, rating: 79.4, formStr: "WWDWW", trend: [1.3, 1.5, 1.8, 2.1] },
-  { name: "Belgium", code: "BEL", group: "Group F", baseline: 2.0, current: 1.8, rating: 80.1, formStr: "LWDWL", trend: [2.4, 2.2, 2.0, 1.8] },
-  { name: "Uruguay", code: "URU", group: "Group D", baseline: 1.1, current: 1.2, rating: 78.6, formStr: "DWWLD", trend: [1.0, 1.1, 1.1, 1.2] },
-  { name: "Croatia", code: "CRO", group: "Group E", baseline: 0.9, current: 1.0, rating: 77.9, formStr: "WDDWL", trend: [0.8, 0.9, 0.9, 1.0] },
-  { name: "Colombia", code: "COL", group: "Group G", baseline: 0.8, current: 0.9, rating: 77.2, formStr: "WWDLW", trend: [0.7, 0.8, 0.8, 0.9] },
-  { name: "Morocco", code: "MAR", group: "Group H", baseline: 0.7, current: 0.8, rating: 76.8, formStr: "DWWWD", trend: [0.6, 0.7, 0.7, 0.8] },
-  { name: "Mexico", code: "MEX", group: "Group A", baseline: 0.5, current: 0.5, rating: 74.3, formStr: "DDWLD", trend: [0.6, 0.5, 0.5, 0.5] },
-  { name: "Japan", code: "JPN", group: "Group G", baseline: 0.4, current: 0.5, rating: 73.9, formStr: "WDWWD", trend: [0.3, 0.4, 0.4, 0.5] },
-];
-
-export const hero = {
-  title: "Brazil Reclaims World Cup Favorite Status After Matchday 2",
-  sub: "The Veridex model ran 50,000 fresh simulations after Tuesday's results and now rates Brazil the tournament's most likely champion - its first time atop the table since the group-stage draw.",
-  byline: "VERIDEX Analytics Desk · June 24, 2026 · 6:45 AM",
-};
-
-export const headlines: Headline[] = [
-  { title: "Brazil Reclaims Favorite Status After Matchday 2 Surge", summary: "A clinical 3-0 over Serbia lifts Brazil to a tournament-high 24.5% title probability.", metric: "24.5%", metricLabel: "TITLE ODDS", time: "12 min ago", up: true },
-  { title: "Portugal's Title Hopes Dip As Group A Tightens", summary: "A surprise draw drops Portugal 1.7 points - the field's biggest faller this update.", metric: "-1.7 pp", metricLabel: "CHANGE", time: "34 min ago", up: false },
-  { title: "USA's Path To The Quarterfinals Widens", summary: "The model now gives the hosts a 61% chance of advancing from Group B.", metric: "61%", metricLabel: "ADVANCE", time: "1 hr ago", up: true },
-  { title: "Spain Climbs Into The Top Four", summary: "Back-to-back clean sheets push Spain past Portugal into fourth on title odds.", metric: "9.8%", metricLabel: "TITLE ODDS", time: "2 hr ago", up: true },
-  { title: "England's Defensive Concerns Persist Despite Win", summary: "Underlying xGA suggests England's back line remains a model liability.", metric: "7.1%", metricLabel: "TITLE ODDS", time: "3 hr ago", up: false },
-  { title: "Germany Quietly Builds Momentum In Group F", summary: "Three straight overperformances on xG lift Germany into the top seven.", metric: "5.2%", metricLabel: "TITLE ODDS", time: "4 hr ago", up: true },
-];
-
-export const morningForecast: MorningForecast = {
-  riser: "Brazil",
-  riserVal: "+1.3 pp",
-  riserNote: "to 24.5% title odds",
-  faller: "Portugal",
-  fallerVal: "-1.7 pp",
-  fallerNote: "to 9.3% title odds",
-  matchName: "France vs Brazil",
-  matchNote: "Group B decider · 3:00 PM ET",
-  champ: "Brazil",
-  champVal: "24.5%",
-  champNote: "most likely champion",
-  upset: "USA over Spain",
-  upsetVal: "19%",
-  upsetNote: "highest-leverage upset risk today",
-  insight: "Brazil's rise is driven less by results than by xG: it leads the field in expected goals while conceding the fewest big chances. The model treats that profile as more repeatable than France's narrow wins.",
-};
-
-export const breakingText = "Brazil reclaims #1 at 24.5% · Portugal slides 1.7pp after Group A draw · France vs Brazil kicks off 3:00 PM ET · Veridex model refreshed with 50,000 new simulations · USA's advance odds climb to 61%";
-
 export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "home", label: "Home" },
   { id: "forecasts", label: "Forecasts" },
@@ -205,7 +151,7 @@ export const calibrationPoints = {
   observed: [8, 19, 33, 38, 52, 58, 73, 79, 91],
 };
 
-export function contenderRows(source: Team[] = teams) {
+export function contenderRows(source: Team[]) {
   const sorted = [...source].sort((a, b) => b.current - a.current);
   const maxCurrent = sorted[0]?.current ?? 1;
 

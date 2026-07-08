@@ -9,13 +9,28 @@ function liveDate(): string {
   }).toUpperCase();
 }
 
+/**
+ * Issue number computed live from the actual date (day of year), so it
+ * genuinely increments day to day like a real publication would, instead
+ * of a frozen number that never changes no matter when the page loads.
+ * "Volume III" stays a fixed cosmetic constant — there's no real
+ * publication history to derive a volume-per-year count from, so making
+ * that dynamic would just be inventing a fake founding date.
+ */
+function issueNumber(): number {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now.getTime() - start.getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
 export function Masthead() {
   return (
     <>
       <div className={s.utility}>
         <span>{liveDate()}</span>
         <span className={s.utilityRight}>
-          <span>Vol. III · No. 176</span>
+          <span>Vol. I · No. {issueNumber()}</span>
           <span className={s.subscribe} title="Coming soon">✦ Premium (Coming Soon)</span>
         </span>
       </div>

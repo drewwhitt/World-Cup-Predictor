@@ -22,7 +22,7 @@ export function Hero({ teams, playedCount, stored }: Props) {
   const delta = Number((favorite.current - favorite.baseline).toFixed(1));
   const confidence = Math.round(Math.min(96, Math.max(62, 76 + favorite.current / 2)));
   const heroTitle = `${favorite.name} Leads World Cup Forecast After Latest Results`;
-  const heroSub = `The Veridex model ran ${playedCount > 0 ? "10,000" : "pre-tournament"} simulations using your manually entered results and now rates ${favorite.name} the tournament's most likely champion.`;
+  const heroSub = `The Veridex model ran ${playedCount > 0 ? "10,000" : "pre-tournament"} simulations using every real result recorded so far and now rates ${favorite.name} the tournament's most likely champion.`;
 
   // Real Elo-based rank, not the team with the highest championship % — those
   // aren't the same thing (bracket path difficulty differs from raw strength).
@@ -47,7 +47,6 @@ export function Hero({ teams, playedCount, stored }: Props) {
   return (
     <section className={s.hero}>
       <div className={s.overlay} />
-      <div className={s.photoLabel}>[ Editorial photo - Brazil celebrate vs Serbia ]</div>
       <div className={s.content}>
         <div className={s.kicker}>World Cup · Championship Forecast</div>
         <h1>{heroTitle}</h1>

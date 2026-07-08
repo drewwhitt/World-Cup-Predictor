@@ -9,7 +9,7 @@ import s from "./AppShell.module.css";
 type Props = {
   activeTab: TabId;
   edition: Edition;
-  breakingText?: string;
+  breakingText: string;
   onTabChange?: (tab: TabId) => void;
   children: ReactNode;
 };

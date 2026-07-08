@@ -1,11 +1,10 @@
-import { breakingText as defaultText } from "../../data/worldCup";
 import s from "./BreakingTicker.module.css";
 
 type Props = {
-  text?: string;
+  text: string;
 };
 
-export function BreakingTicker({ text = defaultText }: Props) {
+export function BreakingTicker({ text }: Props) {
   return (
     <div className={s.ticker}>
       <span className={s.tag}>Breaking</span>
