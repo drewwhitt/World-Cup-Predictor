@@ -8,7 +8,7 @@ import {
 } from "./groups";
 import { assignThirdPlaceSlots, simulateKnockout } from "./bracket";
 import { TEAMS, TEAM_BY_CODE } from "./teams";
-import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch, R32_MATCHUPS, feedersForRound } from "./bracketTree";
 import type {
   GroupLetter,
   GroupMatch,
@@ -154,58 +154,17 @@ export function runSimulation(
   );
   const rng = mulberry32(seed);
 
-  // Real 2026 R32 matchups from FIFA's published bracket.
-  const REAL_R32: Record<string, { home: TeamCode; away: TeamCode }> = {
-    "ko-73": { home: "GER", away: "PAR" },
-    "ko-74": { home: "FRA", away: "SWE" },
-    "ko-75": { home: "RSA", away: "CAN" },
-    "ko-76": { home: "NED", away: "MAR" },
-    "ko-77": { home: "POR", away: "CRO" },
-    "ko-78": { home: "ESP", away: "AUT" },
-    "ko-79": { home: "USA", away: "BIH" },
-    "ko-80": { home: "BEL", away: "SEN" },
-    "ko-81": { home: "BRA", away: "JPN" },
-    "ko-82": { home: "CIV", away: "NOR" },
-    "ko-83": { home: "MEX", away: "ECU" },
-    "ko-84": { home: "ENG", away: "COD" },
-    "ko-85": { home: "ARG", away: "CPV" },
-    "ko-86": { home: "AUS", away: "EGY" },
-    "ko-87": { home: "SUI", away: "ALG" },
-    "ko-88": { home: "COL", away: "GHA" },
-  };
-
-  // Real R16 matchups — verified against FIFA's official bracket structure
-  // and live 2026 tournament reporting (Portugal v Spain, Paraguay v France,
-  // Canada v Morocco, Brazil v Norway, Mexico v England, USA v Belgium).
-  // ko-89=W73vW74, ko-90=W75vW76, ko-91=W77vW78, ko-92=W79vW80,
-  // ko-93=W83vW84, ko-94=W81vW82, ko-95=W86vW88, ko-96=W85vW87
-  const R16_FROM_R32: Record<string, [string, string]> = {
-    "ko-89": ["W73", "W74"],
-    "ko-90": ["W75", "W76"],
-    "ko-91": ["W77", "W78"],
-    "ko-92": ["W79", "W80"],
-    "ko-93": ["W83", "W84"],
-    "ko-94": ["W81", "W82"],
-    "ko-95": ["W86", "W88"],
-    "ko-96": ["W85", "W87"],
-  };
-
-  // Real QF matchups — winners of R16 pairs face each other
-  const QF_FROM_R16: Record<string, [string, string]> = {
-    "ko-97":  ["W89", "W90"],
-    "ko-98":  ["W93", "W94"],
-    "ko-99":  ["W91", "W92"],
-    "ko-100": ["W95", "W96"],
-  };
-
-  // Real SF matchups — each semifinal combines the two QFs from the SAME
-  // half of the bracket (ko-97+ko-99 = the 73-80 side, ko-98+ko-100 = the
-  // 81-88 side). This was previously cross-wired (ko-97+ko-98), which
-  // incorrectly merged two different bracket halves into one semifinal.
-  const SF_FROM_QF: Record<string, [string, string]> = {
-    "ko-101": ["W97", "W99"],
-    "ko-102": ["W98", "W100"],
-  };
+  // Real 2026 R32 matchups, R16/QF/SF feeder pairs — all derived from
+  // bracketTree.ts's KNOCKOUT_STRUCTURE (the single source of truth for
+  // bracket topology) rather than hand-maintained here. A previous
+  // hand-maintained copy of the R16 feeders had ko-95 and ko-96 transposed
+  // relative to the real structure, which silently misattributed real,
+  // already-played knockout results to the wrong teams below — deriving
+  // these instead makes that class of bug structurally impossible.
+  const REAL_R32 = R32_MATCHUPS;
+  const R16_FROM_R32 = feedersForRound("Round of 16");
+  const QF_FROM_R16 = feedersForRound("Quarterfinal");
+  const SF_FROM_QF = feedersForRound("Semifinal");
 
   // Build confirmedWinners from stored knockout results using real team codes.
   // ALSO pre-seed R32 participants directly — the fixture file's homeSlot/awaySlot

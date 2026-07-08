@@ -186,6 +186,30 @@ export function resolveKnockoutMatch(
 }
 
 /**
+ * Derives the "W{matchNumber}" feeder pair for every match in a given
+ * round, directly from KNOCKOUT_STRUCTURE — the single source of truth
+ * for bracket topology. This exists so nothing downstream (simulate.ts,
+ * or any future consumer) ever needs to hand-maintain its own copy of
+ * which R32/R16/QF winner feeds which next match. A hand-maintained
+ * duplicate of this exact mapping in simulate.ts previously drifted out
+ * of sync at the R16 level (ko-95/ko-96 feeders were transposed), which
+ * silently misattributed real, already-played knockout results to the
+ * wrong teams in the Monte Carlo simulation. Deriving it here instead
+ * makes that class of bug structurally impossible — there is nothing
+ * left to keep in sync.
+ */
+export function feedersForRound(round: KnockoutRound): Record<string, [string, string]> {
+  const out: Record<string, [string, string]> = {};
+  for (const [id, def] of Object.entries(KNOCKOUT_STRUCTURE)) {
+    if (def.round !== round) continue;
+    if (def.home.type !== "winner" || def.away.type !== "winner") continue;
+    const key = (matchId: string) => `W${matchId.match(/ko-(\d+)/)?.[1] ?? ""}`;
+    out[id] = [key(def.home.matchId), key(def.away.matchId)];
+  }
+  return out;
+}
+
+/**
  * Finds the match id whose winner feeds directly into `matchId` — i.e.
  * the next round's match this team would play in if they win. Null if
  * `matchId` is the Final (nothing feeds forward from there).
