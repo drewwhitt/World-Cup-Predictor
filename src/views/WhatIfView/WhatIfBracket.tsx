@@ -7,7 +7,7 @@ import { RoundCarousel, type RoundCarouselHandle } from "../../components/bracke
 import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./WhatIfBracket.module.css";
 
-const R32_IDS = ["ko-73","ko-74","ko-75","ko-76","ko-77","ko-78","ko-79","ko-80","ko-83","ko-84","ko-81","ko-82","ko-86","ko-88","ko-85","ko-87"];
+const R32_IDS = ["ko-73","ko-74","ko-75","ko-76","ko-77","ko-78","ko-79","ko-80","ko-83","ko-84","ko-81","ko-82","ko-85","ko-86","ko-87","ko-88"];
 const R16_IDS = ["ko-89","ko-90","ko-91","ko-92","ko-93","ko-94","ko-95","ko-96"];
 const QF_IDS  = ["ko-97","ko-99","ko-98","ko-100"];
 const SF_IDS  = ["ko-101","ko-102"];
