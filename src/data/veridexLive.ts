@@ -3,7 +3,8 @@ import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from ".";
 import { computeElosIncludingKnockouts, runSimulation } from "../lib/simulate";
 import { TEAM_BY_CODE } from "../lib/teams";
 import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
-import { getTeamKnockoutStatus, KNOCKOUT_STRUCTURE } from "../lib/bracketTree";
+import { getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE } from "../lib/bracketTree";
+import { toAdvancementProbabilities } from "../lib/elo";
 import type { KnockoutMatchupProbability, StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
 import type { Headline, MorningForecast, Team } from "./worldCup";
 
@@ -71,6 +72,53 @@ export function buildLiveKnockoutMatchups(stored: StoredResults): KnockoutMatchu
   return current.knockoutMatchups;
 }
 
+/**
+ * Elimination-risk fields for a single team — who they play next in the
+ * real knockout bracket (not what-if), and their probability of advancing,
+ * but ONLY when that match is fully resolved (both sides known from real
+ * results). If the opponent slot isn't decided yet, this deliberately
+ * returns nulls rather than guessing at a "most likely" opponent — that
+ * kind of probabilistic opponent projection already lives in ForecastsView
+ * and re-implementing a simplified version of it here would risk drifting
+ * out of sync with it (see Known Bug Class #1 re: bracket logic living in
+ * more than one place).
+ */
+function buildEliminationRisk(
+  code: TeamCode,
+  stored: StoredResults,
+  elos: Record<TeamCode, number>,
+): Pick<Team, "eliminated" | "isChampion" | "nextOpponentCode" | "nextOpponentName" | "advancingProb"> {
+  const status = getTeamKnockoutStatus(code, stored);
+
+  if (!status.isRealParticipant || status.eliminated) {
+    return { eliminated: true, isChampion: false, nextOpponentCode: null, nextOpponentName: null, advancingProb: null };
+  }
+  if (status.isChampion) {
+    return { eliminated: false, isChampion: true, nextOpponentCode: null, nextOpponentName: null, advancingProb: null };
+  }
+  if (!status.currentMatchId) {
+    return { eliminated: false, isChampion: false, nextOpponentCode: null, nextOpponentName: null, advancingProb: null };
+  }
+
+  const { home, away } = resolveKnockoutMatch(status.currentMatchId, stored);
+  const opponent = home === code ? away : away === code ? home : null;
+  if (!opponent || !home || !away) {
+    // Opponent slot not decided by a real result yet.
+    return { eliminated: false, isChampion: false, nextOpponentCode: null, nextOpponentName: null, advancingProb: null };
+  }
+
+  const probs = toAdvancementProbabilities(elos[home] ?? 1500, elos[away] ?? 1500, 0);
+  const advancingProb = code === home ? probs.home : probs.away;
+
+  return {
+    eliminated: false,
+    isChampion: false,
+    nextOpponentCode: opponent,
+    nextOpponentName: TEAM_BY_CODE[opponent]?.name ?? opponent,
+    advancingProb,
+  };
+}
+
 export function buildLiveTeams(stored: StoredResults): Team[] {
   const playedMatches = GROUP_MATCHES.map((match) => {
     const result = stored.matches[match.id];
@@ -87,6 +135,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
     const baseline = baselineByCode.get(row.code);
     const baseChampion = pct(baseline?.champion ?? 0);
     const currentChampion = pct(row.champion);
+    const risk = buildEliminationRisk(row.code, stored, elos);
 
     return {
       name: row.name,
@@ -97,6 +146,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
       rating: ratingFromElo(elos[row.code]),
       formStr: formForTeam(row.code, stored),
       initialElo: team.initialElo,
+      ...risk,
       trend: [
         baseChampion,
         Number((baseChampion * 0.7 + currentChampion * 0.3).toFixed(1)),
@@ -106,6 +156,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
     };
   });
 }
+
 
 export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResults): MorningForecast {
   const rows = [...liveTeams].sort((a, b) => b.current - a.current);

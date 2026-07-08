@@ -12,6 +12,18 @@ export type Team = {
   formStr: string;
   trend: number[];
   initialElo: number;
+  /** True once eliminated from the real bracket (not a what-if scenario). */
+  eliminated: boolean;
+  /** True only once they've actually won the Final. */
+  isChampion: boolean;
+  /** Opponent in the team's next knockout match, only when both sides of
+   *  that match are already resolved by real results. Null if eliminated,
+   *  champion, still in group stage, or the opponent slot isn't decided yet. */
+  nextOpponentCode: string | null;
+  nextOpponentName: string | null;
+  /** Probability (0-1) this team advances past their current/next knockout
+   *  match. Null under the same conditions as nextOpponentCode. */
+  advancingProb: number | null;
 };
 
 export type Headline = {

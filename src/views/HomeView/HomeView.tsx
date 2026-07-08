@@ -34,7 +34,7 @@ export function HomeView({
     <>
       <Hero teams={teams} playedCount={playedCount} stored={stored} />
       <QuickStrip teams={teams} onNavigate={onNavigateToRankings} />
-      <FavoritesStrip teams={teams} />
+      <FavoritesStrip teams={teams} teamNames={TEAM_NAMES} />
 
       <section className={s.latestHeader}>
         <h2>Today's Briefing</h2>

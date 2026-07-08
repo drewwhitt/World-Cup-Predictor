@@ -18,12 +18,23 @@
 
 .card {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
   padding: 8px 12px;
   background: var(--surface);
   border: 1px solid var(--hairline);
   border-radius: 6px;
+}
+
+.card.eliminated {
+  opacity: 0.6;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .name {
@@ -34,4 +45,28 @@
 .pct {
   font: 700 13px var(--font-mono);
   color: var(--ink-2);
+  margin-left: auto;
+}
+
+.status {
+  font: 500 11px var(--font-sans);
+  color: var(--ink-3);
+}
+
+.status.favored {
+  color: var(--positive);
+}
+
+.status.risk {
+  color: var(--negative);
+}
+
+.moverUp {
+  font: 600 11px var(--font-mono);
+  color: var(--positive);
+}
+
+.moverDown {
+  font: 600 11px var(--font-mono);
+  color: var(--negative);
 }
