@@ -5,26 +5,30 @@ import type { StoredResults, TeamCode } from "../../lib/types";
 import s from "./WhatIfView.module.css";
 
 export function WhatIfView({ stored }: { stored: StoredResults }) {
-  const [hostAdvantageOff, setHostAdvantageOff] = useState(false);
-  const [aggressiveWeighting, setAggressiveWeighting] = useState(false);
   const [matchOverrides, setMatchOverrides] = useState<MatchOverride[]>([]);
 
+  // Host-advantage-off and aggressive-confederation-weighting toggles are
+  // hidden for now (not removed from the engine) — see EMPTY_SCENARIO/
+  // WhatIfScenario in lib/whatIf.ts if they come back later.
   const scenario: WhatIfScenario = useMemo(
     () => ({
-      hostAdvantageOff,
-      aggressiveConfederationWeighting: aggressiveWeighting,
+      hostAdvantageOff: false,
+      aggressiveConfederationWeighting: false,
       matchOverrides,
     }),
-    [hostAdvantageOff, aggressiveWeighting, matchOverrides],
+    [matchOverrides],
   );
 
-  const isDefault = !hostAdvantageOff && !aggressiveWeighting && matchOverrides.length === 0;
+  const isDefault = matchOverrides.length === 0;
 
   const baseline = useMemo(() => runWhatIf(stored, EMPTY_SCENARIO), [stored]);
   const current = useMemo(() => runWhatIf(stored, scenario), [stored, scenario]);
 
   const baselineByCode = new Map(baseline.map((r) => [r.code, r.championPct]));
-  const top = current.slice(0, 10);
+  // Only teams with a live path to the title — a team sitting at a flat 0%
+  // is eliminated in this scenario and doesn't belong in a "championship
+  // odds" ranking at all.
+  const top = current.filter((r) => r.championPct > 0).slice(0, 10);
 
   function setOverride(matchId: string, winner: TeamCode) {
     setMatchOverrides((prev) => [...prev.filter((o) => o.matchId !== matchId), { matchId, winner }]);
@@ -35,8 +39,6 @@ export function WhatIfView({ stored }: { stored: StoredResults }) {
   }
 
   function resetAll() {
-    setHostAdvantageOff(false);
-    setAggressiveWeighting(false);
     setMatchOverrides([]);
   }
 
@@ -52,48 +54,12 @@ export function WhatIfView({ stored }: { stored: StoredResults }) {
         </p>
       </div>
 
-      <div className={s.toggles}>
-        <label className={s.toggleCard}>
-          <div className={s.toggleRow}>
-            <input
-              type="checkbox"
-              checked={hostAdvantageOff}
-              onChange={(e) => setHostAdvantageOff(e.target.checked)}
-            />
-            <span className={s.toggleTitle}>Turn off host-nation advantage</span>
-          </div>
-          <p className={s.toggleExplain}>
-            The model gives USA, Mexico, and Canada a ratings boost for playing on home soil, the
-            same way host nations have historically overperformed their pre-tournament rating.
-            Switching this off tests how much of their projected odds come from that boost alone.
-          </p>
-        </label>
-
-        <label className={s.toggleCard}>
-          <div className={s.toggleRow}>
-            <input
-              type="checkbox"
-              checked={aggressiveWeighting}
-              onChange={(e) => setAggressiveWeighting(e.target.checked)}
-            />
-            <span className={s.toggleTitle}>Use aggressive confederation weighting</span>
-          </div>
-          <p className={s.toggleExplain}>
-            The live model uses conservative, cautious penalties for how much weaker some
-            confederations' qualifiers have historically been (e.g. CONCACAF, AFC). Backtesting
-            found a more aggressive penalty actually fits history better, but it's not live because
-            it can look harsh on specific teams. This shows what the odds would look like under that
-            more aggressive read.
-          </p>
-        </label>
-      </div>
-
       <button type="button" className={s.resetBtn} onClick={resetAll} disabled={isDefault}>
         Reset to model defaults
       </button>
 
       <div className={s.results}>
-        <h2>Championship Odds{!isDefault && <span className={s.liveTag}>Live scenario</span>}</h2>
+        <h2>Championship Odds {!isDefault && <span className={s.liveTag}>Live scenario</span>}</h2>
         <div className={s.list}>
           {top.map((row, i) => {
             const base = baselineByCode.get(row.code) ?? 0;
@@ -102,12 +68,14 @@ export function WhatIfView({ stored }: { stored: StoredResults }) {
               <div key={row.code} className={s.resultRow}>
                 <span className={s.rank}>{i + 1}</span>
                 <span className={s.teamName}>{row.name}</span>
-                <span className={s.pct}>{row.championPct}%</span>
-                {Math.abs(delta) >= 0.1 && (
-                  <span className={delta > 0 ? s.deltaUp : s.deltaDown}>
-                    {delta > 0 ? "▲" : "▼"} {Math.abs(delta)}pp
-                  </span>
-                )}
+                <span className={s.valueGroup}>
+                  <span className={s.pct}>{row.championPct}%</span>
+                  {Math.abs(delta) >= 0.1 && (
+                    <span className={delta > 0 ? s.deltaUp : s.deltaDown}>
+                      {delta > 0 ? "▲" : "▼"} {Math.abs(delta)}pp
+                    </span>
+                  )}
+                </span>
               </div>
             );
           })}

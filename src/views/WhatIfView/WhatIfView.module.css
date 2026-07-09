@@ -1,152 +1,144 @@
-.hint {
-  font-size: 13px;
-  color: var(--ink-2);
-  max-width: 720px;
-  margin: 0 0 24px;
+.page {
+  padding: 24px 0 64px;
 }
 
-.scrollWrap {
-  overflow-x: auto;
-  padding: 24px 0 8px;
-}
-
-.canvas {
-  position: relative;
-}
-
-.colLabel {
-  position: absolute;
-  top: -22px;
-  font: 600 9px/1 var(--font-mono);
+.eyebrow {
+  font: 600 11px/1 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
-  text-align: left;
+  margin-bottom: 8px;
 }
 
-.connectorLayer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 0;
+.header h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  margin: 0 0 12px;
 }
 
-.connector {
-  fill: none;
-  stroke: var(--hairline-2);
-  stroke-width: 1;
+.dek {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink-2);
+  max-width: 640px;
+  margin: 0 0 28px;
 }
 
-.card {
-  background: var(--paper);
+.resetBtn {
+  padding: 10px 16px;
   border: 1px solid var(--hairline);
-  border-radius: 3px;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 4px 10px;
-  box-sizing: border-box;
-  overflow: visible;
-  width: 100%;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-2);
+  font: 600 13px var(--font-sans);
+  cursor: pointer;
+  margin-bottom: 32px;
 }
 
-.mobileList {
+.resetBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.results {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.results h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 16px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 10px;
 }
 
-.mobileList .card {
-  height: auto;
+.liveTag {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--navy);
+  padding: 4px 8px;
+  border-radius: 3px;
 }
 
-.team {
-  all: unset;
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.resultRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  padding: 4px 0;
-  line-height: 1.3;
-  cursor: pointer;
-  width: 100%;
-  box-sizing: border-box;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
 }
 
-.team:hover:not(:disabled) {
-  background: var(--hairline-2);
-}
-
-.team:disabled {
-  cursor: default;
-}
-
-.teamName {
-  font: 400 11.5px/1.2 var(--font-sans);
+.rank {
+  font: 600 14px var(--font-mono);
   color: var(--ink-3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.pct {
-  font: 600 10px/1 var(--font-mono);
-  color: var(--ink-3);
+  width: 22px;
   flex-shrink: 0;
 }
 
-.fav .teamName {
-  font-weight: 700;
+.teamName {
+  flex: 1;
+  min-width: 0;
+  font: 600 16px var(--font-sans);
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.fav .pct {
-  color: var(--ink);
-}
-
-.divider {
-  height: 1px;
-  background: var(--hairline);
-  margin: 2px 0;
-}
-
-.matchConfirmed {
-  border-color: #b8d4ad;
-  background: #eef5ea;
-}
-
-.matchConfirmed .divider {
-  background: #b8d4ad;
-}
-
-.switchBtn {
-  all: unset;
-  color: var(--home-win, #3B6CA8);
-  font: 500 9.5px var(--font-mono);
-  cursor: pointer;
-  padding: 0 0 3px;
-}
-
-.cardFooter {
+.valueGroup {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  padding-top: 2px;
-  margin-top: 4px;
+  align-items: baseline;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.clearBtn {
-  all: unset;
-  color: var(--gold);
-  font: 600 9.5px var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  cursor: pointer;
+.pct {
+  font: 700 18px var(--font-mono);
+  color: var(--ink);
+  min-width: 58px;
+  text-align: right;
 }
 
-.realTag {
-  font: 500 9.5px var(--font-mono);
-  color: var(--ink-3);
+.deltaUp {
+  font: 600 13px var(--font-mono);
+  color: var(--positive);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.deltaDown {
+  font: 600 13px var(--font-mono);
+  color: var(--negative);
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .valueGroup {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .pct {
+    min-width: 0;
+  }
+}
+
+.bracketSection h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 16px;
 }
