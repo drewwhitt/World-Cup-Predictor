@@ -234,6 +234,35 @@ function pickVariant<T>(options: T[], seed: string): T {
   return options[Math.abs(hash) % options.length];
 }
 
+function hashString(s: string): number {
+  let hash = 0;
+  for (let i = 0; i < s.length; i++) hash = (hash * 31 + s.charCodeAt(i)) | 0;
+  return hash >>> 0;
+}
+
+/**
+ * Deterministically shuffles an array from a numeric seed (mulberry32 PRNG)
+ * rather than Math.random() — same seed always produces the same order.
+ * This is what lets the headline rotation change only when the underlying
+ * results actually change, instead of reshuffling randomly on every
+ * re-render (which would feel jittery rather than like real updates).
+ */
+function seededShuffle<T>(items: T[], seed: number): T[] {
+  const result = [...items];
+  let state = seed >>> 0 || 1;
+  function next() {
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(next() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 const ROUND_LABEL: Record<string, string> = {
   "Round of 32": "Round of 32",
   "Round of 16": "Round of 16",
@@ -442,7 +471,21 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
     usedCodes.add(pathTeam.code);
   }
 
-  return headlines.slice(0, 7);
+  // Rotate which 6 of the (up to 7) generated candidates are shown, and in
+  // what order — seeded by the actual match/knockout results so the set
+  // only changes when real data changes, not on every re-render. Content
+  // generation above still follows a fixed editorial priority (an
+  // elimination always gets first crack at claiming a team before "quiet
+  // contender" does); this only varies which of the resulting stories make
+  // the cut and how they're ordered on the page.
+  const resultsFingerprint =
+    Object.entries(stored.matches).sort(([a], [b]) => a.localeCompare(b))
+      .map(([id, m]) => `${id}:${m.homeGoals}-${m.awayGoals}`).join(",") +
+    "|" +
+    Object.entries(stored.knockoutMatches ?? {}).sort(([a], [b]) => a.localeCompare(b))
+      .map(([id, m]) => `${id}:${m.homeGoals}-${m.awayGoals}${m.penaltyWinner ?? ""}`).join(",");
+
+  return seededShuffle(headlines, hashString(resultsFingerprint)).slice(0, 6);
 }
 
 export function buildLiveBreakingText(liveTeams: Team[], stored: StoredResults): string {
