@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, Suspense, lazy } from "react";
 import { AdminResultsPanel } from "./components/admin/AdminResultsPanel";
 import { AppShell } from "./components/shell/AppShell";
+import { ErrorBoundary } from "./components/shell/ErrorBoundary";
 import type { Edition, TabId } from "./data/worldCup";
 import seedResults from "./data/results.json";
 import {
@@ -156,7 +157,9 @@ export default function App() {
         breakingText={liveBreaking}
         onTabChange={changeTab}
       >
-        <Suspense fallback={<TabLoading />}>{renderContent()}</Suspense>
+        <ErrorBoundary key={activeTab}>
+          <Suspense fallback={<TabLoading />}>{renderContent()}</Suspense>
+        </ErrorBoundary>
       </AppShell>
       {isAdmin && <AdminResultsPanel stored={stored} onChange={setStored} />}
     </>
