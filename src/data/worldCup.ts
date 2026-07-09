@@ -31,7 +31,6 @@ export type Headline = {
   summary: string;
   metric: string;
   metricLabel: string;
-  time: string;
   up: boolean;
 };
 

@@ -5,7 +5,6 @@ type Props = { forecast: MorningForecastData };
 
 export function MorningForecast({ forecast: mf }: Props) {
   const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric" });
-  const time  = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
   return (
     <section className={s.panel}>
@@ -14,7 +13,7 @@ export function MorningForecast({ forecast: mf }: Props) {
           <span>The Morning Forecast</span>
           <em>Daily Briefing</em>
         </div>
-        <time>{today} · {time}</time>
+        <time>{today}</time>
       </header>
       <div className={s.grid}>
         <div className={s.cell}>

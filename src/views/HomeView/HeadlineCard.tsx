@@ -16,7 +16,6 @@ export function HeadlineCard({ headline }: Props) {
       </div>
       <h3>{headline.title}</h3>
       <p>{headline.summary}</p>
-      <time>{headline.time}</time>
     </article>
   );
 }

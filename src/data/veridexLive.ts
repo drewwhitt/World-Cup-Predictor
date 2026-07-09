@@ -36,11 +36,6 @@ function ratingFromElo(elo: number): number {
   return Number(Math.max(70, Math.min(94, (elo - 1350) / 10)).toFixed(1));
 }
 
-function timeAgo(index: number): string {
-  const times = ["Just now", "12 min ago", "34 min ago", "1 hr ago", "2 hr ago", "3 hr ago"];
-  return times[index] ?? "Today";
-}
-
 /**
  * Per-bracket-slot projections straight from the same 10,000-sim Monte
  * Carlo run that powers the championship odds elsewhere in the app (Home,
@@ -217,7 +212,7 @@ export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResult
     matchNote,
     champ: champ.name,
     champVal: `${champ.current.toFixed(1)}%`,
-    champNote: `most likely champion · ${rows[1]?.name ?? ""} at ${rows[1]?.current.toFixed(1) ?? ""}% is nearest rival`,
+    champNote: `${rows[1]?.name ?? "No other team"} at ${rows[1]?.current.toFixed(1) ?? "0"}% is the nearest rival`,
     upset: upsetTeam,
     upsetVal: `${upsetOdds}%`,
     upsetNote: upsetFavName
@@ -284,7 +279,7 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       },
     ];
     const v = pickVariant(variants, biggestFaller.code + fallerStatus.eliminatedRound);
-    headlines.push({ ...v, metric: "OUT", metricLabel: "ELIMINATED", time: timeAgo(0), up: false });
+    headlines.push({ ...v, metric: "OUT", metricLabel: "ELIMINATED", up: false });
     usedCodes.add(biggestFaller.code);
   } else if (biggestFaller) {
     const variants = [
@@ -298,7 +293,7 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       },
     ];
     const v = pickVariant(variants, biggestFaller.code);
-    headlines.push({ ...v, metric: `${biggestFaller.delta.toFixed(1)} pp`, metricLabel: "CHANGE", time: timeAgo(0), up: false });
+    headlines.push({ ...v, metric: `${biggestFaller.delta.toFixed(1)} pp`, metricLabel: "CHANGE", up: false });
     usedCodes.add(biggestFaller.code);
   }
 
@@ -320,7 +315,7 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       },
     ];
     const v = pickVariant(variants, biggestRiser.code + round);
-    headlines.push({ ...v, metric: `+${biggestRiser.delta.toFixed(1)} pp`, metricLabel: "CHANGE", time: timeAgo(1), up: true });
+    headlines.push({ ...v, metric: `+${biggestRiser.delta.toFixed(1)} pp`, metricLabel: "CHANGE", up: true });
     usedCodes.add(biggestRiser.code);
   } else if (biggestRiser) {
     const variants = [
@@ -334,12 +329,17 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       },
     ];
     const v = pickVariant(variants, biggestRiser.code);
-    headlines.push({ ...v, metric: `+${biggestRiser.delta.toFixed(1)} pp`, metricLabel: "CHANGE", time: timeAgo(1), up: true });
+    headlines.push({ ...v, metric: `+${biggestRiser.delta.toFixed(1)} pp`, metricLabel: "CHANGE", up: true });
     usedCodes.add(biggestRiser.code);
   }
 
-  // ── Slot 3: current leader ──
-  const leader = sorted.find((t) => !usedCodes.has(t.code)) ?? sorted[0];
+  // ── Slot 3: current leader — always the TRUE #1 team by championship odds,
+  // never a lower-ranked team, even if that team was already featured in an
+  // earlier slot for a different (also true) reason. A team being both the
+  // "biggest riser" and "the leader" are two separate true facts; skipping
+  // the real leader here to avoid repeating a name previously produced a
+  // false "X Holds Top Spot" claim about a team that wasn't actually #1.
+  const leader = sorted[0];
   if (leader) {
     const variants = [
       {
@@ -352,7 +352,7 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       },
     ];
     const v = pickVariant(variants, leader.code + "leader");
-    headlines.push({ ...v, metric: `${leader.current.toFixed(1)}%`, metricLabel: "TITLE ODDS", time: timeAgo(2), up: leader.current > leader.baseline });
+    headlines.push({ ...v, metric: `${leader.current.toFixed(1)}%`, metricLabel: "TITLE ODDS", up: leader.current > leader.baseline });
     usedCodes.add(leader.code);
   }
 
@@ -366,7 +366,6 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention.`,
       metric: `${second.current.toFixed(1)}%`,
       metricLabel: "TITLE ODDS",
-      time: timeAgo(3),
       up: second.current > second.baseline,
     });
     usedCodes.add(second.code);
@@ -380,7 +379,6 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       summary: `The Veridex model has processed ${playedCount} of 72 group stage matches. Probabilities reflect ${DEFAULT_SETTINGS.simulations.toLocaleString()} Monte Carlo simulations of the remaining tournament.`,
       metric: `${playedCount}/72`,
       metricLabel: "RESULTS IN",
-      time: timeAgo(4),
       up: true,
     });
   } else {
@@ -389,7 +387,6 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       summary: `The group stage is complete. The Veridex model has processed ${knockoutPlayedCount} of ${totalKnockoutMatches} knockout matches, reflecting ${DEFAULT_SETTINGS.simulations.toLocaleString()} Monte Carlo simulations of the remaining bracket.`,
       metric: `${knockoutPlayedCount}/${totalKnockoutMatches}`,
       metricLabel: "KNOCKOUT",
-      time: timeAgo(4),
       up: true,
     });
   }
@@ -408,12 +405,44 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
       summary: `Often overlooked, ${surprise.name} have outperformed their pre-tournament projection — the model now gives them ${surprise.current.toFixed(1)}% championship probability.`,
       metric: `${surprise.current.toFixed(1)}%`,
       metricLabel: "TITLE ODDS",
-      time: timeAgo(5),
       up: true,
     });
   }
 
-  return headlines.slice(0, 6);
+  // ── Slot 7: bracket path — a notable team's real next knockout matchup.
+  // Reuses the same nextOpponentCode/nextOpponentName/advancingProb fields
+  // buildLiveTeams already computes from the real bracket (bracketTree.ts),
+  // which only ever resolve once BOTH sides of that match are decided by
+  // an actual result — so, like the rest of the app, this never guesses
+  // at an opponent that isn't confirmed yet. ──
+  const pathTeam = sorted.find(
+    (t) => !usedCodes.has(t.code) && t.nextOpponentCode && t.nextOpponentName && t.advancingProb !== null,
+  );
+  if (pathTeam) {
+    const pathStatus = statusByCode.get(pathTeam.code);
+    const round = pathStatus?.currentRound ? (ROUND_LABEL[pathStatus.currentRound] ?? pathStatus.currentRound) : "next round";
+    const advancePct = Math.round((pathTeam.advancingProb ?? 0) * 100);
+    const variants = [
+      {
+        title: `${pathTeam.name}'s Path Runs Through ${pathTeam.nextOpponentName} In The ${round}`,
+        summary: `${pathTeam.name} face ${pathTeam.nextOpponentName} in the ${round}, with the model giving them a ${advancePct}% chance to advance and keep their title odds alive.`,
+      },
+      {
+        title: `Next Up For ${pathTeam.name}: ${pathTeam.nextOpponentName} In The ${round}`,
+        summary: `The model gives ${pathTeam.name} a ${advancePct}% chance to get past ${pathTeam.nextOpponentName} in the ${round} on their way toward the title.`,
+      },
+    ];
+    const v = pickVariant(variants, pathTeam.code + "path");
+    headlines.push({
+      ...v,
+      metric: `${advancePct}%`,
+      metricLabel: "BRACKET PATH",
+      up: advancePct >= 50,
+    });
+    usedCodes.add(pathTeam.code);
+  }
+
+  return headlines.slice(0, 7);
 }
 
 export function buildLiveBreakingText(liveTeams: Team[], stored: StoredResults): string {
