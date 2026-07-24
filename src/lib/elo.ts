@@ -16,7 +16,36 @@ import type { TeamCode } from "./types";
  */
 
 const DRAW_PROB_SCALE = 0.28;
-const DRAW_MIN = 0.08;
+/**
+ * v1.11 — raised from 0.08 after the 2026 tournament (MODEL_HISTORY.md).
+ * The group-stage draw rate came in close to normal (23.3%, vs ~25%
+ * historical) but the model's draw predictions scored worse than a random
+ * 3-way guess (0.3835 Brier vs 0.2222 random baseline), concentrated in
+ * exactly the matches where a big favorite (Spain, England, Ecuador) drew
+ * a much weaker side — the wide Elo gap pushed drawBase below the old
+ * 0.08 floor every time, clamping the prediction at a flat 8% regardless
+ * of how lopsided the match actually was.
+ *
+ * A full 4-parameter grid search against the complete 103-match 2026
+ * dataset (scripts/calibrate-draw-params.ts) found a better-fitting
+ * combination (scale=0.34, min=0.17, sensitivity=1.6), but it bought a
+ * ~12% relative improvement in draw Brier at the cost of ~12% WORSE
+ * decisive-match Brier — a real trade against the 256-match, four-
+ * tournament (2010-2022) backtest that DRAW_PROB_SCALE/DRAW_MAX/the 1.6
+ * sensitivity were originally validated on. With only 24 draws in the
+ * 2026 dataset, that full re-fit risks calibrating to this tournament's
+ * specific quirks rather than a real pattern.
+ *
+ * This single-parameter change (DRAW_MIN only, everything else
+ * untouched) gets nearly all of the same overall improvement (0.1614 vs
+ * the grid search's 0.1604) while leaving decisive accuracy essentially
+ * where it was (0.0967 vs the original 0.0957 — noise-level), because it
+ * only touches the specific floor-clamping mechanism that broke, not the
+ * whole draw curve. Revisit alongside the full grid-search parameters
+ * once more tournament data exists to fit against without this small-
+ * sample risk.
+ */
+const DRAW_MIN = 0.12;
 const DRAW_MAX = 0.32;
 
 export const K_FACTOR = 40;
