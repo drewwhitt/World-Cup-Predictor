@@ -89,46 +89,47 @@ export const TEAM_CONFEDERATION: Record<string, Confederation> = {
 };
 
 /**
- * ── PRE-TOURNAMENT ELO — fill in real calibrated values here ──────────────
- * These currently fall back to a simple FIFA-rank-derived formula. Replace
- * any value below with your real pre-tournament Elo (e.g. from the same
- * calibration process used for the 2010-2022 backtests) as you have them.
- * Confederation offset is applied automatically — do NOT bake it into
- * these numbers, enter the team's raw strength rating only.
- */
-/**
- * Pre-tournament Elo values sourced from eloratings.net — the same calibrated
- * values used in the v3–v9 backtesting sessions. Teams that appeared in the
- * 2022 World Cup use those validated Elos as the closest real baseline.
- * New 2026 qualifiers (Sweden, Bosnia, etc.) fall back to the rank formula.
+ * Pre-tournament Elo values — eloratings.net snapshot taken 2026-06-10
+ * (the day before kickoff), matching the site's own reproducibility
+ * convention of freezing the rating right before tournament results can
+ * feed back into it. Source: https://eloratings.net/2026_World_Cup
+ *
+ * A prior version of this table drifted from the real snapshot for ~18
+ * teams (up to 200+ points off in either direction — Spain, Ecuador,
+ * Colombia, and Japan were significantly underrated; Ghana, Brazil, and
+ * the USA were significantly overrated) despite the comment above
+ * claiming an eloratings.net source throughout. Because K=40 updates are
+ * bounded per match and mostly small when a team wins as expected, an
+ * incorrect seed doesn't fully self-correct over 7 tournament matches —
+ * it persists as a live bias for the whole tournament, not just at kickoff.
  * Confederation offsets are applied ON TOP of these values automatically.
  * Do NOT bake confederation offsets into these numbers.
  */
 const PRE_TOURNAMENT_ELO: Record<string, number | null> = {
   // Group A
-  MEX: 1853, RSA: 1517, KOR: 1779, CZE: 1740,
+  MEX: 1875, RSA: 1517, KOR: 1758, CZE: 1740,
   // Group B
-  CAN: 1773, BIH: 1595, QAT: 1421, SUI: 1879,
+  CAN: 1788, BIH: 1595, QAT: 1421, SUI: 1891,
   // Group C
-  BRA: 2169, MAR: 1768, HAI: 1548, SCO: 1782,
+  BRA: 1991, MAR: 1827, HAI: 1548, SCO: 1782,
   // Group D
-  USA: 1856, PAR: 1834, AUS: 1753, TUR: 1911,
+  USA: 1726, PAR: 1834, AUS: 1777, TUR: 1911,
   // Group E
-  GER: 1922, CUW: 1434, CIV: 1695, ECU: 1764,
+  GER: 1932, CUW: 1434, CIV: 1695, ECU: 1938,
   // Group F
-  NED: 1940, JPN: 1762, SWE: 1712, TUN: 1726,
+  NED: 1948, JPN: 1906, SWE: 1712, TUN: 1628,
   // Group G
-  BEL: 1931, EGY: 1696, IRN: 1739, NZL: 1562,
+  BEL: 1894, EGY: 1696, IRN: 1772, NZL: 1562,
   // Group H
-  ESP: 1954, CPV: 1578, KSA: 1650, URU: 1887,
+  ESP: 2157, CPV: 1578, KSA: 1576, URU: 1892,
   // Group I
-  FRA: 2005, SEN: 1845, IRQ: 1607, NOR: 1914,
+  FRA: 2063, SEN: 1860, IRQ: 1607, NOR: 1914,
   // Group J
-  ARG: 2141, ALG: 1772, AUT: 1830, JOR: 1680,
+  ARG: 2115, ALG: 1760, AUT: 1830, JOR: 1680,
   // Group K
-  POR: 1942, COD: 1652, UZB: 1714, COL: 1834,
+  POR: 1986, COD: 1652, UZB: 1714, COL: 1982,
   // Group L
-  ENG: 1975, CRO: 1877, GHA: 1718, PAN: 1730,
+  ENG: 2021, CRO: 1912, GHA: 1510, PAN: 1730,
 };
 
 function resolveInitialElo(code: string, rank: number): number {
