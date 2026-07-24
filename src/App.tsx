@@ -24,7 +24,6 @@ import { ComingSoonView } from "./views/ComingSoonView/ComingSoonView";
 const BracketView = lazy(() => import("./views/BracketView/BracketView").then((m) => ({ default: m.BracketView })));
 const ForecastsView = lazy(() => import("./views/ForecastsView/ForecastsView").then((m) => ({ default: m.ForecastsView })));
 const RankingsView = lazy(() => import("./views/RankingsView/RankingsView").then((m) => ({ default: m.RankingsView })));
-const MatchCenterView = lazy(() => import("./views/MatchCenterView/MatchCenterView").then((m) => ({ default: m.MatchCenterView })));
 
 function TabLoading() {
   return <div style={{ padding: "60px 0", textAlign: "center", color: "var(--ink-3)" }}>Loading…</div>;
@@ -32,7 +31,7 @@ function TabLoading() {
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
-const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "match", "lab"];
+const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "lab"];
 
 function getTabFromHash(): TabId {
   const hash = window.location.hash.slice(1) as TabId;
@@ -127,8 +126,6 @@ export default function App() {
         return <BracketView stored={stored} />;
       case "rankings":
         return <RankingsView stored={stored} teams={liveTeams} />;
-      case "match":
-        return <MatchCenterView stored={stored} />;
       case "lab":
         return <ComingSoonView title="Model Lab" onNavigate={changeTab} />;
       case "home":

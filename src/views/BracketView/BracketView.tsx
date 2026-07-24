@@ -1,16 +1,19 @@
-import { useMemo, type ReactElement } from "react";
+import { useMemo, useState, type ReactElement } from "react";
 import { computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES } from "../../data";
 import { toAdvancementProbabilities } from "../../lib/elo";
-import { TEAM_BY_CODE } from "../../lib/teams";
+import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "../../lib/teams";
 import { DEFAULT_SETTINGS } from "../../data";
 import { buildLiveKnockoutMatchups, buildLiveTeams } from "../../data/veridexLive";
 import { useIsMobile } from "../../lib/hooks/useIsMobile";
 import { RoundCarousel } from "../../components/bracket/RoundCarousel";
-import type { KnockoutMatchupProbability, StoredResults, TeamCode } from "../../lib/types";
+import { computeStandings, type StandingRow } from "../../lib/groups";
+import { getRealR32Qualifiers } from "../../lib/bracketTree";
+import type { KnockoutMatchupProbability, StoredResults, TeamCode, GroupLetter } from "../../lib/types";
 import s from "./BracketView.module.css";
 
 type Props = { stored: StoredResults };
+type ViewMode = "bracket" | "groups";
 
 /**
  * Confirmed Round of 32 matchups for the 2026 World Cup, taken directly
@@ -118,7 +121,65 @@ function confirmedWinner(
   return null; // draw with no penalty winner recorded yet
 }
 
+/**
+ * All 12 group tables, sorted by the same tie-break rules used everywhere
+ * else in the app (computeStandings). Q marks the 8 best third-place
+ * teams too, not just the automatic top-2 — matching the real 48-team
+ * qualification rule, not a naive "top 2 per group" assumption.
+ */
+function GroupStandings({ stored }: { stored: StoredResults }) {
+  const standings = useMemo(() => {
+    const playedMatches = GROUP_MATCHES.map((m) => {
+      const r = stored.matches[m.id];
+      return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
+    });
+    return computeStandings(playedMatches);
+  }, [stored]);
+
+  const qualifiers = useMemo(() => getRealR32Qualifiers(), []);
+  const groupLetters = Object.keys(TEAMS_BY_GROUP) as GroupLetter[];
+
+  return (
+    <div className={s.groupsGrid}>
+      {groupLetters.map((letter) => {
+        const rows = [...standings[letter]].sort(
+          (a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf,
+        );
+        return (
+          <div className={s.groupCard} key={letter}>
+            <div className={s.groupCardHeader}>Group {letter}</div>
+            <div className={s.groupTable}>
+              <div className={s.groupTableHead}>
+                <span className={s.groupTeamCol}>Team</span>
+                <span>P</span><span>W</span><span>D</span><span>L</span><span>GD</span><span>Pts</span>
+              </div>
+              {rows.map((row: StandingRow) => (
+                <div
+                  key={row.team}
+                  className={qualifiers.has(row.team) ? `${s.groupRow} ${s.groupRowQualified}` : s.groupRow}
+                >
+                  <span className={s.groupTeamCol}>
+                    {TEAM_BY_CODE[row.team]?.name ?? row.team}
+                    {qualifiers.has(row.team) && <span className={s.qTag}>Q</span>}
+                  </span>
+                  <span>{row.played}</span>
+                  <span>{row.won}</span>
+                  <span>{row.drawn}</span>
+                  <span>{row.lost}</span>
+                  <span>{row.gd > 0 ? "+" : ""}{row.gd}</span>
+                  <span>{row.points}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function BracketView({ stored }: Props) {
+  const [mode, setMode] = useState<ViewMode>("bracket");
   const { r32, r16, qf, sf, fin, champ, overallChampion } = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
       const r = stored.matches[m.id];
@@ -325,7 +386,7 @@ export function BracketView({ stored }: Props) {
     <div className={s.page}>
       <div className={s.header}>
         <div className={s.eyebrow}>Veridex Model · Round of 32 confirmed</div>
-        <h1 className={s.title}>Tournament Bracket</h1>
+        <h1 className={s.title}>Standings</h1>
         {champ && (
           <div className={s.champBanner}>
             <div className={s.champHeadline}>
@@ -346,7 +407,26 @@ export function BracketView({ stored }: Props) {
         )}
       </div>
 
-      {isMobile ? (
+      <div className={s.modeToggle}>
+        <button
+          type="button"
+          className={mode === "bracket" ? s.modeActive : s.modeBtn}
+          onClick={() => setMode("bracket")}
+        >
+          Bracket
+        </button>
+        <button
+          type="button"
+          className={mode === "groups" ? s.modeActive : s.modeBtn}
+          onClick={() => setMode("groups")}
+        >
+          Group Standings
+        </button>
+      </div>
+
+      {mode === "groups" ? (
+        <GroupStandings stored={stored} />
+      ) : isMobile ? (
         <RoundCarousel roundLabels={["R32", "R16", "QF", "SF", "F"]}>
           {[
             <MobileRoundList matches={r32} key="r32" />,

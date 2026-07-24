@@ -56,6 +56,110 @@
   max-width: 640px;
 }
 
+.modeToggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.modeBtn, .modeActive {
+  padding: 7px 14px;
+  border-radius: 4px;
+  font: 600 12px var(--font-sans);
+  cursor: pointer;
+  border: 1px solid var(--hairline);
+}
+
+.modeBtn {
+  background: var(--surface);
+  color: var(--ink-2);
+}
+
+.modeBtn:hover {
+  background: var(--paper);
+}
+
+.modeActive {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.groupsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.groupCard {
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.groupCardHeader {
+  padding: 10px 14px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+  font: 700 13px var(--font-sans);
+  color: var(--ink);
+}
+
+.groupTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupTableHead, .groupRow {
+  display: grid;
+  grid-template-columns: 1fr repeat(6, 24px);
+  align-items: center;
+  gap: 4px;
+  padding: 7px 14px;
+}
+
+.groupTableHead {
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.groupTableHead .groupTeamCol {
+  text-align: left;
+}
+
+.groupRow {
+  font: 500 12px var(--font-mono);
+  color: var(--ink-2);
+  text-align: center;
+  border-top: 1px solid var(--hairline);
+}
+
+.groupRowQualified {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.groupTeamCol {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px var(--font-sans);
+  text-align: left;
+  color: inherit;
+}
+
+.qTag {
+  font: 700 9px/1 var(--font-mono);
+  color: var(--positive);
+  border: 1px solid var(--positive);
+  border-radius: 2px;
+  padding: 1px 4px;
+}
+
 .scrollWrap {
   overflow-x: auto;
   padding-bottom: 8px;
