@@ -127,7 +127,7 @@ export default function App() {
       case "bracket":
         return <BracketView stored={stored} />;
       case "rankings":
-        return <RankingsView stored={stored} />;
+        return <RankingsView stored={stored} teams={liveTeams} />;
       case "match":
         return <MatchCenterView stored={stored} />;
       case "sim":
