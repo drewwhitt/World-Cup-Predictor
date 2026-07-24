@@ -126,7 +126,11 @@ function scoreMatch(
   const { homeWin, draw, awayWin } = matchOutcomeProbabilities(elos[home], elos[away], ha);
   const actual = result.homeGoals > result.awayGoals ? "home" : result.homeGoals < result.awayGoals ? "away" : "draw";
   const outcome = { home: actual === "home" ? 1 : 0, draw: actual === "draw" ? 1 : 0, away: actual === "away" ? 1 : 0 };
-  const brier = (homeWin - outcome.home) ** 2 + (draw - outcome.draw) ** 2 + (awayWin - outcome.away) ** 2;
+  // Divided by 3 to match the scale used everywhere else in the app
+  // (lib/accuracy.ts, RANDOM_BASELINE_BRIER=0.2222, BACKTESTED_BRIER=0.1877)
+  // — omitting this made every number here read ~3x worse than reality,
+  // the exact bug lib/accuracy.ts's own comments already warned about.
+  const brier = ((homeWin - outcome.home) ** 2 + (draw - outcome.draw) ** 2 + (awayWin - outcome.away) ** 2) / 3;
 
   const homeName = TEAM_BY_CODE[home]?.name ?? home;
   const awayName = TEAM_BY_CODE[away]?.name ?? away;
