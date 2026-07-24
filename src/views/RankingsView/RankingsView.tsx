@@ -81,7 +81,7 @@ function AccuracySummary({ stored }: { stored: StoredResults }) {
 export function RankingsView({ stored, teams }: { stored: StoredResults; teams: Team[] }) {
   const [mode, setMode] = useState<ViewMode>("current");
   const [sortKey, setSortKey] = useState<SortKey>("elo");
-  const [compareSortKey, setCompareSortKey] = useState<CompareSortKey>("oddsDelta");
+  const [compareSortKey, setCompareSortKey] = useState<CompareSortKey>("baseline");
   const [confFilter, setConfFilter] = useState<Confederation | "all">("all");
   const [hideEliminated, setHideEliminated] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
