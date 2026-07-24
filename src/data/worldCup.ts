@@ -50,6 +50,11 @@ export type MorningForecast = {
   upsetVal: string;
   upsetNote: string;
   insight: string;
+  /** True once a real champion has been decided — lets the UI swap
+   *  forward-looking labels ("Most Likely Champion", "Upset Risk") for
+   *  retrospective ones ("Champion", "Biggest Upset") instead of showing
+   *  stale in-progress framing after the tournament is over. */
+  isComplete: boolean;
 };
 
 export type MatchCenterFactor = {

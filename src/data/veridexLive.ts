@@ -5,6 +5,7 @@ import { TEAM_BY_CODE } from "../lib/teams";
 import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
 import { getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE } from "../lib/bracketTree";
 import { toAdvancementProbabilities } from "../lib/elo";
+import { computeAccuracy, BACKTESTED_BRIER } from "../lib/accuracy";
 import type { KnockoutMatchupProbability, StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
 import type { Headline, MorningForecast, Team } from "./worldCup";
 
@@ -156,6 +157,7 @@ export function buildLiveTeams(stored: StoredResults): Team[] {
 export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResults): MorningForecast {
   const rows = [...liveTeams].sort((a, b) => b.current - a.current);
   const champ = rows[0];
+  const isComplete = champ.isChampion;
 
   // Use driver attribution for riser/faller — compares current vs pre-last-result
   const drivers = computeDrivers(stored);
@@ -175,7 +177,6 @@ export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResult
   // Live upcoming match odds — most uncertain match = most important
   const upcoming = getUpcomingKnockoutOdds(stored);
   const mostImportant = upcoming[0]; // sorted by upset risk (closest to 50/50)
-  const biggestUpset = upcoming[0];  // same — highest upset risk IS the biggest upset threat
 
   const matchName = mostImportant
     ? mostImportant.label
@@ -185,21 +186,59 @@ export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResult
     ? `${Math.round(mostImportant.homeAdvance * 100)}% vs ${Math.round(mostImportant.awayAdvance * 100)}% advancement odds · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations`
     : `${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`;
 
-  const upsetTeam = biggestUpset
-    ? (biggestUpset.homeAdvance < 0.5 ? biggestUpset.homeName : biggestUpset.awayName)
-    : rows[8]?.name ?? "";
-  const upsetFavName = biggestUpset
-    ? (biggestUpset.homeAdvance >= 0.5 ? biggestUpset.homeName : biggestUpset.awayName)
-    : "";
-  const upsetOdds = biggestUpset
-    ? Math.round(Math.min(biggestUpset.homeAdvance, biggestUpset.awayAdvance) * 100)
-    : 0;
+  const champNote = isComplete
+    ? `Won the title after opening at ${champ.baseline.toFixed(1)}% pre-tournament`
+    : `${rows[1]?.name ?? "No other team"} at ${rows[1]?.current.toFixed(1) ?? "0"}% is the nearest rival`;
 
-  // Build insight sentence using actual driver data
+  // Upset tile — forward-looking "biggest risk" once the tournament is
+  // over, so it flips to reporting the single biggest real upset that
+  // actually happened in the knockout stage (same underlying data as
+  // UpsetFeed.tsx: an actual winner whose pre-match win probability was
+  // furthest below 50%).
+  let upset: string;
+  let upsetVal: string;
+  let upsetNote: string;
+  if (isComplete) {
+    const biggestUpset = computeAccuracy(stored).knockout.upsetExamples[0];
+    upset = biggestUpset ? biggestUpset.winner : "None";
+    upsetVal = biggestUpset ? `${biggestUpset.winnerPct}%` : "—";
+    upsetNote = biggestUpset
+      ? `Beat ${biggestUpset.loser} in the ${biggestUpset.round} at just ${biggestUpset.winnerPct}% pre-match odds`
+      : "No knockout upsets this tournament";
+  } else {
+    const biggestUpsetRisk = upcoming[0];
+    const upsetTeam = biggestUpsetRisk
+      ? (biggestUpsetRisk.homeAdvance < 0.5 ? biggestUpsetRisk.homeName : biggestUpsetRisk.awayName)
+      : rows[8]?.name ?? "";
+    const upsetFavName = biggestUpsetRisk
+      ? (biggestUpsetRisk.homeAdvance >= 0.5 ? biggestUpsetRisk.homeName : biggestUpsetRisk.awayName)
+      : "";
+    const upsetOdds = biggestUpsetRisk
+      ? Math.round(Math.min(biggestUpsetRisk.homeAdvance, biggestUpsetRisk.awayAdvance) * 100)
+      : 0;
+    upset = upsetTeam;
+    upsetVal = `${upsetOdds}%`;
+    upsetNote = upsetFavName
+      ? `${upsetOdds}% advancement odds vs ${upsetFavName} — closest to a coin flip in the current bracket`
+      : "no upcoming matches";
+  }
+
+  // Insight tile — swaps the usual "biggest mover" recap for a final
+  // accuracy scorecard once the tournament is decided, reusing the same
+  // computeAccuracy() the Rankings "Pre -> Post" view and the accuracy
+  // insights page already show, instead of restating the riser tile.
   const riserDelta = Math.abs(riser.delta).toFixed(1);
-  const insight = riserDriver
-    ? `${riser.name} is the biggest mover since the last result (+${riserDelta} pp). ${riser.primaryDriver}.${champ.name !== riser.name ? ` ${champ.name} remains the model's most likely champion at ${champ.current.toFixed(1)}%.` : ""}`
-    : `${champ.name} leads with ${champ.current.toFixed(1)}% championship odds after ${Object.keys(stored.matches).length} group + ${Object.keys(stored.knockoutMatches ?? {}).length} knockout results. ${riser.name} has gained the most ground from the pre-tournament baseline (+${riserDelta} pp).`;
+  let insight: string;
+  if (isComplete) {
+    const accuracy = computeAccuracy(stored);
+    const decisiveBrier = accuracy.group.decisive.brierScore;
+    const drawBrier = accuracy.group.draws.brierScore;
+    insight = `Final tournament accuracy: ${decisiveBrier?.toFixed(4) ?? "—"} Brier on decisive results (2010–2022 backtest: ${BACKTESTED_BRIER})${drawBrier !== null ? `, ${drawBrier.toFixed(4)} on draws` : ""}. ${champ.name} won the title after opening at ${champ.baseline.toFixed(1)}% pre-tournament.`;
+  } else {
+    insight = riserDriver
+      ? `${riser.name} is the biggest mover since the last result (+${riserDelta} pp). ${riser.primaryDriver}.${champ.name !== riser.name ? ` ${champ.name} remains the model's most likely champion at ${champ.current.toFixed(1)}%.` : ""}`
+      : `${champ.name} leads with ${champ.current.toFixed(1)}% championship odds after ${Object.keys(stored.matches).length} group + ${Object.keys(stored.knockoutMatches ?? {}).length} knockout results. ${riser.name} has gained the most ground from the pre-tournament baseline (+${riserDelta} pp).`;
+  }
 
   return {
     riser: riser.name,
@@ -212,13 +251,12 @@ export function buildLiveMorningForecast(liveTeams: Team[], stored: StoredResult
     matchNote,
     champ: champ.name,
     champVal: `${champ.current.toFixed(1)}%`,
-    champNote: `${rows[1]?.name ?? "No other team"} at ${rows[1]?.current.toFixed(1) ?? "0"}% is the nearest rival`,
-    upset: upsetTeam,
-    upsetVal: `${upsetOdds}%`,
-    upsetNote: upsetFavName
-      ? `${upsetOdds}% advancement odds vs ${upsetFavName} — closest to a coin flip in the current bracket`
-      : "no upcoming matches",
+    champNote,
+    upset,
+    upsetVal,
+    upsetNote,
     insight,
+    isComplete,
   };
 }
 
@@ -282,6 +320,7 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
 
   const sorted = [...liveTeams].sort((a, b) => b.current - a.current);
   const statusByCode = new Map(liveTeams.map((t) => [t.code, getTeamKnockoutStatus(t.code as TeamCode, stored)]));
+  const isComplete = sorted[0]?.isChampion ?? false;
 
   const headlines: Headline[] = [];
   const usedCodes = new Set<string>(); // avoid the same team headlining twice in one refresh
@@ -369,7 +408,21 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
   // the real leader here to avoid repeating a name previously produced a
   // false "X Holds Top Spot" claim about a team that wasn't actually #1.
   const leader = sorted[0];
-  if (leader) {
+  if (leader && isComplete) {
+    const variants = [
+      {
+        title: `${leader.name} Win the World Cup at ${leader.current.toFixed(1)}% Final Odds`,
+        summary: `The Veridex model's final tally: ${leader.name} finish atop the championship odds after every match of the tournament, up from ${leader.baseline.toFixed(1)}% pre-tournament.`,
+      },
+      {
+        title: `Champions: ${leader.name} Close Out the Tournament at ${leader.current.toFixed(1)}%`,
+        summary: `${leader.name} lift the trophy — the model's final probability lands at ${leader.current.toFixed(1)}%, compared with ${leader.baseline.toFixed(1)}% before a ball was kicked.`,
+      },
+    ];
+    const v = pickVariant(variants, leader.code + "champion");
+    headlines.push({ ...v, metric: `${leader.current.toFixed(1)}%`, metricLabel: "FINAL ODDS", up: leader.current > leader.baseline });
+    usedCodes.add(leader.code);
+  } else if (leader) {
     const variants = [
       {
         title: `${leader.name} Holds Top Spot With ${leader.current.toFixed(1)}% Championship Odds`,
@@ -385,19 +438,38 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
     usedCodes.add(leader.code);
   }
 
-  // ── Slot 4: next-most-notable team not already featured, labeled with their ACTUAL rank ──
-  const second = sorted.find((t) => !usedCodes.has(t.code));
-  if (second) {
-    const actualRank = sorted.findIndex((t) => t.code === second.code) + 1;
-    const ordinal = actualRank === 2 ? "Second" : actualRank === 3 ? "Third" : actualRank === 4 ? "Fourth" : `${actualRank}th`;
+  // ── Slot 4: once the tournament is complete, this is the actual Final
+  // runner-up (a real, meaningful fact) instead of "second place by
+  // current odds" — which is meaningless once every non-champion team is
+  // genuinely tied at 0%, and previously surfaced whichever 0% team
+  // happened to sort first. Falls back to the old "next-most-notable
+  // team" framing while the tournament is still in progress. ──
+  const runnerUp = isComplete
+    ? sorted.find((t) => !usedCodes.has(t.code) && statusByCode.get(t.code)?.eliminatedRound === "Final")
+    : undefined;
+  if (runnerUp) {
     headlines.push({
-      title: `${second.name} Sits ${ordinal} In Championship Race`,
-      summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention.`,
-      metric: `${second.current.toFixed(1)}%`,
-      metricLabel: "TITLE ODDS",
-      up: second.current > second.baseline,
+      title: `${runnerUp.name} Finish Runner-Up After Falling To ${leader.name} In The Final`,
+      summary: `${runnerUp.name} reached the Final before ${leader.name} closed it out — a run that peaked at ${Math.max(runnerUp.baseline, runnerUp.current).toFixed(1)}% title odds along the way.`,
+      metric: "2nd",
+      metricLabel: "FINAL RESULT",
+      up: false,
     });
-    usedCodes.add(second.code);
+    usedCodes.add(runnerUp.code);
+  } else if (!isComplete) {
+    const second = sorted.find((t) => !usedCodes.has(t.code));
+    if (second) {
+      const actualRank = sorted.findIndex((t) => t.code === second.code) + 1;
+      const ordinal = actualRank === 2 ? "Second" : actualRank === 3 ? "Third" : actualRank === 4 ? "Fourth" : `${actualRank}th`;
+      headlines.push({
+        title: `${second.name} Sits ${ordinal} In Championship Race`,
+        summary: `With ${second.current.toFixed(1)}% title probability, ${second.name} trail the leader but remain firmly in contention.`,
+        metric: `${second.current.toFixed(1)}%`,
+        metricLabel: "TITLE ODDS",
+        up: second.current > second.baseline,
+      });
+      usedCodes.add(second.code);
+    }
   }
 
   // ── Slot 5: model status, accurately reflecting the current stage ──

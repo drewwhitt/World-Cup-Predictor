@@ -32,17 +32,17 @@ export function MorningForecast({ forecast: mf }: Props) {
           <p>{mf.matchNote}</p>
         </div>
         <div className={s.cell}>
-          <div>★ Most Likely Champion</div>
+          <div>★ {mf.isComplete ? "Champion" : "Most Likely Champion"}</div>
           <strong>{mf.champ} <span className={s.inlinePos}>{mf.champVal}</span></strong>
           <p>{mf.champNote}</p>
         </div>
         <div className={s.cell}>
-          <div>⚠ Biggest Upset Risk</div>
+          <div>⚠ {mf.isComplete ? "Biggest Upset" : "Biggest Upset Risk"}</div>
           <strong>{mf.upset} <span className={s.inlineNeg}>{mf.upsetVal}</span></strong>
           <p>{mf.upsetNote}</p>
         </div>
         <div className={s.cell}>
-          <div>◉ Key Model Insight</div>
+          <div>◉ {mf.isComplete ? "Final Accuracy" : "Key Model Insight"}</div>
           <p className={s.insight}>{mf.insight}</p>
         </div>
       </div>
