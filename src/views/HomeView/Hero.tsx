@@ -21,8 +21,27 @@ export function Hero({ teams, playedCount, stored }: Props) {
   const favorite = [...teams].sort((a, b) => b.current - a.current)[0];
   const delta = Number((favorite.current - favorite.baseline).toFixed(1));
   const confidence = Math.round(Math.min(96, Math.max(62, 76 + favorite.current / 2)));
-  const heroTitle = `${favorite.name} Leads World Cup Forecast After Latest Results`;
-  const heroSub = `The Veridex model ran ${playedCount > 0 ? "10,000" : "pre-tournament"} simulations using every real result recorded so far and now rates ${favorite.name} the tournament's most likely champion.`;
+
+  // Pre-tournament rank by baseline title odds — separate from powerRank
+  // below (which is post-tournament Elo rank). This is what lets the
+  // completed-tournament headline say something meaningful about whether
+  // the model's preseason pick actually came through.
+  const baselineRank = useMemo(() => {
+    const ranked = [...teams].sort((a, b) => b.baseline - a.baseline);
+    return ranked.findIndex((t) => t.code === favorite.code) + 1;
+  }, [teams, favorite.code]);
+
+  let heroTitle: string;
+  let heroSub: string;
+  if (favorite.isChampion) {
+    heroTitle = `${favorite.name} Wins the World Cup`;
+    heroSub = baselineRank === 1
+      ? `Veridex had ${favorite.name} at ${favorite.baseline.toFixed(1)}% to win it all before a ball was kicked — the model's preseason favorite came through.`
+      : `Veridex had ${favorite.name} at ${favorite.baseline.toFixed(1)}% to win it all before a ball was kicked, the ${ordinal(baselineRank)} favorite in the field — not the pick, but well within reach.`;
+  } else {
+    heroTitle = `${favorite.name} Leads World Cup Forecast After Latest Results`;
+    heroSub = `The Veridex model ran ${playedCount > 0 ? "10,000" : "pre-tournament"} simulations using every real result recorded so far and now rates ${favorite.name} the tournament's most likely champion.`;
+  }
 
   // Real Elo-based rank, not the team with the highest championship % — those
   // aren't the same thing (bracket path difficulty differs from raw strength).
@@ -53,7 +72,7 @@ export function Hero({ teams, playedCount, stored }: Props) {
         <p>{heroSub}</p>
         <div className={s.byline}>
           <span />
-          VERIDEX Analytics Desk · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · Live model
+          VERIDEX Analytics Desk · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {favorite.isChampion ? "Final" : "Live model"}
         </div>
         <div className={s.metrics}>
           {metrics.map((metric) => (

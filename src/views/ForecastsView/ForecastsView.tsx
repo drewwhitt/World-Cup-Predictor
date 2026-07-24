@@ -376,11 +376,19 @@ export function ForecastsView({ stored, teams }: Props) {
               const prob = pct(selected[key as RoundKey]);
               if (prob < 0.1) return null;
               const width = Math.max(4, prob);
-              // A round is "completed" if the team has already advanced past it
-              const isCompleted = koRound !== null &&
-                firstRound !== "Round of 32" &&
-                firstRound !== "eliminated" &&
-                ROUND_ORDER.indexOf(firstRound) > ROUND_ORDER.indexOf(koRound);
+              // A round is "completed" if the team has already advanced past
+              // it. Champion needs its own branch: koRound is null for the
+              // Champion row (so the general check below always excludes
+              // it), and ROUND_ORDER has nothing listed after "Final" (so
+              // even the Final row could never be marked completed for the
+              // actual champion, whose firstRound is set to "Final") —
+              // winning it all means every row through Champion is done.
+              const isCompleted = teamStatus.isChampion
+                ? true
+                : koRound !== null &&
+                  firstRound !== "Round of 32" &&
+                  firstRound !== "eliminated" &&
+                  ROUND_ORDER.indexOf(firstRound) > ROUND_ORDER.indexOf(koRound);
               return (
                 <div key={key} className={s.roundRow}>
                   <span className={s.roundLabel}>{label}</span>
