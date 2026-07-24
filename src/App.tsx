@@ -13,7 +13,6 @@ import {
 import { loadOfficialResults } from "./lib/supabase";
 import type { StoredResults } from "./lib/types";
 import { HomeView } from "./views/HomeView/HomeView";
-import { ComingSoonView } from "./views/ComingSoonView/ComingSoonView";
 
 // Lazy-loaded — Home is the default landing tab and stays in the main
 // bundle so it appears instantly, but nobody needs Bracket's SVG/canvas
@@ -31,7 +30,7 @@ function TabLoading() {
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
-const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "lab"];
+const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket"];
 
 function getTabFromHash(): TabId {
   const hash = window.location.hash.slice(1) as TabId;
@@ -126,8 +125,6 @@ export default function App() {
         return <BracketView stored={stored} />;
       case "rankings":
         return <RankingsView stored={stored} teams={liveTeams} />;
-      case "lab":
-        return <ComingSoonView title="Model Lab" onNavigate={changeTab} />;
       case "home":
       default:
         return (

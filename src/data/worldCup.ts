@@ -102,7 +102,6 @@ export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "forecasts", label: "Forecasts" },
   { id: "rankings", label: "Rankings" },
   { id: "bracket", label: "Standings" },
-  { id: "lab", label: "Model Lab" },
   { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
