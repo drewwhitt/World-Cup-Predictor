@@ -3,6 +3,10 @@ import { page as whatIsEloRating } from "./pages/what-is-elo-rating";
 import { page as franceVsSpain } from "./pages/france-vs-spain-semifinal-odds";
 import { page as howAccurate } from "./pages/how-accurate-is-veridex.tsx";
 import { page as groupStageMatchLog } from "./pages/group-stage-predictions-vs-results";
+import { page as knockoutStageMatchLog } from "./pages/knockout-stage-predictions-vs-results";
+import { page as biggestUpsets } from "./pages/biggest-upsets-2026-world-cup";
+import { page as whatIsABrierScore } from "./pages/what-is-a-brier-score";
+import { page as howMonteCarloWorks } from "./pages/how-monte-carlo-simulation-works";
 
 /**
  * Every /insights page, in one place. Add a new page by:
@@ -18,4 +22,8 @@ export const INSIGHT_PAGES: InsightPage[] = [
   franceVsSpain,
   howAccurate,
   groupStageMatchLog,
+  knockoutStageMatchLog,
+  biggestUpsets,
+  whatIsABrierScore,
+  howMonteCarloWorks,
 ];

@@ -231,6 +231,181 @@ export function getGroupStageMatchLog(stored: StoredResults): GroupMatchLogEntry
   return log;
 }
 
+export interface KnockoutMatchLogEntry {
+  id: string;
+  round: string;
+  homeCode: TeamCode;
+  awayCode: TeamCode;
+  homeName: string;
+  awayName: string;
+  homeAdvancePct: number; // 0-100, predicted BEFORE this match
+  awayAdvancePct: number;
+  homeGoals: number;
+  awayGoals: number;
+  penaltyWinner: "home" | "away" | null;
+  winnerCode: TeamCode;
+  isUpset: boolean;
+  homeElo: number;
+  awayElo: number;
+}
+
+/**
+ * Every played knockout match with its predicted advancement probability
+ * (as of right before that match) alongside the real result — the
+ * knockout-stage counterpart to getGroupStageMatchLog. Walks matches in
+ * bracket order (Round of 32 -> Final) using resolveKnockoutMatch, same
+ * as scoreKnockoutStage, so results stay consistent with the aggregate
+ * accuracy numbers shown elsewhere.
+ */
+export function getKnockoutMatchLog(stored: StoredResults): KnockoutMatchLogEntry[] {
+  const playedGroupMatches = GROUP_MATCHES.map((m) => {
+    const r = stored.matches[m.id];
+    return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
+  });
+  const elos = computeElosFromResults(playedGroupMatches, DEFAULT_SETTINGS);
+
+  const ROUND_ORDER = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
+  const entries: Array<{ id: string; round: string }> = Object.entries(KNOCKOUT_STRUCTURE)
+    .map(([id, def]) => ({ id, round: def.round }))
+    .filter(({ id }) => stored.knockoutMatches?.[id])
+    .sort((a, b) => ROUND_ORDER.indexOf(a.round) - ROUND_ORDER.indexOf(b.round));
+
+  const log: KnockoutMatchLogEntry[] = [];
+
+  for (const { id, round } of entries) {
+    const result = stored.knockoutMatches![id];
+    const { home, away } = resolveKnockoutMatch(id, stored);
+    if (!home || !away) continue;
+
+    const { home: homeAdvance } = toAdvancementProbabilities(elos[home] ?? 1500, elos[away] ?? 1500, 0);
+    const homeWon = result.homeGoals > result.awayGoals || result.penaltyWinner === "home";
+    const winnerCode: TeamCode = homeWon ? home : away;
+    const winnerPct = homeWon ? homeAdvance : 1 - homeAdvance;
+
+    log.push({
+      id,
+      round,
+      homeCode: home,
+      awayCode: away,
+      homeName: TEAM_BY_CODE[home]?.name ?? home,
+      awayName: TEAM_BY_CODE[away]?.name ?? away,
+      homeAdvancePct: Math.round(homeAdvance * 100),
+      awayAdvancePct: Math.round((1 - homeAdvance) * 100),
+      homeGoals: result.homeGoals,
+      awayGoals: result.awayGoals,
+      penaltyWinner: result.penaltyWinner ?? null,
+      winnerCode,
+      isUpset: winnerPct < 0.5,
+      homeElo: Math.round(elos[home] ?? 1500),
+      awayElo: Math.round(elos[away] ?? 1500),
+    });
+
+    const updated = updateElo(elos[home], elos[away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, 0);
+    elos[home] = updated.home;
+    elos[away] = updated.away;
+  }
+
+  return log;
+}
+
+export interface UpsetEntry {
+  winnerCode: TeamCode;
+  loserCode: TeamCode;
+  winner: string;
+  loser: string;
+  winnerPct: number; // pre-match win probability for the actual winner, 0-100
+  stage: "Group Stage" | string; // "Group Stage" or a knockout round label
+  score: string;
+}
+
+/**
+ * The biggest upsets across the WHOLE tournament — group stage and
+ * knockouts together, ranked by how surprising the result was (lowest
+ * pre-match win probability for the actual winner). Unlike
+ * scoreKnockoutStage's upsetExamples (knockout-only, capped at 5, built
+ * for a compact accuracy-page callout), this is meant to be the complete
+ * list for a dedicated "biggest upsets" page — group-stage blowout
+ * upsets (a big underdog winning outright, not just drawing) count too,
+ * which the knockout-only list never captured.
+ */
+export function getBiggestUpsets(stored: StoredResults, limit = 15): UpsetEntry[] {
+  const upsets: UpsetEntry[] = [];
+  const elos = buildInitialElos();
+
+  const playedGroup = [...GROUP_MATCHES]
+    .filter((m) => stored.matches[m.id])
+    .sort((a, b) => a.date.localeCompare(b.date) || a.matchday - b.matchday);
+
+  for (const match of playedGroup) {
+    const result = stored.matches[match.id];
+    const ha = match.isHostMatch ? DEFAULT_SETTINGS.homeAdvantage : 0;
+    const { homeWin, awayWin } = matchOutcomeProbabilities(elos[match.home], elos[match.away], ha);
+
+    if (result.homeGoals !== result.awayGoals) {
+      const homeWon = result.homeGoals > result.awayGoals;
+      const winnerCode = homeWon ? match.home : match.away;
+      const loserCode = homeWon ? match.away : match.home;
+      const winnerPct = homeWon ? homeWin : awayWin;
+      if (winnerPct < 0.5) {
+        upsets.push({
+          winnerCode,
+          loserCode,
+          winner: TEAM_BY_CODE[winnerCode]?.name ?? winnerCode,
+          loser: TEAM_BY_CODE[loserCode]?.name ?? loserCode,
+          winnerPct: Math.round(winnerPct * 100),
+          stage: "Group Stage",
+          score: homeWon ? `${result.homeGoals}-${result.awayGoals}` : `${result.awayGoals}-${result.homeGoals}`,
+        });
+      }
+    }
+
+    const updated = updateElo(elos[match.home], elos[match.away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, ha);
+    elos[match.home] = updated.home;
+    elos[match.away] = updated.away;
+  }
+
+  const ROUND_ORDER = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
+  const knockoutEntries: Array<{ id: string; round: string }> = Object.entries(KNOCKOUT_STRUCTURE)
+    .map(([id, def]) => ({ id, round: def.round }))
+    .filter(({ id }) => stored.knockoutMatches?.[id])
+    .sort((a, b) => ROUND_ORDER.indexOf(a.round) - ROUND_ORDER.indexOf(b.round));
+
+  for (const { id, round } of knockoutEntries) {
+    const result = stored.knockoutMatches![id];
+    const { home, away } = resolveKnockoutMatch(id, stored);
+    if (!home || !away) continue;
+
+    const { home: homeAdvance } = toAdvancementProbabilities(elos[home] ?? 1500, elos[away] ?? 1500, 0);
+    const homeWon = result.homeGoals > result.awayGoals || result.penaltyWinner === "home";
+    const winnerCode: TeamCode = homeWon ? home : away;
+    const loserCode: TeamCode = homeWon ? away : home;
+    const winnerPct = homeWon ? homeAdvance : 1 - homeAdvance;
+
+    if (winnerPct < 0.5) {
+      const scoreStr = result.penaltyWinner
+        ? `${result.homeGoals}-${result.awayGoals} (pens: ${result.penaltyWinner === "home" ? home : away})`
+        : homeWon
+        ? `${result.homeGoals}-${result.awayGoals}`
+        : `${result.awayGoals}-${result.homeGoals}`;
+      upsets.push({
+        winnerCode,
+        loserCode,
+        winner: TEAM_BY_CODE[winnerCode]?.name ?? winnerCode,
+        loser: TEAM_BY_CODE[loserCode]?.name ?? loserCode,
+        winnerPct: Math.round(winnerPct * 100),
+        stage: round,
+        score: scoreStr,
+      });
+    }
+
+    const updated = updateElo(elos[home], elos[away], result.homeGoals, result.awayGoals, DEFAULT_SETTINGS.kFactor, 0);
+    elos[home] = updated.home;
+    elos[away] = updated.away;
+  }
+
+  return upsets.sort((a, b) => a.winnerPct - b.winnerPct).slice(0, limit);
+}
+
 export function computeAccuracy(stored: StoredResults): AccuracyResult {
   return {
     group: scoreGroupStage(stored),
