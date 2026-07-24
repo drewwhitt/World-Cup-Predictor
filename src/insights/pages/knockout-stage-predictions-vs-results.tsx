@@ -20,8 +20,8 @@ function ProbabilityBar({ home, away }: { home: number; away: number }) {
 
 function MatchRow({ m }: { m: KnockoutMatchLogEntry }) {
   const scoreLine = m.penaltyWinner
-    ? `${m.homeGoals}\u2013${m.awayGoals} (pens: ${m.penaltyWinner === "home" ? m.homeName : m.awayName})`
-    : `${m.homeGoals}\u2013${m.awayGoals}`;
+    ? `${m.homeGoals}–${m.awayGoals} (pens: ${m.penaltyWinner === "home" ? m.homeName : m.awayName})`
+    : `${m.homeGoals}–${m.awayGoals}`;
   return (
     <div className="match-log-row" data-teams={`${m.homeCode} ${m.awayCode}`}>
       <div className="match-log-top">
@@ -29,7 +29,7 @@ function MatchRow({ m }: { m: KnockoutMatchLogEntry }) {
           <span className={m.winnerCode === m.homeCode ? "match-log-winner" : ""}>{m.homeName}</span>
           {" "}<span className="match-log-score">{scoreLine}</span>{" "}
           <span className={m.winnerCode === m.awayCode ? "match-log-winner" : ""}>{m.awayName}</span>
-          {m.isUpset && <span className="match-log-score"> \u2014 UPSET</span>}
+          {m.isUpset && <span className="match-log-score"> — UPSET</span>}
         </span>
       </div>
       <ProbabilityBar home={m.homeAdvancePct} away={m.awayAdvancePct} />
@@ -88,17 +88,17 @@ function Content({ data }: { data?: Record<string, unknown> }) {
 
   return (
     <>
-      <div className="eyebrow">Methodology \u00b7 Match Log</div>
+      <div className="eyebrow">Methodology · Match Log</div>
       <h1>Knockout Stage: Every Prediction vs Every Result</h1>
       <p className="dek">
-        The complete knockout-stage record, round by round \u2014 what Veridex predicted before
+        The complete knockout-stage record, round by round — what Veridex predicted before
         each match, checked against what actually happened. The companion page to the{" "}
         <a href="/insights/group-stage-predictions-vs-results">group-stage match log</a>.
       </p>
 
       {!available && (
         <p>
-          Live results aren't available for this build. Check back after the next update \u2014
+          Live results aren't available for this build. Check back after the next update —
           this page regenerates automatically as new results come in.
         </p>
       )}
@@ -110,7 +110,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
       {available && matches && matches.length > 0 && (
         <>
           <p className="note">
-            Percentages are advancement probabilities \u2014 what the model said BEFORE each match,
+            Percentages are advancement probabilities — what the model said BEFORE each match,
             never adjusted after the fact. {upsetCount} of {matches.length} knockout matches went
             against the model's favorite.
           </p>
@@ -145,7 +145,7 @@ export const page: InsightPage = {
   slug: "knockout-stage-predictions-vs-results",
   title: "Knockout Stage: Every Prediction vs Every Result",
   description:
-    "The complete knockout-stage record for Veridex's 2026 World Cup model \u2014 every match's predicted advancement probability, checked against the real result, round by round.",
+    "The complete knockout-stage record for Veridex's 2026 World Cup model — every match's predicted advancement probability, checked against the real result, round by round.",
   category: "Methodology",
   publishedAt: "2026-07-24",
   loadData,

@@ -562,7 +562,9 @@ export function buildLiveHeadlines(liveTeams: Team[], stored: StoredResults): He
 
 export function buildLiveBreakingText(liveTeams: Team[], stored: StoredResults): string {
   const playedCount = Object.keys(stored.matches).length;
-  if (playedCount === 0) {
+  const knockoutPlayedCount = Object.keys(stored.knockoutMatches ?? {}).length;
+  const totalPlayed = playedCount + knockoutPlayedCount;
+  if (totalPlayed === 0) {
     return "World Cup 2026 is underway · Veridex model live · Enter results in admin mode to update predictions";
   }
 
@@ -574,16 +576,28 @@ export function buildLiveBreakingText(liveTeams: Team[], stored: StoredResults):
   const riser = [...byDelta].sort((a, b) => b.delta - a.delta)[0];
   const faller = [...byDelta].sort((a, b) => a.delta - b.delta)[0];
   const leader = sorted[0];
-  const second = sorted[1];
+  const isComplete = leader.isChampion;
 
-  const parts = [
-    `${leader.name} leads at ${leader.current.toFixed(1)}%`,
-    riser.delta > 0 ? `${riser.name} +${riser.delta.toFixed(1)}pp after group stage results` : null,
-    faller.delta < 0 ? `${faller.name} -${Math.abs(faller.delta).toFixed(1)}pp` : null,
-    `${second.name} at ${second.current.toFixed(1)}%`,
-    `${playedCount} results recorded · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`,
-    `Veridex model updated`,
-  ].filter(Boolean) as string[];
+  // Once the tournament is complete, every non-champion team is genuinely
+  // tied at 0% — a "second place at 0%" ticker item is meaningless (and
+  // whichever 0% team happens to sort second is essentially arbitrary),
+  // so that line is dropped entirely rather than showing something false.
+  const parts = isComplete
+    ? [
+        `${leader.name} win the World Cup at ${leader.current.toFixed(1)}% final odds`,
+        riser.delta > 0 ? `${riser.name} finished +${riser.delta.toFixed(1)}pp from pre-tournament baseline` : null,
+        faller.delta < 0 ? `${faller.name} finished ${faller.delta.toFixed(1)}pp from pre-tournament baseline` : null,
+        `${totalPlayed} results recorded · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`,
+        `Veridex model updated`,
+      ].filter(Boolean) as string[]
+    : [
+        `${leader.name} leads at ${leader.current.toFixed(1)}%`,
+        riser.delta > 0 ? `${riser.name} +${riser.delta.toFixed(1)}pp after the latest results` : null,
+        faller.delta < 0 ? `${faller.name} ${faller.delta.toFixed(1)}pp` : null,
+        `${sorted[1]?.name ?? ""} at ${sorted[1]?.current.toFixed(1) ?? "0.0"}%`,
+        `${totalPlayed} results recorded · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`,
+        `Veridex model updated`,
+      ].filter(Boolean) as string[];
 
   return parts.join(" · ");
 }

@@ -12,8 +12,8 @@ async function loadData() {
 function UpsetRow({ u, rank }: { u: UpsetEntry; rank: number }) {
   return (
     <li>
-      <strong>#{rank} \u2014 {u.winner} {u.score} {u.loser}</strong>
-      <span> ({u.stage}) \u2014 {u.winner} was given just {u.winnerPct}% beforehand.</span>
+      <strong>#{rank} — {u.winner} {u.score} {u.loser}</strong>
+      <span> ({u.stage}) — {u.winner} was given just {u.winnerPct}% beforehand.</span>
     </li>
   );
 }
@@ -28,26 +28,26 @@ function Content({ data }: { data?: Record<string, unknown> }) {
       <h1>The Biggest Upsets of the 2026 World Cup</h1>
       <p className="dek">
         Every result where Veridex's model gave the eventual winner less than a coin flip's
-        chance \u2014 ranked by how surprising the result really was, group stage through the
+        chance — ranked by how surprising the result really was, group stage through the
         Final.
       </p>
 
       {!available && (
         <p>
-          Live results aren't available for this build. Check back after the next update \u2014
+          Live results aren't available for this build. Check back after the next update —
           this page regenerates automatically as new results come in.
         </p>
       )}
 
       {available && upsets && upsets.length === 0 && (
-        <p>No upsets recorded yet \u2014 every result so far has gone the way the model favored.</p>
+        <p>No upsets recorded yet — every result so far has gone the way the model favored.</p>
       )}
 
       {available && upsets && upsets.length > 0 && (
         <>
           <p>
             An upset here means the actual winner was given under 50% by the model right before
-            kickoff \u2014 not a subjective "surprising" result, a specific, checkable claim about
+            kickoff — not a subjective "surprising" result, a specific, checkable claim about
             what the model said beforehand. Ranked from most to least improbable:
           </p>
           <ul className="upset-list">
@@ -57,7 +57,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
           </ul>
           <h2>Why This List Matters</h2>
           <p>
-            A model that never lists any upsets isn't measuring anything real \u2014 it just means
+            A model that never lists any upsets isn't measuring anything real — it just means
             the predictions weren't specific enough to be tested. Giving an underdog a genuine,
             nonzero chance and having that chance come in is the model doing exactly what it's
             supposed to do. What matters isn't a perfect record; it's whether the probabilities

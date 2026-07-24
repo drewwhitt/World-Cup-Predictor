@@ -123,7 +123,7 @@ function Content({ data }: { data?: Record<string, unknown> }) {
                 recomputed here with the corrected Elo model — had{" "}
                 <strong>{data!.modelFavored as string}</strong> favored at{" "}
                 {data!.modelFavored === "Spain" ? (data!.spainWinPct as number) : (data!.franceWinPct as number)}%.
-                The actual result: Spain {data!.spainScore as number}\u2013{data!.franceScore as number} France.
+                The actual result: Spain {data!.spainScore as number}–{data!.franceScore as number} France.
               </p>
 
               <h2>Why the model was wrong</h2>
