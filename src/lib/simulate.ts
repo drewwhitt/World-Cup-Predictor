@@ -165,6 +165,7 @@ export function runSimulation(
   const R16_FROM_R32 = feedersForRound("Round of 16");
   const QF_FROM_R16 = feedersForRound("Quarterfinal");
   const SF_FROM_QF = feedersForRound("Semifinal");
+  const FINAL_FROM_SF = feedersForRound("Final");
 
   // Build confirmedWinners from stored knockout results using real team codes.
   // ALSO pre-seed R32 participants directly — the fixture file's homeSlot/awaySlot
@@ -234,6 +235,27 @@ export function runSimulation(
     if (!sfKeys || !num) continue;
     const homeTeam = confirmedWinners[sfKeys[0]];
     const awayTeam = confirmedWinners[sfKeys[1]];
+    if (!homeTeam || !awayTeam) continue;
+    let winner: TeamCode;
+    if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
+      winner = homeTeam;
+    } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
+      winner = awayTeam;
+    } else continue;
+    confirmedWinners[`W${num}`] = winner;
+  }
+
+// Fifth pass: resolve the Final result — without this, a completed
+  // tournament's champion was still being probabilistically re-simulated
+  // in every one of the 10,000 runs instead of locked at 100%, which is
+  // what caused the Home hero banner, Forecasts green bars, and Rankings
+  // to keep showing a pre-final leader after the real Final was decided.
+  for (const [matchId, result] of Object.entries(storedKnockout ?? {})) {
+    const finalKeys = FINAL_FROM_SF[matchId];
+    const num = matchId.match(/ko-(\d+)/)?.[1];
+    if (!finalKeys || !num) continue;
+    const homeTeam = confirmedWinners[finalKeys[0]];
+    const awayTeam = confirmedWinners[finalKeys[1]];
     if (!homeTeam || !awayTeam) continue;
     let winner: TeamCode;
     if (result.homeGoals > result.awayGoals || result.penaltyWinner === "home") {
