@@ -155,8 +155,7 @@ export default function App() {
         activeTab={activeTab}
         edition={edition}
         breakingText={liveBreaking}
-        onTabChange={changeTab}
-        onSelectSport={changeTab}
+        onNavigate={changeTab}
       >
         <ErrorBoundary key={activeTab}>
           <Suspense fallback={<TabLoading />}>{renderContent()}</Suspense>

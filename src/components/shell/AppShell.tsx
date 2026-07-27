@@ -2,27 +2,24 @@ import type { ReactNode } from "react";
 import type { Edition, TabId } from "../../data/worldCup";
 import { BreakingTicker } from "./BreakingTicker";
 import { Masthead } from "./Masthead";
-import { PrimaryNav } from "./PrimaryNav";
-import { SportSelector } from "./SportSelector";
+import { MegaNav } from "./MegaNav";
 import s from "./AppShell.module.css";
 
 type Props = {
   activeTab: TabId;
   edition: Edition;
   breakingText: string;
-  onTabChange?: (tab: TabId) => void;
-  onSelectSport?: (tab: TabId) => void;
+  onNavigate?: (tab: TabId) => void;
   children: ReactNode;
 };
 
-export function AppShell({ activeTab, edition, breakingText, onTabChange, onSelectSport, children }: Props) {
+export function AppShell({ activeTab, edition, breakingText, onNavigate, children }: Props) {
   return (
     <div className={s.page}>
       {edition === "wire" && <BreakingTicker text={breakingText} />}
       <header className={s.container}>
         <Masthead />
-        <SportSelector activeTab={activeTab} onSelect={onSelectSport} />
-        <PrimaryNav activeTab={activeTab} onTabChange={onTabChange} />
+        <MegaNav activeTab={activeTab} onNavigate={onNavigate} />
       </header>
       <main className={s.container}>{children}</main>
       <footer className={s.footer}>

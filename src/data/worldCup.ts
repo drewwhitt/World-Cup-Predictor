@@ -105,11 +105,9 @@ export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
-// Kept as a separate list (rather than one big sport-aware array) because
-// src/insights/Document.tsx — the standalone SEO build, not part of the
-// live app — imports navItems directly for its own static nav. Home and
-// Insights appear in both lists on purpose: they're universal, sport-
-// agnostic destinations, not "World Cup's Home" vs "NFL's Home."
+// Kept only for src/insights/Document.tsx — the standalone SEO build, not
+// part of the live app. The live app's nav is now MegaNav.tsx, driven by
+// SPORTS_NAV below, not these two flat lists.
 export const nflNavItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "home", label: "Home" },
   { id: "nflSchedule", label: "Schedule" },
@@ -118,7 +116,52 @@ export const nflNavItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
-export const sports = ["World Cup", "NFL", "NBA", "NHL", "MLB", "MLS", "Premier League", "Champions League"];
+export interface LeagueConfig {
+  label: string;
+  items?: Array<{ id: TabId; label: string }>;
+}
+
+export interface SportNavConfig {
+  label: string;
+  /** Where clicking the sport's own label (not a dropdown item) goes. Omit for sports with no real data yet, or for a pure category like Soccer that has no single landing page of its own. */
+  landingTab?: TabId;
+  items?: Array<{ id: TabId; label: string }>;
+  /** Present only for category-level entries (Soccer) that group several leagues under one dropdown instead of being a single league themselves. */
+  leagues?: LeagueConfig[];
+}
+
+export const SPORTS_NAV: SportNavConfig[] = [
+  {
+    label: "NFL",
+    landingTab: "nflForecasts",
+    items: [
+      { id: "nflSchedule", label: "Schedule" },
+      { id: "nflRankings", label: "Rankings" },
+      { id: "nflForecasts", label: "Forecasts" },
+    ],
+  },
+  { label: "NBA" },
+  { label: "NHL" },
+  { label: "MLB" },
+  {
+    label: "Soccer",
+    leagues: [
+      {
+        label: "World Cup",
+        items: [
+          { id: "forecasts", label: "Forecasts" },
+          { id: "rankings", label: "Rankings" },
+          { id: "bracket", label: "Standings" },
+        ],
+      },
+      { label: "MLS" },
+      { label: "Premier League" },
+      { label: "Champions League" },
+    ],
+  },
+  { label: "Formula 1" },
+];
+
 
 export const matchCenter: MatchCenter = {
   home: "France",
