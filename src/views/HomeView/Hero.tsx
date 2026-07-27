@@ -56,36 +56,32 @@ export function Hero({ teams, playedCount, stored }: Props) {
     return ranked.findIndex((t) => t.code === favorite.code) + 1;
   }, [teams, stored, favorite.code]);
 
-  const metrics = [
-    { label: "Championship Odds", value: `${favorite.current.toFixed(1)}%`, delta: `${delta >= 0 ? "+" : "-"}${Math.abs(delta).toFixed(1)} pp` },
-    { label: "Power Ranking", value: ordinal(powerRank), delta: "by Elo" },
-    { label: "Power Rating", value: favorite.rating.toFixed(1), delta: "Elo blended" },
-    { label: "Confidence", value: String(confidence), suffix: "/100", delta: `${playedCount} results` },
+  const statLine = [
+    `${favorite.current.toFixed(1)}% championship odds (${delta >= 0 ? "+" : "-"}${Math.abs(delta).toFixed(1)} pp)`,
+    `${ordinal(powerRank)} by Elo power ranking`,
+    `${favorite.rating.toFixed(1)} power rating`,
+    `${confidence}/100 model confidence`,
   ];
+
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   return (
     <section className={s.hero}>
-      <div className={s.overlay} />
-      <div className={s.content}>
-        <div className={s.kicker}>World Cup · Championship Forecast</div>
-        <h1>{heroTitle}</h1>
-        <p>{heroSub}</p>
-        <div className={s.byline}>
-          <span />
-          VERIDEX Analytics Desk · {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} · {favorite.isChampion ? "Final" : "Live model"}
-        </div>
-        <div className={s.metrics}>
-          {metrics.map((metric) => (
-            <div className={s.metricCard} key={metric.label}>
-              <div className={s.metricLabel}>{metric.label}</div>
-              <div className={s.metricValue}>
-                {metric.value}
-                {metric.suffix && <span>{metric.suffix}</span>}
-              </div>
-              <div className={s.metricDelta}>↗ {metric.delta}</div>
-            </div>
-          ))}
-        </div>
+      <div className={s.kicker}>{today} · Morning Brief</div>
+      <h1>{heroTitle}</h1>
+      <p>{heroSub}</p>
+      <div className={s.byline}>
+        <span>VERIDEX Analytics Desk</span>
+        <em />
+        {favorite.isChampion ? "Final" : "Live model"}
+      </div>
+      <div className={s.statLine}>
+        {statLine.map((stat, i) => (
+          <span key={stat}>
+            {i > 0 && <span className={s.dot} />}
+            {stat}
+          </span>
+        ))}
       </div>
     </section>
   );

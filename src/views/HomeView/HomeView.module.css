@@ -21,6 +21,19 @@
   text-transform: uppercase;
 }
 
+.lowerGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 48px;
+  margin: 46px 0;
+  align-items: stretch;
+}
+
+.moversCol,
+.alertCol {
+  min-width: 0;
+}
+
 .headlineGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -31,6 +44,11 @@
 }
 
 @media (max-width: 860px) {
+  .lowerGrid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin: 32px 0;
+  }
   .headlineGrid {
     grid-template-columns: 1fr;
   }

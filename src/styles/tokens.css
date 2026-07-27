@@ -9,18 +9,18 @@
   --hairline-2: rgba(26, 23, 20, 0.08);
   --positive: #2E7D4F;
   --negative: #B0412A;
-  --navy: #0E1A2C;
-  --gold: #D7B254;
+  --navy: #0F1B3D;
+  --gold: #C9A84C;
   --on-dark: #F7F4ED;
   --on-dark-soft: rgba(247, 244, 237, 0.82);
   --pos-on-dark: #7FC79A;
   --home-win: #3B6CA8;
   --draw: #B8AE9C;
   --away-win: #2E7D4F;
-  --font-display: "Libre Caslon Display", Georgia, serif;
-  --font-serif: "Libre Caslon Text", Georgia, serif;
-  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", monospace;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
   --container: 1200px;
   --container-pad: 40px;
 }
