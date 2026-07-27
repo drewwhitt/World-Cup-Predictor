@@ -1,0 +1,84 @@
+.header {
+  margin: 24px 0 32px;
+  max-width: 640px;
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.header p {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  font: 400 14px/1.6 var(--font-sans);
+}
+
+.conferences {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.conference h2 {
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hairline-2);
+  font: 500 14px var(--font-sans);
+}
+
+.rank {
+  width: 18px;
+  color: var(--ink-3);
+  font: 600 11px var(--font-mono);
+}
+
+.team {
+  flex: 1;
+  color: var(--ink);
+}
+
+.division {
+  color: var(--ink-3);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rating {
+  color: var(--ink-2);
+  font: 500 13px var(--font-mono);
+  min-width: 32px;
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .conferences {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .division {
+    display: none;
+  }
+}

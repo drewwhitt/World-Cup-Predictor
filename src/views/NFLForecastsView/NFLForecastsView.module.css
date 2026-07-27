@@ -1,0 +1,82 @@
+.header {
+  margin: 24px 0 32px;
+  max-width: 640px;
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.header p {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  font: 400 14px/1.6 var(--font-sans);
+}
+
+.section {
+  margin: 32px 0;
+}
+
+.tableHeader,
+.row {
+  display: grid;
+  grid-template-columns: 1fr repeat(5, 90px);
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.tableHeader {
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink-3);
+  font: 600 10px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.row {
+  border-bottom: 1px solid var(--hairline-2);
+  font: 500 14px var(--font-sans);
+}
+
+.colTeam {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  color: var(--ink);
+}
+
+.rank {
+  width: 18px;
+  color: var(--ink-3);
+  font: 600 11px var(--font-mono);
+}
+
+.num {
+  text-align: right;
+  color: var(--ink-2);
+  font: 500 13px var(--font-mono);
+}
+
+.numStrong {
+  text-align: right;
+  color: var(--ink);
+  font: 600 13px var(--font-mono);
+}
+
+@media (max-width: 760px) {
+  .tableHeader,
+  .row {
+    grid-template-columns: 1fr repeat(5, 56px);
+    font-size: 11px;
+  }
+  .colTeam {
+    font-size: 13px;
+  }
+}

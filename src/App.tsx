@@ -25,6 +25,8 @@ const ForecastsView = lazy(() => import("./views/ForecastsView/ForecastsView").t
 const RankingsView = lazy(() => import("./views/RankingsView/RankingsView").then((m) => ({ default: m.RankingsView })));
 const NFLHomeView = lazy(() => import("./views/NFLHomeView/NFLHomeView").then((m) => ({ default: m.NFLHomeView })));
 const NFLScheduleView = lazy(() => import("./views/NFLScheduleView/NFLScheduleView").then((m) => ({ default: m.NFLScheduleView })));
+const NFLRankingsView = lazy(() => import("./views/NFLRankingsView/NFLRankingsView").then((m) => ({ default: m.NFLRankingsView })));
+const NFLForecastsView = lazy(() => import("./views/NFLForecastsView/NFLForecastsView").then((m) => ({ default: m.NFLForecastsView })));
 
 function TabLoading() {
   return <div style={{ padding: "60px 0", textAlign: "center", color: "var(--ink-3)" }}>Loading…</div>;
@@ -32,7 +34,7 @@ function TabLoading() {
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
-const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "nflHome", "nflSchedule"];
+const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "nflHome", "nflSchedule", "nflRankings", "nflForecasts"];
 
 function getTabFromHash(): TabId {
   const hash = window.location.hash.slice(1) as TabId;
@@ -131,6 +133,10 @@ export default function App() {
         return <NFLHomeView onNavigate={changeTab} />;
       case "nflSchedule":
         return <NFLScheduleView onNavigate={changeTab} />;
+      case "nflRankings":
+        return <NFLRankingsView onNavigate={changeTab} />;
+      case "nflForecasts":
+        return <NFLForecastsView onNavigate={changeTab} />;
       case "home":
       default:
         return (

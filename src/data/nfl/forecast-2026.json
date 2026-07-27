@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-07-27T17:39:32.647Z",
+  "label": "2026 season forecast — Monte Carlo over the preseason Elo baseline, no real 2026 results yet",
+  "simulations": 10000,
+  "forecasts": [
+    {
+      "code": "SEA",
+      "projectedWins": 12.3,
+      "playoffPct": 87.7,
+      "divisionPct": 55.3,
+      "conferencePct": 29.1,
+      "superBowlPct": 17.8
+    },
+    {
+      "code": "HOU",
+      "projectedWins": 10.8,
+      "playoffPct": 74.7,
+      "divisionPct": 49.8,
+      "conferencePct": 14.3,
+      "superBowlPct": 6.9
+    },
+    {
+      "code": "LA",
+      "projectedWins": 10.6,
+      "playoffPct": 67.5,
+      "divisionPct": 26.8,
+      "conferencePct": 13.4,
+      "superBowlPct": 7.4
+    },
+    {
+      "code": "DEN",
+      "projectedWins": 10.5,
+      "playoffPct": 73.2,
+      "divisionPct": 54.3,
+      "conferencePct": 15,
+      "superBowlPct": 7.6
+    },
+    {
+      "code": "BUF",
+      "projectedWins": 10.4,
+      "playoffPct": 72.1,
+      "divisionPct": 47.2,
+      "conferencePct": 15.4,
+      "superBowlPct": 8.2
+    },
+    {
+      "code": "PHI",
+      "projectedWins": 10.2,
+      "playoffPct": 68,
+      "divisionPct": 54.8,
+      "conferencePct": 10.3,
+      "superBowlPct": 5
+    },
+    {
+      "code": "NE",
+      "projectedWins": 10.1,
+      "playoffPct": 67.4,
+      "divisionPct": 39.7,
+      "conferencePct": 13.2,
+      "superBowlPct": 7
+    },
+    {
+      "code": "DET",
+      "projectedWins": 10.1,
+      "playoffPct": 62.1,
+      "divisionPct": 33.5,
+      "conferencePct": 7.7,
+      "superBowlPct": 3.9
+    },
+    {
+      "code": "BAL",
+      "projectedWins": 9.9,
+      "playoffPct": 63.6,
+      "divisionPct": 41,
+      "conferencePct": 8.2,
+      "superBowlPct": 3.9
+    },
+    {
+      "code": "JAX",
+      "projectedWins": 9.7,
+      "playoffPct": 61.7,
+      "divisionPct": 32.9,
+      "conferencePct": 8.6,
+      "superBowlPct": 4.2
+    },
+    {
+      "code": "MIN",
+      "projectedWins": 9.7,
+      "playoffPct": 55.3,
+      "divisionPct": 28.5,
+      "conferencePct": 7.3,
+      "superBowlPct": 3.8
+    },
+    {
+      "code": "SF",
+      "projectedWins": 9.5,
+      "playoffPct": 52.6,
+      "divisionPct": 15.9,
+      "conferencePct": 7.3,
+      "superBowlPct": 3.8
+    },
+    {
+      "code": "GB",
+      "projectedWins": 8.8,
+      "playoffPct": 43.6,
+      "divisionPct": 19.7,
+      "conferencePct": 5.1,
+      "superBowlPct": 2.3
+    },
+    {
+      "code": "CHI",
+      "projectedWins": 8.7,
+      "playoffPct": 41.9,
+      "divisionPct": 18.3,
+      "conferencePct": 5.3,
+      "superBowlPct": 2.5
+    },
+    {
+      "code": "PIT",
+      "projectedWins": 8.5,
+      "playoffPct": 43.7,
+      "divisionPct": 23.6,
+      "conferencePct": 4.6,
+      "superBowlPct": 1.8
+    },
+    {
+      "code": "CIN",
+      "projectedWins": 8.4,
+      "playoffPct": 42.6,
+      "divisionPct": 22.3,
+      "conferencePct": 3.6,
+      "superBowlPct": 1.4
+    },
+    {
+      "code": "KC",
+      "projectedWins": 8.4,
+      "playoffPct": 42.2,
+      "divisionPct": 21.4,
+      "conferencePct": 4.5,
+      "superBowlPct": 1.7
+    },
+    {
+      "code": "LAC",
+      "projectedWins": 8.3,
+      "playoffPct": 41.4,
+      "divisionPct": 21.1,
+      "conferencePct": 4.9,
+      "superBowlPct": 1.9
+    },
+    {
+      "code": "TB",
+      "projectedWins": 8.3,
+      "playoffPct": 42.1,
+      "divisionPct": 32.5,
+      "conferencePct": 3.2,
+      "superBowlPct": 1.5
+    },
+    {
+      "code": "ATL",
+      "projectedWins": 8,
+      "playoffPct": 38.8,
+      "divisionPct": 29.5,
+      "conferencePct": 2.5,
+      "superBowlPct": 1.2
+    },
+    {
+      "code": "IND",
+      "projectedWins": 7.9,
+      "playoffPct": 34.3,
+      "divisionPct": 13.9,
+      "conferencePct": 2.8,
+      "superBowlPct": 1.1
+    },
+    {
+      "code": "NO",
+      "projectedWins": 7.7,
+      "playoffPct": 32.4,
+      "divisionPct": 24,
+      "conferencePct": 2,
+      "superBowlPct": 0.8
+    },
+    {
+      "code": "WAS",
+      "projectedWins": 7.6,
+      "playoffPct": 29.6,
+      "divisionPct": 17.7,
+      "conferencePct": 2.2,
+      "superBowlPct": 0.9
+    },
+    {
+      "code": "CLE",
+      "projectedWins": 7.4,
+      "playoffPct": 27.8,
+      "divisionPct": 13.2,
+      "conferencePct": 1.6,
+      "superBowlPct": 0.7
+    },
+    {
+      "code": "DAL",
+      "projectedWins": 7.3,
+      "playoffPct": 27,
+      "divisionPct": 16.4,
+      "conferencePct": 1.6,
+      "superBowlPct": 0.7
+    },
+    {
+      "code": "MIA",
+      "projectedWins": 7.1,
+      "playoffPct": 26.1,
+      "divisionPct": 9.9,
+      "conferencePct": 2.2,
+      "superBowlPct": 0.9
+    },
+    {
+      "code": "NYG",
+      "projectedWins": 6.8,
+      "playoffPct": 19.9,
+      "divisionPct": 11.2,
+      "conferencePct": 1.1,
+      "superBowlPct": 0.4
+    },
+    {
+      "code": "CAR",
+      "projectedWins": 6.5,
+      "playoffPct": 20.5,
+      "divisionPct": 14.1,
+      "conferencePct": 1.1,
+      "superBowlPct": 0.4
+    },
+    {
+      "code": "ARI",
+      "projectedWins": 6,
+      "playoffPct": 11.3,
+      "divisionPct": 2,
+      "conferencePct": 0.5,
+      "superBowlPct": 0.2
+    },
+    {
+      "code": "TEN",
+      "projectedWins": 5.7,
+      "playoffPct": 11,
+      "divisionPct": 3.4,
+      "conferencePct": 0.4,
+      "superBowlPct": 0.1
+    },
+    {
+      "code": "NYJ",
+      "projectedWins": 5.5,
+      "playoffPct": 10,
+      "divisionPct": 3.2,
+      "conferencePct": 0.4,
+      "superBowlPct": 0.1
+    },
+    {
+      "code": "LV",
+      "projectedWins": 5.2,
+      "playoffPct": 8.3,
+      "divisionPct": 3.2,
+      "conferencePct": 0.4,
+      "superBowlPct": 0.2
+    }
+  ]
+}
