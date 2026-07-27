@@ -105,6 +105,17 @@ export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
+// Kept separate from navItems (rather than merged into one sport-aware
+// list) because src/insights/Document.tsx — the standalone SEO build,
+// not part of the live app — imports navItems directly and is World Cup
+// content only. It should never see NFL tabs.
+export const nflNavItems: Array<{ id: TabId; label: string; href?: string }> = [
+  { id: "nflHome", label: "Home" },
+  { id: "nflSchedule", label: "Schedule" },
+  { id: "nflRankings", label: "Rankings" },
+  { id: "nflForecasts", label: "Forecasts" },
+];
+
 export const sports = ["World Cup", "NFL", "NBA", "NHL", "MLB", "MLS", "Premier League", "Champions League"];
 
 export const matchCenter: MatchCenter = {

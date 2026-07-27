@@ -1,14 +1,8 @@
 import { useMemo } from "react";
-import type { TabId } from "../../data/worldCup";
 import { buildNflMatchCenter, NFL_PERIODS } from "../../data/nfl/nflLive";
-import { NflSubNav } from "../../components/nfl/NflSubNav";
 import s from "./NFLScheduleView.module.css";
 
-type Props = {
-  onNavigate: (tab: TabId) => void;
-};
-
-export function NFLScheduleView({ onNavigate }: Props) {
+export function NFLScheduleView() {
   const entries = useMemo(() => buildNflMatchCenter(), []);
 
   const byPeriod = useMemo(() => {
@@ -23,8 +17,6 @@ export function NFLScheduleView({ onNavigate }: Props) {
 
   return (
     <>
-      <NflSubNav active="nflSchedule" onNavigate={onNavigate} />
-
       <section className={s.header}>
         <h1>2026 Schedule</h1>
         <p>All 272 games, as announced. Scores will appear here once results are entered.</p>

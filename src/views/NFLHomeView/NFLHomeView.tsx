@@ -1,15 +1,9 @@
 import { useMemo } from "react";
-import type { TabId } from "../../data/worldCup";
 import { buildNflTeams, fullTeamName, NFL_SCHEDULE } from "../../data/nfl/nflLive";
 import { predictNFLMatch } from "../../lib/engine/sports/NFL";
-import { NflSubNav } from "../../components/nfl/NflSubNav";
 import s from "./NFLHomeView.module.css";
 
-type Props = {
-  onNavigate: (tab: TabId) => void;
-};
-
-export function NFLHomeView({ onNavigate }: Props) {
+export function NFLHomeView() {
   const teams = useMemo(() => buildNflTeams(), []);
 
   const week1Projections = useMemo(() => {
@@ -26,8 +20,6 @@ export function NFLHomeView({ onNavigate }: Props) {
 
   return (
     <>
-      <NflSubNav active="nflHome" onNavigate={onNavigate} />
-
       <section className={s.hero}>
         <div className={s.kicker}>NFL · 2026 Season</div>
         <h1>Season Kicks Off September 9</h1>

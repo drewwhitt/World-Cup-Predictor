@@ -1,21 +1,13 @@
 import { useMemo } from "react";
-import type { TabId } from "../../data/worldCup";
 import { fullTeamName } from "../../data/nfl/nflLive";
 import forecastData from "../../data/nfl/forecast-2026.json";
-import { NflSubNav } from "../../components/nfl/NflSubNav";
 import s from "./NFLForecastsView.module.css";
 
-type Props = {
-  onNavigate: (tab: TabId) => void;
-};
-
-export function NFLForecastsView({ onNavigate }: Props) {
+export function NFLForecastsView() {
   const forecasts = useMemo(() => [...forecastData.forecasts].sort((a, b) => b.superBowlPct - a.superBowlPct), []);
 
   return (
     <>
-      <NflSubNav active="nflForecasts" onNavigate={onNavigate} />
-
       <section className={s.header}>
         <h1>2026 Season Forecast</h1>
         <p>

@@ -1,4 +1,4 @@
-import { navItems, type TabId } from "../../data/worldCup";
+import { navItems, nflNavItems, type TabId } from "../../data/worldCup";
 import s from "./PrimaryNav.module.css";
 
 type Props = {
@@ -7,9 +7,11 @@ type Props = {
 };
 
 export function PrimaryNav({ activeTab, onTabChange }: Props) {
+  const items = activeTab.startsWith("nfl") ? nflNavItems : navItems;
+
   return (
     <nav className={s.nav} aria-label="Primary">
-      {navItems.map((item) =>
+      {items.map((item) =>
         item.href ? (
           <a key={item.id} href={item.href}>
             {item.label}

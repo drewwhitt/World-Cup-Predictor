@@ -1,22 +1,14 @@
 import { useMemo } from "react";
-import type { TabId } from "../../data/worldCup";
 import { buildNflTeams } from "../../data/nfl/nflLive";
-import { NflSubNav } from "../../components/nfl/NflSubNav";
 import s from "./NFLRankingsView.module.css";
 
-type Props = {
-  onNavigate: (tab: TabId) => void;
-};
-
-export function NFLRankingsView({ onNavigate }: Props) {
+export function NFLRankingsView() {
   const teams = useMemo(() => buildNflTeams(), []);
   const afc = teams.filter((t) => t.conference === "AFC");
   const nfc = teams.filter((t) => t.conference === "NFC");
 
   return (
     <>
-      <NflSubNav active="nflRankings" onNavigate={onNavigate} />
-
       <section className={s.header}>
         <h1>Power Rankings</h1>
         <p>Preseason Elo, reverted toward the league mean after a full real 1999–2025 backtest. Updates once real 2026 results start coming in.</p>

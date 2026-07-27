@@ -130,13 +130,13 @@ export default function App() {
       case "rankings":
         return <RankingsView stored={stored} teams={liveTeams} />;
       case "nflHome":
-        return <NFLHomeView onNavigate={changeTab} />;
+        return <NFLHomeView />;
       case "nflSchedule":
-        return <NFLScheduleView onNavigate={changeTab} />;
+        return <NFLScheduleView />;
       case "nflRankings":
-        return <NFLRankingsView onNavigate={changeTab} />;
+        return <NFLRankingsView />;
       case "nflForecasts":
-        return <NFLForecastsView onNavigate={changeTab} />;
+        return <NFLForecastsView />;
       case "home":
       default:
         return (

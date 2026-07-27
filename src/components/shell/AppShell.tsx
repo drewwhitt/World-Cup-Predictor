@@ -21,8 +21,8 @@ export function AppShell({ activeTab, edition, breakingText, onTabChange, onSele
       {edition === "wire" && <BreakingTicker text={breakingText} />}
       <header className={s.container}>
         <Masthead />
-        <PrimaryNav activeTab={activeTab} onTabChange={onTabChange} />
         <SportSelector activeTab={activeTab} onSelect={onSelectSport} />
+        <PrimaryNav activeTab={activeTab} onTabChange={onTabChange} />
       </header>
       <main className={s.container}>{children}</main>
       <footer className={s.footer}>
