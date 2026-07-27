@@ -1,8 +1,9 @@
 .sports {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px;
-  padding: 16px 0 4px;
+  gap: 10px;
+  padding: 20px 0 18px;
+  border-bottom: 1px solid var(--hairline-2);
 }
 
 .sports span,

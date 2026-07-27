@@ -23,7 +23,6 @@ import { HomeView } from "./views/HomeView/HomeView";
 const BracketView = lazy(() => import("./views/BracketView/BracketView").then((m) => ({ default: m.BracketView })));
 const ForecastsView = lazy(() => import("./views/ForecastsView/ForecastsView").then((m) => ({ default: m.ForecastsView })));
 const RankingsView = lazy(() => import("./views/RankingsView/RankingsView").then((m) => ({ default: m.RankingsView })));
-const NFLHomeView = lazy(() => import("./views/NFLHomeView/NFLHomeView").then((m) => ({ default: m.NFLHomeView })));
 const NFLScheduleView = lazy(() => import("./views/NFLScheduleView/NFLScheduleView").then((m) => ({ default: m.NFLScheduleView })));
 const NFLRankingsView = lazy(() => import("./views/NFLRankingsView/NFLRankingsView").then((m) => ({ default: m.NFLRankingsView })));
 const NFLForecastsView = lazy(() => import("./views/NFLForecastsView/NFLForecastsView").then((m) => ({ default: m.NFLForecastsView })));
@@ -34,7 +33,7 @@ function TabLoading() {
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
-const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "nflHome", "nflSchedule", "nflRankings", "nflForecasts"];
+const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "bracket", "nflSchedule", "nflRankings", "nflForecasts"];
 
 function getTabFromHash(): TabId {
   const hash = window.location.hash.slice(1) as TabId;
@@ -129,8 +128,6 @@ export default function App() {
         return <BracketView stored={stored} />;
       case "rankings":
         return <RankingsView stored={stored} teams={liveTeams} />;
-      case "nflHome":
-        return <NFLHomeView />;
       case "nflSchedule":
         return <NFLScheduleView />;
       case "nflRankings":
@@ -146,7 +143,7 @@ export default function App() {
             headlines={liveHeadlines}
             playedCount={playedCount}
             stored={stored}
-            onNavigateToRankings={() => changeTab("rankings")}
+            onNavigate={changeTab}
           />
         );
     }

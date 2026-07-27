@@ -1,7 +1,8 @@
-import { type Headline, type MorningForecast as MorningForecastData, type Team } from "../../data/worldCup";
+import { type Headline, type MorningForecast as MorningForecastData, type Team, type TabId } from "../../data/worldCup";
 import { DailyMovers } from "../../components/movers/DailyMovers";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults } from "../../lib/types";
+import { NflPreview } from "../../components/nfl/NflPreview";
 import { Hero } from "./Hero";
 import { HeadlineCard } from "./HeadlineCard";
 import { MorningForecast } from "./MorningForecast";
@@ -17,7 +18,7 @@ type Props = {
   headlines: Headline[];
   playedCount: number;
   stored: StoredResults;
-  onNavigateToRankings?: () => void;
+  onNavigate?: (tab: TabId) => void;
 };
 
 const TEAM_NAMES: Record<string, string> = Object.fromEntries(
@@ -30,7 +31,7 @@ export function HomeView({
   headlines,
   playedCount,
   stored,
-  onNavigateToRankings,
+  onNavigate,
 }: Props) {
   // The Confidence Alert card reuses the top story from the same
   // deterministic headline rotation everywhere else in the app reads from —
@@ -41,7 +42,10 @@ export function HomeView({
   return (
     <>
       <Hero teams={teams} playedCount={playedCount} stored={stored} />
-      <QuickStrip teams={teams} onNavigate={onNavigateToRankings} />
+
+      {onNavigate && <NflPreview onNavigate={onNavigate} />}
+
+      <QuickStrip teams={teams} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
       <FavoritesStrip teams={teams} teamNames={TEAM_NAMES} />
 
       <HighestConfidence stored={stored} />
@@ -51,7 +55,7 @@ export function HomeView({
           <DailyMovers sport="world_cup" teamNames={TEAM_NAMES} limit={6} title="Biggest Movers — World Cup" />
         </div>
         <div className={s.alertCol}>
-          <ConfidenceAlert headline={alertHeadline} onNavigate={onNavigateToRankings} />
+          <ConfidenceAlert headline={alertHeadline} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
         </div>
       </section>
 

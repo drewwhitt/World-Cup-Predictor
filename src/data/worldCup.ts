@@ -1,5 +1,5 @@
 export type Edition = "wire" | "desk";
-export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab" | "insights" | "nflHome" | "nflSchedule" | "nflRankings" | "nflForecasts";
+export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab" | "insights" | "nflSchedule" | "nflRankings" | "nflForecasts";
 export type SimOutcome = "home" | "draw" | "away";
 
 export type Team = {
@@ -105,15 +105,17 @@ export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
   { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
-// Kept separate from navItems (rather than merged into one sport-aware
-// list) because src/insights/Document.tsx — the standalone SEO build,
-// not part of the live app — imports navItems directly and is World Cup
-// content only. It should never see NFL tabs.
+// Kept as a separate list (rather than one big sport-aware array) because
+// src/insights/Document.tsx — the standalone SEO build, not part of the
+// live app — imports navItems directly for its own static nav. Home and
+// Insights appear in both lists on purpose: they're universal, sport-
+// agnostic destinations, not "World Cup's Home" vs "NFL's Home."
 export const nflNavItems: Array<{ id: TabId; label: string; href?: string }> = [
-  { id: "nflHome", label: "Home" },
+  { id: "home", label: "Home" },
   { id: "nflSchedule", label: "Schedule" },
   { id: "nflRankings", label: "Rankings" },
   { id: "nflForecasts", label: "Forecasts" },
+  { id: "insights", label: "Insights", href: "/insights/" },
 ];
 
 export const sports = ["World Cup", "NFL", "NBA", "NHL", "MLB", "MLS", "Premier League", "Champions League"];
