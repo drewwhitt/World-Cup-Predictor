@@ -91,6 +91,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
             </button>
             {isOpen && (
               <div className={s.dropdown} role="menu">
+                <div className={s.dropdownInner}>
                 {sport.items?.map((item) => (
                   <button
                     key={item.id}
@@ -130,6 +131,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
                     )}
                   </div>
                 ))}
+                </div>
               </div>
             )}
           </div>
