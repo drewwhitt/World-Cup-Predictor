@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-07-27T17:08:09.282Z",
+  "label": "2026 preseason baseline — derived from real 1999–2025 results (nflverse/nfldata), mean-reverted for the new season",
+  "source": "https://github.com/nflverse/nfldata",
+  "elos": [
+    {
+      "code": "SEA",
+      "elo": 1701.5
+    },
+    {
+      "code": "LA",
+      "elo": 1620.8
+    },
+    {
+      "code": "BUF",
+      "elo": 1618.5
+    },
+    {
+      "code": "DEN",
+      "elo": 1614.2
+    },
+    {
+      "code": "HOU",
+      "elo": 1608
+    },
+    {
+      "code": "NE",
+      "elo": 1604.7
+    },
+    {
+      "code": "PHI",
+      "elo": 1582.2
+    },
+    {
+      "code": "JAX",
+      "elo": 1562.7
+    },
+    {
+      "code": "DET",
+      "elo": 1560.7
+    },
+    {
+      "code": "SF",
+      "elo": 1560.4
+    },
+    {
+      "code": "MIN",
+      "elo": 1556.6
+    },
+    {
+      "code": "BAL",
+      "elo": 1552.6
+    },
+    {
+      "code": "CHI",
+      "elo": 1531.7
+    },
+    {
+      "code": "GB",
+      "elo": 1529.6
+    },
+    {
+      "code": "LAC",
+      "elo": 1521.1
+    },
+    {
+      "code": "KC",
+      "elo": 1511.5
+    },
+    {
+      "code": "PIT",
+      "elo": 1507.6
+    },
+    {
+      "code": "TB",
+      "elo": 1486.4
+    },
+    {
+      "code": "CIN",
+      "elo": 1478.6
+    },
+    {
+      "code": "ATL",
+      "elo": 1471.2
+    },
+    {
+      "code": "IND",
+      "elo": 1468
+    },
+    {
+      "code": "WAS",
+      "elo": 1461.2
+    },
+    {
+      "code": "DAL",
+      "elo": 1457.4
+    },
+    {
+      "code": "MIA",
+      "elo": 1456
+    },
+    {
+      "code": "NO",
+      "elo": 1435.4
+    },
+    {
+      "code": "CAR",
+      "elo": 1424.3
+    },
+    {
+      "code": "NYG",
+      "elo": 1419.2
+    },
+    {
+      "code": "CLE",
+      "elo": 1416.5
+    },
+    {
+      "code": "ARI",
+      "elo": 1393
+    },
+    {
+      "code": "NYJ",
+      "elo": 1358.9
+    },
+    {
+      "code": "LV",
+      "elo": 1349.7
+    },
+    {
+      "code": "TEN",
+      "elo": 1348.6
+    }
+  ]
+}

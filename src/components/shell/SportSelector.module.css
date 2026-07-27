@@ -5,7 +5,8 @@
   padding: 16px 0 4px;
 }
 
-.sports span {
+.sports span,
+.sports button {
   border-radius: 2px;
 }
 
@@ -14,6 +15,22 @@
   color: var(--paper);
   font: 600 12px/1 var(--font-sans);
   background: var(--ink);
+  border: none;
+  cursor: pointer;
+}
+
+.selectable {
+  padding: 8px 14px;
+  color: var(--ink-2);
+  font: 500 12px/1 var(--font-sans);
+  background: transparent;
+  border: 1px solid rgba(26, 23, 20, 0.16);
+  cursor: pointer;
+}
+
+.selectable:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
 }
 
 .inactive {

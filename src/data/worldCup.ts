@@ -1,5 +1,5 @@
 export type Edition = "wire" | "desk";
-export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab" | "insights";
+export type TabId = "home" | "forecasts" | "rankings" | "bracket" | "match" | "sim" | "lab" | "insights" | "nflHome" | "nflSchedule";
 export type SimOutcome = "home" | "draw" | "away";
 
 export type Team = {
