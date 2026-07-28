@@ -1,7 +1,9 @@
-.nav {
+.wrap {
   position: relative;
+}
+
+.nav {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 6px 10px;
   margin-top: 18px;
@@ -10,9 +12,7 @@
 }
 
 .nav > button,
-.nav > .item > button,
 .nav > .insights {
-  position: relative;
   padding: 7px 12px;
   cursor: pointer;
   color: #3A352E;
@@ -26,7 +26,6 @@
 }
 
 .nav > button:hover,
-.nav > .item > button:hover,
 .nav > .insights:hover {
   color: var(--ink);
   background: var(--hairline-2);
@@ -36,10 +35,6 @@
   color: var(--navy) !important;
   background: rgba(15, 27, 61, 0.09) !important;
   font-weight: 700;
-}
-
-.item {
-  position: relative;
 }
 
 .disabled {
@@ -53,16 +48,16 @@
 .dropdown {
   position: absolute;
   top: 100%;
-  left: 50%;
+  left: 0;
   z-index: 20;
-  padding-top: 9px; /* invisible bridge — keeps hover continuous from button to menu, see .dropdownInner for the visible box */
-  transform: translateX(-50%);
+  padding-top: 9px; /* invisible bridge so a slightly-off cursor path from button to menu doesn't read as "left the area" */
 }
 
 .dropdownInner {
   display: flex;
   flex-direction: column;
-  min-width: 190px;
+  width: 220px;
+  max-width: calc(100vw - 24px);
   padding: 8px;
   background: var(--surface);
   border: 1px solid var(--hairline);
@@ -141,18 +136,35 @@
 
 @media (max-width: 860px) {
   .nav {
-    gap: 6px 8px;
+    flex-wrap: nowrap;
+    gap: 8px;
     margin-top: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Deliberately NOT setting touch-action: pan-x — that's the most
+       likely reason taps on these buttons were unreliable before.
+       Restricting touch-action to "panning only" can make a browser
+       favor treating a tap-with-tiny-movement as a scroll gesture over
+       firing a click. Plain overflow-x: auto with the browser's default
+       touch-action still scrolls fine and leaves normal tap
+       disambiguation alone. */
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
   }
   .nav > button,
-  .nav > .item > button,
   .nav > .insights,
   .disabled {
     padding: 7px 10px;
     font-size: 13px;
   }
   .dropdown {
-    left: 0;
-    transform: none;
+    right: 0;
+  }
+  .dropdownInner {
+    width: auto;
   }
 }

@@ -9,9 +9,9 @@ type Props = {
 
 export function MegaNav({ activeTab, onNavigate }: Props) {
   const [openSport, setOpenSport] = useState<string | null>(null);
-  const rootRef = useRef<HTMLElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  // Closes the open dropdown on any click outside the nav.
+  // Closes the open dropdown on any click outside the whole nav+dropdown wrapper.
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
@@ -25,16 +25,11 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
   // Deliberately simple: clicking a sport's label ALWAYS just opens its
   // dropdown (never navigates, never closes it back down) — the only
   // ways it closes are picking an actual item inside it, or tapping
-  // outside. This used to ALSO open on mouseenter/mouseleave as a desktop
-  // hover convenience, but real Safari/iOS touch devices fire mouse
-  // events before a tap's click in an order that's genuinely different
-  // from Chrome's (which is all I can test against in this sandbox) —
-  // in practice that meant the dropdown could open and close again
-  // within the same tap, before it was ever visible. Click/tap is now
-  // the ONLY thing that opens or closes it, on every device, so there's
-  // no hover-timing race left to get wrong. Costs desktop users one
-  // extra click versus hovering; that's a fine trade for "actually works
-  // on a phone."
+  // outside. This used to also open on mouseenter/mouseleave as a
+  // desktop hover convenience, but that raced against real touch
+  // devices' own mouse-event synthesis and could open-then-close a
+  // dropdown within a single tap before it was ever visible. Click/tap
+  // is now the only thing that opens or closes it, on every device.
   function openSportMenu(label: string) {
     setOpenSport(label);
   }
@@ -44,51 +39,87 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
     return Boolean(config.leagues?.some((league) => league.items?.some((item) => item.id === activeTab)));
   }
 
+  // The dropdown is rendered once, as a sibling of the scrollable button
+  // row rather than nested inside each button — nesting it inside the
+  // scrolling row meant it inherited that row's overflow clipping (so it
+  // got cut off) and its position depended on wherever the triggering
+  // button happened to be scrolled to (so it could run off past the
+  // right edge). A single panel below the whole bar sidesteps both.
+  const openConfig = SPORTS_NAV.find((sport) => sport.label === openSport);
+
   return (
-    <nav className={s.nav} aria-label="Primary" ref={rootRef}>
-      <button
-        type="button"
-        className={activeTab === "home" ? s.active : undefined}
-        onClick={() => onNavigate?.("home")}
-      >
-        Home
-      </button>
+    <div className={s.wrap} ref={rootRef}>
+      <nav className={s.nav} aria-label="Primary">
+        <button
+          type="button"
+          className={activeTab === "home" ? s.active : undefined}
+          onClick={() => onNavigate?.("home")}
+        >
+          Home
+        </button>
 
-      {SPORTS_NAV.map((sport) => {
-        const hasDropdown = Boolean(sport.items?.length || sport.leagues?.length);
-        const active = isSportActive(sport);
-        const isOpen = openSport === sport.label;
+        {SPORTS_NAV.map((sport) => {
+          const hasDropdown = Boolean(sport.items?.length || sport.leagues?.length);
+          const active = isSportActive(sport);
 
-        if (!hasDropdown) {
+          if (!hasDropdown) {
+            return (
+              <span key={sport.label} className={s.disabled} title={`${sport.label} — coming soon`}>
+                {sport.label}
+              </span>
+            );
+          }
+
           return (
-            <span key={sport.label} className={s.disabled} title={`${sport.label} — coming soon`}>
-              {sport.label}
-            </span>
-          );
-        }
-
-        return (
-          <div key={sport.label} className={s.item}>
             <button
+              key={sport.label}
               type="button"
               className={active ? s.active : undefined}
               onClick={(e) => {
                 e.stopPropagation();
                 openSportMenu(sport.label);
               }}
-              aria-expanded={isOpen}
+              aria-expanded={openSport === sport.label}
             >
               {sport.label}
             </button>
-            {isOpen && (
-              <div className={s.dropdown} role="menu">
-                <div className={s.dropdownInner}>
-                  {sport.items?.map((item) => (
+          );
+        })}
+
+        <a href="/insights/" className={s.insights}>
+          Insights
+        </a>
+      </nav>
+
+      {openConfig && (
+        <div className={s.dropdown} role="menu">
+          <div className={s.dropdownInner}>
+            {openConfig.items?.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                role="menuitem"
+                className={item.id === activeTab ? s.dropdownActive : undefined}
+                onClick={() => {
+                  onNavigate?.(item.id);
+                  setOpenSport(null);
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+            {openConfig.leagues?.map((league) => (
+              <div className={s.leagueGroup} key={league.label}>
+                <div className={league.items?.some((i) => i.id === activeTab) ? s.leagueHeaderActive : s.leagueHeader}>
+                  {league.label}
+                </div>
+                {league.items ? (
+                  league.items.map((item) => (
                     <button
                       key={item.id}
                       type="button"
                       role="menuitem"
-                      className={item.id === activeTab ? s.dropdownActive : undefined}
+                      className={item.id === activeTab ? `${s.leagueItem} ${s.dropdownActive}` : s.leagueItem}
                       onClick={() => {
                         onNavigate?.(item.id);
                         setOpenSport(null);
@@ -96,42 +127,15 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
                     >
                       {item.label}
                     </button>
-                  ))}
-                  {sport.leagues?.map((league) => (
-                    <div className={s.leagueGroup} key={league.label}>
-                      <div className={league.items?.some((i) => i.id === activeTab) ? s.leagueHeaderActive : s.leagueHeader}>
-                        {league.label}
-                      </div>
-                      {league.items ? (
-                        league.items.map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            role="menuitem"
-                            className={item.id === activeTab ? `${s.leagueItem} ${s.dropdownActive}` : s.leagueItem}
-                            onClick={() => {
-                              onNavigate?.(item.id);
-                              setOpenSport(null);
-                            }}
-                          >
-                            {item.label}
-                          </button>
-                        ))
-                      ) : (
-                        <div className={s.leagueSoon}>Coming soon</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className={s.leagueSoon}>Coming soon</div>
+                )}
               </div>
-            )}
+            ))}
           </div>
-        );
-      })}
-
-      <a href="/insights/" className={s.insights}>
-        Insights
-      </a>
-    </nav>
+        </div>
+      )}
+    </div>
   );
 }
