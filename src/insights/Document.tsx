@@ -145,34 +145,33 @@ const INSIGHTS_CSS = `
   }
   .nav {
     display: flex;
-    gap: 34px;
-    border-bottom: 2px solid var(--ink);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    padding-bottom: 13px;
+    border-bottom: 1px solid var(--hairline);
   }
   .nav a {
     position: relative;
-    padding: 0 0 13px;
+    padding: 7px 12px;
     color: #3A352E;
     font: 600 14px/1 "IBM Plex Sans", system-ui, sans-serif;
     letter-spacing: 0.01em;
     text-decoration: none;
+    border-radius: 6px;
     white-space: nowrap;
   }
   .nav a:hover {
     color: var(--ink);
+    background: var(--hairline-2);
   }
   .nav a.nav-current {
-    color: var(--ink);
-  }
-  .nav a.nav-current::after {
-    position: absolute;
-    right: 0;
-    bottom: -2px;
-    left: 0;
-    height: 3px;
-    content: "";
-    background: var(--ink);
+    color: var(--navy);
+    background: rgba(15, 27, 61, 0.09);
+    font-weight: 700;
   }
   .nav-disabled {
+    padding: 7px 12px;
     color: var(--ink-4);
     font: 500 14px/1 "IBM Plex Sans", system-ui, sans-serif;
     cursor: not-allowed;
@@ -593,19 +592,11 @@ const INSIGHTS_CSS = `
       font-size: 10px;
     }
     .nav {
-      gap: 22px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      overscroll-behavior-x: contain;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      touch-action: pan-x;
-    }
-    .nav::-webkit-scrollbar {
-      display: none;
+      gap: 6px 8px;
     }
     .nav a,
     .nav-disabled {
+      padding: 7px 10px;
       font-size: 13px;
     }
   }
