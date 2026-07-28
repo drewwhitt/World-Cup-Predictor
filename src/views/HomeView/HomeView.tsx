@@ -1,5 +1,4 @@
 import { type Headline, type MorningForecast as MorningForecastData, type Team, type TabId } from "../../data/worldCup";
-import { TournamentMovers } from "./TournamentMovers";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults } from "../../lib/types";
 import { NflPreview } from "../../components/nfl/NflPreview";
@@ -33,11 +32,16 @@ export function HomeView({
   stored,
   onNavigate,
 }: Props) {
-  // The Confidence Alert card reuses the top story from the same
-  // deterministic headline rotation everywhere else in the app reads from —
-  // no separate "most notable" logic to keep in sync. The rest of the
-  // headline grid below shows what's left so nothing is duplicated.
-  const [alertHeadline, ...restHeadlines] = headlines;
+  // Confidence Alert rotates through the top of the same deterministic
+  // headline rotation everywhere else in the app reads from — no separate
+  // "most notable" logic to keep in sync. The rest of the headline grid
+  // below shows what's left so nothing is duplicated. As other insight
+  // types come online (most-likely-champion, highest-upset-risk
+  // underdog, an against-the-grain pick) they'd join this same rotation
+  // rather than needing their own slot.
+  const ALERT_SLIDE_COUNT = 3;
+  const alertHeadlines = headlines.slice(0, ALERT_SLIDE_COUNT);
+  const restHeadlines = headlines.slice(ALERT_SLIDE_COUNT);
   const isComplete = teams.some((t) => t.isChampion);
 
   return (
@@ -53,16 +57,9 @@ export function HomeView({
 
       <HighestConfidence stored={stored} />
 
-      <section className={s.lowerGrid}>
-        <div className={s.moversCol}>
-          <TournamentMovers forecast={morning} />
-        </div>
-        <div className={s.alertCol}>
-          <ConfidenceAlert headline={alertHeadline} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
-        </div>
-      </section>
-
       <MorningForecast forecast={morning} />
+
+      <ConfidenceAlert headlines={alertHeadlines} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
 
       {restHeadlines.length > 0 && (
         <>

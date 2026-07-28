@@ -1,0 +1,54 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.slide,
+.slideActive {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.4s ease;
+}
+
+.slide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slideActive {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 0 2px;
+}
+
+.dot,
+.dotActive {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dot {
+  background: var(--hairline-2);
+}
+
+.dotActive {
+  background: var(--ink);
+}

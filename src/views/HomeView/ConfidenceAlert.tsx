@@ -1,13 +1,21 @@
 import type { Headline } from "../../data/worldCup";
+import { Carousel } from "../../components/carousel/Carousel";
 import s from "./ConfidenceAlert.module.css";
 
 type Props = {
-  headline?: Headline;
+  headlines: Headline[];
   onNavigate?: () => void;
 };
 
-export function ConfidenceAlert({ headline, onNavigate }: Props) {
-  if (!headline) {
+/**
+ * Full-width home page highlight, now rotating through several stories
+ * rather than pinning one. This is the reusable slot for "moving
+ * forward" insight types (most likely champion, highest-upset-risk
+ * underdog, an against-the-grain pick) as that data comes online — each
+ * would just be another slide alongside the headline-driven ones below.
+ */
+export function ConfidenceAlert({ headlines, onNavigate }: Props) {
+  if (headlines.length === 0) {
     return (
       <aside className={s.card}>
         <div className={s.label}>Confidence Alert</div>
@@ -17,8 +25,8 @@ export function ConfidenceAlert({ headline, onNavigate }: Props) {
     );
   }
 
-  return (
-    <aside className={s.card}>
+  const slides = headlines.map((headline) => (
+    <div className={s.slide} key={headline.title}>
       <div className={s.label}>Confidence Alert</div>
       <h3>{headline.title}</h3>
       <p>{headline.summary}</p>
@@ -27,6 +35,12 @@ export function ConfidenceAlert({ headline, onNavigate }: Props) {
           Read Analysis
         </button>
       )}
+    </div>
+  ));
+
+  return (
+    <aside className={s.card}>
+      <Carousel items={slides} intervalMs={6000} />
     </aside>
   );
 }
