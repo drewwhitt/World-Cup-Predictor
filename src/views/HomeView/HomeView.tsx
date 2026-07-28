@@ -59,7 +59,7 @@ export function HomeView({
 
       <MorningForecast forecast={morning} />
 
-      <ConfidenceAlert headlines={alertHeadlines} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
+      <ConfidenceAlert headlines={alertHeadlines} />
 
       {restHeadlines.length > 0 && (
         <>

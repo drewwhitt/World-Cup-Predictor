@@ -4,17 +4,16 @@ import s from "./ConfidenceAlert.module.css";
 
 type Props = {
   headlines: Headline[];
-  onNavigate?: () => void;
 };
 
 /**
- * Full-width home page highlight, now rotating through several stories
+ * Full-width home page highlight, rotating through several stories
  * rather than pinning one. This is the reusable slot for "moving
  * forward" insight types (most likely champion, highest-upset-risk
  * underdog, an against-the-grain pick) as that data comes online — each
  * would just be another slide alongside the headline-driven ones below.
  */
-export function ConfidenceAlert({ headlines, onNavigate }: Props) {
+export function ConfidenceAlert({ headlines }: Props) {
   if (headlines.length === 0) {
     return (
       <aside className={s.card}>
@@ -30,11 +29,6 @@ export function ConfidenceAlert({ headlines, onNavigate }: Props) {
       <div className={s.label}>Confidence Alert</div>
       <h3>{headline.title}</h3>
       <p>{headline.summary}</p>
-      {onNavigate && (
-        <button type="button" className={s.link} onClick={onNavigate}>
-          Read Analysis
-        </button>
-      )}
     </div>
   ));
 
