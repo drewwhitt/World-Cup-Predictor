@@ -57,7 +57,7 @@ export function StandingsView({ stored }: Props) {
                     className={qualifiers.has(row.team) ? `${s.groupRow} ${s.groupRowQualified}` : s.groupRow}
                   >
                     <span className={s.groupTeamCol}>
-                      {TEAM_BY_CODE[row.team]?.name ?? row.team}
+                      <span className={s.groupTeamName}>{TEAM_BY_CODE[row.team]?.name ?? row.team}</span>
                       {qualifiers.has(row.team) && <span className={s.qTag}>Q</span>}
                     </span>
                     <span>{row.played}</span>

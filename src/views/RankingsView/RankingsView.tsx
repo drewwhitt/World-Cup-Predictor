@@ -3,9 +3,7 @@ import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import { computeElosIncludingKnockouts } from "../../lib/simulate";
 import { TEAMS, TEAM_CONFEDERATION, CONFEDERATION_OFFSETS, type Confederation } from "../../lib/teams";
 import { getTeamKnockoutStatus } from "../../lib/bracketTree";
-import { computeAccuracy, RANDOM_BASELINE_BRIER, COIN_FLIP_BRIER, BACKTESTED_BRIER, HISTORICAL_DRAW_RATE } from "../../lib/accuracy";
-import { FavoriteStar } from "../../components/favorites/FavoriteStar";
-import { useFavorites } from "../../lib/favorites";
+import { computeAccuracy, BACKTESTED_BRIER, HISTORICAL_DRAW_RATE } from "../../lib/accuracy";
 import type { StoredResults, TeamCode } from "../../lib/types";
 import type { Team } from "../../data/worldCup";
 import s from "./RankingsView.module.css";
@@ -70,8 +68,7 @@ function AccuracySummary({ stored }: { stored: StoredResults }) {
         </div>
       </div>
       <p className={s.accuracyNote}>
-        Brier score: 0 is a perfect prediction, {RANDOM_BASELINE_BRIER} is an equal three-way guess,{" "}
-        {COIN_FLIP_BRIER} is a coin flip scored against decisive results only. Full breakdown on the{" "}
+        Brier score: 0 is a perfect prediction. Full breakdown on the{" "}
         <a href="/insights/how-accurate-is-veridex">accuracy methodology page</a>.
       </p>
     </div>
@@ -83,8 +80,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
   const [sortKey, setSortKey] = useState<SortKey>("elo");
   const [compareSortKey, setCompareSortKey] = useState<CompareSortKey>("baseline");
   const [hideEliminated, setHideEliminated] = useState(false);
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const favorites = useFavorites();
 
   const rows = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
@@ -122,8 +117,7 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
   const isComplete = rows.some((r) => r.isChampion);
 
   const filtered = rows
-    .filter((r) => !hideEliminated || !r.eliminated)
-    .filter((r) => !favoritesOnly || favorites.has(r.code));
+    .filter((r) => !hideEliminated || !r.eliminated);
 
   const sorted = useMemo(() => {
     const copy = [...filtered];
@@ -228,13 +222,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
         >
           {hideEliminated ? "✓ Hiding eliminated teams" : "Hide eliminated teams"}
         </button>
-        <button
-          type="button"
-          className={favoritesOnly ? s.filterActive : s.filterBtn}
-          onClick={() => setFavoritesOnly((v) => !v)}
-        >
-          {favoritesOnly ? "★ Favorites only" : "☆ Favorites only"}
-        </button>
       </div>
 
       {mode === "comparison" && <AccuracySummary stored={stored} />}
@@ -255,7 +242,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
               <span className={s.colRank}>{i + 1}</span>
               <span className={s.colTeam}>
                 <span className={s.teamNameRow}>
-                  <FavoriteStar code={row.code} size="sm" />
                   <span className={s.teamName}>{row.name}</span>
                 </span>
                 <span className={s.groupTag}>Group {row.group}</span>
@@ -302,7 +288,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
                 <span className={s.colRank}>{i + 1}</span>
                 <span className={s.colTeam}>
                   <span className={s.teamNameRow}>
-                    <FavoriteStar code={row.code} size="sm" />
                     <span className={s.teamName}>{row.name}</span>
                   </span>
                   <span className={s.groupTag}>Group {row.group}</span>

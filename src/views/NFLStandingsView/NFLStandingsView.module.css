@@ -1,31 +1,27 @@
-.page {
-  padding: 28px 0 64px;
-}
-
 .header {
-  margin-bottom: 24px;
+  margin: 24px 0 32px;
+  max-width: 640px;
 }
 
-.eyebrow {
-  color: var(--ink-3);
-  font: 600 11px/1 var(--font-mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.title {
-  font-family: var(--font-display);
-  font-size: 36px;
-  font-weight: 400;
+.header h1 {
+  margin: 0;
   color: var(--ink);
-  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.header p {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  font: 400 14px/1.6 var(--font-sans);
 }
 
 .groupsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
+  margin-bottom: 32px;
 }
 
 .groupCard {
@@ -50,7 +46,7 @@
 
 .groupTableHead, .groupRow {
   display: grid;
-  grid-template-columns: 1fr repeat(6, 24px);
+  grid-template-columns: 1fr repeat(4, 32px);
   align-items: center;
   gap: 4px;
   padding: 7px 14px;
@@ -76,11 +72,6 @@
   min-height: 34px;
 }
 
-.groupRowQualified {
-  color: var(--ink);
-  font-weight: 700;
-}
-
 .groupTeamCol {
   display: flex;
   align-items: center;
@@ -96,13 +87,4 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.qTag {
-  flex-shrink: 0;
-  font: 700 9px/1 var(--font-mono);
-  color: var(--positive);
-  border: 1px solid var(--positive);
-  border-radius: 2px;
-  padding: 1px 4px;
 }

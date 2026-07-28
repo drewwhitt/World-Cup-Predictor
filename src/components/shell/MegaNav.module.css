@@ -56,13 +56,19 @@
 .dropdownInner {
   display: flex;
   flex-direction: column;
-  width: 220px;
+  width: 260px;
   max-width: calc(100vw - 24px);
   padding: 8px;
   background: var(--surface);
   border: 1px solid var(--hairline);
   border-radius: 6px;
   box-shadow: 0 8px 24px rgba(26, 23, 20, 0.12);
+}
+
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
 }
 
 .dropdown button {

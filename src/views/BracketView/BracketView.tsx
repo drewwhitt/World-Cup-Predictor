@@ -421,16 +421,14 @@ function MatchCardContent({ match, highlight }: { match: MatchNode; highlight?: 
 
   const preMatchTopPct100 = Math.round(preMatchTopPct * 100);
   const preMatchBotPct100 = 100 - preMatchTopPct100;
-  const { topGoals, botGoals, wentToPenalties } = match;
+  const { topGoals, botGoals } = match;
 
   return (
     <div className={`${s.matchCard} ${confirmed ? s.matchConfirmed : ""} ${highlight ? s.matchFinal : ""} ${isUpset ? s.matchUpset : ""}`}>
       <div className={`${s.team} ${topIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{top?.name ?? "TBD"}</span>
         <span className={s.scoreCell}>
-          {confirmed && top && topGoals !== null && (
-            <span className={s.goals}>{topGoals}{wentToPenalties && topIsWinner ? " (P)" : ""}</span>
-          )}
+          <span className={s.goals}>{confirmed && top && topGoals !== null ? topGoals : ""}</span>
           <span className={`${s.pct} ${isUpset && topIsWinner ? s.upsetPct : ""}`}>
             {top
               ? confirmed
@@ -443,9 +441,7 @@ function MatchCardContent({ match, highlight }: { match: MatchNode; highlight?: 
       <div className={`${s.team} ${botIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{bot?.name ?? "TBD"}</span>
         <span className={s.scoreCell}>
-          {confirmed && bot && botGoals !== null && (
-            <span className={s.goals}>{botGoals}{wentToPenalties && botIsWinner ? " (P)" : ""}</span>
-          )}
+          <span className={s.goals}>{confirmed && bot && botGoals !== null ? botGoals : ""}</span>
           <span className={`${s.pct} ${isUpset && botIsWinner ? s.upsetPct : ""}`}>
             {bot
               ? confirmed

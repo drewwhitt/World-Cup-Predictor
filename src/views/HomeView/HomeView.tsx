@@ -1,5 +1,5 @@
 import { type Headline, type MorningForecast as MorningForecastData, type Team, type TabId } from "../../data/worldCup";
-import { DailyMovers } from "../../components/movers/DailyMovers";
+import { TournamentMovers } from "./TournamentMovers";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import type { StoredResults } from "../../lib/types";
 import { NflPreview } from "../../components/nfl/NflPreview";
@@ -55,7 +55,7 @@ export function HomeView({
 
       <section className={s.lowerGrid}>
         <div className={s.moversCol}>
-          <DailyMovers sport="world_cup" teamNames={TEAM_NAMES} limit={6} title="Biggest Movers — World Cup" />
+          <TournamentMovers forecast={morning} />
         </div>
         <div className={s.alertCol}>
           <ConfidenceAlert headline={alertHeadline} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />

@@ -40,7 +40,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
       // Clamp so the ~220px-wide panel never runs past the right edge of
       // the viewport, however far right the clicked sport happens to sit
       // (e.g. Soccer/Formula 1 at the end of a scrolled mobile nav row).
-      const maxLeft = wrapEl.clientWidth - 220;
+      const maxLeft = wrapEl.clientWidth - 260;
       setDropdownLeft(Math.max(0, Math.min(rawLeft, Math.max(0, maxLeft))));
     }
     setOpenSport(label);
@@ -106,40 +106,46 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
       {openConfig && (
         <div className={s.dropdown} role="menu" style={{ left: dropdownLeft }}>
           <div className={s.dropdownInner}>
-            {openConfig.items?.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                role="menuitem"
-                className={item.id === activeTab ? s.dropdownActive : undefined}
-                onClick={() => {
-                  onNavigate?.(item.id);
-                  setOpenSport(null);
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
+          {openConfig.items && (
+            <div className={s.itemsGrid}>
+              {openConfig.items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="menuitem"
+                  className={item.id === activeTab ? s.dropdownActive : undefined}
+                  onClick={() => {
+                    onNavigate?.(item.id);
+                    setOpenSport(null);
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          )}
             {openConfig.leagues?.map((league) => (
               <div className={s.leagueGroup} key={league.label}>
                 <div className={league.items?.some((i) => i.id === activeTab) ? s.leagueHeaderActive : s.leagueHeader}>
                   {league.label}
                 </div>
                 {league.items ? (
-                  league.items.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      role="menuitem"
-                      className={item.id === activeTab ? `${s.leagueItem} ${s.dropdownActive}` : s.leagueItem}
-                      onClick={() => {
-                        onNavigate?.(item.id);
-                        setOpenSport(null);
-                      }}
-                    >
-                      {item.label}
-                    </button>
-                  ))
+                  <div className={s.itemsGrid}>
+                    {league.items.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        role="menuitem"
+                        className={item.id === activeTab ? `${s.leagueItem} ${s.dropdownActive}` : s.leagueItem}
+                        onClick={() => {
+                          onNavigate?.(item.id);
+                          setOpenSport(null);
+                        }}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
                 ) : (
                   <div className={s.leagueSoon}>Coming soon</div>
                 )}

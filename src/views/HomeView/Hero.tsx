@@ -67,7 +67,7 @@ export function Hero({ teams, playedCount, stored }: Props) {
 
   return (
     <section className={s.hero}>
-      <div className={s.kicker}>{today} · Morning Brief</div>
+      <div className={s.kicker}>{today}</div>
       <h1>{heroTitle}</h1>
       <p>{heroSub}</p>
       <div className={s.byline}>

@@ -109,6 +109,7 @@ function getRecentMatchContext(stored: StoredResults): {
   winner: TeamCode | null;
   loser: TeamCode | null;
   wasKnockout: boolean;
+  isFinal: boolean;
 } | null {
   const recent = getMostRecentResult(stored);
   if (!recent) return null;
@@ -124,7 +125,8 @@ function getRecentMatchContext(stored: StoredResults): {
     } else if (result.awayGoals > result.homeGoals || result.penaltyWinner === "away") {
       winner = away; loser = home;
     }
-    return { homeCode: home, awayCode: away, winner, loser, wasKnockout: true };
+    const isFinal = KNOCKOUT_STRUCTURE[recent.matchId]?.round === "Final";
+    return { homeCode: home, awayCode: away, winner, loser, wasKnockout: true, isFinal };
   }
 
   const match = GROUP_MATCHES.find((m) => m.id === recent.matchId);
@@ -134,7 +136,7 @@ function getRecentMatchContext(stored: StoredResults): {
   let loser: TeamCode | null = null;
   if (result.homeGoals > result.awayGoals) { winner = match.home; loser = match.away; }
   else if (result.awayGoals > result.homeGoals) { winner = match.away; loser = match.home; }
-  return { homeCode: match.home, awayCode: match.away, winner, loser, wasKnockout: false };
+  return { homeCode: match.home, awayCode: match.away, winner, loser, wasKnockout: false, isFinal: false };
 }
 
 /**
@@ -166,22 +168,26 @@ function buildDriverText(
   }
 
   const teamName = TEAM_BY_CODE[code]?.name ?? code;
-  const { winner, loser, wasKnockout } = context;
+  const { winner, loser, wasKnockout, isFinal } = context;
 
   // Direct result driver — team played and won or lost
   if (winner === code) {
     return {
-      text: wasKnockout
-        ? `Advanced to next round, Elo rating updated upward — path to title now clearer`
-        : `Won latest group match, Elo rating updated upward`,
+      text: isFinal
+        ? `Won the Final — ${teamName} are the 2026 World Cup champions`
+        : wasKnockout
+          ? `Advanced to next round, Elo rating updated upward — path to title now clearer`
+          : `Won latest group match, Elo rating updated upward`,
       type: "result",
     };
   }
   if (loser === code) {
     return {
-      text: wasKnockout
-        ? `Eliminated from the tournament`
-        : `Lost latest group match, Elo rating updated downward`,
+      text: isFinal
+        ? `Lost the Final — finished as runner-up`
+        : wasKnockout
+          ? `Eliminated from the tournament`
+          : `Lost latest group match, Elo rating updated downward`,
       type: "result",
     };
   }

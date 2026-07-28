@@ -175,7 +175,9 @@
 }
 
 .scoreCell {
-  display: flex;
+  display: grid;
+  grid-template-columns: 16px 34px;
+  justify-items: end;
   align-items: baseline;
   gap: 6px;
   flex-shrink: 0;
