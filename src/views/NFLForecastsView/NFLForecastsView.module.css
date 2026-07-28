@@ -77,33 +77,37 @@
 
   .row {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 16px;
-    row-gap: 10px;
-    padding: 16px 0;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 10px;
+    row-gap: 6px;
+    padding: 12px 0;
   }
 
   .colTeam {
     grid-column: 1 / -1;
-    font-size: 15px;
+    font-size: 14px;
     margin-bottom: 2px;
   }
 
   .num,
   .numStrong {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
     text-align: left;
-    gap: 2px;
+    gap: 4px;
   }
 
   .num::before,
   .numStrong::before {
     content: attr(data-label);
     color: var(--ink-3);
-    font: 600 9px var(--font-mono);
-    letter-spacing: 0.06em;
+    font: 600 8px var(--font-mono);
+    letter-spacing: 0.03em;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

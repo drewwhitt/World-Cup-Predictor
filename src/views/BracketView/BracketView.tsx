@@ -1,19 +1,16 @@
-import { useMemo, useState, type ReactElement } from "react";
+import { useMemo, type ReactElement } from "react";
 import { computeElosFromResults } from "../../lib/simulate";
 import { GROUP_MATCHES } from "../../data";
 import { toAdvancementProbabilities } from "../../lib/elo";
-import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "../../lib/teams";
+import { TEAM_BY_CODE } from "../../lib/teams";
 import { DEFAULT_SETTINGS } from "../../data";
 import { buildLiveKnockoutMatchups, buildLiveTeams } from "../../data/veridexLive";
 import { useIsMobile } from "../../lib/hooks/useIsMobile";
 import { RoundCarousel } from "../../components/bracket/RoundCarousel";
-import { computeStandings, type StandingRow } from "../../lib/groups";
-import { getRealR32Qualifiers } from "../../lib/bracketTree";
-import type { KnockoutMatchupProbability, StoredResults, TeamCode, GroupLetter } from "../../lib/types";
+import type { KnockoutMatchupProbability, StoredResults, TeamCode } from "../../lib/types";
 import s from "./BracketView.module.css";
 
 type Props = { stored: StoredResults };
-type ViewMode = "bracket" | "groups";
 
 /**
  * Confirmed Round of 32 matchups for the 2026 World Cup, taken directly
@@ -67,6 +64,10 @@ type MatchNode = {
   preMatchTopPct: number;  // what the model said before this match was played
   confirmed: boolean;
   winnerCode: TeamCode | null;
+  /** Real recorded score for this match, only present once confirmed. */
+  topGoals: number | null;
+  botGoals: number | null;
+  wentToPenalties: boolean;
 };
 
 function toSlotTeam(code: TeamCode | null, confirmed: boolean): SlotTeam {
@@ -105,6 +106,16 @@ function liveWinPct(
   return winPct(top, bot, elos);
 }
 
+function matchScore(id: string, stored: StoredResults): { topGoals: number | null; botGoals: number | null; wentToPenalties: boolean } {
+  const result = stored.knockoutMatches?.[id];
+  if (!result) return { topGoals: null, botGoals: null, wentToPenalties: false };
+  return {
+    topGoals: result.homeGoals,
+    botGoals: result.awayGoals,
+    wentToPenalties: Boolean(result.penaltyWinner),
+  };
+}
+
 function confirmedWinner(
   id: string,
   top: SlotTeam,
@@ -121,65 +132,7 @@ function confirmedWinner(
   return null; // draw with no penalty winner recorded yet
 }
 
-/**
- * All 12 group tables, sorted by the same tie-break rules used everywhere
- * else in the app (computeStandings). Q marks the 8 best third-place
- * teams too, not just the automatic top-2 — matching the real 48-team
- * qualification rule, not a naive "top 2 per group" assumption.
- */
-function GroupStandings({ stored }: { stored: StoredResults }) {
-  const standings = useMemo(() => {
-    const playedMatches = GROUP_MATCHES.map((m) => {
-      const r = stored.matches[m.id];
-      return r ? { ...m, played: true, homeGoals: r.homeGoals, awayGoals: r.awayGoals } : m;
-    });
-    return computeStandings(playedMatches);
-  }, [stored]);
-
-  const qualifiers = useMemo(() => getRealR32Qualifiers(), []);
-  const groupLetters = Object.keys(TEAMS_BY_GROUP) as GroupLetter[];
-
-  return (
-    <div className={s.groupsGrid}>
-      {groupLetters.map((letter) => {
-        const rows = [...standings[letter]].sort(
-          (a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf,
-        );
-        return (
-          <div className={s.groupCard} key={letter}>
-            <div className={s.groupCardHeader}>Group {letter}</div>
-            <div className={s.groupTable}>
-              <div className={s.groupTableHead}>
-                <span className={s.groupTeamCol}>Team</span>
-                <span>P</span><span>W</span><span>D</span><span>L</span><span>GD</span><span>Pts</span>
-              </div>
-              {rows.map((row: StandingRow) => (
-                <div
-                  key={row.team}
-                  className={qualifiers.has(row.team) ? `${s.groupRow} ${s.groupRowQualified}` : s.groupRow}
-                >
-                  <span className={s.groupTeamCol}>
-                    {TEAM_BY_CODE[row.team]?.name ?? row.team}
-                    {qualifiers.has(row.team) && <span className={s.qTag}>Q</span>}
-                  </span>
-                  <span>{row.played}</span>
-                  <span>{row.won}</span>
-                  <span>{row.drawn}</span>
-                  <span>{row.lost}</span>
-                  <span>{row.gd > 0 ? "+" : ""}{row.gd}</span>
-                  <span>{row.points}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 export function BracketView({ stored }: Props) {
-  const [mode, setMode] = useState<ViewMode>("bracket");
   const { r32, r16, qf, sf, fin, champ, overallChampion } = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
       const r = stored.matches[m.id];
@@ -215,10 +168,11 @@ export function BracketView({ stored }: Props) {
       const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[m.id];
       const winnerCode = isConfirmed ? confirmedWinner(m.id, top, bot, stored) : null;
+      const score = matchScore(m.id, stored);
       // preMatchTopPct = odds at kickoff, from Elo alone — must never reflect
       // this match's own result, even after it's confirmed, or "upset"
       // detection and the pre-match % shown on played cards both break.
-      return { id: m.id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
+      return { id: m.id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode, ...score };
     });
 
     function getWinner(node: MatchNode): SlotTeam {
@@ -240,7 +194,8 @@ export function BracketView({ stored }: Props) {
       const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
-      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
+      const score = matchScore(id, stored);
+      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode, ...score };
     });
 
     const qf: MatchNode[] = QF_IDS.map((id, i) => {
@@ -250,7 +205,8 @@ export function BracketView({ stored }: Props) {
       const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
-      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
+      const score = matchScore(id, stored);
+      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode, ...score };
     });
 
     const sf: MatchNode[] = SF_IDS.map((id, i) => {
@@ -260,7 +216,8 @@ export function BracketView({ stored }: Props) {
       const preMatchTopPct = winPct(top, bot, elos);
       const isConfirmed = !!stored.knockoutMatches?.[id];
       const winnerCode = isConfirmed ? confirmedWinner(id, top, bot, stored) : null;
-      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode };
+      const score = matchScore(id, stored);
+      return { id, top, bot, topWinPct, preMatchTopPct, confirmed: isConfirmed, winnerCode, ...score };
     });
 
     const finTop = getWinner(sf[0]);
@@ -269,10 +226,12 @@ export function BracketView({ stored }: Props) {
     const finPreMatchTopPct = winPct(finTop, finBot, elos);
     const finIsConfirmed = !!stored.knockoutMatches?.[FIN_ID];
     const confWin = confirmedWinner(FIN_ID, finTop, finBot, stored);
+    const finScore = matchScore(FIN_ID, stored);
     const fin: MatchNode = {
       id: FIN_ID, top: finTop, bot: finBot, topWinPct: finWinPct,
       preMatchTopPct: finPreMatchTopPct,
       confirmed: finIsConfirmed, winnerCode: finIsConfirmed ? confWin : null,
+      ...finScore,
     };
 
     const champ = confWin
@@ -386,7 +345,7 @@ export function BracketView({ stored }: Props) {
     <div className={s.page}>
       <div className={s.header}>
         <div className={s.eyebrow}>Veridex Model · Round of 32 confirmed</div>
-        <h1 className={s.title}>Standings</h1>
+        <h1 className={s.title}>Bracket</h1>
         {champ && (
           <div className={s.champBanner}>
             <div className={s.champHeadline}>
@@ -407,26 +366,7 @@ export function BracketView({ stored }: Props) {
         )}
       </div>
 
-      <div className={s.modeToggle}>
-        <button
-          type="button"
-          className={mode === "bracket" ? s.modeActive : s.modeBtn}
-          onClick={() => setMode("bracket")}
-        >
-          Bracket
-        </button>
-        <button
-          type="button"
-          className={mode === "groups" ? s.modeActive : s.modeBtn}
-          onClick={() => setMode("groups")}
-        >
-          Group Standings
-        </button>
-      </div>
-
-      {mode === "groups" ? (
-        <GroupStandings stored={stored} />
-      ) : isMobile ? (
+      {isMobile ? (
         <RoundCarousel roundLabels={["R32", "R16", "QF", "SF", "F"]}>
           {[
             <MobileRoundList matches={r32} key="r32" />,
@@ -481,27 +421,38 @@ function MatchCardContent({ match, highlight }: { match: MatchNode; highlight?: 
 
   const preMatchTopPct100 = Math.round(preMatchTopPct * 100);
   const preMatchBotPct100 = 100 - preMatchTopPct100;
+  const { topGoals, botGoals, wentToPenalties } = match;
 
   return (
     <div className={`${s.matchCard} ${confirmed ? s.matchConfirmed : ""} ${highlight ? s.matchFinal : ""} ${isUpset ? s.matchUpset : ""}`}>
       <div className={`${s.team} ${topIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{top?.name ?? "TBD"}</span>
-        <span className={`${s.pct} ${isUpset && topIsWinner ? s.upsetPct : ""}`}>
-          {top
-            ? confirmed
-              ? isUpset && topIsWinner ? "UPSET" : `${preMatchTopPct100}%`
-              : `${topPct}%`
-            : ""}
+        <span className={s.scoreCell}>
+          {confirmed && top && topGoals !== null && (
+            <span className={s.goals}>{topGoals}{wentToPenalties && topIsWinner ? " (P)" : ""}</span>
+          )}
+          <span className={`${s.pct} ${isUpset && topIsWinner ? s.upsetPct : ""}`}>
+            {top
+              ? confirmed
+                ? isUpset && topIsWinner ? "UPSET" : `${preMatchTopPct100}%`
+                : `${topPct}%`
+              : ""}
+          </span>
         </span>
       </div>
       <div className={`${s.team} ${botIsWinner ? s.fav : ""}`}>
         <span className={s.teamName}>{bot?.name ?? "TBD"}</span>
-        <span className={`${s.pct} ${isUpset && botIsWinner ? s.upsetPct : ""}`}>
-          {bot
-            ? confirmed
-              ? isUpset && botIsWinner ? "UPSET" : `${preMatchBotPct100}%`
-              : `${botPct}%`
-            : ""}
+        <span className={s.scoreCell}>
+          {confirmed && bot && botGoals !== null && (
+            <span className={s.goals}>{botGoals}{wentToPenalties && botIsWinner ? " (P)" : ""}</span>
+          )}
+          <span className={`${s.pct} ${isUpset && botIsWinner ? s.upsetPct : ""}`}>
+            {bot
+              ? confirmed
+                ? isUpset && botIsWinner ? "UPSET" : `${preMatchBotPct100}%`
+                : `${botPct}%`
+              : ""}
+          </span>
         </span>
       </div>
       {!confirmed && top && bot && <span className={s.projectedTag}>Projected</span>}

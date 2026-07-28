@@ -9,6 +9,7 @@ type Props = {
 
 export function MegaNav({ activeTab, onNavigate }: Props) {
   const [openSport, setOpenSport] = useState<string | null>(null);
+  const [dropdownLeft, setDropdownLeft] = useState<number>(0);
   const rootRef = useRef<HTMLDivElement>(null);
 
   // Closes the open dropdown on any click outside the whole nav+dropdown wrapper.
@@ -30,7 +31,18 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
   // devices' own mouse-event synthesis and could open-then-close a
   // dropdown within a single tap before it was ever visible. Click/tap
   // is now the only thing that opens or closes it, on every device.
-  function openSportMenu(label: string) {
+  function openSportMenu(label: string, buttonEl: HTMLButtonElement) {
+    const wrapEl = rootRef.current;
+    if (wrapEl) {
+      const wrapRect = wrapEl.getBoundingClientRect();
+      const buttonRect = buttonEl.getBoundingClientRect();
+      const rawLeft = buttonRect.left - wrapRect.left;
+      // Clamp so the ~220px-wide panel never runs past the right edge of
+      // the viewport, however far right the clicked sport happens to sit
+      // (e.g. Soccer/Formula 1 at the end of a scrolled mobile nav row).
+      const maxLeft = wrapEl.clientWidth - 220;
+      setDropdownLeft(Math.max(0, Math.min(rawLeft, Math.max(0, maxLeft))));
+    }
     setOpenSport(label);
   }
 
@@ -77,7 +89,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
               className={active ? s.active : undefined}
               onClick={(e) => {
                 e.stopPropagation();
-                openSportMenu(sport.label);
+                openSportMenu(sport.label, e.currentTarget);
               }}
               aria-expanded={openSport === sport.label}
             >
@@ -92,7 +104,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
       </nav>
 
       {openConfig && (
-        <div className={s.dropdown} role="menu">
+        <div className={s.dropdown} role="menu" style={{ left: dropdownLeft }}>
           <div className={s.dropdownInner}>
             {openConfig.items?.map((item) => (
               <button

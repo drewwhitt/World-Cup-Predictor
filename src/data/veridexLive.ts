@@ -584,7 +584,7 @@ export function buildLiveBreakingText(liveTeams: Team[], stored: StoredResults):
   // so that line is dropped entirely rather than showing something false.
   const parts = isComplete
     ? [
-        `${leader.name} win the World Cup at ${leader.current.toFixed(1)}% final odds`,
+        `${leader.name} is the 2026 World Cup champion`,
         riser.delta > 0 ? `${riser.name} finished +${riser.delta.toFixed(1)}pp from pre-tournament baseline` : null,
         faller.delta < 0 ? `${faller.name} finished ${faller.delta.toFixed(1)}pp from pre-tournament baseline` : null,
         `${totalPlayed} results recorded · ${DEFAULT_SETTINGS.simulations.toLocaleString()} simulations refreshed`,

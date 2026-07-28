@@ -1,7 +1,6 @@
 .panel {
   margin: 50px 0 0;
   overflow: hidden;
-  border: 1.5px solid var(--ink);
   border-radius: 3px;
 }
 
@@ -9,9 +8,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  color: var(--paper);
-  background: var(--ink);
+  padding: 18px 26px;
+  color: var(--on-dark);
+  background: var(--navy);
 }
 
 .header div {
@@ -21,14 +20,15 @@
 }
 
 .header span {
-  font-family: var(--font-display);
-  font-size: 24px;
-  letter-spacing: 0.02em;
+  color: var(--gold);
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .header em,
 .header time {
-  color: rgba(244, 239, 227, 0.6);
+  color: var(--on-dark-soft, rgba(255, 255, 255, 0.55));
   font: 500 11px var(--font-mono);
   font-style: normal;
   letter-spacing: 0.1em;
@@ -111,7 +111,6 @@
 @media (max-width: 860px) {
   .panel { margin: 32px 0 0; }
   .header { padding: 12px 16px; }
-  .header span { font-size: 19px; }
   .grid { grid-template-columns: repeat(2, 1fr); }
   .cell { min-height: 0; padding: 16px 16px; }
   .cell strong { font-size: 21px; }

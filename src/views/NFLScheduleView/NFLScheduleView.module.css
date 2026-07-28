@@ -21,13 +21,30 @@
 }
 
 .period h2 {
-  margin: 0 0 14px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--hairline);
+  margin: 0;
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 18px;
+}
+
+.periodToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0 8px;
+  margin: 0 0 14px;
+  border: none;
+  border-bottom: 1px solid var(--hairline);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.chevron {
+  color: var(--ink-3);
+  font-size: 14px;
 }
 
 .list {

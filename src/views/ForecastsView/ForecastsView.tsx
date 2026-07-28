@@ -58,6 +58,8 @@ export function ForecastsView({ stored, teams }: Props) {
 
   const activeTeams = sortedTeams.filter((t) => !eliminatedTeams.has(t.code as TeamCode));
   const eliminatedTeamsList = sortedTeams.filter((t) => eliminatedTeams.has(t.code as TeamCode));
+  const championTeam = activeTeams.find((t) => t.isChampion);
+  const stillActiveTeams = activeTeams.filter((t) => !t.isChampion);
   const [selectedCode, setSelectedCode] = useState<TeamCode>(
     sortedTeams[0]?.code as TeamCode ?? "BRA"
   );
@@ -307,13 +309,22 @@ export function ForecastsView({ stored, teams }: Props) {
           value={selectedCode}
           onChange={(e) => setSelectedCode(e.target.value as TeamCode)}
         >
-          <optgroup label="Still in tournament">
-            {activeTeams.map((t) => (
-              <option key={t.code} value={t.code}>
-                {t.name} — {t.current.toFixed(1)}%
+          {championTeam && (
+            <optgroup label="Champion">
+              <option key={championTeam.code} value={championTeam.code}>
+                {championTeam.name} — Champion
               </option>
-            ))}
-          </optgroup>
+            </optgroup>
+          )}
+          {stillActiveTeams.length > 0 && (
+            <optgroup label="Still in tournament">
+              {stillActiveTeams.map((t) => (
+                <option key={t.code} value={t.code}>
+                  {t.name} — {t.current.toFixed(1)}%
+                </option>
+              ))}
+            </optgroup>
+          )}
           {eliminatedTeamsList.length > 0 && (
             <optgroup label="Eliminated">
               {eliminatedTeamsList.map((t) => (

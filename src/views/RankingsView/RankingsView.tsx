@@ -82,7 +82,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
   const [mode, setMode] = useState<ViewMode>("current");
   const [sortKey, setSortKey] = useState<SortKey>("elo");
   const [compareSortKey, setCompareSortKey] = useState<CompareSortKey>("baseline");
-  const [confFilter, setConfFilter] = useState<Confederation | "all">("all");
   const [hideEliminated, setHideEliminated] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const favorites = useFavorites();
@@ -120,8 +119,9 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
     return result;
   }, [stored, teams]);
 
+  const isComplete = rows.some((r) => r.isChampion);
+
   const filtered = rows
-    .filter((r) => confFilter === "all" || r.confederation === confFilter)
     .filter((r) => !hideEliminated || !r.eliminated)
     .filter((r) => !favoritesOnly || favorites.has(r.code));
 
@@ -156,8 +156,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
         return copy;
     }
   }, [filtered, compareSortKey]);
-
-  const confederations: Array<Confederation | "all"> = ["all", "UEFA", "CONMEBOL", "CAF", "AFC", "CONCACAF", "OFC"];
 
   function SortHeader({ label, k }: { label: string; k: SortKey }) {
     return (
@@ -211,7 +209,7 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
           className={mode === "current" ? s.filterActive : s.filterBtn}
           onClick={() => setMode("current")}
         >
-          Current
+          {isComplete ? "Final" : "Current"}
         </button>
         <button
           type="button"
@@ -220,19 +218,6 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
         >
           Pre → Post
         </button>
-      </div>
-
-      <div className={s.filters}>
-        {confederations.map((c) => (
-          <button
-            key={c}
-            type="button"
-            className={confFilter === c ? s.filterActive : s.filterBtn}
-            onClick={() => setConfFilter(c)}
-          >
-            {c === "all" ? "All" : c}
-          </button>
-        ))}
       </div>
 
       <div className={s.filters}>
@@ -305,7 +290,7 @@ export function RankingsView({ stored, teams }: { stored: StoredResults; teams: 
             <span className={s.colRank}>#</span>
             <span className={s.colTeam}><span className={s.headerLabel}>Team</span></span>
             <span className={s.colOdds}><CompareSortHeader label="Baseline Odds" k="baseline" /></span>
-            <span className={s.colOdds}><CompareSortHeader label="Current Odds" k="current" /></span>
+            <span className={s.colOdds}><CompareSortHeader label={isComplete ? "Final Odds" : "Current Odds"} k="current" /></span>
             <span className={s.colOddsDelta}><CompareSortHeader label="Odds Shift" k="oddsDelta" /></span>
             <span className={s.colFinalRound}><span className={s.headerLabel}>Final Round</span></span>
           </div>

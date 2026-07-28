@@ -10,8 +10,8 @@ export function MorningForecast({ forecast: mf }: Props) {
     <section className={s.panel}>
       <header className={s.header}>
         <div>
-          <span>The Morning Forecast</span>
-          <em>Daily Briefing</em>
+          <span>Today's Briefing</span>
+          <em>Updated continuously</em>
         </div>
         <time>{today}</time>
       </header>

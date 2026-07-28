@@ -1,0 +1,98 @@
+.page {
+  padding: 28px 0 64px;
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  color: var(--ink-3);
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+.groupsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.groupCard {
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.groupCardHeader {
+  padding: 10px 14px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+  font: 700 13px var(--font-sans);
+  color: var(--ink);
+}
+
+.groupTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupTableHead, .groupRow {
+  display: grid;
+  grid-template-columns: 1fr repeat(6, 24px);
+  align-items: center;
+  gap: 4px;
+  padding: 7px 14px;
+}
+
+.groupTableHead {
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.groupTableHead .groupTeamCol {
+  text-align: left;
+}
+
+.groupRow {
+  font: 500 12px var(--font-mono);
+  color: var(--ink-2);
+  text-align: center;
+  border-top: 1px solid var(--hairline);
+}
+
+.groupRowQualified {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.groupTeamCol {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px var(--font-sans);
+  text-align: left;
+  color: inherit;
+}
+
+.qTag {
+  font: 700 9px/1 var(--font-mono);
+  color: var(--positive);
+  border: 1px solid var(--positive);
+  border-radius: 2px;
+  padding: 1px 4px;
+}

@@ -38,6 +38,7 @@ export function HomeView({
   // no separate "most notable" logic to keep in sync. The rest of the
   // headline grid below shows what's left so nothing is duplicated.
   const [alertHeadline, ...restHeadlines] = headlines;
+  const isComplete = teams.some((t) => t.isChampion);
 
   return (
     <>
@@ -45,7 +46,9 @@ export function HomeView({
 
       {onNavigate && <NflPreview onNavigate={onNavigate} />}
 
-      <QuickStrip teams={teams} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
+      {!isComplete && (
+        <QuickStrip teams={teams} onNavigate={onNavigate ? () => onNavigate("rankings") : undefined} />
+      )}
       <FavoritesStrip teams={teams} teamNames={TEAM_NAMES} />
 
       <HighestConfidence stored={stored} />
@@ -59,10 +62,6 @@ export function HomeView({
         </div>
       </section>
 
-      <section className={s.latestHeader}>
-        <h2>Today's Briefing</h2>
-        <span>Updated continuously</span>
-      </section>
       <MorningForecast forecast={morning} />
 
       {restHeadlines.length > 0 && (
