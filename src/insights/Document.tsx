@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { navItems } from "../data/worldCup";
+import { SPORTS_NAV, getSportLandingTab } from "../data/worldCup";
 
 const SITE_NAME = "Veridex";
 const SITE_URL = "https://world-cup-predictor-inky-two.vercel.app"; // update if/when you move to a custom domain
@@ -171,6 +171,12 @@ const INSIGHTS_CSS = `
     height: 3px;
     content: "";
     background: var(--ink);
+  }
+  .nav-disabled {
+    color: var(--ink-4);
+    font: 500 14px/1 "IBM Plex Sans", system-ui, sans-serif;
+    cursor: not-allowed;
+    white-space: nowrap;
   }
   .tagline {
     margin-top: 9px;
@@ -598,7 +604,8 @@ const INSIGHTS_CSS = `
     .nav::-webkit-scrollbar {
       display: none;
     }
-    .nav a {
+    .nav a,
+    .nav-disabled {
       font-size: 13px;
     }
   }
@@ -679,15 +686,25 @@ export function Document({
             </div>
           </div>
           <nav className="nav">
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={item.href ?? `/#${item.id}`}
-                className={item.id === "insights" ? "nav-current" : undefined}
-              >
-                {item.label}
-              </a>
-            ))}
+            <a href="/#home">Home</a>
+            {SPORTS_NAV.map((sport) => {
+              const landingTab = getSportLandingTab(sport);
+              if (!landingTab) {
+                return (
+                  <span key={sport.label} className="nav-disabled" title={`${sport.label} — coming soon`}>
+                    {sport.label}
+                  </span>
+                );
+              }
+              return (
+                <a key={sport.label} href={`/#${landingTab}`}>
+                  {sport.label}
+                </a>
+              );
+            })}
+            <a href="/insights/" className="nav-current">
+              Insights
+            </a>
           </nav>
         </header>
 

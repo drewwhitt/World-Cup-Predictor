@@ -97,25 +97,6 @@ export type LabStep = {
   description: string;
 };
 
-export const navItems: Array<{ id: TabId; label: string; href?: string }> = [
-  { id: "home", label: "Home" },
-  { id: "forecasts", label: "Forecasts" },
-  { id: "rankings", label: "Rankings" },
-  { id: "bracket", label: "Standings" },
-  { id: "insights", label: "Insights", href: "/insights/" },
-];
-
-// Kept only for src/insights/Document.tsx — the standalone SEO build, not
-// part of the live app. The live app's nav is now MegaNav.tsx, driven by
-// SPORTS_NAV below, not these two flat lists.
-export const nflNavItems: Array<{ id: TabId; label: string; href?: string }> = [
-  { id: "home", label: "Home" },
-  { id: "nflSchedule", label: "Schedule" },
-  { id: "nflRankings", label: "Rankings" },
-  { id: "nflForecasts", label: "Forecasts" },
-  { id: "insights", label: "Insights", href: "/insights/" },
-];
-
 export interface LeagueConfig {
   label: string;
   items?: Array<{ id: TabId; label: string }>;
@@ -126,6 +107,16 @@ export interface SportNavConfig {
   items?: Array<{ id: TabId; label: string }>;
   /** Present only for category-level entries (Soccer) that group several leagues under one dropdown instead of being a single league themselves. */
   leagues?: LeagueConfig[];
+}
+
+export function getSportLandingTab(sport: SportNavConfig): TabId | undefined {
+  if (sport.items?.length) return sport.items[0].id;
+  if (sport.leagues) {
+    for (const league of sport.leagues) {
+      if (league.items?.length) return league.items[0].id;
+    }
+  }
+  return undefined;
 }
 
 export const SPORTS_NAV: SportNavConfig[] = [

@@ -25,14 +25,16 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
   // Deliberately simple: clicking a sport's label ALWAYS just opens its
   // dropdown (never navigates, never closes it back down) — the only
   // ways it closes are picking an actual item inside it, or tapping
-  // outside. An earlier version tried to make the label do double duty
-  // (navigate on a second click, open on the first) based on whether
-  // hover had already opened it, but mobile browsers are inconsistent
-  // about whether/when they fire a synthetic hover before a tap's click
-  // — sometimes collapsing that two-step logic into one and skipping
-  // straight past the menu, other times not. Making the click idempotent
-  // (always ends in "open," regardless of prior state or event order)
-  // sidesteps that inconsistency entirely rather than trying to predict it.
+  // outside. This used to ALSO open on mouseenter/mouseleave as a desktop
+  // hover convenience, but real Safari/iOS touch devices fire mouse
+  // events before a tap's click in an order that's genuinely different
+  // from Chrome's (which is all I can test against in this sandbox) —
+  // in practice that meant the dropdown could open and close again
+  // within the same tap, before it was ever visible. Click/tap is now
+  // the ONLY thing that opens or closes it, on every device, so there's
+  // no hover-timing race left to get wrong. Costs desktop users one
+  // extra click versus hovering; that's a fine trade for "actually works
+  // on a phone."
   function openSportMenu(label: string) {
     setOpenSport(label);
   }
@@ -66,16 +68,14 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
         }
 
         return (
-          <div
-            key={sport.label}
-            className={s.item}
-            onMouseEnter={() => setOpenSport(sport.label)}
-            onMouseLeave={() => setOpenSport((cur) => (cur === sport.label ? null : cur))}
-          >
+          <div key={sport.label} className={s.item}>
             <button
               type="button"
               className={active ? s.active : undefined}
-              onClick={() => openSportMenu(sport.label)}
+              onClick={(e) => {
+                e.stopPropagation();
+                openSportMenu(sport.label);
+              }}
               aria-expanded={isOpen}
             >
               {sport.label}
