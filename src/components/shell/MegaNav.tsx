@@ -11,10 +11,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
   const [openSport, setOpenSport] = useState<string | null>(null);
   const rootRef = useRef<HTMLElement>(null);
 
-  // Closes the open dropdown on any click outside the nav — needed
-  // because the dropdown can be opened by a tap (see handleSportClick),
-  // not just hover, so it needs an explicit close path on touch devices
-  // where there's no "mouse leave" to fall back on.
+  // Closes the open dropdown on any click outside the nav.
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
@@ -25,25 +22,19 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  function handleSportClick(e: React.MouseEvent, label: string, landingTab?: TabId) {
-    // First activation (no prior hover — i.e. touch) opens the dropdown
-    // instead of navigating immediately, so a tap can reveal the
-    // sub-items rather than jumping straight to a landing tab blind. On
-    // desktop, onMouseEnter already set openSport before the click
-    // lands, so this branch is skipped and it navigates right away.
-    if (openSport !== label) {
-      e.preventDefault();
-      setOpenSport(label);
-      return;
-    }
-    if (landingTab) {
-      onNavigate?.(landingTab);
-      setOpenSport(null);
-    } else {
-      // Pure category (e.g. Soccer) with no landing page of its own —
-      // second click just closes what the first click opened.
-      setOpenSport(null);
-    }
+  // Deliberately simple: clicking a sport's label ALWAYS just opens its
+  // dropdown (never navigates, never closes it back down) — the only
+  // ways it closes are picking an actual item inside it, or tapping
+  // outside. An earlier version tried to make the label do double duty
+  // (navigate on a second click, open on the first) based on whether
+  // hover had already opened it, but mobile browsers are inconsistent
+  // about whether/when they fire a synthetic hover before a tap's click
+  // — sometimes collapsing that two-step logic into one and skipping
+  // straight past the menu, other times not. Making the click idempotent
+  // (always ends in "open," regardless of prior state or event order)
+  // sidesteps that inconsistency entirely rather than trying to predict it.
+  function openSportMenu(label: string) {
+    setOpenSport(label);
   }
 
   function isSportActive(config: SportNavConfig): boolean {
@@ -84,7 +75,7 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
             <button
               type="button"
               className={active ? s.active : undefined}
-              onClick={(e) => handleSportClick(e, sport.label, sport.landingTab)}
+              onClick={() => openSportMenu(sport.label)}
               aria-expanded={isOpen}
             >
               {sport.label}
@@ -92,45 +83,45 @@ export function MegaNav({ activeTab, onNavigate }: Props) {
             {isOpen && (
               <div className={s.dropdown} role="menu">
                 <div className={s.dropdownInner}>
-                {sport.items?.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="menuitem"
-                    className={item.id === activeTab ? s.dropdownActive : undefined}
-                    onClick={() => {
-                      onNavigate?.(item.id);
-                      setOpenSport(null);
-                    }}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-                {sport.leagues?.map((league) => (
-                  <div className={s.leagueGroup} key={league.label}>
-                    <div className={league.items?.some((i) => i.id === activeTab) ? s.leagueHeaderActive : s.leagueHeader}>
-                      {league.label}
+                  {sport.items?.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="menuitem"
+                      className={item.id === activeTab ? s.dropdownActive : undefined}
+                      onClick={() => {
+                        onNavigate?.(item.id);
+                        setOpenSport(null);
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                  {sport.leagues?.map((league) => (
+                    <div className={s.leagueGroup} key={league.label}>
+                      <div className={league.items?.some((i) => i.id === activeTab) ? s.leagueHeaderActive : s.leagueHeader}>
+                        {league.label}
+                      </div>
+                      {league.items ? (
+                        league.items.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            role="menuitem"
+                            className={item.id === activeTab ? `${s.leagueItem} ${s.dropdownActive}` : s.leagueItem}
+                            onClick={() => {
+                              onNavigate?.(item.id);
+                              setOpenSport(null);
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        ))
+                      ) : (
+                        <div className={s.leagueSoon}>Coming soon</div>
+                      )}
                     </div>
-                    {league.items ? (
-                      league.items.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          role="menuitem"
-                          className={item.id === activeTab ? `${s.leagueItem} ${s.dropdownActive}` : s.leagueItem}
-                          onClick={() => {
-                            onNavigate?.(item.id);
-                            setOpenSport(null);
-                          }}
-                        >
-                          {item.label}
-                        </button>
-                      ))
-                    ) : (
-                      <div className={s.leagueSoon}>Coming soon</div>
-                    )}
-                  </div>
-                ))}
+                  ))}
                 </div>
               </div>
             )}

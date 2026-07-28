@@ -32,11 +32,11 @@ export function NFLForecastsView() {
               <span className={s.rank}>{i + 1}</span>
               {fullTeamName(f.code)}
             </span>
-            <span className={s.num}>{f.projectedWins}</span>
-            <span className={s.num}>{f.playoffPct}%</span>
-            <span className={s.num}>{f.divisionPct}%</span>
-            <span className={s.num}>{f.conferencePct}%</span>
-            <span className={s.numStrong}>{f.superBowlPct}%</span>
+            <span className={s.num} data-label="Proj. Wins">{f.projectedWins}</span>
+            <span className={s.num} data-label="Playoffs">{f.playoffPct}%</span>
+            <span className={s.num} data-label="Division">{f.divisionPct}%</span>
+            <span className={s.num} data-label="Conf. Champ">{f.conferencePct}%</span>
+            <span className={s.numStrong} data-label="Super Bowl">{f.superBowlPct}%</span>
           </div>
         ))}
       </section>

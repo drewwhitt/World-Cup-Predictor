@@ -123,8 +123,6 @@ export interface LeagueConfig {
 
 export interface SportNavConfig {
   label: string;
-  /** Where clicking the sport's own label (not a dropdown item) goes. Omit for sports with no real data yet, or for a pure category like Soccer that has no single landing page of its own. */
-  landingTab?: TabId;
   items?: Array<{ id: TabId; label: string }>;
   /** Present only for category-level entries (Soccer) that group several leagues under one dropdown instead of being a single league themselves. */
   leagues?: LeagueConfig[];
@@ -133,7 +131,6 @@ export interface SportNavConfig {
 export const SPORTS_NAV: SportNavConfig[] = [
   {
     label: "NFL",
-    landingTab: "nflForecasts",
     items: [
       { id: "nflSchedule", label: "Schedule" },
       { id: "nflRankings", label: "Rankings" },
