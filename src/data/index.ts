@@ -1,4 +1,4 @@
-import rawFixtures from "./worldcup-fixtures.json";
+import rawFixtures from "./worldcup-fixtures.json" with { type: "json" };
 import { buildGroupFixtures, buildKnockoutFixtures } from "../lib/fixtures.js";
 import { K_FACTOR, HOST_ADVANTAGE } from "../lib/elo.js";
 

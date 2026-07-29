@@ -1,4 +1,4 @@
-import baselineData from "./baseline.json";
+import baselineData from "./baseline.json" with { type: "json" };
 import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "./index.js";
 import { computeElosIncludingKnockouts, runSimulation } from "../lib/simulate.js";
 import { TEAM_BY_CODE } from "../lib/teams.js";
