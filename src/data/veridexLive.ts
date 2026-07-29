@@ -1,11 +1,11 @@
 import baselineData from "./baseline.json";
-import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from ".";
-import { computeElosIncludingKnockouts, runSimulation } from "../lib/simulate";
-import { TEAM_BY_CODE } from "../lib/teams";
-import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers";
-import { getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE } from "../lib/bracketTree";
-import { toAdvancementProbabilities } from "../lib/elo";
-import { computeAccuracy, BACKTESTED_BRIER } from "../lib/accuracy";
+import { DEFAULT_SETTINGS, GROUP_MATCHES, KNOCKOUT_MATCHES } from "./index.js";
+import { computeElosIncludingKnockouts, runSimulation } from "../lib/simulate.js";
+import { TEAM_BY_CODE } from "../lib/teams.js";
+import { computeDrivers, getUpcomingKnockoutOdds } from "../lib/drivers.js";
+import { getTeamKnockoutStatus, resolveKnockoutMatch, KNOCKOUT_STRUCTURE } from "../lib/bracketTree.js";
+import { toAdvancementProbabilities } from "../lib/elo.js";
+import { computeAccuracy, BACKTESTED_BRIER } from "../lib/accuracy.js";
 import type { KnockoutMatchupProbability, StoredResults, TeamCode, TeamProbabilities } from "../lib/types";
 import type { Headline, MorningForecast, Team } from "./worldCup";
 

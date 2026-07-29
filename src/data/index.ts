@@ -1,6 +1,6 @@
 import rawFixtures from "./worldcup-fixtures.json";
-import { buildGroupFixtures, buildKnockoutFixtures } from "../lib/fixtures";
-import { K_FACTOR, HOST_ADVANTAGE } from "../lib/elo";
+import { buildGroupFixtures, buildKnockoutFixtures } from "../lib/fixtures.js";
+import { K_FACTOR, HOST_ADVANTAGE } from "../lib/elo.js";
 
 export const GROUP_MATCHES = buildGroupFixtures(rawFixtures);
 export const KNOCKOUT_MATCHES = buildKnockoutFixtures(rawFixtures);

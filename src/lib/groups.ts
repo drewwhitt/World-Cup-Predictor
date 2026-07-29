@@ -1,4 +1,4 @@
-import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "./teams";
+import { TEAM_BY_CODE, TEAMS_BY_GROUP } from "./teams.js";
 import type { GroupLetter, GroupMatch, TeamCode } from "./types";
 
 export interface StandingRow {

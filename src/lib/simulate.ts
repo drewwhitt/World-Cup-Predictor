@@ -1,14 +1,14 @@
-import { updateElo, sampleMatchOutcome, sampleKnockoutWinner, matchOutcomeProbabilities } from "./elo";
+import { updateElo, sampleMatchOutcome, sampleKnockoutWinner, matchOutcomeProbabilities } from "./elo.js";
 import {
   computeStandings,
   summarizeGroups,
   rankThirdPlaceTeams,
   qualifyingThirdGroups,
   isThirdPlaceQualified,
-} from "./groups";
-import { assignThirdPlaceSlots, simulateKnockout } from "./bracket";
-import { TEAMS, TEAM_BY_CODE } from "./teams";
-import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch, R32_MATCHUPS, feedersForRound } from "./bracketTree";
+} from "./groups.js";
+import { assignThirdPlaceSlots, simulateKnockout } from "./bracket.js";
+import { TEAMS, TEAM_BY_CODE } from "./teams.js";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch, R32_MATCHUPS, feedersForRound } from "./bracketTree.js";
 import type {
   GroupLetter,
   GroupMatch,

@@ -8,11 +8,11 @@
  * This is the core of the "driver" concept — the thing that makes
  * Veridex feel like analysis rather than just a scoreboard.
  */
-import { runSimulation, computeElosIncludingKnockouts } from "./simulate";
-import { GROUP_MATCHES, DEFAULT_SETTINGS, KNOCKOUT_MATCHES } from "../data";
-import { toAdvancementProbabilities } from "./elo";
-import { TEAM_BY_CODE } from "./teams";
-import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree";
+import { runSimulation, computeElosIncludingKnockouts } from "./simulate.js";
+import { GROUP_MATCHES, DEFAULT_SETTINGS, KNOCKOUT_MATCHES } from "../data/index.js";
+import { toAdvancementProbabilities } from "./elo.js";
+import { TEAM_BY_CODE } from "./teams.js";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree.js";
 import type { StoredResults, TeamCode } from "./types";
 
 function pct(v: number) { return Number((v * 100).toFixed(1)); }

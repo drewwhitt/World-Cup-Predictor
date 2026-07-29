@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { buildLiveTeams, buildLiveMorningForecast } from "../src/data/veridexLive";
+import { buildLiveTeams, buildLiveMorningForecast } from "../src/data/veridexLive.js";
 import type { StoredResults } from "../src/lib/types";
 
 /**

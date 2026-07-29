@@ -1,8 +1,8 @@
-import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../data";
-import { buildInitialElos, computeElosFromResults } from "./simulate";
-import { matchOutcomeProbabilities, toAdvancementProbabilities, updateElo } from "./elo";
-import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree";
-import { TEAM_BY_CODE } from "./teams";
+import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../data/index.js";
+import { buildInitialElos, computeElosFromResults } from "./simulate.js";
+import { matchOutcomeProbabilities, toAdvancementProbabilities, updateElo } from "./elo.js";
+import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch } from "./bracketTree.js";
+import { TEAM_BY_CODE } from "./teams.js";
 import type { StoredResults, TeamCode } from "./types";
 
 export interface AccuracyResult {
