@@ -174,6 +174,31 @@ export default async function handler(req: MinimalRequest, res: MinimalResponse)
       return;
     }
 
+    if (action === "fantasy_rankings") {
+      const { season, date, payload } = body as {
+        season?: number;
+        date?: string;
+        payload?: Record<string, unknown>;
+      };
+
+      if (season === undefined || !payload) {
+        res.status(400).json({ error: "season and payload are required" });
+        return;
+      }
+
+      const snapshotDate = date ?? new Date().toISOString().slice(0, 10);
+
+      const { error } = await supabase
+        .from("fantasy_rankings_snapshots")
+        .upsert(
+          { season, snapshot_date: snapshotDate, payload },
+          { onConflict: "season,snapshot_date" },
+        );
+      if (error) throw error;
+      res.status(200).json({ ok: true });
+      return;
+    }
+
     res.status(400).json({ error: "Unknown action" });
   } catch (err) {
     console.error("save-result error:", err);

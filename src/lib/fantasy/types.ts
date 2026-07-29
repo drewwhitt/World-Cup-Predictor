@@ -53,3 +53,18 @@ export interface PlayerSeasonStat {
 export interface PlayerVBD extends PlayerSeasonStat {
   vbd: number;
 }
+
+/** One player's row in a consensus ranking snapshot — the output of the admin import/name-matching step, not raw per-platform data (that's kept in platformRanks for transparency but isn't re-derived on every read). */
+export interface FantasyRankingEntry {
+  name: string;
+  position: Position;
+  team?: string;
+  adp: number;
+  platformRanks?: number[];
+}
+
+export interface FantasyRankingsPayload {
+  entries: FantasyRankingEntry[];
+  /** PPR only for now — see MODEL_HISTORY.md; format flexibility (half-PPR, superflex, dynasty) is a deferred decision. */
+  scoringFormat: "PPR";
+}
