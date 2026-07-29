@@ -54,126 +54,57 @@
   border-color: var(--ink);
 }
 
-.tableWrap {
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  overflow: hidden;
-  background: var(--surface);
+/* ── Flat ranked list, mirroring NFL Power Rankings' clean layout ── */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.tableHeader, .row {
-  display: grid;
-  grid-template-columns: 40px 1fr 90px 110px 150px 130px;
+.list li {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-}
-
-.tableHeader {
-  background: var(--paper);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.row {
-  border-bottom: 1px solid var(--hairline);
-}
-
-.row:last-child {
-  border-bottom: none;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hairline-2);
+  font: 500 14px var(--font-sans);
 }
 
 .rowEliminated {
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
-.sortBtn, .sortActive {
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  font: 600 10px/1 var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.sortBtn {
+.rank {
+  width: 22px;
   color: var(--ink-3);
+  font: 600 11px var(--font-mono);
 }
 
-.headerLabel {
-  font: 600 10px/1 var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
-
-.sortActive {
+.team {
+  flex: 1;
   color: var(--ink);
+  font-weight: 600;
 }
 
-.colRank {
-  font: 600 13px var(--font-mono);
+.confederation {
+  width: 84px;
   color: var(--ink-3);
-}
-
-.colTeam {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.teamNameRow {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.teamName {
-  font: 700 14px var(--font-sans);
-  color: var(--ink);
-}
-
-.groupTag {
   font: 500 10px var(--font-mono);
-  color: var(--ink-3);
-}
-
-.colElo {
-  font: 700 15px var(--font-mono);
-  color: var(--ink);
-}
-
-.colDelta, .colOffset {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font: 600 13px var(--font-mono);
-}
-
-.confBadge {
-  font: 600 10px/1 var(--font-mono);
   letter-spacing: 0.04em;
-  color: var(--ink-3);
-  background: var(--paper);
-  border: 1px solid var(--hairline);
-  border-radius: 3px;
-  padding: 2px 6px;
+  text-transform: uppercase;
 }
 
-.deltaUp {
-  color: var(--positive);
+.rating {
+  color: var(--ink-2);
+  font: 500 13px var(--font-mono);
+  min-width: 40px;
+  text-align: right;
 }
 
-.deltaDown {
-  color: var(--negative);
-}
-
-.deltaFlat {
-  color: var(--ink-3);
-}
-
-.colStatus {
+.status {
+  min-width: 110px;
   display: flex;
+  justify-content: flex-end;
 }
 
 .aliveTag {
@@ -197,105 +128,11 @@
   color: var(--gold);
 }
 
-.compareHeader, .compareRow {
-  display: grid;
-  grid-template-columns: 40px 1fr 110px 110px 110px 150px;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-}
-
-.compareHeader {
-  background: var(--paper);
-  border-bottom: 1px solid var(--hairline);
-}
-
-.compareRow {
-  border-bottom: 1px solid var(--hairline);
-}
-
-.compareRow:last-child {
-  border-bottom: none;
-}
-
-.colOdds {
-  font: 700 14px var(--font-mono);
-  color: var(--ink);
-}
-
-.colOddsDelta {
-  display: flex;
-  align-items: center;
-  font: 600 13px var(--font-mono);
-}
-
-.colFinalRound {
-  display: flex;
-}
-
-.accuracyPanel {
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  background: var(--surface);
-  padding: 16px 20px;
-  margin-bottom: 20px;
-}
-
-.accuracyHeader {
-  font: 600 11px/1 var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-bottom: 14px;
-}
-
-.accuracyGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.accuracyStat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.accuracyValue {
-  font: 700 24px var(--font-mono);
-  color: var(--ink);
-}
-
-.accuracyLabel {
-  font: 500 11px var(--font-sans);
-  color: var(--ink-3);
-  line-height: 1.3;
-}
-
-.accuracyNote {
-  font: 500 12px var(--font-sans);
-  color: var(--ink-3);
-  margin: 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--hairline);
-}
-
-.accuracyNote a {
-  color: var(--ink-2);
-}
-
-@media (max-width: 720px) {
-  .tableHeader, .row {
-    grid-template-columns: 32px 1fr 70px 90px;
-  }
-  .colOffset, .colStatus {
+@media (max-width: 640px) {
+  .confederation {
     display: none;
   }
-  .compareHeader, .compareRow {
-    grid-template-columns: 32px 1fr 80px 80px;
-  }
-  .colOddsDelta, .colFinalRound {
-    display: none;
+  .status {
+    min-width: 84px;
   }
 }

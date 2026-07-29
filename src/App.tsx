@@ -24,6 +24,7 @@ import { HomeView } from "./views/HomeView/HomeView";
 const BracketView = lazy(() => import("./views/BracketView/BracketView").then((m) => ({ default: m.BracketView })));
 const ForecastsView = lazy(() => import("./views/ForecastsView/ForecastsView").then((m) => ({ default: m.ForecastsView })));
 const RankingsView = lazy(() => import("./views/RankingsView/RankingsView").then((m) => ({ default: m.RankingsView })));
+const AnalyticsView = lazy(() => import("./views/AnalyticsView/AnalyticsView").then((m) => ({ default: m.AnalyticsView })));
 const StandingsView = lazy(() => import("./views/StandingsView/StandingsView").then((m) => ({ default: m.StandingsView })));
 const NFLScheduleView = lazy(() => import("./views/NFLScheduleView/NFLScheduleView").then((m) => ({ default: m.NFLScheduleView })));
 const NFLRankingsView = lazy(() => import("./views/NFLRankingsView/NFLRankingsView").then((m) => ({ default: m.NFLRankingsView })));
@@ -36,7 +37,7 @@ function TabLoading() {
 
 const edition: Edition = "wire";
 const STORAGE_KEY = "worldcup-predictor-results";
-const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "standings", "bracket", "nflSchedule", "nflRankings", "nflStandings", "nflForecasts"];
+const VALID_TABS: TabId[] = ["home", "forecasts", "rankings", "analytics", "standings", "bracket", "nflSchedule", "nflRankings", "nflStandings", "nflForecasts"];
 
 function getTabFromHash(): TabId {
   const hash = window.location.hash.slice(1) as TabId;
@@ -152,7 +153,9 @@ export default function App() {
       case "standings":
         return <StandingsView stored={stored} />;
       case "rankings":
-        return <RankingsView stored={stored} teams={liveTeams} />;
+        return <RankingsView stored={stored} />;
+      case "analytics":
+        return <AnalyticsView stored={stored} teams={liveTeams} />;
       case "nflSchedule":
         return <NFLScheduleView />;
       case "nflRankings":
