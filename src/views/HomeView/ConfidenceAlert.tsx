@@ -34,7 +34,7 @@ export function ConfidenceAlert({ headlines }: Props) {
 
   return (
     <aside className={s.card}>
-      <Carousel items={slides} intervalMs={8000} />
+      <Carousel items={slides} intervalMs={6500} />
     </aside>
   );
 }

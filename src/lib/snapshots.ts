@@ -7,7 +7,7 @@
  * same table with its own `sport` key, so adding NFL/NBA later requires no
  * schema change — just a new sport string and a call to recordSnapshot().
  */
-import { supabase } from "./supabase";
+import { supabase, callSaveResultApi } from "./supabase";
 
 export type SportKey = "world_cup" | "nfl" | "nba" | "nhl";
 
@@ -26,6 +26,12 @@ export interface Mover {
  * Call this once per day per sport — e.g. after results are entered,
  * or on a scheduled basis. Upserts, so calling it multiple times in
  * one day is safe (overwrites, doesn't duplicate).
+ *
+ * Goes through the same secure /api/save-result proxy as match result
+ * writes (service-role key, admin-secret gated) rather than writing
+ * directly with the public anon key — RLS locks down direct writes to
+ * this table the same way it does match_results, so a client-side
+ * upsert here would be rejected.
  */
 export async function recordSnapshot(
   sport: SportKey,
@@ -33,20 +39,13 @@ export async function recordSnapshot(
   metric = "champion_pct",
   date: string = new Date().toISOString().slice(0, 10), // YYYY-MM-DD
 ): Promise<void> {
-  const rows = teamValues.map((t) => ({
+  await callSaveResultApi({
+    action: "snapshot",
     sport,
-    team_code: t.code,
-    snapshot_date: date,
+    teamValues,
     metric,
-    value: t.value,
-    reason: t.reason ?? null,
-  }));
-
-  const { error } = await supabase
-    .from("probability_snapshots")
-    .upsert(rows, { onConflict: "sport,team_code,snapshot_date,metric" });
-
-  if (error) throw error;
+    date,
+  });
 }
 
 /**

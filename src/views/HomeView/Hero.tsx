@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { Team } from "../../data/worldCup";
+import type { Headline, Team } from "../../data/worldCup";
 import { computeElosIncludingKnockouts } from "../../lib/simulate";
 import { GROUP_MATCHES, DEFAULT_SETTINGS } from "../../data";
 import type { StoredResults, TeamCode } from "../../lib/types";
@@ -9,6 +9,12 @@ type Props = {
   teams: Team[];
   playedCount: number;
   stored?: StoredResults;
+  /** Top story from the live headline pool — same source Confidence Alert
+   *  and Latest from the Model read from, so the Hero always leads with
+   *  whatever's actually most newsworthy right now rather than a
+   *  separately-authored "current favorite" blurb. Undefined only
+   *  pre-tournament, before buildLiveHeadlines has anything to say. */
+  headline?: Headline;
 };
 
 function ordinal(n: number): string {
@@ -17,15 +23,15 @@ function ordinal(n: number): string {
   return n + (suffixes[(v - 20) % 10] ?? suffixes[v] ?? suffixes[0]);
 }
 
-export function Hero({ teams, playedCount, stored }: Props) {
+export function Hero({ teams, playedCount, stored, headline }: Props) {
   const favorite = [...teams].sort((a, b) => b.current - a.current)[0];
   const delta = Number((favorite.current - favorite.baseline).toFixed(1));
   const confidence = Math.round(Math.min(96, Math.max(62, 76 + favorite.current / 2)));
 
   // Pre-tournament rank by baseline title odds — separate from powerRank
   // below (which is post-tournament Elo rank). This is what lets the
-  // completed-tournament headline say something meaningful about whether
-  // the model's preseason pick actually came through.
+  // completed-tournament fallback headline say something meaningful about
+  // whether the model's preseason pick actually came through.
   const baselineRank = useMemo(() => {
     const ranked = [...teams].sort((a, b) => b.baseline - a.baseline);
     return ranked.findIndex((t) => t.code === favorite.code) + 1;
@@ -33,12 +39,17 @@ export function Hero({ teams, playedCount, stored }: Props) {
 
   let heroTitle: string;
   let heroSub: string;
-  if (favorite.isChampion) {
+  if (headline) {
+    heroTitle = headline.title;
+    heroSub = headline.summary;
+  } else if (favorite.isChampion) {
     heroTitle = `${favorite.name} Wins the World Cup`;
     heroSub = baselineRank === 1
       ? `Veridex had ${favorite.name} at ${favorite.baseline.toFixed(1)}% to win it all before a ball was kicked — the model's preseason favorite came through.`
       : `Veridex had ${favorite.name} at ${favorite.baseline.toFixed(1)}% to win it all before a ball was kicked, the ${ordinal(baselineRank)} favorite in the field — not the pick, but well within reach.`;
   } else {
+    // Pre-tournament only — buildLiveHeadlines has nothing to say until
+    // the first real result comes in, so this is the sole remaining case.
     heroTitle = `${favorite.name} Leads World Cup Forecast After Latest Results`;
     heroSub = `The Veridex model ran ${playedCount > 0 ? "10,000" : "pre-tournament"} simulations using every real result recorded so far and now rates ${favorite.name} the tournament's most likely champion.`;
   }

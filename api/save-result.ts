@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Secure write proxy for match results.
+ * Secure write proxy for match results and probability snapshots.
  *
  * Why this exists: the browser's Supabase key (VITE_SUPABASE_ANON_KEY) is
  * necessarily public — it's baked into the JS bundle every visitor
@@ -111,6 +111,64 @@ export default async function handler(req: MinimalRequest, res: MinimalResponse)
         penalty_winner: penaltyWinner ?? null,
         updated_at: new Date().toISOString(),
       });
+      if (error) throw error;
+      res.status(200).json({ ok: true });
+      return;
+    }
+
+    if (action === "snapshot") {
+      const { sport, teamValues, metric, date } = body as {
+        sport?: string;
+        teamValues?: Array<{ code?: string; value?: number; reason?: string }>;
+        metric?: string;
+        date?: string;
+      };
+
+      if (!sport || !Array.isArray(teamValues) || teamValues.length === 0) {
+        res.status(400).json({ error: "sport and a non-empty teamValues array are required" });
+        return;
+      }
+
+      const snapshotDate = date ?? new Date().toISOString().slice(0, 10);
+      const snapshotMetric = metric ?? "champion_pct";
+
+      const rows = teamValues.map((t) => ({
+        sport,
+        team_code: t.code,
+        snapshot_date: snapshotDate,
+        metric: snapshotMetric,
+        value: t.value,
+        reason: t.reason ?? null,
+      }));
+
+      const { error } = await supabase
+        .from("probability_snapshots")
+        .upsert(rows, { onConflict: "sport,team_code,snapshot_date,metric" });
+      if (error) throw error;
+      res.status(200).json({ ok: true });
+      return;
+    }
+
+    if (action === "briefing") {
+      const { sport, date, payload } = body as {
+        sport?: string;
+        date?: string;
+        payload?: Record<string, unknown>;
+      };
+
+      if (!sport || !payload) {
+        res.status(400).json({ error: "sport and payload are required" });
+        return;
+      }
+
+      const briefingDate = date ?? new Date().toISOString().slice(0, 10);
+
+      const { error } = await supabase
+        .from("daily_briefings")
+        .upsert(
+          { sport, briefing_date: briefingDate, payload },
+          { onConflict: "sport,briefing_date" },
+        );
       if (error) throw error;
       res.status(200).json({ ok: true });
       return;

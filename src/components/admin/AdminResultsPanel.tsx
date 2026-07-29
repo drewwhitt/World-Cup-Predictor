@@ -2,15 +2,21 @@ import { useMemo, useState } from "react";
 import { GROUP_MATCHES } from "../../data";
 import { saveOfficialResult } from "../../lib/supabase";
 import { recordSnapshot } from "../../lib/snapshots";
-import { buildLiveTeams } from "../../data/veridexLive";
+import { saveDailyBriefing } from "../../lib/dailyBriefing";
+import { buildLiveTeams, buildLiveMorningForecast } from "../../data/veridexLive";
 import { TEAM_BY_CODE } from "../../lib/teams";
 import { KNOCKOUT_STRUCTURE, resolveKnockoutMatch, type KnockoutRound } from "../../lib/bracketTree";
 import type { StoredResults, TeamCode } from "../../lib/types";
+import type { MorningForecast } from "../../data/worldCup";
 import s from "./AdminResultsPanel.module.css";
 
 type Props = {
   stored: StoredResults;
   onChange: (next: StoredResults) => void;
+  /** Called with the freshly-saved briefing right after a successful
+   *  snapshot, so the live page can adopt it immediately rather than
+   *  waiting on a separate refetch. */
+  onBriefingSaved?: (briefing: { date: string; payload: MorningForecast }) => void;
 };
 
 const ROUND_ORDER: KnockoutRound[] = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Final"];
@@ -24,7 +30,7 @@ function teamLabel(code: TeamCode | null): string {
   return code ? TEAM_BY_CODE[code]?.name ?? code : "TBD";
 }
 
-export function AdminResultsPanel({ stored, onChange }: Props) {
+export function AdminResultsPanel({ stored, onChange, onBriefingSaved }: Props) {
   const [tab, setTab] = useState<"group" | "knockout">("group");
   const [round, setRound] = useState<KnockoutRound>("Round of 32");
   const [selectedGroup, setSelectedGroup] = useState(GROUP_MATCHES[0]?.id ?? "");
@@ -121,8 +127,11 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
 
   /**
    * Records today's championship probability for every team to
-   * probability_snapshots. Call this once after entering results for
-   * the day — it's what powers the "movers" feed across the site.
+   * probability_snapshots (powers "movers"), AND saves the full
+   * Today's Briefing payload to daily_briefings — this is the one
+   * action that actually advances "today's" briefing; the page itself
+   * only ever reads the most recent saved briefing, never recomputes
+   * one live.
    */
   async function takeSnapshot() {
     setSnapStatus("saving");
@@ -130,6 +139,12 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
       const liveTeams = buildLiveTeams(stored);
       const teamValues = liveTeams.map((t) => ({ code: t.code, value: t.current }));
       await recordSnapshot("world_cup", teamValues, "champion_pct");
+
+      const briefing = buildLiveMorningForecast(liveTeams, stored);
+      const briefingDate = new Date().toISOString().slice(0, 10);
+      await saveDailyBriefing("world_cup", briefing, briefingDate);
+      onBriefingSaved?.({ date: briefingDate, payload: briefing });
+
       setSnapStatus("saved");
     } catch (err) {
       console.error("Snapshot failed", err);
@@ -154,7 +169,7 @@ export function AdminResultsPanel({ stored, onChange }: Props) {
             {Object.keys(stored.knockoutMatches ?? {}).length} knockout results
           </strong>
           <button type="button" className={s.snapshotBtn} onClick={takeSnapshot}>
-            {snapStatus === "saving" ? "Saving snapshot..." : "Snapshot today's odds"}
+            {snapStatus === "saving" ? "Saving snapshot..." : "Snapshot odds + publish today's briefing"}
           </button>
           {snapStatus === "saved" && <span className={s.saved}>Snapshot saved ✓</span>}
           {snapStatus === "error" && <span className={s.error}>Snapshot failed</span>}

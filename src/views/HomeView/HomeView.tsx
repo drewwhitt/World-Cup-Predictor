@@ -14,6 +14,9 @@ import s from "./HomeView.module.css";
 type Props = {
   teams: Team[];
   morning: MorningForecastData;
+  /** YYYY-MM-DD the morning briefing is actually from — may be a prior
+   *  day if nothing's been published today yet. */
+  morningDate: string;
   headlines: Headline[];
   playedCount: number;
   stored: StoredResults;
@@ -27,6 +30,7 @@ const TEAM_NAMES: Record<string, string> = Object.fromEntries(
 export function HomeView({
   teams,
   morning,
+  morningDate,
   headlines,
   playedCount,
   stored,
@@ -40,13 +44,14 @@ export function HomeView({
   // underdog, an against-the-grain pick) they'd join this same rotation
   // rather than needing their own slot.
   const ALERT_SLIDE_COUNT = 3;
-  const alertHeadlines = headlines.slice(0, ALERT_SLIDE_COUNT);
-  const restHeadlines = headlines.slice(ALERT_SLIDE_COUNT);
+  const [heroHeadline, ...remainingHeadlines] = headlines;
+  const alertHeadlines = remainingHeadlines.slice(0, ALERT_SLIDE_COUNT);
+  const restHeadlines = remainingHeadlines.slice(ALERT_SLIDE_COUNT);
   const isComplete = teams.some((t) => t.isChampion);
 
   return (
     <>
-      <Hero teams={teams} playedCount={playedCount} stored={stored} />
+      <Hero teams={teams} playedCount={playedCount} stored={stored} headline={heroHeadline} />
 
       {onNavigate && <NflPreview onNavigate={onNavigate} />}
 
@@ -57,7 +62,7 @@ export function HomeView({
 
       <HighestConfidence stored={stored} />
 
-      <MorningForecast forecast={morning} />
+      <MorningForecast forecast={morning} date={morningDate} />
 
       <ConfidenceAlert headlines={alertHeadlines} />
 

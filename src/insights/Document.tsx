@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { SPORTS_NAV, getSportLandingTab } from "../data/worldCup";
+import { SPORTS_NAV } from "../data/worldCup";
 
 const SITE_NAME = "Veridex";
 const SITE_URL = "https://world-cup-predictor-inky-two.vercel.app"; // update if/when you move to a custom domain
@@ -176,6 +176,86 @@ const INSIGHTS_CSS = `
     font: 500 14px/1 "IBM Plex Sans", system-ui, sans-serif;
     cursor: not-allowed;
     white-space: nowrap;
+  }
+  .nav-dropdown {
+    position: relative;
+  }
+  .nav-dropdown summary {
+    padding: 7px 12px;
+    color: #3A352E;
+    font: 600 14px/1 "IBM Plex Sans", system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    border-radius: 6px;
+    white-space: nowrap;
+    cursor: pointer;
+    list-style: none;
+  }
+  .nav-dropdown summary::-webkit-details-marker {
+    display: none;
+  }
+  .nav-dropdown summary:hover {
+    color: var(--ink);
+    background: var(--hairline-2);
+  }
+  .nav-dropdown[open] summary {
+    color: var(--navy);
+    background: rgba(15, 27, 61, 0.09);
+    font-weight: 700;
+  }
+  .nav-dropdown-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 20;
+    margin-top: 9px;
+    width: 260px;
+    max-width: calc(100vw - 24px);
+    padding: 8px;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(26, 23, 20, 0.12);
+  }
+  .nav-items-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+  .nav-dropdown-panel a {
+    display: block;
+    padding: 9px 12px;
+    color: var(--ink-2);
+    font: 500 13px/1 "IBM Plex Sans", system-ui, sans-serif;
+    text-decoration: none;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .nav-dropdown-panel a:hover {
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .nav-league-group {
+    padding: 6px 0;
+  }
+  .nav-league-group + .nav-league-group {
+    margin-top: 4px;
+    border-top: 1px solid var(--hairline-2);
+  }
+  .nav-league-header {
+    padding: 8px 12px 2px;
+    color: var(--ink-3);
+    font: 600 10px "IBM Plex Mono", monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav-league-item {
+    padding-left: 20px !important;
+  }
+  .nav-league-soon {
+    padding: 6px 12px 8px 20px;
+    color: var(--ink-4);
+    font: 500 12px/1 "IBM Plex Sans", system-ui, sans-serif;
+    font-style: italic;
   }
   .tagline {
     margin-top: 9px;
@@ -595,9 +675,13 @@ const INSIGHTS_CSS = `
       gap: 6px 8px;
     }
     .nav a,
-    .nav-disabled {
+    .nav-disabled,
+    .nav-dropdown summary {
       padding: 7px 10px;
       font-size: 13px;
+    }
+    .nav-dropdown-panel {
+      width: auto;
     }
   }
 
@@ -679,8 +763,8 @@ export function Document({
           <nav className="nav">
             <a href="/#home">Home</a>
             {SPORTS_NAV.map((sport) => {
-              const landingTab = getSportLandingTab(sport);
-              if (!landingTab) {
+              const hasDropdown = Boolean(sport.items?.length || sport.leagues?.length);
+              if (!hasDropdown) {
                 return (
                   <span key={sport.label} className="nav-disabled" title={`${sport.label} — coming soon`}>
                     {sport.label}
@@ -688,9 +772,32 @@ export function Document({
                 );
               }
               return (
-                <a key={sport.label} href={`/#${landingTab}`}>
-                  {sport.label}
-                </a>
+                <details className="nav-dropdown" name="sport-nav" key={sport.label}>
+                  <summary>{sport.label}</summary>
+                  <div className="nav-dropdown-panel">
+                    {sport.items && (
+                      <div className="nav-items-grid">
+                        {sport.items.map((item) => (
+                          <a key={item.id} href={`/#${item.id}`}>{item.label}</a>
+                        ))}
+                      </div>
+                    )}
+                    {sport.leagues?.map((league) => (
+                      <div className="nav-league-group" key={league.label}>
+                        <div className="nav-league-header">{league.label}</div>
+                        {league.items ? (
+                          <div className="nav-items-grid">
+                            {league.items.map((item) => (
+                              <a key={item.id} href={`/#${item.id}`} className="nav-league-item">{item.label}</a>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="nav-league-soon">Coming soon</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </details>
               );
             })}
             <a href="/insights/" className="nav-current">

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, Suspense, lazy } from "react";
 import { AdminResultsPanel } from "./components/admin/AdminResultsPanel";
 import { AppShell } from "./components/shell/AppShell";
 import { ErrorBoundary } from "./components/shell/ErrorBoundary";
-import type { Edition, TabId } from "./data/worldCup";
+import type { Edition, MorningForecast as MorningForecastData, TabId } from "./data/worldCup";
 import seedResults from "./data/results.json";
 import {
   buildLiveBreakingText,
@@ -11,6 +11,7 @@ import {
   buildLiveTeams,
 } from "./data/veridexLive";
 import { loadOfficialResults } from "./lib/supabase";
+import { loadLatestDailyBriefing } from "./lib/dailyBriefing";
 import type { StoredResults } from "./lib/types";
 import { HomeView } from "./views/HomeView/HomeView";
 
@@ -70,6 +71,10 @@ function loadLocalResults(): StoredResults {
 export default function App() {
   const [stored, setStored] = useState<StoredResults>(loadLocalResults);
   const [activeTab, setActiveTab] = useState<TabId>(getTabFromHash);
+  // null = no published briefing yet (pre-launch, or admin hasn't
+  // snapshotted today) — falls back to a live-computed one below rather
+  // than leaving Today's Briefing empty.
+  const [dailyBriefing, setDailyBriefing] = useState<{ date: string; payload: MorningForecastData } | null>(null);
 
   // Real browser history integration — without this, switching tabs never
   // touches the URL or history stack at all, so the phone's back button has
@@ -115,8 +120,24 @@ export default function App() {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    loadLatestDailyBriefing<MorningForecastData>("world_cup")
+      .then((result) => {
+        if (active && result) setDailyBriefing(result);
+      })
+      .catch((err) => console.error("Failed to load daily briefing", err));
+    return () => { active = false; };
+  }, []);
+
   const liveTeams     = useMemo(() => buildLiveTeams(stored), [stored]);
   const liveMorning   = useMemo(() => buildLiveMorningForecast(liveTeams, stored), [liveTeams, stored]);
+  // Today's Briefing shows whatever was last actually published by the
+  // admin snapshot action — not a live recompute — so it reads as a
+  // fixed daily digest instead of shifting on every render. Falls back
+  // to a live-computed one (dated today) only when nothing's published yet.
+  const morning     = dailyBriefing?.payload ?? liveMorning;
+  const morningDate = dailyBriefing?.date ?? new Date().toISOString().slice(0, 10);
   const liveHeadlines = useMemo(() => buildLiveHeadlines(liveTeams, stored), [liveTeams, stored]);
   const liveBreaking  = useMemo(() => buildLiveBreakingText(liveTeams, stored), [liveTeams, stored]);
   const playedCount   = Object.keys(stored.matches).length;
@@ -145,7 +166,8 @@ export default function App() {
         return (
           <HomeView
             teams={liveTeams}
-            morning={liveMorning}
+            morning={morning}
+            morningDate={morningDate}
             headlines={liveHeadlines}
             playedCount={playedCount}
             stored={stored}
@@ -167,7 +189,9 @@ export default function App() {
           <Suspense fallback={<TabLoading />}>{renderContent()}</Suspense>
         </ErrorBoundary>
       </AppShell>
-      {isAdmin && <AdminResultsPanel stored={stored} onChange={setStored} />}
+      {isAdmin && (
+        <AdminResultsPanel stored={stored} onChange={setStored} onBriefingSaved={setDailyBriefing} />
+      )}
     </>
   );
 }

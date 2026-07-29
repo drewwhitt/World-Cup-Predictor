@@ -103,7 +103,7 @@ function getAdminSecret(): string {
   return entered ?? "";
 }
 
-async function callSaveResultApi(body: Record<string, unknown>): Promise<void> {
+export async function callSaveResultApi(body: Record<string, unknown>): Promise<void> {
   const secret = getAdminSecret();
   const response = await fetch("/api/save-result", {
     method: "POST",
