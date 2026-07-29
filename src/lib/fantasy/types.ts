@@ -68,3 +68,12 @@ export interface FantasyRankingsPayload {
   /** PPR only for now — see MODEL_HISTORY.md; format flexibility (half-PPR, superflex, dynasty) is a deferred decision. */
   scoringFormat: "PPR";
 }
+
+/** One real historical (consensus ADP, actual season outcome) pair — the training data for curveFit.ts's projections. Produced by scripts/generate-fantasy-adp-backtest.ts, not something computed at runtime. */
+export interface AdpVsActualEntry {
+  name: string;
+  position: Position;
+  consensusRank: number;
+  actualPoints: number;
+  games: number;
+}

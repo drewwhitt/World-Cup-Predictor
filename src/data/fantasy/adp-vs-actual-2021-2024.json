@@ -1,0 +1,3955 @@
+{
+  "generatedAt": "2026-07-29T17:12:48.677Z",
+  "label": "Real consensus ADP (manually compiled 2021-2024) joined against nflverse-derived actual PPR season outcomes",
+  "seasons": {
+    "2021": [
+      {
+        "name": "Christian McCaffrey",
+        "position": "RB",
+        "consensusRank": 1,
+        "actualPoints": 127.5,
+        "games": 7
+      },
+      {
+        "name": "Dalvin Cook",
+        "position": "RB",
+        "consensusRank": 2,
+        "actualPoints": 206.3,
+        "games": 13
+      },
+      {
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "consensusRank": 3.2857142857142856,
+        "actualPoints": 234.7,
+        "games": 13
+      },
+      {
+        "name": "Ezekiel Elliott",
+        "position": "RB",
+        "consensusRank": 5.285714285714286,
+        "actualPoints": 252.1,
+        "games": 17
+      },
+      {
+        "name": "Davante Adams",
+        "position": "WR",
+        "consensusRank": 6,
+        "actualPoints": 344.3,
+        "games": 16
+      },
+      {
+        "name": "Derrick Henry",
+        "position": "RB",
+        "consensusRank": 5.857142857142857,
+        "actualPoints": 193.3,
+        "games": 8
+      },
+      {
+        "name": "Austin Ekeler",
+        "position": "RB",
+        "consensusRank": 7.857142857142857,
+        "actualPoints": 343.8,
+        "games": 16
+      },
+      {
+        "name": "Aaron Jones",
+        "position": "RB",
+        "consensusRank": 8.571428571428571,
+        "actualPoints": 229,
+        "games": 15
+      },
+      {
+        "name": "Tyreek Hill",
+        "position": "WR",
+        "consensusRank": 10.285714285714286,
+        "actualPoints": 296.5,
+        "games": 17
+      },
+      {
+        "name": "Saquon Barkley",
+        "position": "RB",
+        "consensusRank": 11.428571428571429,
+        "actualPoints": 148.6,
+        "games": 13
+      },
+      {
+        "name": "Stefon Diggs",
+        "position": "WR",
+        "consensusRank": 11.714285714285714,
+        "actualPoints": 285.5,
+        "games": 17
+      },
+      {
+        "name": "DeAndre Hopkins",
+        "position": "WR",
+        "consensusRank": 14.142857142857142,
+        "actualPoints": 147.2,
+        "games": 10
+      },
+      {
+        "name": "Calvin Ridley",
+        "position": "WR",
+        "consensusRank": 16.142857142857142,
+        "actualPoints": 71.1,
+        "games": 5
+      },
+      {
+        "name": "Travis Kelce",
+        "position": "TE",
+        "consensusRank": 8.428571428571429,
+        "actualPoints": 262.8,
+        "games": 16
+      },
+      {
+        "name": "J.J. Taylor",
+        "position": "RB",
+        "consensusRank": 13.857142857142858,
+        "actualPoints": 18.5,
+        "games": 5
+      },
+      {
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "consensusRank": 20.428571428571427,
+        "actualPoints": 330.4,
+        "games": 17
+      },
+      {
+        "name": "Nick Chubb",
+        "position": "RB",
+        "consensusRank": 15.285714285714286,
+        "actualPoints": 215.3,
+        "games": 14
+      },
+      {
+        "name": "Darren Waller",
+        "position": "TE",
+        "consensusRank": 21.428571428571427,
+        "actualPoints": 133.5,
+        "games": 11
+      },
+      {
+        "name": "Antonio Gibson",
+        "position": "RB",
+        "consensusRank": 18.285714285714285,
+        "actualPoints": 229.1,
+        "games": 16
+      },
+      {
+        "name": "DK Metcalf",
+        "position": "WR",
+        "consensusRank": 18.714285714285715,
+        "actualPoints": 244.3,
+        "games": 17
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 23.571428571428573,
+        "actualPoints": 180.9,
+        "games": 13
+      },
+      {
+        "name": "Keenan Allen",
+        "position": "WR",
+        "consensusRank": 25.714285714285715,
+        "actualPoints": 257.8,
+        "games": 16
+      },
+      {
+        "name": "Joe Mixon",
+        "position": "RB",
+        "consensusRank": 22.142857142857142,
+        "actualPoints": 287.9,
+        "games": 16
+      },
+      {
+        "name": "Najee Harris",
+        "position": "RB",
+        "consensusRank": 19,
+        "actualPoints": 300.7,
+        "games": 17
+      },
+      {
+        "name": "Allen Robinson",
+        "position": "WR",
+        "consensusRank": 27.857142857142858,
+        "actualPoints": 87,
+        "games": 12
+      },
+      {
+        "name": "Patrick Mahomes",
+        "position": "QB",
+        "consensusRank": 32.57142857142857,
+        "actualPoints": 361.7,
+        "games": 17
+      },
+      {
+        "name": "George Kittle",
+        "position": "TE",
+        "consensusRank": 29.571428571428573,
+        "actualPoints": 198,
+        "games": 14
+      },
+      {
+        "name": "Clyde Edwards-Helaire",
+        "position": "RB",
+        "consensusRank": 25.428571428571427,
+        "actualPoints": 117.6,
+        "games": 10
+      },
+      {
+        "name": "Terry McLaurin",
+        "position": "WR",
+        "consensusRank": 28,
+        "actualPoints": 213.5,
+        "games": 17
+      },
+      {
+        "name": "CeeDee Lamb",
+        "position": "WR",
+        "consensusRank": 30.142857142857142,
+        "actualPoints": 232.8,
+        "games": 16
+      },
+      {
+        "name": "D'Andre Swift",
+        "position": "RB",
+        "consensusRank": 31.428571428571427,
+        "actualPoints": 208.9,
+        "games": 13
+      },
+      {
+        "name": "Robert Woods",
+        "position": "WR",
+        "consensusRank": 35.142857142857146,
+        "actualPoints": 137.2,
+        "games": 9
+      },
+      {
+        "name": "Amari Cooper",
+        "position": "WR",
+        "consensusRank": 36.142857142857146,
+        "actualPoints": 202.5,
+        "games": 15
+      },
+      {
+        "name": "Chris Godwin",
+        "position": "WR",
+        "consensusRank": 40.42857142857143,
+        "actualPoints": 242.4,
+        "games": 14
+      },
+      {
+        "name": "Chris Carson",
+        "position": "RB",
+        "consensusRank": 32.57142857142857,
+        "actualPoints": 48.1,
+        "games": 4
+      },
+      {
+        "name": "Mike Evans",
+        "position": "WR",
+        "consensusRank": 36.285714285714285,
+        "actualPoints": 262.5,
+        "games": 16
+      },
+      {
+        "name": "D.J. Montgomery",
+        "position": "WR",
+        "consensusRank": 30.142857142857142,
+        "actualPoints": 6.6,
+        "games": 1
+      },
+      {
+        "name": "Cooper Kupp",
+        "position": "WR",
+        "consensusRank": 41.714285714285715,
+        "actualPoints": 439.5,
+        "games": 17
+      },
+      {
+        "name": "Julio Jones",
+        "position": "WR",
+        "consensusRank": 44.57142857142857,
+        "actualPoints": 80.4,
+        "games": 10
+      },
+      {
+        "name": "D.J. Moore",
+        "position": "WR",
+        "consensusRank": 43.285714285714285,
+        "actualPoints": 237.5,
+        "games": 17
+      },
+      {
+        "name": "Josh Allen",
+        "position": "QB",
+        "consensusRank": 43.285714285714285,
+        "actualPoints": 402.6,
+        "games": 17
+      },
+      {
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "consensusRank": 43.42857142857143,
+        "actualPoints": 274.4,
+        "games": 16
+      },
+      {
+        "name": "Tyler Lockett",
+        "position": "WR",
+        "consensusRank": 46.857142857142854,
+        "actualPoints": 241.4,
+        "games": 16
+      },
+      {
+        "name": "Miles Sanders",
+        "position": "RB",
+        "consensusRank": 39.714285714285715,
+        "actualPoints": 117.2,
+        "games": 12
+      },
+      {
+        "name": "Adam Thielen",
+        "position": "WR",
+        "consensusRank": 44.857142857142854,
+        "actualPoints": 199.8,
+        "games": 13
+      },
+      {
+        "name": "Darrell Henderson",
+        "position": "RB",
+        "consensusRank": 55,
+        "actualPoints": 163.4,
+        "games": 12
+      },
+      {
+        "name": "Kyler Murray",
+        "position": "QB",
+        "consensusRank": 50.142857142857146,
+        "actualPoints": 299.8,
+        "games": 14
+      },
+      {
+        "name": "T.J. Hockenson",
+        "position": "TE",
+        "consensusRank": 58.57142857142857,
+        "actualPoints": 145.3,
+        "games": 12
+      },
+      {
+        "name": "Josh Jacobs",
+        "position": "RB",
+        "consensusRank": 48.57142857142857,
+        "actualPoints": 226,
+        "games": 15
+      },
+      {
+        "name": "Mike Davis",
+        "position": "RB",
+        "consensusRank": 55,
+        "actualPoints": 138.2,
+        "games": 17
+      },
+      {
+        "name": "Lamar Jackson",
+        "position": "QB",
+        "consensusRank": 55.57142857142857,
+        "actualPoints": 240,
+        "games": 12
+      },
+      {
+        "name": "Tee Higgins",
+        "position": "WR",
+        "consensusRank": 52.57142857142857,
+        "actualPoints": 219.1,
+        "games": 14
+      },
+      {
+        "name": "Mark Andrews",
+        "position": "TE",
+        "consensusRank": 53.42857142857143,
+        "actualPoints": 301.1,
+        "games": 17
+      },
+      {
+        "name": "Brandon Aiyuk",
+        "position": "WR",
+        "consensusRank": 54.714285714285715,
+        "actualPoints": 170.3,
+        "games": 16
+      },
+      {
+        "name": "Kyle Pitts",
+        "position": "TE",
+        "consensusRank": 59.857142857142854,
+        "actualPoints": 176.6,
+        "games": 17
+      },
+      {
+        "name": "Kareem Hunt",
+        "position": "RB",
+        "consensusRank": 58.285714285714285,
+        "actualPoints": 110,
+        "games": 8
+      },
+      {
+        "name": "Dak Prescott",
+        "position": "QB",
+        "consensusRank": 56,
+        "actualPoints": 320.6,
+        "games": 16
+      },
+      {
+        "name": "Myles Gaskin",
+        "position": "RB",
+        "consensusRank": 60.42857142857143,
+        "actualPoints": 173.6,
+        "games": 17
+      },
+      {
+        "name": "Kenny Golladay",
+        "position": "WR",
+        "consensusRank": 66.57142857142857,
+        "actualPoints": 89.1,
+        "games": 14
+      },
+      {
+        "name": "Ja'Marr Chase",
+        "position": "WR",
+        "consensusRank": 67.42857142857143,
+        "actualPoints": 304.6,
+        "games": 17
+      },
+      {
+        "name": "Odell Beckham",
+        "position": "WR",
+        "consensusRank": 65.42857142857143,
+        "actualPoints": 129.1,
+        "games": 14
+      },
+      {
+        "name": "JuJu Smith-Schuster",
+        "position": "WR",
+        "consensusRank": 65.71428571428571,
+        "actualPoints": 34.8,
+        "games": 5
+      },
+      {
+        "name": "Chase Claypool",
+        "position": "WR",
+        "consensusRank": 67,
+        "actualPoints": 166.6,
+        "games": 15
+      },
+      {
+        "name": "Chase Edmonds",
+        "position": "RB",
+        "consensusRank": 62.857142857142854,
+        "actualPoints": 143.3,
+        "games": 12
+      },
+      {
+        "name": "Russell Wilson",
+        "position": "QB",
+        "consensusRank": 63.285714285714285,
+        "actualPoints": 242.8,
+        "games": 14
+      },
+      {
+        "name": "Stephen Anderson",
+        "position": "TE",
+        "consensusRank": 69.42857142857143,
+        "actualPoints": 38.5,
+        "games": 11
+      },
+      {
+        "name": "Aaron Rodgers",
+        "position": "QB",
+        "consensusRank": 70.71428571428571,
+        "actualPoints": 333.3,
+        "games": 16
+      },
+      {
+        "name": "Tyler Boyd",
+        "position": "WR",
+        "consensusRank": 72.28571428571429,
+        "actualPoints": 183.8,
+        "games": 16
+      },
+      {
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "consensusRank": 73,
+        "actualPoints": 150.2,
+        "games": 17
+      },
+      {
+        "name": "Jerry Jeudy",
+        "position": "WR",
+        "consensusRank": 68.14285714285714,
+        "actualPoints": 85,
+        "games": 10
+      },
+      {
+        "name": "Javonte Williams",
+        "position": "RB",
+        "consensusRank": 70.57142857142857,
+        "actualPoints": 204.9,
+        "games": 17
+      },
+      {
+        "name": "Justin Herbert",
+        "position": "QB",
+        "consensusRank": 74.14285714285714,
+        "actualPoints": 382.8,
+        "games": 17
+      },
+      {
+        "name": "Brandin Cooks",
+        "position": "WR",
+        "consensusRank": 76.16666666666667,
+        "actualPoints": 231.8,
+        "games": 16
+      },
+      {
+        "name": "D.J. Chark",
+        "position": "WR",
+        "consensusRank": 77.83333333333333,
+        "actualPoints": 34.4,
+        "games": 3
+      },
+      {
+        "name": "Deebo Samuel",
+        "position": "WR",
+        "consensusRank": 76.42857142857143,
+        "actualPoints": 339,
+        "games": 16
+      },
+      {
+        "name": "Noah Fant",
+        "position": "TE",
+        "consensusRank": 84,
+        "actualPoints": 159,
+        "games": 16
+      },
+      {
+        "name": "Damien Harris",
+        "position": "RB",
+        "consensusRank": 79.85714285714286,
+        "actualPoints": 210.1,
+        "games": 15
+      },
+      {
+        "name": "Michael Carter",
+        "position": "RB",
+        "consensusRank": 101.85714285714286,
+        "actualPoints": 154.4,
+        "games": 14
+      },
+      {
+        "name": "James Robinson",
+        "position": "RB",
+        "consensusRank": 32.4,
+        "actualPoints": 173.9,
+        "games": 14
+      },
+      {
+        "name": "Raheem Mostert",
+        "position": "RB",
+        "consensusRank": 82.28571428571429,
+        "actualPoints": 2,
+        "games": 1
+      },
+      {
+        "name": "Will Fuller",
+        "position": "WR",
+        "consensusRank": 85.66666666666667,
+        "actualPoints": 8.6,
+        "games": 2
+      },
+      {
+        "name": "Melvin Gordon",
+        "position": "RB",
+        "consensusRank": 85.14285714285714,
+        "actualPoints": 195.1,
+        "games": 16
+      },
+      {
+        "name": "Logan Thomas",
+        "position": "TE",
+        "consensusRank": 84.28571428571429,
+        "actualPoints": 53.6,
+        "games": 5
+      },
+      {
+        "name": "Ryan Tannehill",
+        "position": "QB",
+        "consensusRank": 96.57142857142857,
+        "actualPoints": 272.4,
+        "games": 17
+      },
+      {
+        "name": "Tom Brady",
+        "position": "QB",
+        "consensusRank": 82.71428571428571,
+        "actualPoints": 374.7,
+        "games": 17
+      },
+      {
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "consensusRank": 96.71428571428571,
+        "actualPoints": 165,
+        "games": 15
+      },
+      {
+        "name": "Jarvis Landry",
+        "position": "WR",
+        "consensusRank": 90.83333333333333,
+        "actualPoints": 133,
+        "games": 12
+      },
+      {
+        "name": "DeVonta Smith",
+        "position": "WR",
+        "consensusRank": 88.42857142857143,
+        "actualPoints": 185.6,
+        "games": 17
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 86.28571428571429,
+        "actualPoints": 180.9,
+        "games": 13
+      },
+      {
+        "name": "Trey Sermon",
+        "position": "RB",
+        "consensusRank": 86.14285714285714,
+        "actualPoints": 28.3,
+        "games": 5
+      },
+      {
+        "name": "Jalen Hurts",
+        "position": "QB",
+        "consensusRank": 93.5,
+        "actualPoints": 312.2,
+        "games": 15
+      },
+      {
+        "name": "Laviska Shenault",
+        "position": "WR",
+        "consensusRank": 83.28571428571429,
+        "actualPoints": 127,
+        "games": 16
+      },
+      {
+        "name": "Ronald Jones",
+        "position": "RB",
+        "consensusRank": 96.71428571428571,
+        "actualPoints": 79.2,
+        "games": 15
+      },
+      {
+        "name": "Matthew Stafford",
+        "position": "QB",
+        "consensusRank": 98.28571428571429,
+        "actualPoints": 329.7,
+        "games": 17
+      },
+      {
+        "name": "Curtis Samuel",
+        "position": "WR",
+        "consensusRank": 93.33333333333333,
+        "actualPoints": 9.8,
+        "games": 5
+      },
+      {
+        "name": "Robert Tonyan",
+        "position": "TE",
+        "consensusRank": 102,
+        "actualPoints": 50.4,
+        "games": 8
+      },
+      {
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "consensusRank": 122.66666666666667,
+        "actualPoints": 274.4,
+        "games": 16
+      },
+      {
+        "name": "Leonard Fournette",
+        "position": "RB",
+        "consensusRank": 99.28571428571429,
+        "actualPoints": 255.6,
+        "games": 14
+      },
+      {
+        "name": "Corey Davis",
+        "position": "WR",
+        "consensusRank": 89.71428571428571,
+        "actualPoints": 105.2,
+        "games": 9
+      },
+      {
+        "name": "Tyler Higbee",
+        "position": "TE",
+        "consensusRank": 114,
+        "actualPoints": 147,
+        "games": 15
+      },
+      {
+        "name": "James Conner",
+        "position": "RB",
+        "consensusRank": 96.42857142857143,
+        "actualPoints": 257.7,
+        "games": 15
+      },
+      {
+        "name": "Mike Williams",
+        "position": "WR",
+        "consensusRank": 94.83333333333333,
+        "actualPoints": 246.6,
+        "games": 16
+      },
+      {
+        "name": "Joe Burrow",
+        "position": "QB",
+        "consensusRank": 116.66666666666667,
+        "actualPoints": 314.2,
+        "games": 16
+      },
+      {
+        "name": "Michael Gallup",
+        "position": "WR",
+        "consensusRank": 92.66666666666667,
+        "actualPoints": 91.5,
+        "games": 9
+      },
+      {
+        "name": "Zack Moss",
+        "position": "RB",
+        "consensusRank": 100.14285714285714,
+        "actualPoints": 105.2,
+        "games": 13
+      },
+      {
+        "name": "Kenyan Drake",
+        "position": "RB",
+        "consensusRank": 106.33333333333333,
+        "actualPoints": 102.5,
+        "games": 12
+      },
+      {
+        "name": "Mike Thomas",
+        "position": "WR",
+        "consensusRank": 97.57142857142857,
+        "actualPoints": 10.2,
+        "games": 7
+      },
+      {
+        "name": "Nyheim Hines",
+        "position": "RB",
+        "consensusRank": 134.83333333333334,
+        "actualPoints": 116.6,
+        "games": 17
+      },
+      {
+        "name": "Javonte Williams",
+        "position": "RB",
+        "consensusRank": 116,
+        "actualPoints": 204.9,
+        "games": 17
+      },
+      {
+        "name": "Mac Jones",
+        "position": "QB",
+        "consensusRank": 105.83333333333333,
+        "actualPoints": 224.9,
+        "games": 17
+      },
+      {
+        "name": "Mike Gesicki",
+        "position": "TE",
+        "consensusRank": 116.16666666666667,
+        "actualPoints": 165,
+        "games": 17
+      },
+      {
+        "name": "DeVante Parker",
+        "position": "WR",
+        "consensusRank": 112.5,
+        "actualPoints": 103.5,
+        "games": 9
+      },
+      {
+        "name": "Trevor Lawrence",
+        "position": "QB",
+        "consensusRank": 123.16666666666667,
+        "actualPoints": 199,
+        "games": 17
+      },
+      {
+        "name": "Matt Ryan",
+        "position": "QB",
+        "consensusRank": 135.2,
+        "actualPoints": 222.9,
+        "games": 17
+      },
+      {
+        "name": "Michael Pittman",
+        "position": "WR",
+        "consensusRank": 118.33333333333333,
+        "actualPoints": 238.6,
+        "games": 17
+      },
+      {
+        "name": "Devin Singletary",
+        "position": "RB",
+        "consensusRank": 120.42857142857143,
+        "actualPoints": 197.8,
+        "games": 17
+      },
+      {
+        "name": "Darnell Mooney",
+        "position": "WR",
+        "consensusRank": 115.16666666666667,
+        "actualPoints": 219.7,
+        "games": 17
+      },
+      {
+        "name": "Tony Pollard",
+        "position": "RB",
+        "consensusRank": 133.16666666666666,
+        "actualPoints": 162.6,
+        "games": 15
+      },
+      {
+        "name": "A.J. Dillon",
+        "position": "RB",
+        "consensusRank": 111.42857142857143,
+        "actualPoints": 185.6,
+        "games": 17
+      },
+      {
+        "name": "Jonnu Smith",
+        "position": "TE",
+        "consensusRank": 136.83333333333334,
+        "actualPoints": 67.4,
+        "games": 15
+      },
+      {
+        "name": "Ito Smith",
+        "position": "RB",
+        "consensusRank": 118.33333333333333,
+        "actualPoints": 6.4,
+        "games": 1
+      },
+      {
+        "name": "Kirk Cousins",
+        "position": "QB",
+        "consensusRank": 140,
+        "actualPoints": 300.3,
+        "games": 16
+      },
+      {
+        "name": "Marquise Brown",
+        "position": "WR",
+        "consensusRank": 111.33333333333333,
+        "actualPoints": 226.3,
+        "games": 16
+      },
+      {
+        "name": "Bryan Edwards",
+        "position": "WR",
+        "consensusRank": 131.33333333333334,
+        "actualPoints": 109.1,
+        "games": 16
+      },
+      {
+        "name": "Evan Engram",
+        "position": "TE",
+        "consensusRank": 134.16666666666666,
+        "actualPoints": 102.5,
+        "games": 15
+      },
+      {
+        "name": "Jaylen Waddle",
+        "position": "WR",
+        "consensusRank": 115.16666666666667,
+        "actualPoints": 247.8,
+        "games": 16
+      },
+      {
+        "name": "Latavius Murray",
+        "position": "RB",
+        "consensusRank": 158.83333333333334,
+        "actualPoints": 103.6,
+        "games": 14
+      },
+      {
+        "name": "J.D. McKissic",
+        "position": "RB",
+        "consensusRank": 135.83333333333334,
+        "actualPoints": 127.9,
+        "games": 11
+      },
+      {
+        "name": "Phillip Lindsay",
+        "position": "RB",
+        "consensusRank": 131,
+        "actualPoints": 45.4,
+        "games": 14
+      },
+      {
+        "name": "Baker Mayfield",
+        "position": "QB",
+        "consensusRank": 155.66666666666666,
+        "actualPoints": 179.8,
+        "games": 14
+      },
+      {
+        "name": "James White",
+        "position": "RB",
+        "consensusRank": 140.5,
+        "actualPoints": 31.2,
+        "games": 3
+      },
+      {
+        "name": "Tua Tagovailoa",
+        "position": "QB",
+        "consensusRank": 147.33333333333334,
+        "actualPoints": 180.9,
+        "games": 13
+      },
+      {
+        "name": "Hunter Henry",
+        "position": "TE",
+        "consensusRank": 143.33333333333334,
+        "actualPoints": 164.3,
+        "games": 16
+      },
+      {
+        "name": "Ryan Fitzpatrick",
+        "position": "QB",
+        "consensusRank": 156.5,
+        "actualPoints": 0.7,
+        "games": 1
+      },
+      {
+        "name": "Mecole Hardman",
+        "position": "WR",
+        "consensusRank": 125.5,
+        "actualPoints": 140.9,
+        "games": 17
+      },
+      {
+        "name": "Cole Beasley",
+        "position": "WR",
+        "consensusRank": 127.33333333333333,
+        "actualPoints": 159.3,
+        "games": 16
+      },
+      {
+        "name": "T.Y. Hilton",
+        "position": "WR",
+        "consensusRank": 139.66666666666666,
+        "actualPoints": 74.1,
+        "games": 10
+      },
+      {
+        "name": "Elijah Moore",
+        "position": "WR",
+        "consensusRank": 127.66666666666667,
+        "actualPoints": 138.2,
+        "games": 11
+      },
+      {
+        "name": "Russell Gage",
+        "position": "WR",
+        "consensusRank": 133.5,
+        "actualPoints": 163,
+        "games": 13
+      },
+      {
+        "name": "Cole Kmet",
+        "position": "TE",
+        "consensusRank": 161.5,
+        "actualPoints": 121.2,
+        "games": 17
+      },
+      {
+        "name": "Rob Gronkowski",
+        "position": "TE",
+        "consensusRank": 145.5,
+        "actualPoints": 171.2,
+        "games": 12
+      },
+      {
+        "name": "Ben Roethlisberger",
+        "position": "QB",
+        "consensusRank": 150.33333333333334,
+        "actualPoints": 218.1,
+        "games": 16
+      },
+      {
+        "name": "Alexander Mattison",
+        "position": "RB",
+        "consensusRank": 163.83333333333334,
+        "actualPoints": 125.9,
+        "games": 16
+      },
+      {
+        "name": "Henry Ruggs",
+        "position": "WR",
+        "consensusRank": 133.16666666666666,
+        "actualPoints": 84.5,
+        "games": 7
+      },
+      {
+        "name": "Sterling Shepard",
+        "position": "WR",
+        "consensusRank": 154,
+        "actualPoints": 77.7,
+        "games": 7
+      },
+      {
+        "name": "Justin Fields",
+        "position": "QB",
+        "consensusRank": 163.16666666666666,
+        "actualPoints": 126.8,
+        "games": 12
+      },
+      {
+        "name": "Giovani Bernard",
+        "position": "RB",
+        "consensusRank": 164.66666666666666,
+        "actualPoints": 59.1,
+        "games": 10
+      },
+      {
+        "name": "Blake Jarwin",
+        "position": "TE",
+        "consensusRank": 185.16666666666666,
+        "actualPoints": 32.6,
+        "games": 7
+      },
+      {
+        "name": "Gerald Everett",
+        "position": "TE",
+        "consensusRank": 167.83333333333334,
+        "actualPoints": 117.8,
+        "games": 15
+      },
+      {
+        "name": "Daniel Jones",
+        "position": "QB",
+        "consensusRank": 177.33333333333334,
+        "actualPoints": 167.5,
+        "games": 11
+      },
+      {
+        "name": "Jalen Reagor",
+        "position": "WR",
+        "consensusRank": 151,
+        "actualPoints": 78.1,
+        "games": 17
+      },
+      {
+        "name": "Austin Hooper",
+        "position": "TE",
+        "consensusRank": 159.5,
+        "actualPoints": 92.5,
+        "games": 15
+      },
+      {
+        "name": "Nelson Agholor",
+        "position": "WR",
+        "consensusRank": 150.83333333333334,
+        "actualPoints": 103.4,
+        "games": 14
+      },
+      {
+        "name": "Derek Carr",
+        "position": "QB",
+        "consensusRank": 182.33333333333334,
+        "actualPoints": 257,
+        "games": 17
+      },
+      {
+        "name": "Jamison Crowder",
+        "position": "WR",
+        "consensusRank": 158,
+        "actualPoints": 109.7,
+        "games": 12
+      },
+      {
+        "name": "Jared Cook",
+        "position": "TE",
+        "consensusRank": 179.16666666666666,
+        "actualPoints": 132.4,
+        "games": 16
+      },
+      {
+        "name": "Rashod Bateman",
+        "position": "WR",
+        "consensusRank": 179.33333333333334,
+        "actualPoints": 103.5,
+        "games": 12
+      },
+      {
+        "name": "Tevin Coleman",
+        "position": "RB",
+        "consensusRank": 178,
+        "actualPoints": 51.5,
+        "games": 11
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 194.83333333333334,
+        "actualPoints": 180.9,
+        "games": 13
+      },
+      {
+        "name": "Tre'Quan Smith",
+        "position": "WR",
+        "consensusRank": 179.5,
+        "actualPoints": 87.7,
+        "games": 10
+      },
+      {
+        "name": "Rashaad Penny",
+        "position": "RB",
+        "consensusRank": 173.66666666666666,
+        "actualPoints": 121.7,
+        "games": 10
+      },
+      {
+        "name": "Emmanuel Sanders",
+        "position": "WR",
+        "consensusRank": 166.33333333333334,
+        "actualPoints": 131.7,
+        "games": 14
+      },
+      {
+        "name": "Anthony Firkser",
+        "position": "TE",
+        "consensusRank": 167.66666666666666,
+        "actualPoints": 73.1,
+        "games": 15
+      },
+      {
+        "name": "Trey Lance",
+        "position": "QB",
+        "consensusRank": 173.5,
+        "actualPoints": 64.9,
+        "games": 6
+      },
+      {
+        "name": "Zach Ertz",
+        "position": "TE",
+        "consensusRank": 180,
+        "actualPoints": 180.7,
+        "games": 17
+      },
+      {
+        "name": "Gabe Davis",
+        "position": "WR",
+        "consensusRank": 178.16666666666666,
+        "actualPoints": 125.9,
+        "games": 15
+      },
+      {
+        "name": "Sam Darnold",
+        "position": "QB",
+        "consensusRank": 198.33333333333334,
+        "actualPoints": 157.3,
+        "games": 12
+      },
+      {
+        "name": "Eric Ebron",
+        "position": "TE",
+        "consensusRank": 181.16666666666666,
+        "actualPoints": 32.5,
+        "games": 8
+      },
+      {
+        "name": "Rondale Moore",
+        "position": "WR",
+        "consensusRank": 148.5,
+        "actualPoints": 111.1,
+        "games": 14
+      },
+      {
+        "name": "Jakobi Meyers",
+        "position": "WR",
+        "consensusRank": 135.83333333333334,
+        "actualPoints": 186.3,
+        "games": 16
+      },
+      {
+        "name": "Christian Kirk",
+        "position": "WR",
+        "consensusRank": 195.33333333333334,
+        "actualPoints": 207.6,
+        "games": 17
+      },
+      {
+        "name": "Marquez Callaway",
+        "position": "WR",
+        "consensusRank": 128.5,
+        "actualPoints": 151.8,
+        "games": 17
+      },
+      {
+        "name": "Sony Michel",
+        "position": "RB",
+        "consensusRank": 144,
+        "actualPoints": 146.3,
+        "games": 17
+      },
+      {
+        "name": "Carlos Hyde",
+        "position": "RB",
+        "consensusRank": 173.25,
+        "actualPoints": 45.8,
+        "games": 11
+      }
+    ],
+    "2022": [
+      {
+        "name": "Jonathan Taylor",
+        "position": "RB",
+        "consensusRank": 1.8,
+        "actualPoints": 146.4,
+        "games": 11
+      },
+      {
+        "name": "Christian McCaffrey",
+        "position": "RB",
+        "consensusRank": 1.2,
+        "actualPoints": 356.4,
+        "games": 17
+      },
+      {
+        "name": "Austin Ekeler",
+        "position": "RB",
+        "consensusRank": 3.4,
+        "actualPoints": 372.7,
+        "games": 17
+      },
+      {
+        "name": "Cooper Kupp",
+        "position": "WR",
+        "consensusRank": 7.4,
+        "actualPoints": 201.4,
+        "games": 9
+      },
+      {
+        "name": "Derrick Henry",
+        "position": "RB",
+        "consensusRank": 5.8,
+        "actualPoints": 302.8,
+        "games": 16
+      },
+      {
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "consensusRank": 5.4,
+        "actualPoints": 368.7,
+        "games": 17
+      },
+      {
+        "name": "Najee Harris",
+        "position": "RB",
+        "consensusRank": 6.4,
+        "actualPoints": 223.5,
+        "games": 17
+      },
+      {
+        "name": "Dalvin Cook",
+        "position": "RB",
+        "consensusRank": 5.6,
+        "actualPoints": 237.8,
+        "games": 17
+      },
+      {
+        "name": "Ja'Marr Chase",
+        "position": "WR",
+        "consensusRank": 11.2,
+        "actualPoints": 242.4,
+        "games": 12
+      },
+      {
+        "name": "D'Andre Swift",
+        "position": "RB",
+        "consensusRank": 15.2,
+        "actualPoints": 191.1,
+        "games": 14
+      },
+      {
+        "name": "Joe Mixon",
+        "position": "RB",
+        "consensusRank": 9.2,
+        "actualPoints": 239.5,
+        "games": 14
+      },
+      {
+        "name": "Davante Adams",
+        "position": "WR",
+        "consensusRank": 11.4,
+        "actualPoints": 335.5,
+        "games": 17
+      },
+      {
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "consensusRank": 14.2,
+        "actualPoints": 211.7,
+        "games": 15
+      },
+      {
+        "name": "Stefon Diggs",
+        "position": "WR",
+        "consensusRank": 12,
+        "actualPoints": 316.6,
+        "games": 16
+      },
+      {
+        "name": "Travis Kelce",
+        "position": "TE",
+        "consensusRank": 17.8,
+        "actualPoints": 316.3,
+        "games": 17
+      },
+      {
+        "name": "Aaron Jones",
+        "position": "RB",
+        "consensusRank": 22.6,
+        "actualPoints": 248.6,
+        "games": 17
+      },
+      {
+        "name": "CeeDee Lamb",
+        "position": "WR",
+        "consensusRank": 12.8,
+        "actualPoints": 301.6,
+        "games": 17
+      },
+      {
+        "name": "Leonard Fournette",
+        "position": "RB",
+        "consensusRank": 19.2,
+        "actualPoints": 226.1,
+        "games": 16
+      },
+      {
+        "name": "Tyreek Hill",
+        "position": "WR",
+        "consensusRank": 21.6,
+        "actualPoints": 341.2,
+        "games": 17
+      },
+      {
+        "name": "Curtis Samuel",
+        "position": "WR",
+        "consensusRank": 19.4,
+        "actualPoints": 176.3,
+        "games": 17
+      },
+      {
+        "name": "Mark Andrews",
+        "position": "TE",
+        "consensusRank": 25,
+        "actualPoints": 190.5,
+        "games": 15
+      },
+      {
+        "name": "Nick Chubb",
+        "position": "RB",
+        "consensusRank": 25.6,
+        "actualPoints": 281.4,
+        "games": 17
+      },
+      {
+        "name": "Saquon Barkley",
+        "position": "RB",
+        "consensusRank": 20.2,
+        "actualPoints": 284,
+        "games": 16
+      },
+      {
+        "name": "Jamaal Williams",
+        "position": "RB",
+        "consensusRank": 23.6,
+        "actualPoints": 225.9,
+        "games": 17
+      },
+      {
+        "name": "Mike Evans",
+        "position": "WR",
+        "consensusRank": 20.2,
+        "actualPoints": 225.4,
+        "games": 15
+      },
+      {
+        "name": "Keenan Allen",
+        "position": "WR",
+        "consensusRank": 30,
+        "actualPoints": 164,
+        "games": 10
+      },
+      {
+        "name": "James Conner",
+        "position": "RB",
+        "consensusRank": 22,
+        "actualPoints": 200.2,
+        "games": 13
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 29.8,
+        "actualPoints": 299.6,
+        "games": 17
+      },
+      {
+        "name": "Michael Pittman",
+        "position": "WR",
+        "consensusRank": 30.2,
+        "actualPoints": 216.5,
+        "games": 16
+      },
+      {
+        "name": "Tee Higgins",
+        "position": "WR",
+        "consensusRank": 33,
+        "actualPoints": 220.9,
+        "games": 14
+      },
+      {
+        "name": "Josh Allen",
+        "position": "QB",
+        "consensusRank": 27.4,
+        "actualPoints": 395.5,
+        "games": 16
+      },
+      {
+        "name": "Kyle Pitts",
+        "position": "TE",
+        "consensusRank": 32.8,
+        "actualPoints": 75.6,
+        "games": 10
+      },
+      {
+        "name": "D.J. Moore",
+        "position": "WR",
+        "consensusRank": 33.2,
+        "actualPoints": 199.1,
+        "games": 17
+      },
+      {
+        "name": "Ezekiel Elliott",
+        "position": "RB",
+        "consensusRank": 30.4,
+        "actualPoints": 185.8,
+        "games": 15
+      },
+      {
+        "name": "Cam Akers",
+        "position": "RB",
+        "consensusRank": 38,
+        "actualPoints": 141.3,
+        "games": 15
+      },
+      {
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "consensusRank": 42,
+        "actualPoints": 180.7,
+        "games": 17
+      },
+      {
+        "name": "David Montgomery",
+        "position": "RB",
+        "consensusRank": 39,
+        "actualPoints": 177.7,
+        "games": 16
+      },
+      {
+        "name": "Breece Hall",
+        "position": "RB",
+        "consensusRank": 41.2,
+        "actualPoints": 115.1,
+        "games": 7
+      },
+      {
+        "name": "Mike Williams",
+        "position": "WR",
+        "consensusRank": 38.6,
+        "actualPoints": 176.5,
+        "games": 13
+      },
+      {
+        "name": "Jaylen Waddle",
+        "position": "WR",
+        "consensusRank": 39.4,
+        "actualPoints": 259.2,
+        "games": 17
+      },
+      {
+        "name": "Terry McLaurin",
+        "position": "WR",
+        "consensusRank": 41.6,
+        "actualPoints": 229,
+        "games": 17
+      },
+      {
+        "name": "Justin Herbert",
+        "position": "QB",
+        "consensusRank": 48.2,
+        "actualPoints": 281.3,
+        "games": 17
+      },
+      {
+        "name": "Travis Etienne",
+        "position": "RB",
+        "consensusRank": 34.4,
+        "actualPoints": 203.1,
+        "games": 17
+      },
+      {
+        "name": "Patrick Mahomes",
+        "position": "QB",
+        "consensusRank": 41.6,
+        "actualPoints": 417.4,
+        "games": 17
+      },
+      {
+        "name": "J.K. Dobbins",
+        "position": "RB",
+        "consensusRank": 48.6,
+        "actualPoints": 81.2,
+        "games": 8
+      },
+      {
+        "name": "DK Metcalf",
+        "position": "WR",
+        "consensusRank": 55.4,
+        "actualPoints": 226.8,
+        "games": 17
+      },
+      {
+        "name": "George Kittle",
+        "position": "TE",
+        "consensusRank": 44,
+        "actualPoints": 200.5,
+        "games": 15
+      },
+      {
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "consensusRank": 48,
+        "actualPoints": 159.4,
+        "games": 15
+      },
+      {
+        "name": "Brandin Cooks",
+        "position": "WR",
+        "consensusRank": 45.2,
+        "actualPoints": 145.6,
+        "games": 13
+      },
+      {
+        "name": "Elijah Mitchell",
+        "position": "RB",
+        "consensusRank": 54.6,
+        "actualPoints": 43.6,
+        "games": 5
+      },
+      {
+        "name": "Darren Waller",
+        "position": "TE",
+        "consensusRank": 47.25,
+        "actualPoints": 84.8,
+        "games": 8
+      },
+      {
+        "name": "Josh Jacobs",
+        "position": "RB",
+        "consensusRank": 51.8,
+        "actualPoints": 328.3,
+        "games": 17
+      },
+      {
+        "name": "Lamar Jackson",
+        "position": "QB",
+        "consensusRank": 62.8,
+        "actualPoints": 236.1,
+        "games": 12
+      },
+      {
+        "name": "Brian Robinson",
+        "position": "RB",
+        "consensusRank": 53.2,
+        "actualPoints": 112.7,
+        "games": 12
+      },
+      {
+        "name": "Jerry Jeudy",
+        "position": "WR",
+        "consensusRank": 51.4,
+        "actualPoints": 204.2,
+        "games": 15
+      },
+      {
+        "name": "Chris Godwin",
+        "position": "WR",
+        "consensusRank": 58.2,
+        "actualPoints": 222.8,
+        "games": 15
+      },
+      {
+        "name": "Marquise Brown",
+        "position": "WR",
+        "consensusRank": 63.8,
+        "actualPoints": 156,
+        "games": 12
+      },
+      {
+        "name": "Clyde Edwards-Helaire",
+        "position": "RB",
+        "consensusRank": 60.2,
+        "actualPoints": 98.3,
+        "games": 10
+      },
+      {
+        "name": "Michael Thomas",
+        "position": "WR",
+        "consensusRank": 56.8,
+        "actualPoints": 51.1,
+        "games": 3
+      },
+      {
+        "name": "Miles Sanders",
+        "position": "RB",
+        "consensusRank": 67.4,
+        "actualPoints": 216.7,
+        "games": 17
+      },
+      {
+        "name": "A.J. Dillon",
+        "position": "RB",
+        "consensusRank": 65.2,
+        "actualPoints": 167.6,
+        "games": 17
+      },
+      {
+        "name": "Darnell Mooney",
+        "position": "WR",
+        "consensusRank": 72.8,
+        "actualPoints": 101.5,
+        "games": 11
+      },
+      {
+        "name": "Kyler Murray",
+        "position": "QB",
+        "consensusRank": 57.2,
+        "actualPoints": 200.5,
+        "games": 11
+      },
+      {
+        "name": "Spencer Brown",
+        "position": "RB",
+        "consensusRank": 68.8,
+        "actualPoints": 7.3,
+        "games": 2
+      },
+      {
+        "name": "Amari Cooper",
+        "position": "WR",
+        "consensusRank": 64.4,
+        "actualPoints": 246,
+        "games": 17
+      },
+      {
+        "name": "Gabe Davis",
+        "position": "WR",
+        "consensusRank": 73.2,
+        "actualPoints": 171.6,
+        "games": 15
+      },
+      {
+        "name": "Rashod Bateman",
+        "position": "WR",
+        "consensusRank": 69.4,
+        "actualPoints": 53.5,
+        "games": 6
+      },
+      {
+        "name": "Dalton Schultz",
+        "position": "TE",
+        "consensusRank": 70.25,
+        "actualPoints": 142.7,
+        "games": 15
+      },
+      {
+        "name": "Joe Burrow",
+        "position": "QB",
+        "consensusRank": 59.6,
+        "actualPoints": 350.7,
+        "games": 16
+      },
+      {
+        "name": "Jalen Hurts",
+        "position": "QB",
+        "consensusRank": 66.6,
+        "actualPoints": 378,
+        "games": 15
+      },
+      {
+        "name": "Antonio Gibson",
+        "position": "RB",
+        "consensusRank": 71,
+        "actualPoints": 165.9,
+        "games": 15
+      },
+      {
+        "name": "Kareem Hunt",
+        "position": "RB",
+        "consensusRank": 79.8,
+        "actualPoints": 126.8,
+        "games": 17
+      },
+      {
+        "name": "Chase Edmonds",
+        "position": "RB",
+        "consensusRank": 62,
+        "actualPoints": 74.2,
+        "games": 13
+      },
+      {
+        "name": "Damien Harris",
+        "position": "RB",
+        "consensusRank": 78.8,
+        "actualPoints": 90.9,
+        "games": 11
+      },
+      {
+        "name": "Adam Thielen",
+        "position": "WR",
+        "consensusRank": 67,
+        "actualPoints": 180,
+        "games": 17
+      },
+      {
+        "name": "JuJu Smith-Schuster",
+        "position": "WR",
+        "consensusRank": 68.8,
+        "actualPoints": 185.3,
+        "games": 16
+      },
+      {
+        "name": "Devin Singletary",
+        "position": "RB",
+        "consensusRank": 72.8,
+        "actualPoints": 177.9,
+        "games": 16
+      },
+      {
+        "name": "Rhamondre Stevenson",
+        "position": "RB",
+        "consensusRank": 73,
+        "actualPoints": 249.1,
+        "games": 17
+      },
+      {
+        "name": "Tony Pollard",
+        "position": "RB",
+        "consensusRank": 79.25,
+        "actualPoints": 248.8,
+        "games": 16
+      },
+      {
+        "name": "T.J. Hockenson",
+        "position": "TE",
+        "consensusRank": 83.8,
+        "actualPoints": 215.4,
+        "games": 17
+      },
+      {
+        "name": "Elijah Moore",
+        "position": "WR",
+        "consensusRank": 78.6,
+        "actualPoints": 88.1,
+        "games": 14
+      },
+      {
+        "name": "Russell Wilson",
+        "position": "QB",
+        "consensusRank": 84.4,
+        "actualPoints": 225.8,
+        "games": 15
+      },
+      {
+        "name": "DeVonta Smith",
+        "position": "WR",
+        "consensusRank": 86.4,
+        "actualPoints": 254.6,
+        "games": 17
+      },
+      {
+        "name": "Hunter Renfrow",
+        "position": "WR",
+        "consensusRank": 86.8,
+        "actualPoints": 79,
+        "games": 10
+      },
+      {
+        "name": "Rashaad Penny",
+        "position": "RB",
+        "consensusRank": 74,
+        "actualPoints": 52.2,
+        "games": 5
+      },
+      {
+        "name": "Cordarrelle Patterson",
+        "position": "RB",
+        "consensusRank": 82,
+        "actualPoints": 154.7,
+        "games": 13
+      },
+      {
+        "name": "Dameon Pierce",
+        "position": "RB",
+        "consensusRank": 88,
+        "actualPoints": 166.4,
+        "games": 13
+      },
+      {
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "consensusRank": 85,
+        "actualPoints": 141.2,
+        "games": 12
+      },
+      {
+        "name": "Tom Brady",
+        "position": "QB",
+        "consensusRank": 98.4,
+        "actualPoints": 271.7,
+        "games": 17
+      },
+      {
+        "name": "Drake London",
+        "position": "WR",
+        "consensusRank": 87,
+        "actualPoints": 178.6,
+        "games": 17
+      },
+      {
+        "name": "Dak Prescott",
+        "position": "QB",
+        "consensusRank": 92.75,
+        "actualPoints": 198.6,
+        "games": 12
+      },
+      {
+        "name": "Brandon Aiyuk",
+        "position": "WR",
+        "consensusRank": 82.6,
+        "actualPoints": 227.8,
+        "games": 17
+      },
+      {
+        "name": "DeAndre Hopkins",
+        "position": "WR",
+        "consensusRank": 95.6,
+        "actualPoints": 151.7,
+        "games": 9
+      },
+      {
+        "name": "Allen Lazard",
+        "position": "WR",
+        "consensusRank": 93.8,
+        "actualPoints": 174.8,
+        "games": 15
+      },
+      {
+        "name": "Kenneth Walker",
+        "position": "RB",
+        "consensusRank": 99.2,
+        "actualPoints": 202.5,
+        "games": 15
+      },
+      {
+        "name": "Christian Kirk",
+        "position": "WR",
+        "consensusRank": 93.6,
+        "actualPoints": 243.9,
+        "games": 17
+      },
+      {
+        "name": "Aaron Rodgers",
+        "position": "QB",
+        "consensusRank": 95.2,
+        "actualPoints": 239.2,
+        "games": 17
+      },
+      {
+        "name": "Tyler Lockett",
+        "position": "WR",
+        "consensusRank": 93.75,
+        "actualPoints": 239.3,
+        "games": 16
+      },
+      {
+        "name": "Zach Ertz",
+        "position": "TE",
+        "consensusRank": 97.4,
+        "actualPoints": 115.6,
+        "games": 10
+      },
+      {
+        "name": "Kadarius Toney",
+        "position": "WR",
+        "consensusRank": 97.6,
+        "actualPoints": 59.3,
+        "games": 9
+      },
+      {
+        "name": "Matthew Stafford",
+        "position": "QB",
+        "consensusRank": 86.2,
+        "actualPoints": 108.4,
+        "games": 9
+      },
+      {
+        "name": "James Cook",
+        "position": "RB",
+        "consensusRank": 94.8,
+        "actualPoints": 105.7,
+        "games": 16
+      },
+      {
+        "name": "Melvin Gordon",
+        "position": "RB",
+        "consensusRank": 93.5,
+        "actualPoints": 87.1,
+        "games": 10
+      },
+      {
+        "name": "Trey Lance",
+        "position": "QB",
+        "consensusRank": 100.25,
+        "actualPoints": 12.5,
+        "games": 2
+      },
+      {
+        "name": "Robert Woods",
+        "position": "WR",
+        "consensusRank": 97.25,
+        "actualPoints": 117.7,
+        "games": 17
+      },
+      {
+        "name": "Nyheim Hines",
+        "position": "RB",
+        "consensusRank": 114.6,
+        "actualPoints": 81.4,
+        "games": 16
+      },
+      {
+        "name": "Chris Olave",
+        "position": "WR",
+        "consensusRank": 108.4,
+        "actualPoints": 198.2,
+        "games": 15
+      },
+      {
+        "name": "Cole Kmet",
+        "position": "TE",
+        "consensusRank": 116.6,
+        "actualPoints": 147.3,
+        "games": 17
+      },
+      {
+        "name": "Chase Claypool",
+        "position": "WR",
+        "consensusRank": 111.4,
+        "actualPoints": 105,
+        "games": 15
+      },
+      {
+        "name": "Derek Carr",
+        "position": "QB",
+        "consensusRank": 118.6,
+        "actualPoints": 219.1,
+        "games": 15
+      },
+      {
+        "name": "Treylon Burks",
+        "position": "WR",
+        "consensusRank": 120,
+        "actualPoints": 88.1,
+        "games": 11
+      },
+      {
+        "name": "Pat Freiermuth",
+        "position": "TE",
+        "consensusRank": 113.75,
+        "actualPoints": 148.2,
+        "games": 15
+      },
+      {
+        "name": "Michael Carter",
+        "position": "RB",
+        "consensusRank": 136,
+        "actualPoints": 126,
+        "games": 16
+      },
+      {
+        "name": "Dawson Knox",
+        "position": "TE",
+        "consensusRank": 112.6,
+        "actualPoints": 135.7,
+        "games": 15
+      },
+      {
+        "name": "Kirk Cousins",
+        "position": "QB",
+        "consensusRank": 114,
+        "actualPoints": 291.6,
+        "games": 17
+      },
+      {
+        "name": "Darrell Henderson",
+        "position": "RB",
+        "consensusRank": 110.2,
+        "actualPoints": 73.5,
+        "games": 10
+      }
+    ],
+    "2023": [
+      {
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "consensusRank": 1,
+        "actualPoints": 204.2,
+        "games": 10
+      },
+      {
+        "name": "Ja'Marr Chase",
+        "position": "WR",
+        "consensusRank": 2.3333333333333335,
+        "actualPoints": 262.7,
+        "games": 16
+      },
+      {
+        "name": "Christian McCaffrey",
+        "position": "RB",
+        "consensusRank": 2.6666666666666665,
+        "actualPoints": 391.3,
+        "games": 16
+      },
+      {
+        "name": "Cooper Kupp",
+        "position": "WR",
+        "consensusRank": 5.166666666666667,
+        "actualPoints": 164.4,
+        "games": 12
+      },
+      {
+        "name": "Tyreek Hill",
+        "position": "WR",
+        "consensusRank": 5.666666666666667,
+        "actualPoints": 376.4,
+        "games": 16
+      },
+      {
+        "name": "Travis Kelce",
+        "position": "TE",
+        "consensusRank": 7.166666666666667,
+        "actualPoints": 219.4,
+        "games": 15
+      },
+      {
+        "name": "Austin Ekeler",
+        "position": "RB",
+        "consensusRank": 5.333333333333333,
+        "actualPoints": 185.4,
+        "games": 14
+      },
+      {
+        "name": "Stefon Diggs",
+        "position": "WR",
+        "consensusRank": 9.166666666666666,
+        "actualPoints": 273.8,
+        "games": 17
+      },
+      {
+        "name": "CeeDee Lamb",
+        "position": "WR",
+        "consensusRank": 12.833333333333334,
+        "actualPoints": 405.2,
+        "games": 17
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 13.833333333333334,
+        "actualPoints": 289.6,
+        "games": 17
+      },
+      {
+        "name": "Saquon Barkley",
+        "position": "RB",
+        "consensusRank": 9.166666666666666,
+        "actualPoints": 223.2,
+        "games": 14
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 15.5,
+        "actualPoints": 289.6,
+        "games": 17
+      },
+      {
+        "name": "Davante Adams",
+        "position": "WR",
+        "consensusRank": 14.5,
+        "actualPoints": 265.4,
+        "games": 17
+      },
+      {
+        "name": "Garrett Wilson",
+        "position": "WR",
+        "consensusRank": 17.666666666666668,
+        "actualPoints": 213.2,
+        "games": 17
+      },
+      {
+        "name": "Tony Pollard",
+        "position": "RB",
+        "consensusRank": 12.5,
+        "actualPoints": 222.6,
+        "games": 17
+      },
+      {
+        "name": "Bijan Robinson",
+        "position": "RB",
+        "consensusRank": 11.166666666666666,
+        "actualPoints": 246.3,
+        "games": 17
+      },
+      {
+        "name": "Nick Chubb",
+        "position": "RB",
+        "consensusRank": 15.333333333333334,
+        "actualPoints": 23.1,
+        "games": 2
+      },
+      {
+        "name": "Jaylen Waddle",
+        "position": "WR",
+        "consensusRank": 21,
+        "actualPoints": 198.6,
+        "games": 14
+      },
+      {
+        "name": "Chris Olave",
+        "position": "WR",
+        "consensusRank": 25.166666666666668,
+        "actualPoints": 231.3,
+        "games": 16
+      },
+      {
+        "name": "Derrick Henry",
+        "position": "RB",
+        "consensusRank": 18.5,
+        "actualPoints": 246.7,
+        "games": 17
+      },
+      {
+        "name": "DeVonta Smith",
+        "position": "WR",
+        "consensusRank": 24.166666666666668,
+        "actualPoints": 227.6,
+        "games": 16
+      },
+      {
+        "name": "Keenan Allen",
+        "position": "WR",
+        "consensusRank": 33.5,
+        "actualPoints": 278.9,
+        "games": 13
+      },
+      {
+        "name": "Josh Jacobs",
+        "position": "RB",
+        "consensusRank": 18.166666666666668,
+        "actualPoints": 181.1,
+        "games": 13
+      },
+      {
+        "name": "Patrick Mahomes",
+        "position": "QB",
+        "consensusRank": 26.666666666666668,
+        "actualPoints": 280.2,
+        "games": 16
+      },
+      {
+        "name": "Jonathan Taylor",
+        "position": "RB",
+        "consensusRank": 31.333333333333332,
+        "actualPoints": 156.4,
+        "games": 10
+      },
+      {
+        "name": "Tee Higgins",
+        "position": "WR",
+        "consensusRank": 28.833333333333332,
+        "actualPoints": 137.6,
+        "games": 12
+      },
+      {
+        "name": "Jalen Hurts",
+        "position": "QB",
+        "consensusRank": 27.333333333333332,
+        "actualPoints": 356.8,
+        "games": 17
+      },
+      {
+        "name": "Josh Allen",
+        "position": "QB",
+        "consensusRank": 28.166666666666668,
+        "actualPoints": 394.6,
+        "games": 17
+      },
+      {
+        "name": "DK Metcalf",
+        "position": "WR",
+        "consensusRank": 34.5,
+        "actualPoints": 225.4,
+        "games": 16
+      },
+      {
+        "name": "Mark Andrews",
+        "position": "TE",
+        "consensusRank": 28.166666666666668,
+        "actualPoints": 135.4,
+        "games": 10
+      },
+      {
+        "name": "Rhamondre Stevenson",
+        "position": "RB",
+        "consensusRank": 26.333333333333332,
+        "actualPoints": 145.7,
+        "games": 12
+      },
+      {
+        "name": "Joe Mixon",
+        "position": "RB",
+        "consensusRank": 26,
+        "actualPoints": 267,
+        "games": 17
+      },
+      {
+        "name": "Calvin Ridley",
+        "position": "WR",
+        "consensusRank": 38.833333333333336,
+        "actualPoints": 229.9,
+        "games": 17
+      },
+      {
+        "name": "Amari Cooper",
+        "position": "WR",
+        "consensusRank": 38,
+        "actualPoints": 227,
+        "games": 15
+      },
+      {
+        "name": "Najee Harris",
+        "position": "RB",
+        "consensusRank": 33.5,
+        "actualPoints": 195.5,
+        "games": 17
+      },
+      {
+        "name": "Travis Etienne",
+        "position": "RB",
+        "consensusRank": 30.5,
+        "actualPoints": 282.4,
+        "games": 17
+      },
+      {
+        "name": "Lamar Jackson",
+        "position": "QB",
+        "consensusRank": 44.333333333333336,
+        "actualPoints": 331.2,
+        "games": 16
+      },
+      {
+        "name": "Jahmyr Gibbs",
+        "position": "RB",
+        "consensusRank": 35.166666666666664,
+        "actualPoints": 242.1,
+        "games": 15
+      },
+      {
+        "name": "Aaron Jones",
+        "position": "RB",
+        "consensusRank": 35.166666666666664,
+        "actualPoints": 134.9,
+        "games": 11
+      },
+      {
+        "name": "Deebo Samuel Sr.",
+        "position": "WR",
+        "consensusRank": 39.666666666666664,
+        "actualPoints": 243.7,
+        "games": 15
+      },
+      {
+        "name": "Chris Godwin",
+        "position": "WR",
+        "consensusRank": 49.833333333333336,
+        "actualPoints": 209.2,
+        "games": 17
+      },
+      {
+        "name": "DeAndre Hopkins",
+        "position": "WR",
+        "consensusRank": 47.5,
+        "actualPoints": 223.6,
+        "games": 17
+      },
+      {
+        "name": "Jerry Jeudy",
+        "position": "WR",
+        "consensusRank": 55.5,
+        "actualPoints": 141.8,
+        "games": 16
+      },
+      {
+        "name": "Drake London",
+        "position": "WR",
+        "consensusRank": 50,
+        "actualPoints": 174.4,
+        "games": 16
+      },
+      {
+        "name": "DJ Moore",
+        "position": "WR",
+        "consensusRank": 46.166666666666664,
+        "actualPoints": 286.5,
+        "games": 17
+      },
+      {
+        "name": "Terry McLaurin",
+        "position": "WR",
+        "consensusRank": 59.333333333333336,
+        "actualPoints": 203.2,
+        "games": 17
+      },
+      {
+        "name": "Joe Burrow",
+        "position": "QB",
+        "consensusRank": 50.166666666666664,
+        "actualPoints": 147.2,
+        "games": 10
+      },
+      {
+        "name": "Christian Watson",
+        "position": "WR",
+        "consensusRank": 53.166666666666664,
+        "actualPoints": 101.3,
+        "games": 9
+      },
+      {
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "consensusRank": 57,
+        "actualPoints": 152.7,
+        "games": 13
+      },
+      {
+        "name": "Justin Fields",
+        "position": "QB",
+        "consensusRank": 55,
+        "actualPoints": 230.2,
+        "games": 13
+      },
+      {
+        "name": "T.J. Hockenson",
+        "position": "TE",
+        "consensusRank": 49.5,
+        "actualPoints": 219,
+        "games": 15
+      },
+      {
+        "name": "Justin Herbert",
+        "position": "QB",
+        "consensusRank": 60.666666666666664,
+        "actualPoints": 234.2,
+        "games": 13
+      },
+      {
+        "name": "Brandon Aiyuk",
+        "position": "WR",
+        "consensusRank": 59,
+        "actualPoints": 249.2,
+        "games": 16
+      },
+      {
+        "name": "Tyler Lockett",
+        "position": "WR",
+        "consensusRank": 62,
+        "actualPoints": 202.4,
+        "games": 17
+      },
+      {
+        "name": "Breece Hall",
+        "position": "RB",
+        "consensusRank": 48.166666666666664,
+        "actualPoints": 290.5,
+        "games": 17
+      },
+      {
+        "name": "Mike Williams",
+        "position": "WR",
+        "consensusRank": 60.5,
+        "actualPoints": 50.2,
+        "games": 3
+      },
+      {
+        "name": "Christian Kirk",
+        "position": "WR",
+        "consensusRank": 64,
+        "actualPoints": 150.3,
+        "games": 12
+      },
+      {
+        "name": "Marquise Brown",
+        "position": "WR",
+        "consensusRank": 72.33333333333333,
+        "actualPoints": 134.7,
+        "games": 13
+      },
+      {
+        "name": "Michael Pittman",
+        "position": "WR",
+        "consensusRank": 71.5,
+        "actualPoints": 252.2,
+        "games": 16
+      },
+      {
+        "name": "Kenneth Walker III",
+        "position": "RB",
+        "consensusRank": 46.666666666666664,
+        "actualPoints": 199.4,
+        "games": 15
+      },
+      {
+        "name": "Miles Sanders",
+        "position": "RB",
+        "consensusRank": 53.5,
+        "actualPoints": 87.6,
+        "games": 16
+      },
+      {
+        "name": "Mike Evans",
+        "position": "WR",
+        "consensusRank": 66.66666666666667,
+        "actualPoints": 282.5,
+        "games": 17
+      },
+      {
+        "name": "Alexander Mattison",
+        "position": "RB",
+        "consensusRank": 56.666666666666664,
+        "actualPoints": 133.2,
+        "games": 16
+      },
+      {
+        "name": "Dameon Pierce",
+        "position": "RB",
+        "consensusRank": 51,
+        "actualPoints": 82.7,
+        "games": 13
+      },
+      {
+        "name": "Darren Waller",
+        "position": "TE",
+        "consensusRank": 56.5,
+        "actualPoints": 113.2,
+        "games": 12
+      },
+      {
+        "name": "Trevor Lawrence",
+        "position": "QB",
+        "consensusRank": 76.5,
+        "actualPoints": 262.5,
+        "games": 16
+      },
+      {
+        "name": "J.K. Dobbins",
+        "position": "RB",
+        "consensusRank": 56.666666666666664,
+        "actualPoints": 11.7,
+        "games": 1
+      },
+      {
+        "name": "James Conner",
+        "position": "RB",
+        "consensusRank": 58.833333333333336,
+        "actualPoints": 201.5,
+        "games": 13
+      },
+      {
+        "name": "Jahan Dotson",
+        "position": "WR",
+        "consensusRank": 75.66666666666667,
+        "actualPoints": 124.8,
+        "games": 17
+      },
+      {
+        "name": "Cam Akers",
+        "position": "RB",
+        "consensusRank": 64,
+        "actualPoints": 46.7,
+        "games": 7
+      },
+      {
+        "name": "George Kittle",
+        "position": "TE",
+        "consensusRank": 64.16666666666667,
+        "actualPoints": 203.2,
+        "games": 16
+      },
+      {
+        "name": "Rachaad White",
+        "position": "RB",
+        "consensusRank": 60.666666666666664,
+        "actualPoints": 267.9,
+        "games": 17
+      },
+      {
+        "name": "Kyle Pitts",
+        "position": "TE",
+        "consensusRank": 68.66666666666667,
+        "actualPoints": 137.3,
+        "games": 17
+      },
+      {
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "consensusRank": 66.83333333333333,
+        "actualPoints": 136.3,
+        "games": 14
+      },
+      {
+        "name": "George Pickens",
+        "position": "WR",
+        "consensusRank": 83,
+        "actualPoints": 208.8,
+        "games": 17
+      },
+      {
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "consensusRank": 66.33333333333333,
+        "actualPoints": 233,
+        "games": 13
+      },
+      {
+        "name": "James Cook",
+        "position": "RB",
+        "consensusRank": 63.833333333333336,
+        "actualPoints": 232.7,
+        "games": 17
+      },
+      {
+        "name": "Javonte Williams",
+        "position": "RB",
+        "consensusRank": 67.83333333333333,
+        "actualPoints": 179.2,
+        "games": 16
+      },
+      {
+        "name": "Brandin Cooks",
+        "position": "WR",
+        "consensusRank": 93.16666666666667,
+        "actualPoints": 173.2,
+        "games": 16
+      },
+      {
+        "name": "Jordan Addison",
+        "position": "WR",
+        "consensusRank": 82.5,
+        "actualPoints": 221.3,
+        "games": 17
+      },
+      {
+        "name": "D.J. Montgomery",
+        "position": "WR",
+        "consensusRank": 76.33333333333333,
+        "actualPoints": 14.6,
+        "games": 2
+      },
+      {
+        "name": "Jaxon Smith-Njigba",
+        "position": "WR",
+        "consensusRank": 93.66666666666667,
+        "actualPoints": 149.8,
+        "games": 17
+      },
+      {
+        "name": "Gabe Davis",
+        "position": "WR",
+        "consensusRank": 89.66666666666667,
+        "actualPoints": 161.4,
+        "games": 16
+      },
+      {
+        "name": "Treylon Burks",
+        "position": "WR",
+        "consensusRank": 99,
+        "actualPoints": 39.9,
+        "games": 9
+      },
+      {
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "consensusRank": 89,
+        "actualPoints": 190.2,
+        "games": 16
+      },
+      {
+        "name": "D'Andre Swift",
+        "position": "RB",
+        "consensusRank": 81.33333333333333,
+        "actualPoints": 199.3,
+        "games": 16
+      },
+      {
+        "name": "Isiah Pacheco",
+        "position": "RB",
+        "consensusRank": 77.83333333333333,
+        "actualPoints": 213.9,
+        "games": 14
+      },
+      {
+        "name": "JuJu Smith-Schuster",
+        "position": "WR",
+        "consensusRank": 96.5,
+        "actualPoints": 61,
+        "games": 11
+      },
+      {
+        "name": "Elijah Moore",
+        "position": "WR",
+        "consensusRank": 103.33333333333333,
+        "actualPoints": 132.1,
+        "games": 16
+      },
+      {
+        "name": "Michael Thomas",
+        "position": "WR",
+        "consensusRank": 97,
+        "actualPoints": 89.8,
+        "games": 10
+      },
+      {
+        "name": "Dalvin Cook",
+        "position": "RB",
+        "consensusRank": 80.83333333333333,
+        "actualPoints": 40.2,
+        "games": 14
+      },
+      {
+        "name": "Deshaun Watson",
+        "position": "QB",
+        "consensusRank": 90.5,
+        "actualPoints": 86.8,
+        "games": 6
+      },
+      {
+        "name": "Antonio Gibson",
+        "position": "RB",
+        "consensusRank": 91.16666666666667,
+        "actualPoints": 127.4,
+        "games": 16
+      },
+      {
+        "name": "Zay Flowers",
+        "position": "WR",
+        "consensusRank": 99.66666666666667,
+        "actualPoints": 206.4,
+        "games": 16
+      },
+      {
+        "name": "Dak Prescott",
+        "position": "QB",
+        "consensusRank": 90.83333333333333,
+        "actualPoints": 342.8,
+        "games": 17
+      },
+      {
+        "name": "Evan Engram",
+        "position": "TE",
+        "consensusRank": 93.66666666666667,
+        "actualPoints": 230.3,
+        "games": 17
+      },
+      {
+        "name": "Khalil Herbert",
+        "position": "RB",
+        "consensusRank": 83,
+        "actualPoints": 112.5,
+        "games": 12
+      },
+      {
+        "name": "Tua Tagovailoa",
+        "position": "QB",
+        "consensusRank": 93.66666666666667,
+        "actualPoints": 272.4,
+        "games": 17
+      },
+      {
+        "name": "Rashod Bateman",
+        "position": "WR",
+        "consensusRank": 108.33333333333333,
+        "actualPoints": 76.5,
+        "games": 15
+      },
+      {
+        "name": "Jakobi Meyers",
+        "position": "WR",
+        "consensusRank": 112.33333333333333,
+        "actualPoints": 218.6,
+        "games": 16
+      },
+      {
+        "name": "Pat Freiermuth",
+        "position": "TE",
+        "consensusRank": 97.16666666666667,
+        "actualPoints": 76.8,
+        "games": 11
+      },
+      {
+        "name": "AJ Dillon",
+        "position": "RB",
+        "consensusRank": 93.33333333333333,
+        "actualPoints": 117.6,
+        "games": 15
+      },
+      {
+        "name": "Daniel Jones",
+        "position": "QB",
+        "consensusRank": 106,
+        "actualPoints": 57,
+        "games": 6
+      },
+      {
+        "name": "Quentin Johnston",
+        "position": "WR",
+        "consensusRank": 110.5,
+        "actualPoints": 94,
+        "games": 17
+      },
+      {
+        "name": "Skyy Moore",
+        "position": "WR",
+        "consensusRank": 112.83333333333333,
+        "actualPoints": 53.7,
+        "games": 13
+      },
+      {
+        "name": "Bijan Robinson",
+        "position": "RB",
+        "consensusRank": 92.33333333333333,
+        "actualPoints": 246.3,
+        "games": 17
+      },
+      {
+        "name": "Kirk Cousins",
+        "position": "QB",
+        "consensusRank": 109.5,
+        "actualPoints": 149.7,
+        "games": 8
+      },
+      {
+        "name": "Geno Smith",
+        "position": "QB",
+        "consensusRank": 126.33333333333333,
+        "actualPoints": 227.3,
+        "games": 15
+      },
+      {
+        "name": "Samaje Perine",
+        "position": "RB",
+        "consensusRank": 102.66666666666667,
+        "actualPoints": 121.3,
+        "games": 17
+      },
+      {
+        "name": "Kadarius Toney",
+        "position": "WR",
+        "consensusRank": 116.33333333333333,
+        "actualPoints": 53,
+        "games": 13
+      },
+      {
+        "name": "Nico Collins",
+        "position": "WR",
+        "consensusRank": 116,
+        "actualPoints": 260.4,
+        "games": 15
+      },
+      {
+        "name": "David Njoku",
+        "position": "TE",
+        "consensusRank": 103.83333333333333,
+        "actualPoints": 201.2,
+        "games": 16
+      },
+      {
+        "name": "Zach Charbonnet",
+        "position": "RB",
+        "consensusRank": 110.5,
+        "actualPoints": 106.1,
+        "games": 16
+      },
+      {
+        "name": "Anthony Richardson",
+        "position": "QB",
+        "consensusRank": 106.5,
+        "actualPoints": 72.7,
+        "games": 4
+      },
+      {
+        "name": "Jerick McKinnon",
+        "position": "RB",
+        "consensusRank": 121.66666666666667,
+        "actualPoints": 84.4,
+        "games": 12
+      },
+      {
+        "name": "Allen Lazard",
+        "position": "WR",
+        "consensusRank": 125.66666666666667,
+        "actualPoints": 60.1,
+        "games": 13
+      },
+      {
+        "name": "Aaron Rodgers",
+        "position": "QB",
+        "consensusRank": 125.5,
+        "actualPoints": 0,
+        "games": 1
+      },
+      {
+        "name": "Tyler Boyd",
+        "position": "WR",
+        "consensusRank": 139.66666666666666,
+        "actualPoints": 144.8,
+        "games": 17
+      },
+      {
+        "name": "Jamaal Williams",
+        "position": "RB",
+        "consensusRank": 112.33333333333333,
+        "actualPoints": 60.8,
+        "games": 13
+      },
+      {
+        "name": "Darnell Mooney",
+        "position": "WR",
+        "consensusRank": 134,
+        "actualPoints": 78.9,
+        "games": 14
+      },
+      {
+        "name": "Romeo Doubs",
+        "position": "WR",
+        "consensusRank": 134.66666666666666,
+        "actualPoints": 174.4,
+        "games": 17
+      },
+      {
+        "name": "Rondale Moore",
+        "position": "WR",
+        "consensusRank": 127,
+        "actualPoints": 105,
+        "games": 17
+      },
+      {
+        "name": "Odell Beckham",
+        "position": "WR",
+        "consensusRank": 130.5,
+        "actualPoints": 107.5,
+        "games": 14
+      },
+      {
+        "name": "Jared Goff",
+        "position": "QB",
+        "consensusRank": 136.5,
+        "actualPoints": 289.1,
+        "games": 17
+      },
+      {
+        "name": "Dalton Schultz",
+        "position": "TE",
+        "consensusRank": 120.33333333333333,
+        "actualPoints": 150.5,
+        "games": 15
+      },
+      {
+        "name": "Zay Jones",
+        "position": "WR",
+        "consensusRank": 141.5,
+        "actualPoints": 78.1,
+        "games": 9
+      },
+      {
+        "name": "Tyler Higbee",
+        "position": "TE",
+        "consensusRank": 121.5,
+        "actualPoints": 108.5,
+        "games": 15
+      },
+      {
+        "name": "Rashaad Penny",
+        "position": "RB",
+        "consensusRank": 109.33333333333333,
+        "actualPoints": 4.8,
+        "games": 3
+      },
+      {
+        "name": "Russell Wilson",
+        "position": "QB",
+        "consensusRank": 133.33333333333334,
+        "actualPoints": 256.9,
+        "games": 15
+      },
+      {
+        "name": "Adam Thielen",
+        "position": "WR",
+        "consensusRank": 142.33333333333334,
+        "actualPoints": 231,
+        "games": 17
+      },
+      {
+        "name": "Jameson Williams",
+        "position": "WR",
+        "consensusRank": 139.83333333333334,
+        "actualPoints": 80.3,
+        "games": 12
+      },
+      {
+        "name": "Damien Harris",
+        "position": "RB",
+        "consensusRank": 122,
+        "actualPoints": 19,
+        "games": 6
+      },
+      {
+        "name": "Jaylen Warren",
+        "position": "RB",
+        "consensusRank": 118.66666666666667,
+        "actualPoints": 196.4,
+        "games": 17
+      }
+    ],
+    "2024": [
+      {
+        "name": "Christian McCaffrey",
+        "position": "RB",
+        "consensusRank": 1,
+        "actualPoints": 47.8,
+        "games": 4
+      },
+      {
+        "name": "CeeDee Lamb",
+        "position": "WR",
+        "consensusRank": 2.6666666666666665,
+        "actualPoints": 263.4,
+        "games": 15
+      },
+      {
+        "name": "Tyreek Hill",
+        "position": "WR",
+        "consensusRank": 2.888888888888889,
+        "actualPoints": 218.2,
+        "games": 17
+      },
+      {
+        "name": "Ja'Marr Chase",
+        "position": "WR",
+        "consensusRank": 5.777777777777778,
+        "actualPoints": 403,
+        "games": 17
+      },
+      {
+        "name": "Amon-Ra St. Brown",
+        "position": "WR",
+        "consensusRank": 5.888888888888889,
+        "actualPoints": 316.2,
+        "games": 17
+      },
+      {
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "consensusRank": 6.444444444444445,
+        "actualPoints": 317.5,
+        "games": 17
+      },
+      {
+        "name": "Bijan Robinson",
+        "position": "RB",
+        "consensusRank": 5.888888888888889,
+        "actualPoints": 341.7,
+        "games": 17
+      },
+      {
+        "name": "Breece Hall",
+        "position": "RB",
+        "consensusRank": 5.555555555555555,
+        "actualPoints": 240.9,
+        "games": 16
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "consensusRank": 9.333333333333334,
+        "actualPoints": 216.9,
+        "games": 13
+      },
+      {
+        "name": "Garrett Wilson",
+        "position": "WR",
+        "consensusRank": 11.333333333333334,
+        "actualPoints": 251.9,
+        "games": 17
+      },
+      {
+        "name": "Jahmyr Gibbs",
+        "position": "RB",
+        "consensusRank": 11.777777777777779,
+        "actualPoints": 354.9,
+        "games": 17
+      },
+      {
+        "name": "Puka Nacua",
+        "position": "WR",
+        "consensusRank": 13.666666666666666,
+        "actualPoints": 206.6,
+        "games": 11
+      },
+      {
+        "name": "Jonathan Taylor",
+        "position": "RB",
+        "consensusRank": 11.444444444444445,
+        "actualPoints": 246.7,
+        "games": 14
+      },
+      {
+        "name": "Davante Adams",
+        "position": "WR",
+        "consensusRank": 18.555555555555557,
+        "actualPoints": 241.3,
+        "games": 14
+      },
+      {
+        "name": "Marvin Harrison",
+        "position": "WR",
+        "consensusRank": 16.333333333333332,
+        "actualPoints": 196.5,
+        "games": 17
+      },
+      {
+        "name": "Saquon Barkley",
+        "position": "RB",
+        "consensusRank": 12.444444444444445,
+        "actualPoints": 355.3,
+        "games": 16
+      },
+      {
+        "name": "Chris Olave",
+        "position": "WR",
+        "consensusRank": 20.444444444444443,
+        "actualPoints": 76.7,
+        "games": 8
+      },
+      {
+        "name": "Drake London",
+        "position": "WR",
+        "consensusRank": 20.333333333333332,
+        "actualPoints": 280.8,
+        "games": 17
+      },
+      {
+        "name": "Josh Allen",
+        "position": "QB",
+        "consensusRank": 26.666666666666668,
+        "actualPoints": 372.3,
+        "games": 16
+      },
+      {
+        "name": "Michael Pittman",
+        "position": "WR",
+        "consensusRank": 33.77777777777778,
+        "actualPoints": 165.8,
+        "games": 16
+      },
+      {
+        "name": "Travis Etienne",
+        "position": "RB",
+        "consensusRank": 19.77777777777778,
+        "actualPoints": 130.2,
+        "games": 15
+      },
+      {
+        "name": "Jalen Hurts",
+        "position": "QB",
+        "consensusRank": 32.111111111111114,
+        "actualPoints": 315.1,
+        "games": 15
+      },
+      {
+        "name": "Mike Evans",
+        "position": "WR",
+        "consensusRank": 26.555555555555557,
+        "actualPoints": 240.4,
+        "games": 14
+      },
+      {
+        "name": "Jaylen Waddle",
+        "position": "WR",
+        "consensusRank": 31.333333333333332,
+        "actualPoints": 149.6,
+        "games": 15
+      },
+      {
+        "name": "Brandon Aiyuk",
+        "position": "WR",
+        "consensusRank": 32.77777777777778,
+        "actualPoints": 62.4,
+        "games": 7
+      },
+      {
+        "name": "Nico Collins",
+        "position": "WR",
+        "consensusRank": 30.11111111111111,
+        "actualPoints": 210.6,
+        "games": 12
+      },
+      {
+        "name": "Sam LaPorta",
+        "position": "TE",
+        "consensusRank": 30.333333333333332,
+        "actualPoints": 174.6,
+        "games": 16
+      },
+      {
+        "name": "Kyren Williams",
+        "position": "RB",
+        "consensusRank": 18.555555555555557,
+        "actualPoints": 272.1,
+        "games": 16
+      },
+      {
+        "name": "Patrick Mahomes",
+        "position": "QB",
+        "consensusRank": 34.55555555555556,
+        "actualPoints": 283,
+        "games": 16
+      },
+      {
+        "name": "Cooper Kupp",
+        "position": "WR",
+        "consensusRank": 31.22222222222222,
+        "actualPoints": 175,
+        "games": 12
+      },
+      {
+        "name": "Lamar Jackson",
+        "position": "QB",
+        "consensusRank": 43,
+        "actualPoints": 430.4,
+        "games": 17
+      },
+      {
+        "name": "D.J. Moore",
+        "position": "WR",
+        "consensusRank": 39.666666666666664,
+        "actualPoints": 238.1,
+        "games": 17
+      },
+      {
+        "name": "Travis Kelce",
+        "position": "TE",
+        "consensusRank": 30.444444444444443,
+        "actualPoints": 195.4,
+        "games": 16
+      },
+      {
+        "name": "DK Metcalf",
+        "position": "WR",
+        "consensusRank": 36.888888888888886,
+        "actualPoints": 191.2,
+        "games": 15
+      },
+      {
+        "name": "Deebo Samuel",
+        "position": "WR",
+        "consensusRank": 32.44444444444444,
+        "actualPoints": 155.6,
+        "games": 14
+      },
+      {
+        "name": "Devon Achane",
+        "position": "RB",
+        "consensusRank": 28.77777777777778,
+        "actualPoints": 299.9,
+        "games": 17
+      },
+      {
+        "name": "DeVonta Smith",
+        "position": "WR",
+        "consensusRank": 40.55555555555556,
+        "actualPoints": 199.4,
+        "games": 13
+      },
+      {
+        "name": "Isiah Pacheco",
+        "position": "RB",
+        "consensusRank": 22.555555555555557,
+        "actualPoints": 56.9,
+        "games": 7
+      },
+      {
+        "name": "Derrick Henry",
+        "position": "RB",
+        "consensusRank": 23.555555555555557,
+        "actualPoints": 336.4,
+        "games": 17
+      },
+      {
+        "name": "Rachaad White",
+        "position": "RB",
+        "consensusRank": 34.888888888888886,
+        "actualPoints": 199.6,
+        "games": 15
+      },
+      {
+        "name": "Malik Nabers",
+        "position": "WR",
+        "consensusRank": 44,
+        "actualPoints": 273.6,
+        "games": 15
+      },
+      {
+        "name": "Stefon Diggs",
+        "position": "WR",
+        "consensusRank": 41.55555555555556,
+        "actualPoints": 121.9,
+        "games": 8
+      },
+      {
+        "name": "Amari Cooper",
+        "position": "WR",
+        "consensusRank": 51.22222222222222,
+        "actualPoints": 122.7,
+        "games": 13
+      },
+      {
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "consensusRank": 40.55555555555556,
+        "actualPoints": 265.3,
+        "games": 14
+      },
+      {
+        "name": "James Cook",
+        "position": "RB",
+        "consensusRank": 34.77777777777778,
+        "actualPoints": 266.7,
+        "games": 16
+      },
+      {
+        "name": "Anthony Richardson",
+        "position": "QB",
+        "consensusRank": 59.22222222222222,
+        "actualPoints": 163.4,
+        "games": 11
+      },
+      {
+        "name": "Trey McBride",
+        "position": "TE",
+        "consensusRank": 50.44444444444444,
+        "actualPoints": 243.8,
+        "games": 16
+      },
+      {
+        "name": "Josh Jacobs",
+        "position": "RB",
+        "consensusRank": 32.888888888888886,
+        "actualPoints": 293.1,
+        "games": 17
+      },
+      {
+        "name": "Christian Kirk",
+        "position": "WR",
+        "consensusRank": 63.111111111111114,
+        "actualPoints": 70.9,
+        "games": 8
+      },
+      {
+        "name": "Zay Flowers",
+        "position": "WR",
+        "consensusRank": 53.55555555555556,
+        "actualPoints": 209.5,
+        "games": 17
+      },
+      {
+        "name": "Joe Mixon",
+        "position": "RB",
+        "consensusRank": 40.77777777777778,
+        "actualPoints": 240.5,
+        "games": 14
+      },
+      {
+        "name": "C.J. Stroud",
+        "position": "QB",
+        "consensusRank": 54.111111111111114,
+        "actualPoints": 220.4,
+        "games": 17
+      },
+      {
+        "name": "Tee Higgins",
+        "position": "WR",
+        "consensusRank": 53.666666666666664,
+        "actualPoints": 222.1,
+        "games": 12
+      },
+      {
+        "name": "Kenneth Walker",
+        "position": "RB",
+        "consensusRank": 46.333333333333336,
+        "actualPoints": 181.2,
+        "games": 11
+      },
+      {
+        "name": "Keenan Allen",
+        "position": "WR",
+        "consensusRank": 67.44444444444444,
+        "actualPoints": 184.4,
+        "games": 15
+      },
+      {
+        "name": "Tank Dell",
+        "position": "WR",
+        "consensusRank": 57.333333333333336,
+        "actualPoints": 140,
+        "games": 14
+      },
+      {
+        "name": "Terry McLaurin",
+        "position": "WR",
+        "consensusRank": 62.666666666666664,
+        "actualPoints": 267.8,
+        "games": 17
+      },
+      {
+        "name": "George Pickens",
+        "position": "WR",
+        "consensusRank": 54.888888888888886,
+        "actualPoints": 164.4,
+        "games": 14
+      },
+      {
+        "name": "Mark Andrews",
+        "position": "TE",
+        "consensusRank": 50.22222222222222,
+        "actualPoints": 188.8,
+        "games": 17
+      },
+      {
+        "name": "Kyler Murray",
+        "position": "QB",
+        "consensusRank": 77.22222222222223,
+        "actualPoints": 297.2,
+        "games": 17
+      },
+      {
+        "name": "Joe Burrow",
+        "position": "QB",
+        "consensusRank": 62.55555555555556,
+        "actualPoints": 372.8,
+        "games": 17
+      },
+      {
+        "name": "Dak Prescott",
+        "position": "QB",
+        "consensusRank": 70,
+        "actualPoints": 116.5,
+        "games": 8
+      },
+      {
+        "name": "Chris Godwin",
+        "position": "WR",
+        "consensusRank": 64.11111111111111,
+        "actualPoints": 137.8,
+        "games": 7
+      },
+      {
+        "name": "Aaron Jones",
+        "position": "RB",
+        "consensusRank": 59.888888888888886,
+        "actualPoints": 241.6,
+        "games": 17
+      },
+      {
+        "name": "Rhamondre Stevenson",
+        "position": "RB",
+        "consensusRank": 64.66666666666667,
+        "actualPoints": 175.9,
+        "games": 15
+      },
+      {
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "consensusRank": 77.88888888888889,
+        "actualPoints": 89.1,
+        "games": 11
+      },
+      {
+        "name": "Dalton Kincaid",
+        "position": "TE",
+        "consensusRank": 62.111111111111114,
+        "actualPoints": 100.8,
+        "games": 13
+      },
+      {
+        "name": "James Conner",
+        "position": "RB",
+        "consensusRank": 60.666666666666664,
+        "actualPoints": 253.8,
+        "games": 16
+      },
+      {
+        "name": "Jordan Love",
+        "position": "QB",
+        "consensusRank": 81.88888888888889,
+        "actualPoints": 233.9,
+        "games": 15
+      },
+      {
+        "name": "Calvin Ridley",
+        "position": "WR",
+        "consensusRank": 68.55555555555556,
+        "actualPoints": 199.2,
+        "games": 17
+      },
+      {
+        "name": "Rashee Rice",
+        "position": "WR",
+        "consensusRank": 60.888888888888886,
+        "actualPoints": 64.9,
+        "games": 3
+      },
+      {
+        "name": "David Montgomery",
+        "position": "RB",
+        "consensusRank": 67.11111111111111,
+        "actualPoints": 221.7,
+        "games": 14
+      },
+      {
+        "name": "Evan Engram",
+        "position": "TE",
+        "consensusRank": 74.44444444444444,
+        "actualPoints": 89.5,
+        "games": 9
+      },
+      {
+        "name": "Brock Purdy",
+        "position": "QB",
+        "consensusRank": 95.22222222222223,
+        "actualPoints": 266.9,
+        "games": 15
+      },
+      {
+        "name": "Najee Harris",
+        "position": "RB",
+        "consensusRank": 73.44444444444444,
+        "actualPoints": 204.6,
+        "games": 17
+      },
+      {
+        "name": "D'Andre Swift",
+        "position": "RB",
+        "consensusRank": 66.88888888888889,
+        "actualPoints": 214.5,
+        "games": 17
+      },
+      {
+        "name": "Jaylen Warren",
+        "position": "RB",
+        "consensusRank": 83.44444444444444,
+        "actualPoints": 124.1,
+        "games": 15
+      },
+      {
+        "name": "Jayden Reed",
+        "position": "WR",
+        "consensusRank": 78.88888888888889,
+        "actualPoints": 197,
+        "games": 17
+      },
+      {
+        "name": "Zamir White",
+        "position": "RB",
+        "consensusRank": 71.77777777777777,
+        "actualPoints": 29.3,
+        "games": 8
+      },
+      {
+        "name": "Raheem Mostert",
+        "position": "RB",
+        "consensusRank": 81.88888888888889,
+        "actualPoints": 70.9,
+        "games": 12
+      },
+      {
+        "name": "Marquise Brown",
+        "position": "WR",
+        "consensusRank": 87.22222222222223,
+        "actualPoints": 18.1,
+        "games": 2
+      },
+      {
+        "name": "Kyle Pitts",
+        "position": "TE",
+        "consensusRank": 71.66666666666667,
+        "actualPoints": 131.2,
+        "games": 17
+      },
+      {
+        "name": "Jayden Daniels",
+        "position": "QB",
+        "consensusRank": 97.77777777777777,
+        "actualPoints": 355.8,
+        "games": 17
+      },
+      {
+        "name": "Jaxon Smith-Njigba",
+        "position": "WR",
+        "consensusRank": 88.11111111111111,
+        "actualPoints": 253,
+        "games": 17
+      },
+      {
+        "name": "Tony Pollard",
+        "position": "RB",
+        "consensusRank": 78.88888888888889,
+        "actualPoints": 200.7,
+        "games": 16
+      },
+      {
+        "name": "Tua Tagovailoa",
+        "position": "QB",
+        "consensusRank": 111.55555555555556,
+        "actualPoints": 181.6,
+        "games": 11
+      },
+      {
+        "name": "George Kittle",
+        "position": "TE",
+        "consensusRank": 70.55555555555556,
+        "actualPoints": 236.6,
+        "games": 15
+      },
+      {
+        "name": "DeAndre Hopkins",
+        "position": "WR",
+        "consensusRank": 94.33333333333333,
+        "actualPoints": 147,
+        "games": 16
+      },
+      {
+        "name": "Jared Goff",
+        "position": "QB",
+        "consensusRank": 118.77777777777777,
+        "actualPoints": 324.5,
+        "games": 17
+      },
+      {
+        "name": "Javonte Williams",
+        "position": "RB",
+        "consensusRank": 82.77777777777777,
+        "actualPoints": 157.9,
+        "games": 17
+      },
+      {
+        "name": "Caleb Williams",
+        "position": "QB",
+        "consensusRank": 109.88888888888889,
+        "actualPoints": 254.5,
+        "games": 17
+      },
+      {
+        "name": "Jake Ferguson",
+        "position": "TE",
+        "consensusRank": 91.77777777777777,
+        "actualPoints": 104.4,
+        "games": 14
+      },
+      {
+        "name": "Tyjae Spears",
+        "position": "RB",
+        "consensusRank": 94.55555555555556,
+        "actualPoints": 113.6,
+        "games": 12
+      },
+      {
+        "name": "David Njoku",
+        "position": "TE",
+        "consensusRank": 96.88888888888889,
+        "actualPoints": 148.5,
+        "games": 11
+      },
+      {
+        "name": "Trevor Lawrence",
+        "position": "QB",
+        "consensusRank": 120.11111111111111,
+        "actualPoints": 145.7,
+        "games": 10
+      },
+      {
+        "name": "Brian Robinson",
+        "position": "RB",
+        "consensusRank": 92.44444444444444,
+        "actualPoints": 159.8,
+        "games": 14
+      },
+      {
+        "name": "Jordan Addison",
+        "position": "WR",
+        "consensusRank": 96.22222222222223,
+        "actualPoints": 212.5,
+        "games": 15
+      },
+      {
+        "name": "Xavier Worthy",
+        "position": "WR",
+        "consensusRank": 91,
+        "actualPoints": 187.2,
+        "games": 16
+      },
+      {
+        "name": "Rome Odunze",
+        "position": "WR",
+        "consensusRank": 91.33333333333333,
+        "actualPoints": 144.9,
+        "games": 17
+      },
+      {
+        "name": "Christian Watson",
+        "position": "WR",
+        "consensusRank": 93.55555555555556,
+        "actualPoints": 105.3,
+        "games": 14
+      },
+      {
+        "name": "Ladd McConkey",
+        "position": "WR",
+        "consensusRank": 92.55555555555556,
+        "actualPoints": 240.9,
+        "games": 16
+      },
+      {
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "consensusRank": 100.22222222222223,
+        "actualPoints": 240.3,
+        "games": 16
+      },
+      {
+        "name": "Justin Herbert",
+        "position": "QB",
+        "consensusRank": 127.55555555555556,
+        "actualPoints": 285.4,
+        "games": 17
+      },
+      {
+        "name": "Devin Singletary",
+        "position": "RB",
+        "consensusRank": 92.22222222222223,
+        "actualPoints": 96.6,
+        "games": 15
+      },
+      {
+        "name": "Austin Ekeler",
+        "position": "RB",
+        "consensusRank": 94.66666666666667,
+        "actualPoints": 132.3,
+        "games": 12
+      },
+      {
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "consensusRank": 109.55555555555556,
+        "actualPoints": 103.6,
+        "games": 10
+      },
+      {
+        "name": "Brock Bowers",
+        "position": "TE",
+        "consensusRank": 103.77777777777777,
+        "actualPoints": 262.7,
+        "games": 17
+      },
+      {
+        "name": "Tyler Lockett",
+        "position": "WR",
+        "consensusRank": 111.88888888888889,
+        "actualPoints": 121,
+        "games": 17
+      },
+      {
+        "name": "Zack Moss",
+        "position": "RB",
+        "consensusRank": 95.77777777777777,
+        "actualPoints": 81.9,
+        "games": 8
+      },
+      {
+        "name": "Kirk Cousins",
+        "position": "QB",
+        "consensusRank": 134.66666666666666,
+        "actualPoints": 176.3,
+        "games": 14
+      },
+      {
+        "name": "Matthew Stafford",
+        "position": "QB",
+        "consensusRank": 145.22222222222223,
+        "actualPoints": 214.6,
+        "games": 16
+      },
+      {
+        "name": "Chase Brown",
+        "position": "RB",
+        "consensusRank": 103.88888888888889,
+        "actualPoints": 255,
+        "games": 16
+      },
+      {
+        "name": "Pat Freiermuth",
+        "position": "TE",
+        "consensusRank": 135.33333333333334,
+        "actualPoints": 168.3,
+        "games": 17
+      },
+      {
+        "name": "Jonathon Brooks",
+        "position": "RB",
+        "consensusRank": 95.77777777777777,
+        "actualPoints": 7.5,
+        "games": 3
+      },
+      {
+        "name": "Jakobi Meyers",
+        "position": "WR",
+        "consensusRank": 119.11111111111111,
+        "actualPoints": 218,
+        "games": 15
+      },
+      {
+        "name": "Curtis Samuel",
+        "position": "WR",
+        "consensusRank": 126.22222222222223,
+        "actualPoints": 63.7,
+        "games": 14
+      },
+      {
+        "name": "Dalton Schultz",
+        "position": "TE",
+        "consensusRank": 126.55555555555556,
+        "actualPoints": 118.2,
+        "games": 17
+      },
+      {
+        "name": "Brian Thomas",
+        "position": "WR",
+        "consensusRank": 105.22222222222223,
+        "actualPoints": 284,
+        "games": 17
+      },
+      {
+        "name": "Ezekiel Elliott",
+        "position": "RB",
+        "consensusRank": 112.33333333333333,
+        "actualPoints": 57.5,
+        "games": 15
+      },
+      {
+        "name": "Jameson Williams",
+        "position": "WR",
+        "consensusRank": 115.44444444444444,
+        "actualPoints": 212.2,
+        "games": 15
+      },
+      {
+        "name": "Aaron Rodgers",
+        "position": "QB",
+        "consensusRank": 135.55555555555554,
+        "actualPoints": 256.6,
+        "games": 17
+      },
+      {
+        "name": "T.J. Hockenson",
+        "position": "TE",
+        "consensusRank": 123.22222222222223,
+        "actualPoints": 86.5,
+        "games": 10
+      },
+      {
+        "name": "Jerome Ford",
+        "position": "RB",
+        "consensusRank": 113,
+        "actualPoints": 134,
+        "games": 14
+      },
+      {
+        "name": "Nick Chubb",
+        "position": "RB",
+        "consensusRank": 104.55555555555556,
+        "actualPoints": 63.3,
+        "games": 8
+      },
+      {
+        "name": "Gus Edwards",
+        "position": "RB",
+        "consensusRank": 113.11111111111111,
+        "actualPoints": 64.1,
+        "games": 11
+      },
+      {
+        "name": "Deshaun Watson",
+        "position": "QB",
+        "consensusRank": 151.33333333333334,
+        "actualPoints": 76.7,
+        "games": 7
+      },
+      {
+        "name": "Cole Kmet",
+        "position": "TE",
+        "consensusRank": 161.33333333333334,
+        "actualPoints": 120.4,
+        "games": 14
+      },
+      {
+        "name": "Josh Palmer",
+        "position": "WR",
+        "consensusRank": 130,
+        "actualPoints": 107.4,
+        "games": 15
+      },
+      {
+        "name": "Zach Charbonnet",
+        "position": "RB",
+        "consensusRank": 125.22222222222223,
+        "actualPoints": 183.7,
+        "games": 17
+      },
+      {
+        "name": "Geno Smith",
+        "position": "QB",
+        "consensusRank": 176,
+        "actualPoints": 266,
+        "games": 17
+      },
+      {
+        "name": "Keon Coleman",
+        "position": "WR",
+        "consensusRank": 106.11111111111111,
+        "actualPoints": 111.5,
+        "games": 13
+      },
+      {
+        "name": "Baker Mayfield",
+        "position": "QB",
+        "consensusRank": 166,
+        "actualPoints": 365.8,
+        "games": 17
+      },
+      {
+        "name": "Trey Benson",
+        "position": "RB",
+        "consensusRank": 122.55555555555556,
+        "actualPoints": 47,
+        "games": 12
+      },
+      {
+        "name": "Romeo Doubs",
+        "position": "WR",
+        "consensusRank": 126.22222222222223,
+        "actualPoints": 132.1,
+        "games": 13
+      },
+      {
+        "name": "Rashid Shaheed",
+        "position": "WR",
+        "consensusRank": 138.11111111111111,
+        "actualPoints": 81.8,
+        "games": 6
+      },
+      {
+        "name": "Brandin Cooks",
+        "position": "WR",
+        "consensusRank": 147.55555555555554,
+        "actualPoints": 69.6,
+        "games": 10
+      },
+      {
+        "name": "Josh Downs",
+        "position": "WR",
+        "consensusRank": 149.55555555555554,
+        "actualPoints": 182.2,
+        "games": 14
+      },
+      {
+        "name": "Mike Williams",
+        "position": "WR",
+        "consensusRank": 132.44444444444446,
+        "actualPoints": 56.8,
+        "games": 13
+      },
+      {
+        "name": "Blake Corum",
+        "position": "RB",
+        "consensusRank": 128,
+        "actualPoints": 33.5,
+        "games": 14
+      },
+      {
+        "name": "Chuba Hubbard",
+        "position": "RB",
+        "consensusRank": 124.22222222222223,
+        "actualPoints": 241.6,
+        "games": 15
+      }
+    ]
+  }
+}
