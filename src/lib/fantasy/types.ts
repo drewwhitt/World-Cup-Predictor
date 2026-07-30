@@ -37,6 +37,8 @@ export const STANDARD_ROSTER: RosterConfig = {
   flexEligible: ["RB", "WR", "TE"],
 };
 
+export const FANTASY_SEASON = 2026;
+
 /** The four league sizes exposed as one-click presets in the UI. Custom sizes/rosters are just a RosterConfig the person edits directly — there's no separate "custom" code path. */
 export const LEAGUE_SIZE_PRESETS = [8, 10, 12, 14] as const;
 export type LeagueSizePreset = (typeof LEAGUE_SIZE_PRESETS)[number];

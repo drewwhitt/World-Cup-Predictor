@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, Suspense, lazy } from "react";
 import { AdminResultsPanel } from "./components/admin/AdminResultsPanel";
+import { AdminFantasyRankingsPanel } from "./components/admin/AdminFantasyRankingsPanel";
 import { AppShell } from "./components/shell/AppShell";
 import { ErrorBoundary } from "./components/shell/ErrorBoundary";
 import type { Edition, MorningForecast as MorningForecastData, TabId } from "./data/worldCup";
@@ -196,7 +197,10 @@ export default function App() {
         </ErrorBoundary>
       </AppShell>
       {isAdmin && (
-        <AdminResultsPanel stored={stored} onChange={setStored} onBriefingSaved={setDailyBriefing} />
+        <>
+          <AdminResultsPanel stored={stored} onChange={setStored} onBriefingSaved={setDailyBriefing} />
+          <AdminFantasyRankingsPanel />
+        </>
       )}
     </>
   );

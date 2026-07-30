@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { loadLatestFantasyRankings } from "../../lib/fantasy/rankings";
 import { computeFantasyForecast } from "../../lib/fantasy/forecast";
 import { getPrecomputedForecast } from "../../lib/fantasy/precomputed";
-import { LEAGUE_SIZE_PRESETS, STANDARD_ROSTER, type Position, type RosterConfig } from "../../lib/fantasy/types";
+import { LEAGUE_SIZE_PRESETS, STANDARD_ROSTER, FANTASY_SEASON, type Position, type RosterConfig } from "../../lib/fantasy/types";
 import type { AdpVsActualEntry, FantasyRankingsPayload } from "../../lib/fantasy/types";
 import type { SimulationResult } from "../../lib/fantasy/simulate";
 import adpVsActualData from "../../data/fantasy/adp-vs-actual-2021-2024.json";
 import s from "./FantasyView.module.css";
 
-const SEASON = 2026;
+const SEASON = FANTASY_SEASON;
 const SIMULATIONS = 10000;
 
 // Bundled for the live-compute fallback (custom rosters only — the

@@ -35,14 +35,14 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { computeFantasyForecast } from "../src/lib/fantasy/forecast";
-import { LEAGUE_SIZE_PRESETS, STANDARD_ROSTER } from "../src/lib/fantasy/types";
+import { LEAGUE_SIZE_PRESETS, STANDARD_ROSTER, FANTASY_SEASON } from "../src/lib/fantasy/types";
 import type { AdpVsActualEntry, FantasyRankingsPayload } from "../src/lib/fantasy/types";
 import type { PlayerRiskFactors } from "../src/lib/fantasy/curveFit";
 import adpVsActualData from "../src/data/fantasy/adp-vs-actual-2021-2024.json";
 import historicalData from "../src/data/fantasy/historical-player-seasons.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SEASON = 2026;
+const SEASON = FANTASY_SEASON;
 const SIMULATIONS = 10000;
 
 // --- tiny .env loader, no new dependency ---
