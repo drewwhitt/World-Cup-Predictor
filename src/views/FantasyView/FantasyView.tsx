@@ -195,6 +195,9 @@ export function FantasyView() {
             <div className={s.asOf}>RANKINGS AS OF {new Date(rankings.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }).toUpperCase()}</div>
           )}
         </div>
+        <div className={s.methodNote}>
+          Every projection here is fit from real historical outcomes (nflverse box scores back to 2020, matched against real consensus draft rankings) using a Monte Carlo simulation, not a hand-tuned guess — and checked against real held-out seasons the model never saw before it's trusted here. Assumes a healthy/full season; each player's own real injury-risk history is shown separately in their dropdown, not hidden inside one blended number.
+        </div>
       </section>
 
       {rankings === "loading" && <p className={s.stateMessage}>Loading rankings…</p>}
@@ -386,6 +389,7 @@ function FragmentRow({
       {isExpanded && (
         <tr className={s.detailRow}>
           <td colSpan={6}>
+            <div className={s.detailBox}>
             <div className={s.detailGrid}>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Why the model differs</div>
@@ -404,6 +408,7 @@ function FragmentRow({
                 <div className={s.detailLabel}>Confidence — {conf.label}</div>
                 <div className={s.detailText}>{confidenceDetail(conf.cls, result.pHealthy)}</div>
               </div>
+            </div>
             </div>
           </td>
         </tr>

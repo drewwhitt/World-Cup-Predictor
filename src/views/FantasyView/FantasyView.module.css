@@ -45,6 +45,13 @@
   white-space: nowrap;
 }
 
+.methodNote {
+  font: 400 12.5px/1.55 var(--font-sans);
+  color: var(--ink-3);
+  margin-top: 10px;
+  max-width: 820px;
+}
+
 .stateMessage {
   color: var(--ink-2);
   font: 400 14px/1.6 var(--font-sans);
@@ -234,9 +241,10 @@
 .playerRow { cursor: pointer; }
 .playerRow:hover, .playerRowExpanded { background: var(--paper); }
 
-.detailRow td { background: var(--paper); padding: 16px 20px 20px; border-bottom: 1px solid var(--hairline); }
+.detailRow td { background: var(--paper); padding: 14px 0 18px; border-bottom: 1px solid var(--hairline); }
+.detailBox { border: 1px solid var(--hairline); border-radius: 4px; margin: 0 12px; background: var(--surface); }
 .detailGrid { display: grid; grid-template-columns: repeat(3, 1fr); }
-.detailBlock { padding: 0 18px; border-right: 1px solid var(--hairline); }
+.detailBlock { padding: 14px 18px; border-right: 1px solid var(--hairline); }
 .detailBlock:last-child { border-right: none; }
 .detailLabel {
   font: 700 10px var(--font-mono);
