@@ -1,8 +1,3490 @@
 {
-  "generatedAt": "2026-07-29T16:48:29.770Z",
+  "generatedAt": "2026-07-30T01:43:29.268Z",
   "label": "Real derived PPR season totals (REG season only), QB/RB/WR/TE — nflverse fantasy_points_ppr aggregated per player per season",
   "source": "https://github.com/nflverse/nflverse-data",
   "seasons": {
+    "2020": [
+      {
+        "name": "Josh Allen",
+        "position": "QB",
+        "points": 396.1,
+        "games": 16
+      },
+      {
+        "name": "Aaron Rodgers",
+        "position": "QB",
+        "points": 383.3,
+        "games": 16
+      },
+      {
+        "name": "Kyler Murray",
+        "position": "QB",
+        "points": 378.7,
+        "games": 16
+      },
+      {
+        "name": "Alvin Kamara",
+        "position": "RB",
+        "points": 377.8,
+        "games": 15
+      },
+      {
+        "name": "Patrick Mahomes",
+        "position": "QB",
+        "points": 374.4,
+        "games": 15
+      },
+      {
+        "name": "Deshaun Watson",
+        "position": "QB",
+        "points": 369.3,
+        "games": 16
+      },
+      {
+        "name": "Russell Wilson",
+        "position": "QB",
+        "points": 359.8,
+        "games": 16
+      },
+      {
+        "name": "Davante Adams",
+        "position": "WR",
+        "points": 358.4,
+        "games": 14
+      },
+      {
+        "name": "Ryan Tannehill",
+        "position": "QB",
+        "points": 348.4,
+        "games": 16
+      },
+      {
+        "name": "Tom Brady",
+        "position": "QB",
+        "points": 337.9,
+        "games": 16
+      },
+      {
+        "name": "Dalvin Cook",
+        "position": "RB",
+        "points": 337.8,
+        "games": 14
+      },
+      {
+        "name": "Derrick Henry",
+        "position": "RB",
+        "points": 333.1,
+        "games": 16
+      },
+      {
+        "name": "Lamar Jackson",
+        "position": "QB",
+        "points": 332.8,
+        "games": 15
+      },
+      {
+        "name": "Justin Herbert",
+        "position": "QB",
+        "points": 332.8,
+        "games": 15
+      },
+      {
+        "name": "Tyreek Hill",
+        "position": "WR",
+        "points": 328.9,
+        "games": 15
+      },
+      {
+        "name": "Stefon Diggs",
+        "position": "WR",
+        "points": 328.6,
+        "games": 16
+      },
+      {
+        "name": "Travis Kelce",
+        "position": "TE",
+        "points": 312.8,
+        "games": 15
+      },
+      {
+        "name": "Kirk Cousins",
+        "position": "QB",
+        "points": 306.2,
+        "games": 16
+      },
+      {
+        "name": "DeAndre Hopkins",
+        "position": "WR",
+        "points": 287.8,
+        "games": 16
+      },
+      {
+        "name": "Matt Ryan",
+        "position": "QB",
+        "points": 282.4,
+        "games": 16
+      },
+      {
+        "name": "Calvin Ridley",
+        "position": "WR",
+        "points": 281.5,
+        "games": 15
+      },
+      {
+        "name": "Darren Waller",
+        "position": "TE",
+        "points": 278.6,
+        "games": 16
+      },
+      {
+        "name": "Justin Jefferson",
+        "position": "WR",
+        "points": 274.2,
+        "games": 16
+      },
+      {
+        "name": "DK Metcalf",
+        "position": "WR",
+        "points": 273.3,
+        "games": 16
+      },
+      {
+        "name": "Derek Carr",
+        "position": "QB",
+        "points": 272.1,
+        "games": 16
+      },
+      {
+        "name": "Ben Roethlisberger",
+        "position": "QB",
+        "points": 267.2,
+        "games": 15
+      },
+      {
+        "name": "Tyler Lockett",
+        "position": "WR",
+        "points": 265.4,
+        "games": 16
+      },
+      {
+        "name": "David Montgomery",
+        "position": "RB",
+        "points": 264.8,
+        "games": 15
+      },
+      {
+        "name": "Allen Robinson",
+        "position": "WR",
+        "points": 262.9,
+        "games": 16
+      },
+      {
+        "name": "Cam Newton",
+        "position": "QB",
+        "points": 261,
+        "games": 15
+      },
+      {
+        "name": "Matthew Stafford",
+        "position": "QB",
+        "points": 260.6,
+        "games": 16
+      },
+      {
+        "name": "Aaron Jones",
+        "position": "RB",
+        "points": 258.9,
+        "games": 14
+      },
+      {
+        "name": "Adam Thielen",
+        "position": "WR",
+        "points": 254,
+        "games": 15
+      },
+      {
+        "name": "Jonathan Taylor",
+        "position": "RB",
+        "points": 252.8,
+        "games": 15
+      },
+      {
+        "name": "James Robinson",
+        "position": "RB",
+        "points": 250.4,
+        "games": 14
+      },
+      {
+        "name": "Mike Evans",
+        "position": "WR",
+        "points": 248.6,
+        "games": 16
+      },
+      {
+        "name": "Baker Mayfield",
+        "position": "QB",
+        "points": 248.6,
+        "games": 16
+      },
+      {
+        "name": "A.J. Brown",
+        "position": "WR",
+        "points": 247.5,
+        "games": 14
+      },
+      {
+        "name": "Keenan Allen",
+        "position": "WR",
+        "points": 245.1,
+        "games": 14
+      },
+      {
+        "name": "Robert Woods",
+        "position": "WR",
+        "points": 245.1,
+        "games": 16
+      },
+      {
+        "name": "Teddy Bridgewater",
+        "position": "QB",
+        "points": 241.2,
+        "games": 15
+      },
+      {
+        "name": "Philip Rivers",
+        "position": "QB",
+        "points": 240,
+        "games": 16
+      },
+      {
+        "name": "Jared Goff",
+        "position": "QB",
+        "points": 240,
+        "games": 15
+      },
+      {
+        "name": "Amari Cooper",
+        "position": "WR",
+        "points": 236.8,
+        "games": 16
+      },
+      {
+        "name": "JuJu Smith-Schuster",
+        "position": "WR",
+        "points": 234.1,
+        "games": 16
+      },
+      {
+        "name": "Brandin Cooks",
+        "position": "WR",
+        "points": 232,
+        "games": 15
+      },
+      {
+        "name": "Josh Jacobs",
+        "position": "RB",
+        "points": 231.3,
+        "games": 15
+      },
+      {
+        "name": "Marvin Jones",
+        "position": "WR",
+        "points": 227.8,
+        "games": 16
+      },
+      {
+        "name": "Robbie Chosen",
+        "position": "WR",
+        "points": 224.1,
+        "games": 16
+      },
+      {
+        "name": "Diontae Johnson",
+        "position": "WR",
+        "points": 223.8,
+        "games": 15
+      },
+      {
+        "name": "Terry McLaurin",
+        "position": "WR",
+        "points": 223.8,
+        "games": 15
+      },
+      {
+        "name": "Ezekiel Elliott",
+        "position": "RB",
+        "points": 223.7,
+        "games": 15
+      },
+      {
+        "name": "Kareem Hunt",
+        "position": "RB",
+        "points": 218.5,
+        "games": 16
+      },
+      {
+        "name": "CeeDee Lamb",
+        "position": "WR",
+        "points": 217.7,
+        "games": 16
+      },
+      {
+        "name": "Chase Claypool",
+        "position": "WR",
+        "points": 214.9,
+        "games": 16
+      },
+      {
+        "name": "Curtis Samuel",
+        "position": "WR",
+        "points": 212.1,
+        "games": 15
+      },
+      {
+        "name": "D.J. Moore",
+        "position": "WR",
+        "points": 211.5,
+        "games": 15
+      },
+      {
+        "name": "Cooper Kupp",
+        "position": "WR",
+        "points": 210.7,
+        "games": 15
+      },
+      {
+        "name": "Drew Brees",
+        "position": "QB",
+        "points": 209.5,
+        "games": 12
+      },
+      {
+        "name": "Nick Chubb",
+        "position": "RB",
+        "points": 207.7,
+        "games": 12
+      },
+      {
+        "name": "Cole Beasley",
+        "position": "WR",
+        "points": 207.5,
+        "games": 15
+      },
+      {
+        "name": "Mike Davis",
+        "position": "RB",
+        "points": 206.5,
+        "games": 14
+      },
+      {
+        "name": "Antonio Gibson",
+        "position": "RB",
+        "points": 202.2,
+        "games": 14
+      },
+      {
+        "name": "Melvin Gordon",
+        "position": "RB",
+        "points": 198.4,
+        "games": 15
+      },
+      {
+        "name": "Carson Wentz",
+        "position": "QB",
+        "points": 198.4,
+        "games": 12
+      },
+      {
+        "name": "Tee Higgins",
+        "position": "WR",
+        "points": 194.6,
+        "games": 15
+      },
+      {
+        "name": "Nyheim Miller-Hines",
+        "position": "RB",
+        "points": 193.2,
+        "games": 16
+      },
+      {
+        "name": "Tyler Boyd",
+        "position": "WR",
+        "points": 192.6,
+        "games": 15
+      },
+      {
+        "name": "Kenyan Drake",
+        "position": "RB",
+        "points": 192.2,
+        "games": 15
+      },
+      {
+        "name": "J.D. McKissic",
+        "position": "RB",
+        "points": 191.4,
+        "games": 16
+      },
+      {
+        "name": "Corey Davis",
+        "position": "WR",
+        "points": 191.4,
+        "games": 14
+      },
+      {
+        "name": "Chris Godwin",
+        "position": "WR",
+        "points": 191,
+        "games": 12
+      },
+      {
+        "name": "D'Andre Swift",
+        "position": "RB",
+        "points": 189.8,
+        "games": 13
+      },
+      {
+        "name": "Will Fuller",
+        "position": "WR",
+        "points": 188.9,
+        "games": 11
+      },
+      {
+        "name": "Jarvis Landry",
+        "position": "WR",
+        "points": 188,
+        "games": 15
+      },
+      {
+        "name": "Chris Carson",
+        "position": "RB",
+        "points": 187.8,
+        "games": 12
+      },
+      {
+        "name": "Ronald Jones",
+        "position": "RB",
+        "points": 186.3,
+        "games": 14
+      },
+      {
+        "name": "Nelson Agholor",
+        "position": "WR",
+        "points": 185.6,
+        "games": 16
+      },
+      {
+        "name": "Brandon Aiyuk",
+        "position": "WR",
+        "points": 184.5,
+        "games": 12
+      },
+      {
+        "name": "Marquise Brown",
+        "position": "WR",
+        "points": 183,
+        "games": 16
+      },
+      {
+        "name": "Drew Lock",
+        "position": "QB",
+        "points": 181.3,
+        "games": 13
+      },
+      {
+        "name": "Russell Gage",
+        "position": "WR",
+        "points": 181.1,
+        "games": 16
+      },
+      {
+        "name": "Daniel Jones",
+        "position": "QB",
+        "points": 180,
+        "games": 14
+      },
+      {
+        "name": "David Johnson",
+        "position": "RB",
+        "points": 179.5,
+        "games": 12
+      },
+      {
+        "name": "Logan Thomas",
+        "position": "TE",
+        "points": 176.6,
+        "games": 16
+      },
+      {
+        "name": "Robert Tonyan",
+        "position": "TE",
+        "points": 176.6,
+        "games": 15
+      },
+      {
+        "name": "Clyde Edwards-Helaire",
+        "position": "RB",
+        "points": 176,
+        "games": 13
+      },
+      {
+        "name": "T.J. Hockenson",
+        "position": "TE",
+        "points": 175.3,
+        "games": 16
+      },
+      {
+        "name": "Joe Burrow",
+        "position": "QB",
+        "points": 173.7,
+        "games": 10
+      },
+      {
+        "name": "Michael Gallup",
+        "position": "WR",
+        "points": 173.3,
+        "games": 16
+      },
+      {
+        "name": "Jamison Crowder",
+        "position": "WR",
+        "points": 172,
+        "games": 12
+      },
+      {
+        "name": "Miles Sanders",
+        "position": "RB",
+        "points": 170.4,
+        "games": 12
+      },
+      {
+        "name": "Mark Andrews",
+        "position": "TE",
+        "points": 170.1,
+        "games": 14
+      },
+      {
+        "name": "J.K. Dobbins",
+        "position": "RB",
+        "points": 168.5,
+        "games": 15
+      },
+      {
+        "name": "Chase Edmonds",
+        "position": "RB",
+        "points": 168,
+        "games": 16
+      },
+      {
+        "name": "DeVante Parker",
+        "position": "WR",
+        "points": 166.3,
+        "games": 14
+      },
+      {
+        "name": "Austin Ekeler",
+        "position": "RB",
+        "points": 165.3,
+        "games": 10
+      },
+      {
+        "name": "Emmanuel Sanders",
+        "position": "WR",
+        "points": 164.8,
+        "games": 14
+      },
+      {
+        "name": "James Conner",
+        "position": "RB",
+        "points": 164.6,
+        "games": 13
+      },
+      {
+        "name": "T.Y. Hilton",
+        "position": "WR",
+        "points": 164.2,
+        "games": 15
+      },
+      {
+        "name": "Myles Gaskin",
+        "position": "RB",
+        "points": 164.2,
+        "games": 10
+      },
+      {
+        "name": "Todd Gurley",
+        "position": "RB",
+        "points": 163.2,
+        "games": 15
+      },
+      {
+        "name": "Sterling Shepard",
+        "position": "WR",
+        "points": 162.5,
+        "games": 12
+      },
+      {
+        "name": "Tim Patrick",
+        "position": "WR",
+        "points": 161.2,
+        "games": 15
+      },
+      {
+        "name": "Gardner Minshew",
+        "position": "QB",
+        "points": 160.7,
+        "games": 9
+      },
+      {
+        "name": "Mike Gesicki",
+        "position": "TE",
+        "points": 159.3,
+        "games": 15
+      },
+      {
+        "name": "Giovani Bernard",
+        "position": "RB",
+        "points": 158.1,
+        "games": 16
+      },
+      {
+        "name": "Jerry Jeudy",
+        "position": "WR",
+        "points": 157.6,
+        "games": 16
+      },
+      {
+        "name": "Laviska Shenault Jr.",
+        "position": "WR",
+        "points": 157.1,
+        "games": 14
+      },
+      {
+        "name": "Taysom Hill",
+        "position": "TE",
+        "points": 156.6,
+        "games": 16
+      },
+      {
+        "name": "Keelan Cole",
+        "position": "WR",
+        "points": 155.4,
+        "games": 16
+      },
+      {
+        "name": "Ryan Fitzpatrick",
+        "position": "QB",
+        "points": 153.7,
+        "games": 9
+      },
+      {
+        "name": "Mike Williams",
+        "position": "WR",
+        "points": 153.7,
+        "games": 14
+      },
+      {
+        "name": "Mitchell Trubisky",
+        "position": "QB",
+        "points": 153.7,
+        "games": 10
+      },
+      {
+        "name": "D.J. Chark",
+        "position": "WR",
+        "points": 153.6,
+        "games": 13
+      },
+      {
+        "name": "Darnell Mooney",
+        "position": "WR",
+        "points": 152.1,
+        "games": 16
+      },
+      {
+        "name": "Rob Gronkowski",
+        "position": "TE",
+        "points": 149.3,
+        "games": 16
+      },
+      {
+        "name": "Noah Fant",
+        "position": "TE",
+        "points": 149.3,
+        "games": 14
+      },
+      {
+        "name": "Hayden Hurst",
+        "position": "TE",
+        "points": 149.1,
+        "games": 16
+      },
+      {
+        "name": "Dalton Schultz",
+        "position": "TE",
+        "points": 146.5,
+        "games": 16
+      },
+      {
+        "name": "Christian Kirk",
+        "position": "WR",
+        "points": 146.4,
+        "games": 14
+      },
+      {
+        "name": "Julio Jones",
+        "position": "WR",
+        "points": 146.1,
+        "games": 9
+      },
+      {
+        "name": "Hunter Henry",
+        "position": "TE",
+        "points": 145.3,
+        "games": 14
+      },
+      {
+        "name": "Jimmy Graham",
+        "position": "TE",
+        "points": 143.6,
+        "games": 16
+      },
+      {
+        "name": "Devin Singletary",
+        "position": "RB",
+        "points": 143.6,
+        "games": 16
+      },
+      {
+        "name": "Jakobi Meyers",
+        "position": "WR",
+        "points": 142.5,
+        "games": 12
+      },
+      {
+        "name": "Jeffery Wilson",
+        "position": "RB",
+        "points": 142.3,
+        "games": 11
+      },
+      {
+        "name": "Eric Ebron",
+        "position": "TE",
+        "points": 141.8,
+        "games": 15
+      },
+      {
+        "name": "Evan Engram",
+        "position": "TE",
+        "points": 141,
+        "games": 16
+      },
+      {
+        "name": "Darius Slayton",
+        "position": "WR",
+        "points": 141,
+        "games": 16
+      },
+      {
+        "name": "Jonnu Smith",
+        "position": "TE",
+        "points": 140.2,
+        "games": 14
+      },
+      {
+        "name": "Marquez Valdes-Scantling",
+        "position": "WR",
+        "points": 137.3,
+        "games": 14
+      },
+      {
+        "name": "Andy Dalton",
+        "position": "QB",
+        "points": 136.9,
+        "games": 11
+      },
+      {
+        "name": "Zach Pascal",
+        "position": "WR",
+        "points": 136.9,
+        "games": 16
+      },
+      {
+        "name": "Gabe Davis",
+        "position": "WR",
+        "points": 136.9,
+        "games": 16
+      },
+      {
+        "name": "Wayne Gallman",
+        "position": "RB",
+        "points": 136.6,
+        "games": 14
+      },
+      {
+        "name": "Latavius Murray",
+        "position": "RB",
+        "points": 136.2,
+        "games": 15
+      },
+      {
+        "name": "Dak Prescott",
+        "position": "QB",
+        "points": 135.6,
+        "games": 5
+      },
+      {
+        "name": "Tua Tagovailoa",
+        "position": "QB",
+        "points": 135.5,
+        "games": 10
+      },
+      {
+        "name": "Sam Darnold",
+        "position": "QB",
+        "points": 134,
+        "games": 12
+      },
+      {
+        "name": "Greg Ward",
+        "position": "WR",
+        "points": 133.1,
+        "games": 16
+      },
+      {
+        "name": "Leonard Fournette",
+        "position": "RB",
+        "points": 132,
+        "games": 12
+      },
+      {
+        "name": "Hunter Renfrow",
+        "position": "WR",
+        "points": 131.6,
+        "games": 16
+      },
+      {
+        "name": "Mecole Hardman",
+        "position": "WR",
+        "points": 130.1,
+        "games": 16
+      },
+      {
+        "name": "Darrell Henderson",
+        "position": "RB",
+        "points": 129.9,
+        "games": 15
+      },
+      {
+        "name": "Kendrick Bourne",
+        "position": "WR",
+        "points": 129.7,
+        "games": 15
+      },
+      {
+        "name": "Tyler Higbee",
+        "position": "TE",
+        "points": 128.2,
+        "games": 15
+      },
+      {
+        "name": "Gus Edwards",
+        "position": "RB",
+        "points": 128.2,
+        "games": 16
+      },
+      {
+        "name": "Jared Cook",
+        "position": "TE",
+        "points": 127.4,
+        "games": 15
+      },
+      {
+        "name": "Jamaal Williams",
+        "position": "RB",
+        "points": 127.1,
+        "games": 14
+      },
+      {
+        "name": "Josh Reynolds",
+        "position": "WR",
+        "points": 126.3,
+        "games": 16
+      },
+      {
+        "name": "Jerick McKinnon",
+        "position": "RB",
+        "points": 126.2,
+        "games": 14
+      },
+      {
+        "name": "George Kittle",
+        "position": "TE",
+        "points": 125.1,
+        "games": 8
+      },
+      {
+        "name": "Adrian Peterson",
+        "position": "RB",
+        "points": 124.5,
+        "games": 16
+      },
+      {
+        "name": "Rashard Higgins",
+        "position": "WR",
+        "points": 120.9,
+        "games": 12
+      },
+      {
+        "name": "Tony Pollard",
+        "position": "RB",
+        "points": 120.8,
+        "games": 16
+      },
+      {
+        "name": "David Moore",
+        "position": "WR",
+        "points": 118.8,
+        "games": 16
+      },
+      {
+        "name": "Antonio Brown",
+        "position": "WR",
+        "points": 117.1,
+        "games": 8
+      },
+      {
+        "name": "James White",
+        "position": "RB",
+        "points": 116.6,
+        "games": 14
+      },
+      {
+        "name": "Dallas Goedert",
+        "position": "TE",
+        "points": 116.4,
+        "games": 11
+      },
+      {
+        "name": "Nick Mullens",
+        "position": "QB",
+        "points": 116.3,
+        "games": 10
+      },
+      {
+        "name": "Travis Fulgham",
+        "position": "WR",
+        "points": 115.9,
+        "games": 12
+      },
+      {
+        "name": "Damiere Byrd",
+        "position": "WR",
+        "points": 114.9,
+        "games": 14
+      },
+      {
+        "name": "Austin Hooper",
+        "position": "TE",
+        "points": 113.5,
+        "games": 13
+      },
+      {
+        "name": "A.J. Green",
+        "position": "WR",
+        "points": 111.3,
+        "games": 16
+      },
+      {
+        "name": "Malcolm Brown",
+        "position": "RB",
+        "points": 109.1,
+        "games": 16
+      },
+      {
+        "name": "Jalen Hurts",
+        "position": "QB",
+        "points": 109.1,
+        "games": 14
+      },
+      {
+        "name": "Anthony Miller",
+        "position": "WR",
+        "points": 108.7,
+        "games": 16
+      },
+      {
+        "name": "Rex Burkhead",
+        "position": "RB",
+        "points": 107.6,
+        "games": 10
+      },
+      {
+        "name": "Demarcus Robinson",
+        "position": "WR",
+        "points": 107.6,
+        "games": 15
+      },
+      {
+        "name": "Danny Amendola",
+        "position": "WR",
+        "points": 106.4,
+        "games": 14
+      },
+      {
+        "name": "Nick Foles",
+        "position": "QB",
+        "points": 104.2,
+        "games": 9
+      },
+      {
+        "name": "Tre'Quan Smith",
+        "position": "WR",
+        "points": 103.1,
+        "games": 13
+      },
+      {
+        "name": "Scott Miller",
+        "position": "WR",
+        "points": 102.5,
+        "games": 14
+      },
+      {
+        "name": "Cam Akers",
+        "position": "RB",
+        "points": 101.8,
+        "games": 11
+      },
+      {
+        "name": "Zack Moss",
+        "position": "RB",
+        "points": 101.6,
+        "games": 13
+      },
+      {
+        "name": "Larry Fitzgerald",
+        "position": "WR",
+        "points": 100.9,
+        "games": 13
+      },
+      {
+        "name": "Frank Gore",
+        "position": "RB",
+        "points": 100.2,
+        "games": 15
+      },
+      {
+        "name": "Randall Cobb",
+        "position": "WR",
+        "points": 100.1,
+        "games": 10
+      },
+      {
+        "name": "Raheem Mostert",
+        "position": "RB",
+        "points": 99.7,
+        "games": 8
+      },
+      {
+        "name": "Isaiah McKenzie",
+        "position": "WR",
+        "points": 99.6,
+        "games": 15
+      },
+      {
+        "name": "Joe Mixon",
+        "position": "RB",
+        "points": 99.6,
+        "games": 6
+      },
+      {
+        "name": "James Washington",
+        "position": "WR",
+        "points": 99.2,
+        "games": 16
+      },
+      {
+        "name": "Breshad Perriman",
+        "position": "WR",
+        "points": 99.1,
+        "games": 12
+      },
+      {
+        "name": "Michael Pittman",
+        "position": "WR",
+        "points": 98.9,
+        "games": 13
+      },
+      {
+        "name": "Irv Smith",
+        "position": "TE",
+        "points": 98.5,
+        "games": 12
+      },
+      {
+        "name": "Allen Lazard",
+        "position": "WR",
+        "points": 97.8,
+        "games": 10
+      },
+      {
+        "name": "Braxton Berrios",
+        "position": "WR",
+        "points": 97.3,
+        "games": 13
+      },
+      {
+        "name": "Chris Conley",
+        "position": "WR",
+        "points": 97.1,
+        "games": 14
+      },
+      {
+        "name": "Jalen Guyton",
+        "position": "WR",
+        "points": 97.1,
+        "games": 16
+      },
+      {
+        "name": "John Brown",
+        "position": "WR",
+        "points": 96.8,
+        "games": 9
+      },
+      {
+        "name": "Dan Arnold",
+        "position": "TE",
+        "points": 96.8,
+        "games": 14
+      },
+      {
+        "name": "Boston Scott",
+        "position": "RB",
+        "points": 95.6,
+        "games": 16
+      },
+      {
+        "name": "Brian Hill",
+        "position": "RB",
+        "points": 95.4,
+        "games": 16
+      },
+      {
+        "name": "Willie Snead",
+        "position": "WR",
+        "points": 94.2,
+        "games": 13
+      },
+      {
+        "name": "Kalen Ballage",
+        "position": "RB",
+        "points": 93.9,
+        "games": 11
+      },
+      {
+        "name": "Gerald Everett",
+        "position": "TE",
+        "points": 92.9,
+        "games": 15
+      },
+      {
+        "name": "Damien Harris",
+        "position": "RB",
+        "points": 91.3,
+        "games": 10
+      },
+      {
+        "name": "Christian McCaffrey",
+        "position": "RB",
+        "points": 90.4,
+        "games": 3
+      },
+      {
+        "name": "K.J. Hamler",
+        "position": "WR",
+        "points": 90.1,
+        "games": 12
+      },
+      {
+        "name": "Keke Coutee",
+        "position": "WR",
+        "points": 89,
+        "games": 8
+      },
+      {
+        "name": "Sammy Watkins",
+        "position": "WR",
+        "points": 87.4,
+        "games": 10
+      },
+      {
+        "name": "Jakeem Grant",
+        "position": "WR",
+        "points": 87.3,
+        "games": 14
+      },
+      {
+        "name": "Jalen Reagor",
+        "position": "WR",
+        "points": 87.2,
+        "games": 11
+      },
+      {
+        "name": "Alexander Mattison",
+        "position": "RB",
+        "points": 86.9,
+        "games": 13
+      },
+      {
+        "name": "Odell Beckham",
+        "position": "WR",
+        "points": 86.8,
+        "games": 7
+      },
+      {
+        "name": "Golden Tate",
+        "position": "WR",
+        "points": 86.5,
+        "games": 12
+      },
+      {
+        "name": "Cam Sims",
+        "position": "WR",
+        "points": 86.2,
+        "games": 11
+      },
+      {
+        "name": "Devontae Booker",
+        "position": "RB",
+        "points": 85.7,
+        "games": 15
+      },
+      {
+        "name": "Carlos Hyde",
+        "position": "RB",
+        "points": 84.9,
+        "games": 10
+      },
+      {
+        "name": "Duke Johnson",
+        "position": "RB",
+        "points": 84.4,
+        "games": 11
+      },
+      {
+        "name": "Henry Ruggs",
+        "position": "WR",
+        "points": 84.1,
+        "games": 13
+      },
+      {
+        "name": "Michael Thomas",
+        "position": "WR",
+        "points": 83.9,
+        "games": 7
+      },
+      {
+        "name": "Anthony Firkser",
+        "position": "TE",
+        "points": 83.7,
+        "games": 15
+      },
+      {
+        "name": "Jordan Akins",
+        "position": "TE",
+        "points": 83.7,
+        "games": 13
+      },
+      {
+        "name": "Trey Burton",
+        "position": "TE",
+        "points": 83.3,
+        "games": 11
+      },
+      {
+        "name": "Tyler Eifert",
+        "position": "TE",
+        "points": 82.9,
+        "games": 14
+      },
+      {
+        "name": "Joshua Kelley",
+        "position": "RB",
+        "points": 81.2,
+        "games": 13
+      },
+      {
+        "name": "Deebo Samuel",
+        "position": "WR",
+        "points": 80.7,
+        "games": 7
+      },
+      {
+        "name": "Mo Alie-Cox",
+        "position": "TE",
+        "points": 80.4,
+        "games": 14
+      },
+      {
+        "name": "Tyron Johnson",
+        "position": "WR",
+        "points": 79.5,
+        "games": 11
+      },
+      {
+        "name": "Drew Sample",
+        "position": "TE",
+        "points": 78.9,
+        "games": 16
+      },
+      {
+        "name": "Zach Ertz",
+        "position": "TE",
+        "points": 77.5,
+        "games": 11
+      },
+      {
+        "name": "Darren Fells",
+        "position": "TE",
+        "points": 76.2,
+        "games": 12
+      },
+      {
+        "name": "N'Keal Harry",
+        "position": "TE",
+        "points": 75.9,
+        "games": 13
+      },
+      {
+        "name": "Sony Michel",
+        "position": "RB",
+        "points": 75.3,
+        "games": 8
+      },
+      {
+        "name": "Benny Snell",
+        "position": "RB",
+        "points": 74.9,
+        "games": 15
+      },
+      {
+        "name": "Preston Williams",
+        "position": "WR",
+        "points": 74.8,
+        "games": 8
+      },
+      {
+        "name": "Le'Veon Bell",
+        "position": "RB",
+        "points": 74.6,
+        "games": 11
+      },
+      {
+        "name": "Christopher Herndon",
+        "position": "TE",
+        "points": 73.7,
+        "games": 11
+      },
+      {
+        "name": "Jordan Reed",
+        "position": "TE",
+        "points": 73.1,
+        "games": 10
+      },
+      {
+        "name": "Kerryon Johnson",
+        "position": "RB",
+        "points": 71.8,
+        "games": 14
+      },
+      {
+        "name": "Alex Smith",
+        "position": "QB",
+        "points": 71.6,
+        "games": 8
+      },
+      {
+        "name": "Richard Rodgers",
+        "position": "TE",
+        "points": 70.5,
+        "games": 8
+      },
+      {
+        "name": "Miles Boykin",
+        "position": "WR",
+        "points": 69.6,
+        "games": 13
+      },
+      {
+        "name": "Cordarrelle Patterson",
+        "position": "RB",
+        "points": 69.4,
+        "games": 15
+      },
+      {
+        "name": "Salvon Ahmed",
+        "position": "RB",
+        "points": 69,
+        "games": 6
+      },
+      {
+        "name": "Richie James",
+        "position": "WR",
+        "points": 68.4,
+        "games": 7
+      },
+      {
+        "name": "Cameron Brate",
+        "position": "TE",
+        "points": 68.2,
+        "games": 13
+      },
+      {
+        "name": "Dwayne Haskins",
+        "position": "QB",
+        "points": 68.2,
+        "games": 7
+      },
+      {
+        "name": "Quintez Cephus",
+        "position": "WR",
+        "points": 66.9,
+        "games": 11
+      },
+      {
+        "name": "Dawson Knox",
+        "position": "TE",
+        "points": 66.8,
+        "games": 11
+      },
+      {
+        "name": "Phillip Lindsay",
+        "position": "RB",
+        "points": 66,
+        "games": 11
+      },
+      {
+        "name": "Jacob Hollister",
+        "position": "TE",
+        "points": 65.9,
+        "games": 13
+      },
+      {
+        "name": "Kenny Golladay",
+        "position": "WR",
+        "points": 65.8,
+        "games": 5
+      },
+      {
+        "name": "Samaje Perine",
+        "position": "RB",
+        "points": 65.7,
+        "games": 11
+      },
+      {
+        "name": "Kyle Rudolph",
+        "position": "TE",
+        "points": 65.4,
+        "games": 12
+      },
+      {
+        "name": "Justin Jackson",
+        "position": "RB",
+        "points": 65.3,
+        "games": 8
+      },
+      {
+        "name": "Jimmy Garoppolo",
+        "position": "QB",
+        "points": 64.3,
+        "games": 6
+      },
+      {
+        "name": "Jack Doyle",
+        "position": "TE",
+        "points": 64.1,
+        "games": 13
+      },
+      {
+        "name": "Ty Johnson",
+        "position": "RB",
+        "points": 63.3,
+        "games": 10
+      },
+      {
+        "name": "DaeSean Hamilton",
+        "position": "WR",
+        "points": 62.3,
+        "games": 12
+      },
+      {
+        "name": "Cole Kmet",
+        "position": "TE",
+        "points": 62,
+        "games": 13
+      },
+      {
+        "name": "Harrison Bryant",
+        "position": "TE",
+        "points": 61.8,
+        "games": 12
+      },
+      {
+        "name": "Jordan Wilkins",
+        "position": "RB",
+        "points": 61.3,
+        "games": 12
+      },
+      {
+        "name": "Steven Sims",
+        "position": "WR",
+        "points": 61.3,
+        "games": 11
+      },
+      {
+        "name": "Will Dissly",
+        "position": "TE",
+        "points": 61.1,
+        "games": 14
+      },
+      {
+        "name": "Denzel Mims",
+        "position": "WR",
+        "points": 60.7,
+        "games": 9
+      },
+      {
+        "name": "Mike Glennon",
+        "position": "QB",
+        "points": 60.6,
+        "games": 5
+      },
+      {
+        "name": "Marvin Hall",
+        "position": "WR",
+        "points": 60.3,
+        "games": 11
+      },
+      {
+        "name": "Dion Lewis",
+        "position": "RB",
+        "points": 59.2,
+        "games": 16
+      },
+      {
+        "name": "Collin Johnson",
+        "position": "WR",
+        "points": 59.2,
+        "games": 10
+      },
+      {
+        "name": "Durham Smythe",
+        "position": "TE",
+        "points": 58.8,
+        "games": 13
+      },
+      {
+        "name": "Donovan Peoples-Jones",
+        "position": "WR",
+        "points": 58.4,
+        "games": 7
+      },
+      {
+        "name": "Adam Humphries",
+        "position": "WR",
+        "points": 57.8,
+        "games": 7
+      },
+      {
+        "name": "Ito Smith",
+        "position": "RB",
+        "points": 57.3,
+        "games": 14
+      },
+      {
+        "name": "DeeJay Dallas",
+        "position": "RB",
+        "points": 56.9,
+        "games": 8
+      },
+      {
+        "name": "Julian Edelman",
+        "position": "WR",
+        "points": 56.2,
+        "games": 6
+      },
+      {
+        "name": "Isaiah Ford",
+        "position": "WR",
+        "points": 55.6,
+        "games": 9
+      },
+      {
+        "name": "Peyton Barber",
+        "position": "RB",
+        "points": 55,
+        "games": 14
+      },
+      {
+        "name": "Joe Flacco",
+        "position": "QB",
+        "points": 54.8,
+        "games": 5
+      },
+      {
+        "name": "Andy Isabella",
+        "position": "WR",
+        "points": 54.8,
+        "games": 11
+      },
+      {
+        "name": "Darrel Williams",
+        "position": "RB",
+        "points": 54.5,
+        "games": 13
+      },
+      {
+        "name": "James O'Shaughnessy",
+        "position": "TE",
+        "points": 54.2,
+        "games": 15
+      },
+      {
+        "name": "Greg Olsen",
+        "position": "TE",
+        "points": 53.9,
+        "games": 11
+      },
+      {
+        "name": "Lynn Bowden",
+        "position": "WR",
+        "points": 53.6,
+        "games": 9
+      },
+      {
+        "name": "Olamide Zaccheaus",
+        "position": "WR",
+        "points": 53.4,
+        "games": 9
+      },
+      {
+        "name": "Devin Duvernay",
+        "position": "WR",
+        "points": 53.1,
+        "games": 14
+      },
+      {
+        "name": "Mark Ingram",
+        "position": "RB",
+        "points": 52.9,
+        "games": 10
+      },
+      {
+        "name": "La'Mical Perine",
+        "position": "RB",
+        "points": 52.5,
+        "games": 9
+      },
+      {
+        "name": "David Njoku",
+        "position": "TE",
+        "points": 52.3,
+        "games": 11
+      },
+      {
+        "name": "C.J. Beathard",
+        "position": "QB",
+        "points": 52.3,
+        "games": 6
+      },
+      {
+        "name": "Chad Beebe",
+        "position": "WR",
+        "points": 52.1,
+        "games": 10
+      },
+      {
+        "name": "Cedrick Wilson",
+        "position": "WR",
+        "points": 51.6,
+        "games": 10
+      },
+      {
+        "name": "Jalen Richard",
+        "position": "RB",
+        "points": 51.1,
+        "games": 12
+      },
+      {
+        "name": "Brandon Allen",
+        "position": "QB",
+        "points": 49.7,
+        "games": 5
+      },
+      {
+        "name": "Deonte Harty",
+        "position": "WR",
+        "points": 49.7,
+        "games": 9
+      },
+      {
+        "name": "Ross Dwelley",
+        "position": "TE",
+        "points": 49.5,
+        "games": 10
+      },
+      {
+        "name": "Isaiah Wright",
+        "position": "WR",
+        "points": 48.3,
+        "games": 11
+      },
+      {
+        "name": "Van Jefferson",
+        "position": "WR",
+        "points": 46.9,
+        "games": 13
+      },
+      {
+        "name": "Chad Hansen",
+        "position": "WR",
+        "points": 46.6,
+        "games": 5
+      },
+      {
+        "name": "Dontrelle Inman",
+        "position": "WR",
+        "points": 46.3,
+        "games": 7
+      },
+      {
+        "name": "Adam Shaheen",
+        "position": "TE",
+        "points": 45,
+        "games": 13
+      },
+      {
+        "name": "Kyle Allen",
+        "position": "QB",
+        "points": 45,
+        "games": 4
+      },
+      {
+        "name": "DeSean Jackson",
+        "position": "WR",
+        "points": 44.8,
+        "games": 5
+      },
+      {
+        "name": "Tyler Conklin",
+        "position": "TE",
+        "points": 44.4,
+        "games": 7
+      },
+      {
+        "name": "Mohamed Sanu",
+        "position": "WR",
+        "points": 44,
+        "games": 7
+      },
+      {
+        "name": "Jeremy McNichols",
+        "position": "RB",
+        "points": 43.9,
+        "games": 15
+      },
+      {
+        "name": "Donald Parham",
+        "position": "TE",
+        "points": 43.9,
+        "games": 10
+      },
+      {
+        "name": "Chris Thompson",
+        "position": "RB",
+        "points": 42.6,
+        "games": 6
+      },
+      {
+        "name": "Pharaoh Brown",
+        "position": "TE",
+        "points": 42.3,
+        "games": 8
+      },
+      {
+        "name": "Marquez Callaway",
+        "position": "WR",
+        "points": 42.3,
+        "games": 6
+      },
+      {
+        "name": "Matt Breida",
+        "position": "RB",
+        "points": 42,
+        "games": 10
+      },
+      {
+        "name": "Tyler Kroft",
+        "position": "TE",
+        "points": 41.9,
+        "games": 6
+      },
+      {
+        "name": "Byron Pringle",
+        "position": "WR",
+        "points": 41,
+        "games": 6
+      },
+      {
+        "name": "Freddie Swain",
+        "position": "WR",
+        "points": 40.9,
+        "games": 12
+      },
+      {
+        "name": "Tyler Johnson",
+        "position": "WR",
+        "points": 40.9,
+        "games": 10
+      },
+      {
+        "name": "Alfred Morris",
+        "position": "RB",
+        "points": 40.7,
+        "games": 9
+      },
+      {
+        "name": "Ian Thomas",
+        "position": "TE",
+        "points": 40.5,
+        "games": 13
+      },
+      {
+        "name": "A.J. Dillon",
+        "position": "RB",
+        "points": 40.3,
+        "games": 9
+      },
+      {
+        "name": "Marcus Johnson",
+        "position": "WR",
+        "points": 39.5,
+        "games": 8
+      },
+      {
+        "name": "Jesse James",
+        "position": "TE",
+        "points": 38.9,
+        "games": 12
+      },
+      {
+        "name": "Marcedes Lewis",
+        "position": "TE",
+        "points": 38.7,
+        "games": 10
+      },
+      {
+        "name": "Adam Trautman",
+        "position": "TE",
+        "points": 38.1,
+        "games": 10
+      },
+      {
+        "name": "Mack Hollins",
+        "position": "WR",
+        "points": 37.6,
+        "games": 9
+      },
+      {
+        "name": "O.J. Howard",
+        "position": "TE",
+        "points": 37.6,
+        "games": 4
+      },
+      {
+        "name": "Nick Boyle",
+        "position": "TE",
+        "points": 37.3,
+        "games": 9
+      },
+      {
+        "name": "Royce Freeman",
+        "position": "RB",
+        "points": 37.1,
+        "games": 11
+      },
+      {
+        "name": "Zay Jones",
+        "position": "WR",
+        "points": 36.6,
+        "games": 11
+      },
+      {
+        "name": "Josh Adams",
+        "position": "RB",
+        "points": 36.6,
+        "games": 6
+      },
+      {
+        "name": "Rodney Smith",
+        "position": "RB",
+        "points": 36.5,
+        "games": 7
+      },
+      {
+        "name": "Bryan Edwards",
+        "position": "WR",
+        "points": 36.3,
+        "games": 9
+      },
+      {
+        "name": "Devonta Freeman",
+        "position": "RB",
+        "points": 36,
+        "games": 5
+      },
+      {
+        "name": "Olabisi Johnson",
+        "position": "WR",
+        "points": 34.9,
+        "games": 8
+      },
+      {
+        "name": "Ray-Ray McCloud",
+        "position": "WR",
+        "points": 34.2,
+        "games": 11
+      },
+      {
+        "name": "Jeff Smith",
+        "position": "WR",
+        "points": 33.7,
+        "games": 8
+      },
+      {
+        "name": "Darwin Thompson",
+        "position": "RB",
+        "points": 33.2,
+        "games": 5
+      },
+      {
+        "name": "Foster Moreau",
+        "position": "TE",
+        "points": 33,
+        "games": 7
+      },
+      {
+        "name": "Travis Homer",
+        "position": "RB",
+        "points": 32.8,
+        "games": 9
+      },
+      {
+        "name": "KeeSean Johnson",
+        "position": "WR",
+        "points": 32.3,
+        "games": 8
+      },
+      {
+        "name": "Jason Witten",
+        "position": "TE",
+        "points": 31.9,
+        "games": 10
+      },
+      {
+        "name": "Kenny Stills",
+        "position": "WR",
+        "points": 31.4,
+        "games": 7
+      },
+      {
+        "name": "Jamal Agnew",
+        "position": "WR",
+        "points": 31.2,
+        "games": 13
+      },
+      {
+        "name": "Jamycal Hasty",
+        "position": "RB",
+        "points": 31.1,
+        "games": 6
+      },
+      {
+        "name": "Ryan Izzo",
+        "position": "TE",
+        "points": 30.9,
+        "games": 10
+      },
+      {
+        "name": "Jordan Howard",
+        "position": "RB",
+        "points": 30.7,
+        "games": 7
+      },
+      {
+        "name": "Mike Thomas",
+        "position": "WR",
+        "points": 30.3,
+        "games": 10
+      },
+      {
+        "name": "Jeff Driskel",
+        "position": "QB",
+        "points": 30.1,
+        "games": 3
+      },
+      {
+        "name": "Ameer Abdullah",
+        "position": "RB",
+        "points": 30,
+        "games": 6
+      },
+      {
+        "name": "Cameron Batson",
+        "position": "WR",
+        "points": 30,
+        "games": 9
+      },
+      {
+        "name": "Dare Ogunbowale",
+        "position": "RB",
+        "points": 29.9,
+        "games": 7
+      },
+      {
+        "name": "Noah Brown",
+        "position": "WR",
+        "points": 29.8,
+        "games": 9
+      },
+      {
+        "name": "Brandon Powell",
+        "position": "WR",
+        "points": 29.6,
+        "games": 10
+      },
+      {
+        "name": "Nick Vannett",
+        "position": "TE",
+        "points": 29.5,
+        "games": 11
+      },
+      {
+        "name": "Jace Sternberger",
+        "position": "TE",
+        "points": 29.4,
+        "games": 8
+      },
+      {
+        "name": "Kaden Smith",
+        "position": "TE",
+        "points": 29.2,
+        "games": 13
+      },
+      {
+        "name": "Albert Okwuegbunam",
+        "position": "TE",
+        "points": 29.1,
+        "games": 4
+      },
+      {
+        "name": "Auden Tate",
+        "position": "WR",
+        "points": 29,
+        "games": 8
+      },
+      {
+        "name": "KhaDarel Hodge",
+        "position": "WR",
+        "points": 29,
+        "games": 7
+      },
+      {
+        "name": "John Hightower",
+        "position": "WR",
+        "points": 28.8,
+        "games": 10
+      },
+      {
+        "name": "Jake Luton",
+        "position": "QB",
+        "points": 28.3,
+        "games": 3
+      },
+      {
+        "name": "LeSean McCoy",
+        "position": "RB",
+        "points": 28.2,
+        "games": 8
+      },
+      {
+        "name": "Kalif Raymond",
+        "position": "WR",
+        "points": 27.4,
+        "games": 8
+      },
+      {
+        "name": "Christian Blake",
+        "position": "WR",
+        "points": 27.1,
+        "games": 7
+      },
+      {
+        "name": "Tyler Ervin",
+        "position": "RB",
+        "points": 26.1,
+        "games": 7
+      },
+      {
+        "name": "Chris Hogan",
+        "position": "WR",
+        "points": 25.8,
+        "games": 5
+      },
+      {
+        "name": "Marcus Mariota",
+        "position": "QB",
+        "points": 25.8,
+        "games": 1
+      },
+      {
+        "name": "Gunner Olszewski",
+        "position": "WR",
+        "points": 25.5,
+        "games": 6
+      },
+      {
+        "name": "Equanimeous St. Brown",
+        "position": "WR",
+        "points": 25.4,
+        "games": 8
+      },
+      {
+        "name": "Vance McDonald",
+        "position": "TE",
+        "points": 24.9,
+        "games": 9
+      },
+      {
+        "name": "Malcolm Perry",
+        "position": "RB",
+        "points": 24.7,
+        "games": 8
+      },
+      {
+        "name": "Alex Erickson",
+        "position": "WR",
+        "points": 24.6,
+        "games": 9
+      },
+      {
+        "name": "Maxx Williams",
+        "position": "TE",
+        "points": 24.2,
+        "games": 6
+      },
+      {
+        "name": "Chad Henne",
+        "position": "QB",
+        "points": 23.7,
+        "games": 3
+      },
+      {
+        "name": "Quez Watkins",
+        "position": "WR",
+        "points": 23.6,
+        "games": 4
+      },
+      {
+        "name": "Alshon Jeffery",
+        "position": "WR",
+        "points": 23.5,
+        "games": 7
+      },
+      {
+        "name": "Geoff Swaim",
+        "position": "TE",
+        "points": 23.3,
+        "games": 6
+      },
+      {
+        "name": "Ke'Shawn Vaughn",
+        "position": "RB",
+        "points": 23.3,
+        "games": 6
+      },
+      {
+        "name": "Darrell Daniels",
+        "position": "TE",
+        "points": 23.2,
+        "games": 8
+      },
+      {
+        "name": "Laquon Treadwell",
+        "position": "WR",
+        "points": 22.9,
+        "games": 4
+      },
+      {
+        "name": "Dez Bryant",
+        "position": "WR",
+        "points": 22.7,
+        "games": 4
+      },
+      {
+        "name": "C.J. Uzomah",
+        "position": "TE",
+        "points": 22.7,
+        "games": 2
+      },
+      {
+        "name": "Anthony McFarland",
+        "position": "RB",
+        "points": 22.7,
+        "games": 11
+      },
+      {
+        "name": "DeMichael Harris",
+        "position": "WR",
+        "points": 22.5,
+        "games": 6
+      },
+      {
+        "name": "Blake Bell",
+        "position": "TE",
+        "points": 22.2,
+        "games": 11
+      },
+      {
+        "name": "Troy Fumagalli",
+        "position": "TE",
+        "points": 22,
+        "games": 7
+      },
+      {
+        "name": "Patrick Laird",
+        "position": "RB",
+        "points": 22,
+        "games": 9
+      },
+      {
+        "name": "MyCole Pruitt",
+        "position": "TE",
+        "points": 21.9,
+        "games": 5
+      },
+      {
+        "name": "Trayveon Williams",
+        "position": "RB",
+        "points": 21.7,
+        "games": 6
+      },
+      {
+        "name": "C.J. Board",
+        "position": "WR",
+        "points": 21.4,
+        "games": 9
+      },
+      {
+        "name": "Antonio Williams",
+        "position": "RB",
+        "points": 21.3,
+        "games": 1
+      },
+      {
+        "name": "Alex Collins",
+        "position": "RB",
+        "points": 21.1,
+        "games": 3
+      },
+      {
+        "name": "Corey Clement",
+        "position": "RB",
+        "points": 21,
+        "games": 8
+      },
+      {
+        "name": "D'Ernest Johnson",
+        "position": "RB",
+        "points": 21,
+        "games": 8
+      },
+      {
+        "name": "Ryan Nall",
+        "position": "RB",
+        "points": 20.7,
+        "games": 6
+      },
+      {
+        "name": "Jacoby Brissett",
+        "position": "QB",
+        "points": 20.6,
+        "games": 11
+      },
+      {
+        "name": "Troymaine Pope",
+        "position": "RB",
+        "points": 19.8,
+        "games": 4
+      },
+      {
+        "name": "Lee Smith",
+        "position": "TE",
+        "points": 19.5,
+        "games": 5
+      },
+      {
+        "name": "Ryan Finley",
+        "position": "QB",
+        "points": 19.2,
+        "games": 4
+      },
+      {
+        "name": "Josh Hill",
+        "position": "TE",
+        "points": 18.6,
+        "games": 8
+      },
+      {
+        "name": "Stephen Anderson",
+        "position": "TE",
+        "points": 18.6,
+        "games": 3
+      },
+      {
+        "name": "Trent Taylor",
+        "position": "WR",
+        "points": 18.6,
+        "games": 7
+      },
+      {
+        "name": "Malik Taylor",
+        "position": "WR",
+        "points": 18.5,
+        "games": 6
+      },
+      {
+        "name": "Mason Rudolph",
+        "position": "QB",
+        "points": 18.4,
+        "games": 4
+      },
+      {
+        "name": "Colt McCoy",
+        "position": "QB",
+        "points": 18.2,
+        "games": 4
+      },
+      {
+        "name": "Ryan Griffin",
+        "position": "TE",
+        "points": 17.6,
+        "games": 5
+      },
+      {
+        "name": "Dante Pettis",
+        "position": "WR",
+        "points": 17.6,
+        "games": 3
+      },
+      {
+        "name": "Tarik Cohen",
+        "position": "RB",
+        "points": 17.5,
+        "games": 3
+      },
+      {
+        "name": "DeAndre Washington",
+        "position": "RB",
+        "points": 17.1,
+        "games": 4
+      },
+      {
+        "name": "D'Onta Foreman",
+        "position": "RB",
+        "points": 17,
+        "games": 5
+      },
+      {
+        "name": "Javon Wims",
+        "position": "WR",
+        "points": 17,
+        "games": 9
+      },
+      {
+        "name": "Reggie Bonnafon",
+        "position": "RB",
+        "points": 16.7,
+        "games": 2
+      },
+      {
+        "name": "Jaylen Samuels",
+        "position": "RB",
+        "points": 16.4,
+        "games": 8
+      },
+      {
+        "name": "Justin Watson",
+        "position": "WR",
+        "points": 16.4,
+        "games": 3
+      },
+      {
+        "name": "T.J. Yeldon",
+        "position": "RB",
+        "points": 16.2,
+        "games": 3
+      },
+      {
+        "name": "Austin Mack",
+        "position": "WR",
+        "points": 16.1,
+        "games": 5
+      },
+      {
+        "name": "Darrynton Evans",
+        "position": "RB",
+        "points": 16.1,
+        "games": 4
+      },
+      {
+        "name": "Ty Montgomery",
+        "position": "WR",
+        "points": 15.8,
+        "games": 4
+      },
+      {
+        "name": "Saquon Barkley",
+        "position": "RB",
+        "points": 15.4,
+        "games": 2
+      },
+      {
+        "name": "Blaine Gabbert",
+        "position": "QB",
+        "points": 15.3,
+        "games": 4
+      },
+      {
+        "name": "Mike Boone",
+        "position": "RB",
+        "points": 14.9,
+        "games": 5
+      },
+      {
+        "name": "Parris Campbell",
+        "position": "WR",
+        "points": 14.7,
+        "games": 2
+      },
+      {
+        "name": "Garrett Gilbert",
+        "position": "QB",
+        "points": 14.5,
+        "games": 1
+      },
+      {
+        "name": "J.J. Arcega-Whiteside",
+        "position": "WR",
+        "points": 14.5,
+        "games": 5
+      },
+      {
+        "name": "K.J. Hill",
+        "position": "WR",
+        "points": 14.3,
+        "games": 5
+      },
+      {
+        "name": "Virgil Green",
+        "position": "TE",
+        "points": 14,
+        "games": 4
+      },
+      {
+        "name": "Lil'Jordan Humphrey",
+        "position": "WR",
+        "points": 13.6,
+        "games": 2
+      },
+      {
+        "name": "Diontae Spencer",
+        "position": "WR",
+        "points": 13.5,
+        "games": 5
+      },
+      {
+        "name": "Luke Stocker",
+        "position": "TE",
+        "points": 13.3,
+        "games": 9
+      },
+      {
+        "name": "Devine Ozigbo",
+        "position": "RB",
+        "points": 13.3,
+        "games": 4
+      },
+      {
+        "name": "Justice Hill",
+        "position": "RB",
+        "points": 13,
+        "games": 6
+      },
+      {
+        "name": "Jarrett Stidham",
+        "position": "QB",
+        "points": 12.9,
+        "games": 5
+      },
+      {
+        "name": "Jaydon Mickens",
+        "position": "WR",
+        "points": 12.8,
+        "games": 2
+      },
+      {
+        "name": "John Wolford",
+        "position": "QB",
+        "points": 12.8,
+        "games": 1
+      },
+      {
+        "name": "Tevin Coleman",
+        "position": "RB",
+        "points": 12.7,
+        "games": 6
+      },
+      {
+        "name": "C.J. Prosise",
+        "position": "RB",
+        "points": 12.7,
+        "games": 5
+      },
+      {
+        "name": "Brandon Zylstra",
+        "position": "WR",
+        "points": 12.6,
+        "games": 5
+      },
+      {
+        "name": "J.J. Taylor",
+        "position": "RB",
+        "points": 12.4,
+        "games": 5
+      },
+      {
+        "name": "Pharoh Cooper",
+        "position": "WR",
+        "points": 12.3,
+        "games": 5
+      },
+      {
+        "name": "Tyrie Cleveland",
+        "position": "WR",
+        "points": 12.3,
+        "games": 5
+      },
+      {
+        "name": "Chase Daniel",
+        "position": "QB",
+        "points": 12.2,
+        "games": 4
+      },
+      {
+        "name": "Devin Asiasi",
+        "position": "TE",
+        "points": 11.9,
+        "games": 4
+      },
+      {
+        "name": "Taylor Heinicke",
+        "position": "QB",
+        "points": 11.7,
+        "games": 1
+      },
+      {
+        "name": "Austin Carr",
+        "position": "WR",
+        "points": 11.7,
+        "games": 4
+      },
+      {
+        "name": "Demetrius Harris",
+        "position": "TE",
+        "points": 11.5,
+        "games": 7
+      },
+      {
+        "name": "Brett Rypien",
+        "position": "QB",
+        "points": 11.3,
+        "games": 2
+      },
+      {
+        "name": "Chris Manhertz",
+        "position": "TE",
+        "points": 11.2,
+        "games": 7
+      },
+      {
+        "name": "Steven Mitchell",
+        "position": "WR",
+        "points": 11,
+        "games": 3
+      },
+      {
+        "name": "Ja'Marcus Bradley",
+        "position": "WR",
+        "points": 11,
+        "games": 1
+      },
+      {
+        "name": "Theo Riddick",
+        "position": "RB",
+        "points": 10.7,
+        "games": 4
+      },
+      {
+        "name": "Deon Yelder",
+        "position": "TE",
+        "points": 10.6,
+        "games": 6
+      },
+      {
+        "name": "Dominique Dafney",
+        "position": "TE",
+        "points": 10.6,
+        "games": 2
+      },
+      {
+        "name": "Cethan Carter",
+        "position": "TE",
+        "points": 10.3,
+        "games": 6
+      },
+      {
+        "name": "Nick Keizer",
+        "position": "TE",
+        "points": 10.3,
+        "games": 7
+      },
+      {
+        "name": "Damion Ratley",
+        "position": "WR",
+        "points": 10.3,
+        "games": 5
+      },
+      {
+        "name": "River Cracraft",
+        "position": "WR",
+        "points": 10.1,
+        "games": 3
+      },
+      {
+        "name": "Trent Sherfield",
+        "position": "WR",
+        "points": 10,
+        "games": 2
+      },
+      {
+        "name": "Levine Toilolo",
+        "position": "TE",
+        "points": 9.6,
+        "games": 5
+      },
+      {
+        "name": "Courtland Sutton",
+        "position": "WR",
+        "points": 9.6,
+        "games": 1
+      },
+      {
+        "name": "Darrius Shepherd",
+        "position": "WR",
+        "points": 9.6,
+        "games": 6
+      },
+      {
+        "name": "Ashton Dulin",
+        "position": "WR",
+        "points": 9.4,
+        "games": 7
+      },
+      {
+        "name": "Artavis Pierce",
+        "position": "RB",
+        "points": 9.4,
+        "games": 3
+      },
+      {
+        "name": "Matt Barkley",
+        "position": "QB",
+        "points": 9.3,
+        "games": 4
+      },
+      {
+        "name": "Johnny Mundt",
+        "position": "TE",
+        "points": 9.3,
+        "games": 2
+      },
+      {
+        "name": "Trace McSorley",
+        "position": "QB",
+        "points": 9.3,
+        "games": 2
+      },
+      {
+        "name": "Jake Kumerow",
+        "position": "WR",
+        "points": 9.2,
+        "games": 1
+      },
+      {
+        "name": "Tyrod Taylor",
+        "position": "QB",
+        "points": 9,
+        "games": 1
+      },
+      {
+        "name": "Joe Reed",
+        "position": "WR",
+        "points": 8.9,
+        "games": 3
+      },
+      {
+        "name": "Marlon Mack",
+        "position": "RB",
+        "points": 8.6,
+        "games": 1
+      },
+      {
+        "name": "P.J. Walker",
+        "position": "QB",
+        "points": 8.5,
+        "games": 4
+      },
+      {
+        "name": "Anthony Sherman",
+        "position": "RB",
+        "points": 8.3,
+        "games": 4
+      },
+      {
+        "name": "Nick Westbrook-Ikhine",
+        "position": "WR",
+        "points": 8.3,
+        "games": 8
+      },
+      {
+        "name": "Jonathan Ward",
+        "position": "RB",
+        "points": 8.1,
+        "games": 1
+      },
+      {
+        "name": "Trenton Cannon",
+        "position": "RB",
+        "points": 7.9,
+        "games": 5
+      },
+      {
+        "name": "Riley Ridley",
+        "position": "WR",
+        "points": 7.9,
+        "games": 2
+      },
+      {
+        "name": "Juwan Johnson",
+        "position": "TE",
+        "points": 7.9,
+        "games": 5
+      },
+      {
+        "name": "Alex Armah",
+        "position": "RB",
+        "points": 7.7,
+        "games": 12
+      },
+      {
+        "name": "Colin Thompson",
+        "position": "TE",
+        "points": 7.7,
+        "games": 2
+      },
+      {
+        "name": "Buddy Howell",
+        "position": "RB",
+        "points": 7.7,
+        "games": 2
+      },
+      {
+        "name": "Chris Streveler",
+        "position": "QB",
+        "points": 7.7,
+        "games": 2
+      },
+      {
+        "name": "Jason Croom",
+        "position": "TE",
+        "points": 7.3,
+        "games": 1
+      },
+      {
+        "name": "Jordan Thomas",
+        "position": "TE",
+        "points": 7.3,
+        "games": 2
+      },
+      {
+        "name": "Andre Roberts",
+        "position": "WR",
+        "points": 7.1,
+        "games": 3
+      },
+      {
+        "name": "Seth Roberts",
+        "position": "WR",
+        "points": 7.1,
+        "games": 3
+      },
+      {
+        "name": "Tanner Hudson",
+        "position": "TE",
+        "points": 7.1,
+        "games": 4
+      },
+      {
+        "name": "Ted Ginn",
+        "position": "WR",
+        "points": 7,
+        "games": 3
+      },
+      {
+        "name": "Tavon Austin",
+        "position": "WR",
+        "points": 7,
+        "games": 3
+      },
+      {
+        "name": "Isaiah Zuber",
+        "position": "WR",
+        "points": 7,
+        "games": 4
+      },
+      {
+        "name": "Ben DiNucci",
+        "position": "QB",
+        "points": 7,
+        "games": 2
+      },
+      {
+        "name": "Josh Malone",
+        "position": "WR",
+        "points": 6.8,
+        "games": 1
+      },
+      {
+        "name": "Charlie Woerner",
+        "position": "TE",
+        "points": 6.6,
+        "games": 3
+      },
+      {
+        "name": "Terry Godwin",
+        "position": "WR",
+        "points": 6.5,
+        "games": 2
+      },
+      {
+        "name": "Kahale Warring",
+        "position": "TE",
+        "points": 6.5,
+        "games": 4
+      },
+      {
+        "name": "Dontrell Hilliard",
+        "position": "RB",
+        "points": 6,
+        "games": 2
+      },
+      {
+        "name": "Robert Foster",
+        "position": "WR",
+        "points": 5.7,
+        "games": 3
+      },
+      {
+        "name": "Elijhaa Penny",
+        "position": "RB",
+        "points": 5.5,
+        "games": 6
+      },
+      {
+        "name": "Jaeden Graham",
+        "position": "TE",
+        "points": 5.5,
+        "games": 4
+      },
+      {
+        "name": "Lawrence Cager",
+        "position": "TE",
+        "points": 5.5,
+        "games": 2
+      },
+      {
+        "name": "Hunter Bryant",
+        "position": "TE",
+        "points": 5.4,
+        "games": 2
+      },
+      {
+        "name": "Daniel Brown",
+        "position": "TE",
+        "points": 5.1,
+        "games": 2
+      },
+      {
+        "name": "Deontay Burnett",
+        "position": "WR",
+        "points": 4.9,
+        "games": 1
+      },
+      {
+        "name": "Jonathan Williams",
+        "position": "RB",
+        "points": 4.6,
+        "games": 1
+      },
+      {
+        "name": "Eric Saubert",
+        "position": "TE",
+        "points": 4.6,
+        "games": 4
+      },
+      {
+        "name": "Dalton Keene",
+        "position": "TE",
+        "points": 4.6,
+        "games": 3
+      },
+      {
+        "name": "Daurice Fountain",
+        "position": "WR",
+        "points": 4.3,
+        "games": 2
+      },
+      {
+        "name": "Stephen Carlson",
+        "position": "TE",
+        "points": 4.1,
+        "games": 3
+      },
+      {
+        "name": "Antonio Callaway",
+        "position": "WR",
+        "points": 4,
+        "games": 3
+      },
+      {
+        "name": "Austin Walter",
+        "position": "RB",
+        "points": 4,
+        "games": 1
+      },
+      {
+        "name": "Ben Ellefson",
+        "position": "TE",
+        "points": 4,
+        "games": 3
+      },
+      {
+        "name": "John Ross",
+        "position": "WR",
+        "points": 3.7,
+        "games": 2
+      },
+      {
+        "name": "Colby Parkinson",
+        "position": "TE",
+        "points": 3.6,
+        "games": 1
+      },
+      {
+        "name": "Antonio Gandy-Golden",
+        "position": "WR",
+        "points": 3.5,
+        "games": 4
+      },
+      {
+        "name": "Rashaad Penny",
+        "position": "RB",
+        "points": 3.4,
+        "games": 3
+      },
+      {
+        "name": "Penny Hart",
+        "position": "WR",
+        "points": 3.2,
+        "games": 1
+      },
+      {
+        "name": "Bennie Fowler",
+        "position": "WR",
+        "points": 3.1,
+        "games": 1
+      },
+      {
+        "name": "Bo Scarbrough",
+        "position": "RB",
+        "points": 3.1,
+        "games": 1
+      },
+      {
+        "name": "Donte Moncrief",
+        "position": "WR",
+        "points": 2.9,
+        "games": 2
+      },
+      {
+        "name": "Tommylee Lewis",
+        "position": "WR",
+        "points": 2.9,
+        "games": 4
+      },
+      {
+        "name": "Tyler Huntley",
+        "position": "QB",
+        "points": 2.9,
+        "games": 2
+      },
+      {
+        "name": "Jason Huntley",
+        "position": "RB",
+        "points": 2.9,
+        "games": 3
+      },
+      {
+        "name": "Lamar Miller",
+        "position": "RB",
+        "points": 2.6,
+        "games": 1
+      },
+      {
+        "name": "Robert Griffin",
+        "position": "QB",
+        "points": 2.6,
+        "games": 4
+      },
+      {
+        "name": "Jaleel Scott",
+        "position": "WR",
+        "points": 2.6,
+        "games": 1
+      },
+      {
+        "name": "LeVante Bellamy",
+        "position": "RB",
+        "points": 2.6,
+        "games": 2
+      },
+      {
+        "name": "Scottie Phillips",
+        "position": "RB",
+        "points": 2.6,
+        "games": 1
+      },
+      {
+        "name": "Jake Butt",
+        "position": "TE",
+        "points": 2.5,
+        "games": 3
+      },
+      {
+        "name": "Derek Carrier",
+        "position": "TE",
+        "points": 2.4,
+        "games": 1
+      },
+      {
+        "name": "Jameis Winston",
+        "position": "QB",
+        "points": 2.4,
+        "games": 3
+      },
+      {
+        "name": "James Proche",
+        "position": "WR",
+        "points": 2.4,
+        "games": 3
+      },
+      {
+        "name": "Rico Dowdle",
+        "position": "RB",
+        "points": 2.4,
+        "games": 2
+      },
+      {
+        "name": "Tommy Stevens",
+        "position": "TE",
+        "points": 2.4,
+        "games": 1
+      },
+      {
+        "name": "Keith Kirkwood",
+        "position": "WR",
+        "points": 2.3,
+        "games": 1
+      },
+      {
+        "name": "Vyncint Smith",
+        "position": "WR",
+        "points": 2.3,
+        "games": 2
+      },
+      {
+        "name": "Luke Willson",
+        "position": "TE",
+        "points": 2.2,
+        "games": 2
+      },
+      {
+        "name": "Cody Hollister",
+        "position": "WR",
+        "points": 2.2,
+        "games": 1
+      },
+      {
+        "name": "Blake Jarwin",
+        "position": "TE",
+        "points": 2.2,
+        "games": 1
+      },
+      {
+        "name": "Josiah Deguara",
+        "position": "TE",
+        "points": 2.2,
+        "games": 1
+      },
+      {
+        "name": "Marcus Kemp",
+        "position": "WR",
+        "points": 2.1,
+        "games": 1
+      },
+      {
+        "name": "Joshua Dobbs",
+        "position": "QB",
+        "points": 2.1,
+        "games": 1
+      },
+      {
+        "name": "Brian Hoyer",
+        "position": "QB",
+        "points": 2,
+        "games": 1
+      },
+      {
+        "name": "Temarrick Hemingway",
+        "position": "TE",
+        "points": 2,
+        "games": 2
+      },
+      {
+        "name": "Gehrig Dieter",
+        "position": "WR",
+        "points": 2,
+        "games": 1
+      },
+      {
+        "name": "D.J. Foster",
+        "position": "RB",
+        "points": 1.9,
+        "games": 2
+      },
+      {
+        "name": "Nathan Peterman",
+        "position": "QB",
+        "points": 1.9,
+        "games": 1
+      },
+      {
+        "name": "Case Keenum",
+        "position": "QB",
+        "points": 1.8,
+        "games": 1
+      },
+      {
+        "name": "DeAndre Carter",
+        "position": "WR",
+        "points": 1.8,
+        "games": 1
+      },
+      {
+        "name": "David Blough",
+        "position": "QB",
+        "points": 1.8,
+        "games": 1
+      },
+      {
+        "name": "Craig Reynolds",
+        "position": "RB",
+        "points": 1.7,
+        "games": 1
+      },
+      {
+        "name": "Jeremy Sprinkle",
+        "position": "TE",
+        "points": 1.6,
+        "games": 3
+      },
+      {
+        "name": "Brandon Dillon",
+        "position": "TE",
+        "points": 1.6,
+        "games": 1
+      },
+      {
+        "name": "Dwayne Washington",
+        "position": "RB",
+        "points": 1.5,
+        "games": 2
+      },
+      {
+        "name": "Trevon Wesco",
+        "position": "TE",
+        "points": 1.5,
+        "games": 2
+      },
+      {
+        "name": "Trenton Irwin",
+        "position": "WR",
+        "points": 1.5,
+        "games": 1
+      },
+      {
+        "name": "Dede Westbrook",
+        "position": "WR",
+        "points": 1.4,
+        "games": 1
+      },
+      {
+        "name": "Logan Woodside",
+        "position": "QB",
+        "points": 1.3,
+        "games": 5
+      },
+      {
+        "name": "Isaac Nauta",
+        "position": "TE",
+        "points": 1.3,
+        "games": 2
+      },
+      {
+        "name": "Tony Jones",
+        "position": "RB",
+        "points": 1.3,
+        "games": 1
+      },
+      {
+        "name": "Marcus Baugh",
+        "position": "TE",
+        "points": 1.2,
+        "games": 1
+      },
+      {
+        "name": "Geno Smith",
+        "position": "QB",
+        "points": 1.1,
+        "games": 1
+      },
+      {
+        "name": "Senorise Perry",
+        "position": "RB",
+        "points": 0.9,
+        "games": 1
+      },
+      {
+        "name": "AJ McCarron",
+        "position": "QB",
+        "points": 0.8,
+        "games": 2
+      },
+      {
+        "name": "Dexter Williams",
+        "position": "RB",
+        "points": 0.8,
+        "games": 1
+      },
+      {
+        "name": "Tyler Bray",
+        "position": "QB",
+        "points": 0.7,
+        "games": 1
+      },
+      {
+        "name": "John Lovett",
+        "position": "QB",
+        "points": 0.6,
+        "games": 1
+      },
+      {
+        "name": "Tony Brooks-James",
+        "position": "RB",
+        "points": 0.4,
+        "games": 1
+      },
+      {
+        "name": "JoJo Natson",
+        "position": "WR",
+        "points": 0.3,
+        "games": 1
+      },
+      {
+        "name": "Qadree Ollison",
+        "position": "RB",
+        "points": 0.3,
+        "games": 1
+      },
+      {
+        "name": "Taiwan Jones",
+        "position": "RB",
+        "points": 0,
+        "games": 2
+      },
+      {
+        "name": "Kenjon Barner",
+        "position": "RB",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Eric Tomlinson",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Tajae Sharpe",
+        "position": "WR",
+        "points": 0,
+        "games": 3
+      },
+      {
+        "name": "J.P. Holtz",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Seth DeValve",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Cyril Grayson",
+        "position": "WR",
+        "points": 0,
+        "games": 2
+      },
+      {
+        "name": "Antony Auclair",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Ricky Seals-Jones",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Mason Schreck",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Taywan Taylor",
+        "position": "WR",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Kevin Rader",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Jeff Badet",
+        "position": "WR",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Rico Gafford",
+        "position": "WR",
+        "points": 0,
+        "games": 2
+      },
+      {
+        "name": "Easton Stick",
+        "position": "QB",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Hakeem Butler",
+        "position": "WR",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Adrian Killins",
+        "position": "RB",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Noah Togiai",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Tyler Davis",
+        "position": "TE",
+        "points": 0,
+        "games": 1
+      },
+      {
+        "name": "Matt Schaub",
+        "position": "QB",
+        "points": -0.4,
+        "games": 1
+      },
+      {
+        "name": "Tim Boyle",
+        "position": "QB",
+        "points": -0.9,
+        "games": 8
+      },
+      {
+        "name": "Nate Sudfeld",
+        "position": "QB",
+        "points": -1.5,
+        "games": 1
+      },
+      {
+        "name": "Kendall Hinton",
+        "position": "WR",
+        "points": -2.8,
+        "games": 1
+      }
+    ],
     "2021": [
       {
         "name": "Cooper Kupp",

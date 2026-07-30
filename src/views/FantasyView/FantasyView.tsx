@@ -6,6 +6,7 @@ import { LEAGUE_SIZE_PRESETS, STANDARD_ROSTER, FANTASY_SEASON, type Position, ty
 import type { AdpVsActualEntry, FantasyRankingsPayload } from "../../lib/fantasy/types";
 import type { SimulationResult } from "../../lib/fantasy/simulate";
 import adpVsActualData from "../../data/fantasy/adp-vs-actual-2021-2024.json";
+import adpVsActual2020Data from "../../data/fantasy/adp-vs-actual-2020.json";
 import s from "./FantasyView.module.css";
 
 const SEASON = FANTASY_SEASON;
@@ -19,17 +20,27 @@ const SIMULATIONS = 10000;
 // fit only — a known, modest simplification for the uncommon
 // custom-roster case, not something worth bundling live injury data
 // into the client for.
-const FIT_POOL: AdpVsActualEntry[] = Object.values(
-  (adpVsActualData as { seasons: Record<string, AdpVsActualEntry[]> }).seasons,
-).flat();
+const FIT_POOL: AdpVsActualEntry[] = [
+  ...Object.values((adpVsActualData as { seasons: Record<string, AdpVsActualEntry[]> }).seasons).flat(),
+  ...(adpVsActual2020Data as { entries: AdpVsActualEntry[] }).entries,
+];
 
 type SortKey = "adp" | "value" | "vbd";
 type PosFilter = "ALL" | Position;
 
 function confidenceLabel(sd: number, mean: number): { label: string; cls: string } {
   const ratio = mean > 0 ? sd / mean : 1;
-  if (ratio < 0.12) return { label: "High", cls: s.confHigh };
-  if (ratio < 0.16) return { label: "Medium", cls: s.confMed };
+  // Thresholds are real tercile boundaries (p33≈0.378, p67≈0.479) computed
+  // from the actual 2026 board's sd/mean ratios, not arbitrary numbers —
+  // the original 0.12/0.16 cutoffs were placeholders from the very first
+  // mockup (built against fictional projections) and were never checked
+  // against real fitted data. They turned out to be badly wrong: every
+  // single real player had a ratio above 0.16, so everyone showed
+  // "Volatile" regardless of who they were. Worth re-checking these
+  // periodically as more real seasons/players feed the historical fit
+  // pool — see MODEL_HISTORY.md.
+  if (ratio < 0.38) return { label: "High", cls: s.confHigh };
+  if (ratio < 0.48) return { label: "Medium", cls: s.confMed };
   return { label: "Volatile", cls: s.confLow };
 }
 

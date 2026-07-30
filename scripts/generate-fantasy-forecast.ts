@@ -39,6 +39,7 @@ import { LEAGUE_SIZE_PRESETS, STANDARD_ROSTER, FANTASY_SEASON } from "../src/lib
 import type { AdpVsActualEntry, FantasyRankingsPayload } from "../src/lib/fantasy/types";
 import type { PlayerRiskFactors } from "../src/lib/fantasy/curveFit";
 import adpVsActualData from "../src/data/fantasy/adp-vs-actual-2021-2024.json";
+import adpVsActual2020Data from "../src/data/fantasy/adp-vs-actual-2020.json";
 import historicalData from "../src/data/fantasy/historical-player-seasons.json";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -101,9 +102,11 @@ async function main() {
   const payload = data.payload as FantasyRankingsPayload;
   console.log(`Loaded rankings snapshot dated ${snapshotDate} (${payload.entries.length} players).`);
 
-  const fitPool: AdpVsActualEntry[] = Object.values(
-    (adpVsActualData as { seasons: Record<string, AdpVsActualEntry[]> }).seasons,
-  ).flat();
+  const fitPool: AdpVsActualEntry[] = [
+    ...Object.values((adpVsActualData as { seasons: Record<string, AdpVsActualEntry[]> }).seasons).flat(),
+    ...(adpVsActual2020Data as { entries: AdpVsActualEntry[] }).entries,
+  ];
+  console.log(`Fit pool: ${fitPool.length} real player-seasons (2020, 2021-2024).`);
 
   // Real risk factors from the most recent season nflverse actually has
   // (dynamically picked, not hardcoded — currently 2024, since 2025

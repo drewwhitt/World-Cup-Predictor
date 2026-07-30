@@ -1,5 +1,5 @@
 /**
- * Derives real historical PPR fantasy season totals (2021–2024, REG season
+ * Derives real historical PPR fantasy season totals (2020–2024, REG season
  * only) from nflverse's weekly player stats, so the fantasy engine has
  * actual outcomes to validate replacement-level thresholds and (later)
  * fit the Monte Carlo distributions against — not assumed numbers.
@@ -23,7 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../src/data/fantasy/historical-player-seasons.json");
 
 const SOURCE_URL = "https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats.csv";
-const SEASONS = ["2021", "2022", "2023", "2024"]; // extend as future seasons become available
+const SEASONS = ["2020", "2021", "2022", "2023", "2024"]; // extend as future seasons become available
 const FANTASY_POSITIONS = new Set(["QB", "RB", "WR", "TE"]);
 
 export interface HistoricalPlayerSeason {

@@ -15,6 +15,7 @@
  * Usage: npx tsx scripts/backtest-fantasy-sim.ts
  */
 import adpVsActualData from "../src/data/fantasy/adp-vs-actual-2021-2024.json";
+import adpVsActual2020Data from "../src/data/fantasy/adp-vs-actual-2020.json";
 import historicalData from "../src/data/fantasy/historical-player-seasons.json";
 import { fitPointsDistribution, applyRiskAdjustments } from "../src/lib/fantasy/curveFit";
 import { runSimulation, type SimulationInput } from "../src/lib/fantasy/simulate";
@@ -25,7 +26,10 @@ const data = adpVsActualData as { seasons: Record<string, AdpVsActualEntry[]> };
 const historical = historicalData as { seasons: Record<string, Array<{ name: string; games: number }>> };
 
 // Fit pool: 2021-2023 only. 2024 is held out entirely — the model never sees it.
-const fitPool: AdpVsActualEntry[] = [...data.seasons["2021"], ...data.seasons["2022"], ...data.seasons["2023"]];
+const fitPool: AdpVsActualEntry[] = [
+  ...data.seasons["2021"], ...data.seasons["2022"], ...data.seasons["2023"],
+  ...(adpVsActual2020Data as { entries: AdpVsActualEntry[] }).entries,
+];
 
 // Real prior-season (2023) games played, looked up by exact name — same
 // canonical nflverse source across years, so no fuzzy matching needed
@@ -42,7 +46,7 @@ const players2024: SimulationInput[] = data.seasons["2024"].map((p) => {
   return { name: p.name, position: p.position, adp: p.consensusRank, risk };
 });
 
-console.log(`Fitting on ${fitPool.length} historical player-seasons (2021-2023). Simulating ${players2024.length} players for 2024 (held out).\n`);
+console.log(`Fitting on ${fitPool.length} historical player-seasons (2020-2023). Simulating ${players2024.length} players for 2024 (held out).\n`);
 
 const results = runSimulation(
   players2024,

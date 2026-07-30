@@ -1,0 +1,5687 @@
+[
+  {
+    "rawName": "Christian McCaffrey",
+    "consensusRank": 1.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Saquon Barkley",
+    "consensusRank": 2.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ezekiel Elliott",
+    "consensusRank": 3.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alvin Kamara",
+    "consensusRank": 3.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Michael Thomas",
+    "consensusRank": 6.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dalvin Cook",
+    "consensusRank": 6.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Davante Adams",
+    "consensusRank": 9.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Derrick Henry",
+    "consensusRank": 11.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Clyde Edwards-Helaire",
+    "consensusRank": 11.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Julio Jones",
+    "consensusRank": 11.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyreek Hill",
+    "consensusRank": 12.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Austin Ekeler",
+    "consensusRank": 13.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Joe Mixon",
+    "consensusRank": 15.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Miles Sanders",
+    "consensusRank": 15.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "DeAndre Hopkins",
+    "consensusRank": 16.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kenyan Drake",
+    "consensusRank": 17.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Travis Kelce",
+    "consensusRank": 17.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Chris Godwin",
+    "consensusRank": 17.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "George Kittle",
+    "consensusRank": 19.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Josh Jacobs",
+    "consensusRank": 21.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Aaron Jones",
+    "consensusRank": 22.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Allen Robinson",
+    "consensusRank": 23.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Nick Chubb",
+    "consensusRank": 23.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kenny Golladay",
+    "consensusRank": 23.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "D.J. Moore",
+    "consensusRank": 28.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mike Evans",
+    "consensusRank": 29.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Patrick Mahomes",
+    "consensusRank": 29.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "JuJu Smith-Schuster",
+    "consensusRank": 29.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Adam Thielen",
+    "consensusRank": 30.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Odell Beckham Jr.",
+    "consensusRank": 33.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Lamar Jackson",
+    "consensusRank": 33.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Robert Woods",
+    "consensusRank": 33.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Amari Cooper",
+    "consensusRank": 33.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cooper Kupp",
+    "consensusRank": 36.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mark Andrews",
+    "consensusRank": 37.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Calvin Ridley",
+    "consensusRank": 37.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Todd Gurley",
+    "consensusRank": 38.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "James Conner",
+    "consensusRank": 38.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Chris Carson",
+    "consensusRank": 39.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "A.J. Brown",
+    "consensusRank": 41.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Zach Ertz",
+    "consensusRank": 41.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "D.J. Chark",
+    "consensusRank": 43.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Terry McLaurin",
+    "consensusRank": 44.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Melvin Gordon",
+    "consensusRank": 44.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Le'Veon Bell",
+    "consensusRank": 45.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tyler Lockett",
+    "consensusRank": 45.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keenan Allen",
+    "consensusRank": 45.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "David Johnson",
+    "consensusRank": 47.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Courtland Sutton",
+    "consensusRank": 50.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jonathan Taylor",
+    "consensusRank": 51.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "D.K. Metcalf",
+    "consensusRank": 51.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Leonard Fournette",
+    "consensusRank": 52.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "DeVante Parker",
+    "consensusRank": 55.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dak Prescott",
+    "consensusRank": 56.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Darren Waller",
+    "consensusRank": 57.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "T.Y. Hilton",
+    "consensusRank": 57.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Stefon Diggs",
+    "consensusRank": 60.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mark Ingram II",
+    "consensusRank": 60.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tyler Boyd",
+    "consensusRank": 61.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kareem Hunt",
+    "consensusRank": 62.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Russell Wilson",
+    "consensusRank": 62.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Kyler Murray",
+    "consensusRank": 64.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jarvis Landry",
+    "consensusRank": 65.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Deshaun Watson",
+    "consensusRank": 66.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Michael Gallup",
+    "consensusRank": 67.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marquise Brown",
+    "consensusRank": 68.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "A.J. Green",
+    "consensusRank": 69.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Julian Edelman",
+    "consensusRank": 70.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cam Akers",
+    "consensusRank": 70.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "D'Andre Swift",
+    "consensusRank": 71.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Devin Singletary",
+    "consensusRank": 71.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Raheem Mostert",
+    "consensusRank": 72.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "David Montgomery",
+    "consensusRank": 75.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Evan Engram",
+    "consensusRank": 75.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "James White",
+    "consensusRank": 77.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Marvin Jones",
+    "consensusRank": 77.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Will Fuller",
+    "consensusRank": 78.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Brandin Cooks",
+    "consensusRank": 81.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Allen",
+    "consensusRank": 82.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Matt Ryan",
+    "consensusRank": 83.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Tarik Cohen",
+    "consensusRank": 84.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jamison Crowder",
+    "consensusRank": 86.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Hunter Henry",
+    "consensusRank": 87.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tyler Higbee",
+    "consensusRank": 87.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Diontae Johnson",
+    "consensusRank": 88.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Christian Kirk",
+    "consensusRank": 89.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Carson Wentz",
+    "consensusRank": 94.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Sterling Shepard",
+    "consensusRank": 94.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Drew Brees",
+    "consensusRank": 96.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Hayden Hurst",
+    "consensusRank": 97.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jordan Howard",
+    "consensusRank": 98.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "J.K. Dobbins",
+    "consensusRank": 100.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tom Brady",
+    "consensusRank": 100.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Phillip Lindsay",
+    "consensusRank": 101.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Matt Breida",
+    "consensusRank": 101.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "John Brown",
+    "consensusRank": 102.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Anthony Miller",
+    "consensusRank": 102.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Deebo Samuel",
+    "consensusRank": 103.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Matthew Stafford",
+    "consensusRank": 105.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Emmanuel Sanders",
+    "consensusRank": 105.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "CeeDee Lamb",
+    "consensusRank": 105.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darius Slayton",
+    "consensusRank": 107.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Aaron Rodgers",
+    "consensusRank": 108.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Preston Williams",
+    "consensusRank": 110.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Golden Tate",
+    "consensusRank": 112.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ronald Jones II",
+    "consensusRank": 113.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kerryon Johnson",
+    "consensusRank": 113.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mike Gesicki",
+    "consensusRank": 115.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tevin Coleman",
+    "consensusRank": 116.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Austin Hooper",
+    "consensusRank": 116.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jerry Jeudy",
+    "consensusRank": 118.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Zack Moss",
+    "consensusRank": 118.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Latavius Murray",
+    "consensusRank": 118.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mike Williams",
+    "consensusRank": 119.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jared Cook",
+    "consensusRank": 120.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Rob Gronkowski",
+    "consensusRank": 122.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Daniel Jones",
+    "consensusRank": 124.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ben Roethlisberger",
+    "consensusRank": 124.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Marlon Mack",
+    "consensusRank": 124.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Antonio Gibson",
+    "consensusRank": 125.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Henry Ruggs III",
+    "consensusRank": 125.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "T.J. Hockenson",
+    "consensusRank": 127.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Duke Johnson",
+    "consensusRank": 129.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Cam Newton",
+    "consensusRank": 125.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jared Goff",
+    "consensusRank": 131.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jalen Reagor",
+    "consensusRank": 131.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Noah Fant",
+    "consensusRank": 131.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jonnu Smith",
+    "consensusRank": 135.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dallas Goedert",
+    "consensusRank": 135.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Justin Jefferson",
+    "consensusRank": 136.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darrell Henderson",
+    "consensusRank": 137.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Baker Mayfield",
+    "consensusRank": 137.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Mecole Hardman",
+    "consensusRank": 137.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ryquell Armstead",
+    "consensusRank": 140.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Adrian Peterson",
+    "consensusRank": 141.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ryan Tannehill",
+    "consensusRank": 141.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Sony Michel",
+    "consensusRank": 139.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alexander Mattison",
+    "consensusRank": 143.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Chris Thompson",
+    "consensusRank": 144.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "N'Keal Harry",
+    "consensusRank": 145.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Curtis Samuel",
+    "consensusRank": 143.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Allen Lazard",
+    "consensusRank": 146.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Robby Anderson",
+    "consensusRank": 144.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Boston Scott",
+    "consensusRank": 145.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Joe Burrow",
+    "consensusRank": 147.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Breshad Perriman",
+    "consensusRank": 147.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Nyheim Hines",
+    "consensusRank": 145.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Blake Jarwin",
+    "consensusRank": 148.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tony Pollard",
+    "consensusRank": 149.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jack Doyle",
+    "consensusRank": 149.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Brandon Aiyuk",
+    "consensusRank": 150.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DeSean Jackson",
+    "consensusRank": 151.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chase Edmonds",
+    "consensusRank": 154.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Sammy Watkins",
+    "consensusRank": 154.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Herndon IV",
+    "consensusRank": 158.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Gardner Minshew II",
+    "consensusRank": 160.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Parris Campbell",
+    "consensusRank": 162.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "San Francisco 49ers",
+    "consensusRank": 144.6,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Kirk Cousins",
+    "consensusRank": 160.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Eric Ebron",
+    "consensusRank": 166.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jimmy Garoppolo",
+    "consensusRank": 166.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Pittsburgh Steelers",
+    "consensusRank": 147.5,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Michael Pittman Jr.",
+    "consensusRank": 163.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Baltimore Ravens",
+    "consensusRank": 152.3,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Damien Harris",
+    "consensusRank": 166.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Larry Fitzgerald",
+    "consensusRank": 168.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ian Thomas",
+    "consensusRank": 179.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Philip Rivers",
+    "consensusRank": 178.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Buffalo Bills",
+    "consensusRank": 162.0,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Drew Lock",
+    "consensusRank": 181.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Hunter Renfrow",
+    "consensusRank": 180.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Justin Jackson",
+    "consensusRank": 182.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "New England Patriots",
+    "consensusRank": 167.3,
+    "pos": "DST"
+  },
+  {
+    "rawName": "James Washington",
+    "consensusRank": 185.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Harrison Butker",
+    "consensusRank": 173.2,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Teddy Bridgewater",
+    "consensusRank": 189.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Irv Smith Jr.",
+    "consensusRank": 189.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Alshon Jeffery",
+    "consensusRank": 184.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Justin Tucker",
+    "consensusRank": 175.2,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Randall Cobb",
+    "consensusRank": 187.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chicago Bears",
+    "consensusRank": 174.9,
+    "pos": "DST"
+  },
+  {
+    "rawName": "New Orleans Saints",
+    "consensusRank": 178.3,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Dede Westbrook",
+    "consensusRank": 182.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "A.J. Dillon",
+    "consensusRank": 189.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Laviska Shenault Jr.",
+    "consensusRank": 194.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Corey Davis",
+    "consensusRank": 190.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darrynton Evans",
+    "consensusRank": 193.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Wil Lutz",
+    "consensusRank": 184.8,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Jamaal Williams",
+    "consensusRank": 189.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kansas City Chiefs",
+    "consensusRank": 187.1,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Carlos Hyde",
+    "consensusRank": 200.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Cole Beasley",
+    "consensusRank": 197.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Greg Zuerlein",
+    "consensusRank": 190.7,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Steven Sims",
+    "consensusRank": 197.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Joshua Kelley",
+    "consensusRank": 198.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Minnesota Vikings",
+    "consensusRank": 193.7,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Sam Darnold",
+    "consensusRank": 205.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Giovani Bernard",
+    "consensusRank": 198.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Denzel Mims",
+    "consensusRank": 197.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Derek Carr",
+    "consensusRank": 210.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Los Angeles Rams",
+    "consensusRank": 193.6,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Greg Olsen",
+    "consensusRank": 208.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Anthony McFarland Jr.",
+    "consensusRank": 207.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Robbie Gould",
+    "consensusRank": 208.4,
+    "pos": "PK"
+  },
+  {
+    "rawName": "John Ross",
+    "consensusRank": 211.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Denver Broncos",
+    "consensusRank": 211.1,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Ke'Shawn Vaughn",
+    "consensusRank": 217.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Philadelphia Eagles",
+    "consensusRank": 212.4,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Tee Higgins",
+    "consensusRank": 220.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Matt Gay",
+    "consensusRank": 216.4,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Matt Prater",
+    "consensusRank": 218.4,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Los Angeles Chargers",
+    "consensusRank": 208.6,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Danny Amendola",
+    "consensusRank": 217.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kenny Stills",
+    "consensusRank": 221.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "O.J. Howard",
+    "consensusRank": 225.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Bryan Edwards",
+    "consensusRank": 203.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jace Sternberger",
+    "consensusRank": 227.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tennessee Titans",
+    "consensusRank": 222.9,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Zane Gonzalez",
+    "consensusRank": 226.2,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Kyle Rudolph",
+    "consensusRank": 228.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jalen Richard",
+    "consensusRank": 219.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jake Elliott",
+    "consensusRank": 226.5,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Benny Snell Jr.",
+    "consensusRank": 229.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Russell Gage",
+    "consensusRank": 228.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ka'imi Fairbairn",
+    "consensusRank": 230.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Jerick McKinnon",
+    "consensusRank": 228.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Seattle Seahawks",
+    "consensusRank": 229.9,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Josh Reynolds",
+    "consensusRank": 233.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Indianapolis Colts",
+    "consensusRank": 227.8,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Mohamed Sanu",
+    "consensusRank": 219.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Malcolm Brown",
+    "consensusRank": 235.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Miles Boykin",
+    "consensusRank": 229.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DeAndre Washington",
+    "consensusRank": 227.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dawson Knox",
+    "consensusRank": 240.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Green Bay Packers",
+    "consensusRank": 238.4,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Bryce Love",
+    "consensusRank": 238.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Gerald Everett",
+    "consensusRank": 238.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tyrod Taylor",
+    "consensusRank": 248.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ito Smith",
+    "consensusRank": 236.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Michael Badgley",
+    "consensusRank": 241.5,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Chris Conley",
+    "consensusRank": 232.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tampa Bay Buccaneers",
+    "consensusRank": 240.7,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Dan Bailey",
+    "consensusRank": 245.5,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Dallas Cowboys",
+    "consensusRank": 245.7,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Mason Crosby",
+    "consensusRank": 244.8,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Dwayne Haskins",
+    "consensusRank": 255.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Chase Claypool",
+    "consensusRank": 242.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Younghoe Koo",
+    "consensusRank": 242.7,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Tre'Quan Smith",
+    "consensusRank": 241.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cleveland Browns",
+    "consensusRank": 251.4,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Will Dissly",
+    "consensusRank": 248.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jimmy Graham",
+    "consensusRank": 250.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Rashaad Penny",
+    "consensusRank": 242.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "New York Jets",
+    "consensusRank": 251.8,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Brandon McManus",
+    "consensusRank": 256.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Rex Burkhead",
+    "consensusRank": 245.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Andy Isabella",
+    "consensusRank": 248.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jason Myers",
+    "consensusRank": 255.1,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Adam Humphries",
+    "consensusRank": 242.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Royce Freeman",
+    "consensusRank": 246.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tyler Eifert",
+    "consensusRank": 252.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Darrel Williams",
+    "consensusRank": 249.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Chris Boswell",
+    "consensusRank": 262.7,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Marquez Valdes-Scantling",
+    "consensusRank": 254.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ryan Fitzpatrick",
+    "consensusRank": 273.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Joey Slye",
+    "consensusRank": 268.7,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Jaylen Samuels",
+    "consensusRank": 250.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "KJ Hamler",
+    "consensusRank": 252.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "David Njoku",
+    "consensusRank": 267.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "J.J. Arcega-Whiteside",
+    "consensusRank": 260.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dion Lewis",
+    "consensusRank": 254.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Van Jefferson",
+    "consensusRank": 257.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Auden Tate",
+    "consensusRank": 261.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kendrick Bourne",
+    "consensusRank": 252.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Justice Hill",
+    "consensusRank": 259.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Houston Texans",
+    "consensusRank": 276.3,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Phillip Dorsett",
+    "consensusRank": 263.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Frank Gore",
+    "consensusRank": 267.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dare Ogunbowale",
+    "consensusRank": 263.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Nick Foles",
+    "consensusRank": 287.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Austin Seibert",
+    "consensusRank": 283.6,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Gus Edwards",
+    "consensusRank": 274.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Antonio Gandy-Golden",
+    "consensusRank": 266.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Zach Pascal",
+    "consensusRank": 268.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Lambo",
+    "consensusRank": 282.5,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Washington Football Team",
+    "consensusRank": 287.0,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Brian Hill",
+    "consensusRank": 278.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Vance McDonald",
+    "consensusRank": 283.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Demarcus Robinson",
+    "consensusRank": 278.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jacksonville Jaguars",
+    "consensusRank": 289.6,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Nelson Agholor",
+    "consensusRank": 274.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Peyton Barber",
+    "consensusRank": 284.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "LeSean McCoy",
+    "consensusRank": 259.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tua Tagovailoa",
+    "consensusRank": 300.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Lynn Bowden Jr.",
+    "consensusRank": 265.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darwin Thompson",
+    "consensusRank": 287.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jakobi Meyers",
+    "consensusRank": 283.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Devin Duvernay",
+    "consensusRank": 280.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Willie Snead",
+    "consensusRank": 283.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Daniel Carlson",
+    "consensusRank": 299.3,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Atlanta Falcons",
+    "consensusRank": 299.4,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Lamar Miller",
+    "consensusRank": 273.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Stephen Hauschka",
+    "consensusRank": 281.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Devonta Freeman",
+    "consensusRank": 267.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Detroit Lions",
+    "consensusRank": 305.5,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Mitch Trubisky",
+    "consensusRank": 311.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Carolina Panthers",
+    "consensusRank": 304.3,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Cameron Brate",
+    "consensusRank": 303.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Chase McLaughlin",
+    "consensusRank": 293.9,
+    "pos": "PK"
+  },
+  {
+    "rawName": "David Moore",
+    "consensusRank": 291.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dustin Hopkins",
+    "consensusRank": 306.8,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Brett Maher",
+    "consensusRank": 295.1,
+    "pos": "PK"
+  },
+  {
+    "rawName": "DaeSean Hamilton",
+    "consensusRank": 294.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Devine Ozigbo",
+    "consensusRank": 223.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mike Boone",
+    "consensusRank": 306.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Greg Ward",
+    "consensusRank": 279.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Lamical Perine",
+    "consensusRank": 304.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "C.J. Uzomah",
+    "consensusRank": 283.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Justin Herbert",
+    "consensusRank": 320.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Patrick Laird",
+    "consensusRank": 305.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Justin Rohrwasser",
+    "consensusRank": 291.3,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Arizona Cardinals",
+    "consensusRank": 307.3,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Jordan Akins",
+    "consensusRank": 289.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "DeeJay Dallas",
+    "consensusRank": 303.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darren Fells",
+    "consensusRank": 295.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Randy Bullock",
+    "consensusRank": 310.5,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Trey Burton",
+    "consensusRank": 294.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Aldrick Rosas",
+    "consensusRank": 298.2,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Keke Coutee",
+    "consensusRank": 308.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Reggie Bonnafon",
+    "consensusRank": 320.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Olabisi Johnson",
+    "consensusRank": 270.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ted Ginn",
+    "consensusRank": 303.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Stephen Gostkowski",
+    "consensusRank": 249.9,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Las Vegas Raiders",
+    "consensusRank": 313.8,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Dan Arnold",
+    "consensusRank": 282.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "T.J. Yeldon",
+    "consensusRank": 323.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Qadree Ollison",
+    "consensusRank": 326.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Devin Asiasi",
+    "consensusRank": 300.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Scott Miller",
+    "consensusRank": 288.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jordan Wilkins",
+    "consensusRank": 327.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Eno Benjamin",
+    "consensusRank": 320.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Wayne Gallman",
+    "consensusRank": 327.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Trent Taylor",
+    "consensusRank": 290.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Bo Scarbrough",
+    "consensusRank": 336.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jarrett Stidham",
+    "consensusRank": 328.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jacob Hollister",
+    "consensusRank": 315.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Nick Boyle",
+    "consensusRank": 312.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Logan Thomas",
+    "consensusRank": 294.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Travis Homer",
+    "consensusRank": 334.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jakeem Grant",
+    "consensusRank": 298.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keelan Cole",
+    "consensusRank": 318.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dante Pettis",
+    "consensusRank": 314.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cole Kmet",
+    "consensusRank": 327.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jason Witten",
+    "consensusRank": 323.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Miami Dolphins",
+    "consensusRank": 312.5,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Myles Gaskin",
+    "consensusRank": 337.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ryan Griffin",
+    "consensusRank": 328.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Greg Joseph",
+    "consensusRank": 300.1,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Antonio Brown",
+    "consensusRank": 285.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Justin Watson",
+    "consensusRank": 326.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jameis Winston",
+    "consensusRank": 339.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Taysom Hill",
+    "consensusRank": 335.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "New York Giants",
+    "consensusRank": 320.5,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Jason Sanders",
+    "consensusRank": 309.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Mike Davis",
+    "consensusRank": 335.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Derrius Guice",
+    "consensusRank": 214.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Cincinnati Bengals",
+    "consensusRank": 323.9,
+    "pos": "DST"
+  },
+  {
+    "rawName": "Tajae Sharpe",
+    "consensusRank": 319.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyler Johnson",
+    "consensusRank": 324.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ty Montgomery",
+    "consensusRank": 337.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Eddy Pineiro",
+    "consensusRank": 313.6,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Cordarrelle Patterson",
+    "consensusRank": 311.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaiah Ford",
+    "consensusRank": 305.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kyle Juszczyk",
+    "consensusRank": 333.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Sam Sloman",
+    "consensusRank": 300.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Marcus Mariota",
+    "consensusRank": 339.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Corey Clement",
+    "consensusRank": 328.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "J.D. McKissic",
+    "consensusRank": 306.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Quintez Cephus",
+    "consensusRank": 317.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jeff Wilson",
+    "consensusRank": 340.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tyler Bass",
+    "consensusRank": 287.2,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Adam Vinatieri",
+    "consensusRank": 308.1,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Jeremy Sprinkle",
+    "consensusRank": 343.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Graham Gano",
+    "consensusRank": 307.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Kalen Ballage",
+    "consensusRank": 335.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "KeeSean Johnson",
+    "consensusRank": 338.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jake Kumerow",
+    "consensusRank": 330.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kai Forbath",
+    "consensusRank": 309.9,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Rashard Higgins",
+    "consensusRank": 345.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Zay Jones",
+    "consensusRank": 326.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Trayveon Williams",
+    "consensusRank": 341.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Trey Quinn",
+    "consensusRank": 320.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Gordon",
+    "consensusRank": 329.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Equanimeous St. Brown",
+    "consensusRank": 316.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Damiere Byrd",
+    "consensusRank": 331.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Andy Dalton",
+    "consensusRank": 347.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ty Johnson",
+    "consensusRank": 343.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Drew Sample",
+    "consensusRank": 351.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Hakeem Butler",
+    "consensusRank": 336.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ryan Nall",
+    "consensusRank": 332.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Adam Trautman",
+    "consensusRank": 355.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jordan Reed",
+    "consensusRank": 337.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dalton Keene",
+    "consensusRank": 346.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dontrelle Inman",
+    "consensusRank": 298.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kaden Smith",
+    "consensusRank": 347.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jalen Hurts",
+    "consensusRank": 340.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "James Robinson",
+    "consensusRank": 310.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jacoby Brissett",
+    "consensusRank": 352.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Sam Ficken",
+    "consensusRank": 328.2,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Taylor Gabriel",
+    "consensusRank": 294.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Donovan Peoples-Jones",
+    "consensusRank": 348.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Foster Moreau",
+    "consensusRank": 353.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "JaMycal Hasty",
+    "consensusRank": 327.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "John Hightower",
+    "consensusRank": 290.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Anthony Firkser",
+    "consensusRank": 352.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Delanie Walker",
+    "consensusRank": 333.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Kahale Warring",
+    "consensusRank": 330.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tim Patrick",
+    "consensusRank": 331.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dontrell Hilliard",
+    "consensusRank": 352.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Javon Wims",
+    "consensusRank": 353.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Maxx Williams",
+    "consensusRank": 348.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Albert Okwuegbunam",
+    "consensusRank": 353.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Joe Reed",
+    "consensusRank": 339.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Nick Folk",
+    "consensusRank": 290.4,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Demaryius Thomas",
+    "consensusRank": 322.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Paul Richardson Jr.",
+    "consensusRank": 337.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dexter Williams",
+    "consensusRank": 350.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Robert Tonyan",
+    "consensusRank": 335.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Laquon Treadwell",
+    "consensusRank": 352.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Rodney Anderson",
+    "consensusRank": 288.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "K.J. Hill",
+    "consensusRank": 348.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mo Alie-Cox",
+    "consensusRank": 360.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Devontae Booker",
+    "consensusRank": 346.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Gary Jennings Jr.",
+    "consensusRank": 298.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kalif Raymond",
+    "consensusRank": 355.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Seth Roberts",
+    "consensusRank": 341.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ryan Succop",
+    "consensusRank": 247.7,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Gabriel Davis",
+    "consensusRank": 341.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Thompson",
+    "consensusRank": 204.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Rodrigo Blankenship",
+    "consensusRank": 306.8,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Jesse James",
+    "consensusRank": 364.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Thaddeus Moss",
+    "consensusRank": 360.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ricky Seals-Jones",
+    "consensusRank": 370.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Chester Rogers",
+    "consensusRank": 311.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Artavis Pierce",
+    "consensusRank": 283.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mack Hollins",
+    "consensusRank": 311.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Matt Bryant",
+    "consensusRank": 234.0,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Ameer Abdullah",
+    "consensusRank": 347.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Bilal Powell",
+    "consensusRank": 347.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Rysen John",
+    "consensusRank": 252.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kyle Allen",
+    "consensusRank": 341.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jaeden Graham",
+    "consensusRank": 370.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jalen Guyton",
+    "consensusRank": 307.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Riley Ridley",
+    "consensusRank": 364.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Hill",
+    "consensusRank": 369.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Chris Hogan",
+    "consensusRank": 346.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marvin Hall",
+    "consensusRank": 347.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dalton Schultz",
+    "consensusRank": 362.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "CJ Ham",
+    "consensusRank": 356.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Taywan Taylor",
+    "consensusRank": 315.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaiah Coulter",
+    "consensusRank": 350.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Devin Smith",
+    "consensusRank": 350.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Michael Warren II",
+    "consensusRank": 319.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Nick Vannett",
+    "consensusRank": 352.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Braxton Berrios",
+    "consensusRank": 341.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chandler Catanzaro",
+    "consensusRank": 325.7,
+    "pos": "PK"
+  },
+  {
+    "rawName": "Dwayne Washington",
+    "consensusRank": 344.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kerrith Whyte Jr.",
+    "consensusRank": 357.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Raymond Calais",
+    "consensusRank": 358.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Christian Blake",
+    "consensusRank": 359.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marcedes Lewis",
+    "consensusRank": 361.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Robert Foster",
+    "consensusRank": 362.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Duke Williams",
+    "consensusRank": 311.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darius Jennings",
+    "consensusRank": 343.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jordan Scarlett",
+    "consensusRank": 344.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ross Dwelley",
+    "consensusRank": 358.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Isaiah McKenzie",
+    "consensusRank": 366.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Collin Johnson",
+    "consensusRank": 321.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Brycen Hopkins",
+    "consensusRank": 347.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Reggie Begelton",
+    "consensusRank": 323.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jordan Thomas",
+    "consensusRank": 324.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "John Kelly",
+    "consensusRank": 348.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Case Keenum",
+    "consensusRank": 349.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Adam Shaheen",
+    "consensusRank": 370.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Alex Erickson",
+    "consensusRank": 375.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Rosen",
+    "consensusRank": 332.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Andre Patton",
+    "consensusRank": 337.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "C.J. Anderson",
+    "consensusRank": 339.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Corey Coleman",
+    "consensusRank": 369.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Richie James",
+    "consensusRank": 341.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Hunter Bryant",
+    "consensusRank": 360.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Khari Blasingame",
+    "consensusRank": 361.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Gunner Olszewski",
+    "consensusRank": 361.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Richard Rodgers",
+    "consensusRank": 362.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Josh Bellamy",
+    "consensusRank": 347.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jakob Johnson",
+    "consensusRank": 347.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alex Smith",
+    "consensusRank": 347.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Dalyn Dawkins",
+    "consensusRank": 347.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Karan Higdon",
+    "consensusRank": 365.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kenneth Dixon",
+    "consensusRank": 349.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "J.J. Taylor",
+    "consensusRank": 366.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jason Huntley",
+    "consensusRank": 355.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Buddy Howell",
+    "consensusRank": 375.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Andy Janovich",
+    "consensusRank": 353.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Elijah Holyfield",
+    "consensusRank": 368.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Vyncint Smith",
+    "consensusRank": 376.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Pharoh Cooper",
+    "consensusRank": 354.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "James O'Shaughnessy",
+    "consensusRank": 381.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Darnell Mooney",
+    "consensusRank": 358.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Virgil Green",
+    "consensusRank": 373.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Quez Watkins",
+    "consensusRank": 362.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josiah Deguara",
+    "consensusRank": 374.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Damion Ratley",
+    "consensusRank": 381.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyler Kroft",
+    "consensusRank": 382.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Robert Griffin",
+    "consensusRank": 377.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Josh Adams",
+    "consensusRank": 369.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dezmon Patmon",
+    "consensusRank": 369.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Elijhaa Penny",
+    "consensusRank": 372.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "David Fluellen",
+    "consensusRank": 375.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Phillip Walker",
+    "consensusRank": 377.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "K.J. Osborn",
+    "consensusRank": 377.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ryan Switzer",
+    "consensusRank": 384.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "James Proche",
+    "consensusRank": 386.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Patrick DiMarco",
+    "consensusRank": 389.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Deon Cain",
+    "consensusRank": 390.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mike Davis",
+    "consensusRank": 403.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Patrick Mahomes",
+    "consensusRank": 1.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Lamar Jackson",
+    "consensusRank": 1.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Dak Prescott",
+    "consensusRank": 3.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Russell Wilson",
+    "consensusRank": 4.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Kyler Murray",
+    "consensusRank": 5.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Deshaun Watson",
+    "consensusRank": 5.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Josh Allen",
+    "consensusRank": 8.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Matt Ryan",
+    "consensusRank": 8.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Carson Wentz",
+    "consensusRank": 9.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Drew Brees",
+    "consensusRank": 10.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Tom Brady",
+    "consensusRank": 11.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Matthew Stafford",
+    "consensusRank": 12.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Aaron Rodgers",
+    "consensusRank": 13.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Daniel Jones",
+    "consensusRank": 15.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Cam Newton",
+    "consensusRank": 15.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ben Roethlisberger",
+    "consensusRank": 16.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jared Goff",
+    "consensusRank": 17.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Baker Mayfield",
+    "consensusRank": 18.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ryan Tannehill",
+    "consensusRank": 18.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Joe Burrow",
+    "consensusRank": 19.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Gardner Minshew II",
+    "consensusRank": 21.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Kirk Cousins",
+    "consensusRank": 22.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jimmy Garoppolo",
+    "consensusRank": 22.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Philip Rivers",
+    "consensusRank": 24.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Drew Lock",
+    "consensusRank": 24.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Teddy Bridgewater",
+    "consensusRank": 24.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Derek Carr",
+    "consensusRank": 26.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Sam Darnold",
+    "consensusRank": 26.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Tyrod Taylor",
+    "consensusRank": 28.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Dwayne Haskins",
+    "consensusRank": 29.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ryan Fitzpatrick",
+    "consensusRank": 30.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Nick Foles",
+    "consensusRank": 31.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Tua Tagovailoa",
+    "consensusRank": 32.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Mitch Trubisky",
+    "consensusRank": 33.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Justin Herbert",
+    "consensusRank": 34.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jarrett Stidham",
+    "consensusRank": 36.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jameis Winston",
+    "consensusRank": 37.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Marcus Mariota",
+    "consensusRank": 38.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Taysom Hill",
+    "consensusRank": 36.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Andy Dalton",
+    "consensusRank": 40.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jacoby Brissett",
+    "consensusRank": 40.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jalen Hurts",
+    "consensusRank": 39.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Kyle Allen",
+    "consensusRank": 42.9,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jordan Love",
+    "consensusRank": 45.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Case Keenum",
+    "consensusRank": 46.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Robert Griffin",
+    "consensusRank": 45.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Alex Smith",
+    "consensusRank": 45.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Mason Rudolph",
+    "consensusRank": 47.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Josh Rosen",
+    "consensusRank": 49.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Nick Mullens",
+    "consensusRank": 50.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Brett Hundley",
+    "consensusRank": 48.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jeff Driskel",
+    "consensusRank": 50.1,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Phillip Walker",
+    "consensusRank": 48.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Chase Daniel",
+    "consensusRank": 53.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Will Grier",
+    "consensusRank": 51.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Joe Flacco",
+    "consensusRank": 52.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Blaine Gabbert",
+    "consensusRank": 53.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Joshua Dobbs",
+    "consensusRank": 49.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jacob Eason",
+    "consensusRank": 54.2,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Ryan Finley",
+    "consensusRank": 56.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jake Luton",
+    "consensusRank": 54.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Colt McCoy",
+    "consensusRank": 55.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Chad Henne",
+    "consensusRank": 57.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Sean Mannion",
+    "consensusRank": 58.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "AJ McCarron",
+    "consensusRank": 58.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Brian Hoyer",
+    "consensusRank": 55.3,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Matt Barkley",
+    "consensusRank": 59.6,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Matt Schaub",
+    "consensusRank": 60.4,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Geno Smith",
+    "consensusRank": 58.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Jake Fromm",
+    "consensusRank": 58.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Logan Woodside",
+    "consensusRank": 62.8,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Anthony Gordon",
+    "consensusRank": 55.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "C.J. Beathard",
+    "consensusRank": 61.7,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Cole McDonald",
+    "consensusRank": 56.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "John Wolford",
+    "consensusRank": 64.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Matt Moore",
+    "consensusRank": 62.5,
+    "pos": "QB"
+  },
+  {
+    "rawName": "James Morgan",
+    "consensusRank": 67.0,
+    "pos": "QB"
+  },
+  {
+    "rawName": "Christian McCaffrey",
+    "consensusRank": 1.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Saquon Barkley",
+    "consensusRank": 2.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ezekiel Elliott",
+    "consensusRank": 3.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alvin Kamara",
+    "consensusRank": 3.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dalvin Cook",
+    "consensusRank": 5.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Derrick Henry",
+    "consensusRank": 7.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Clyde Edwards-Helaire",
+    "consensusRank": 8.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Austin Ekeler",
+    "consensusRank": 8.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Joe Mixon",
+    "consensusRank": 9.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Miles Sanders",
+    "consensusRank": 9.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kenyan Drake",
+    "consensusRank": 10.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Josh Jacobs",
+    "consensusRank": 12.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Aaron Jones",
+    "consensusRank": 12.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Nick Chubb",
+    "consensusRank": 12.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "James Conner",
+    "consensusRank": 17.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Todd Gurley",
+    "consensusRank": 17.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Chris Carson",
+    "consensusRank": 17.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Melvin Gordon",
+    "consensusRank": 19.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Le'Veon Bell",
+    "consensusRank": 19.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "David Johnson",
+    "consensusRank": 20.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jonathan Taylor",
+    "consensusRank": 21.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Leonard Fournette",
+    "consensusRank": 23.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mark Ingram II",
+    "consensusRank": 23.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kareem Hunt",
+    "consensusRank": 24.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Cam Akers",
+    "consensusRank": 26.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Devin Singletary",
+    "consensusRank": 26.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "D'Andre Swift",
+    "consensusRank": 27.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Raheem Mostert",
+    "consensusRank": 27.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "James White",
+    "consensusRank": 28.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "David Montgomery",
+    "consensusRank": 28.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tarik Cohen",
+    "consensusRank": 30.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jordan Howard",
+    "consensusRank": 35.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "J.K. Dobbins",
+    "consensusRank": 35.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Phillip Lindsay",
+    "consensusRank": 35.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Matt Breida",
+    "consensusRank": 36.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ronald Jones II",
+    "consensusRank": 39.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kerryon Johnson",
+    "consensusRank": 39.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tevin Coleman",
+    "consensusRank": 40.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Zack Moss",
+    "consensusRank": 40.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Latavius Murray",
+    "consensusRank": 41.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Antonio Gibson",
+    "consensusRank": 42.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Marlon Mack",
+    "consensusRank": 42.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Duke Johnson",
+    "consensusRank": 43.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darrell Henderson",
+    "consensusRank": 46.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Adrian Peterson",
+    "consensusRank": 46.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Sony Michel",
+    "consensusRank": 47.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alexander Mattison",
+    "consensusRank": 48.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Nyheim Hines",
+    "consensusRank": 48.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Boston Scott",
+    "consensusRank": 48.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Chris Thompson",
+    "consensusRank": 49.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ryquell Armstead",
+    "consensusRank": 49.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tony Pollard",
+    "consensusRank": 49.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Chase Edmonds",
+    "consensusRank": 51.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Damien Harris",
+    "consensusRank": 53.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Justin Jackson",
+    "consensusRank": 57.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "A.J. Dillon",
+    "consensusRank": 59.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darrynton Evans",
+    "consensusRank": 61.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Carlos Hyde",
+    "consensusRank": 62.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Joshua Kelley",
+    "consensusRank": 62.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jamaal Williams",
+    "consensusRank": 59.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Giovani Bernard",
+    "consensusRank": 62.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Anthony McFarland Jr.",
+    "consensusRank": 64.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ke'Shawn Vaughn",
+    "consensusRank": 67.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Benny Snell Jr.",
+    "consensusRank": 68.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Malcolm Brown",
+    "consensusRank": 70.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jerick McKinnon",
+    "consensusRank": 67.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jalen Richard",
+    "consensusRank": 67.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Bryce Love",
+    "consensusRank": 70.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ito Smith",
+    "consensusRank": 70.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "DeAndre Washington",
+    "consensusRank": 68.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Rashaad Penny",
+    "consensusRank": 71.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Rex Burkhead",
+    "consensusRank": 72.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Royce Freeman",
+    "consensusRank": 72.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darrel Williams",
+    "consensusRank": 74.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dion Lewis",
+    "consensusRank": 73.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Justice Hill",
+    "consensusRank": 75.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Gus Edwards",
+    "consensusRank": 79.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jaylen Samuels",
+    "consensusRank": 73.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Frank Gore",
+    "consensusRank": 79.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Brian Hill",
+    "consensusRank": 79.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dare Ogunbowale",
+    "consensusRank": 76.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Peyton Barber",
+    "consensusRank": 80.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darwin Thompson",
+    "consensusRank": 80.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Lynn Bowden Jr.",
+    "consensusRank": 78.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "LeSean McCoy",
+    "consensusRank": 76.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Devonta Freeman",
+    "consensusRank": 78.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Lamar Miller",
+    "consensusRank": 79.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Lamical Perine",
+    "consensusRank": 86.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mike Boone",
+    "consensusRank": 86.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Patrick Laird",
+    "consensusRank": 86.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Reggie Bonnafon",
+    "consensusRank": 91.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "DeeJay Dallas",
+    "consensusRank": 88.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "T.J. Yeldon",
+    "consensusRank": 92.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Qadree Ollison",
+    "consensusRank": 95.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Wayne Gallman",
+    "consensusRank": 95.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jordan Wilkins",
+    "consensusRank": 94.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Bo Scarbrough",
+    "consensusRank": 97.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Eno Benjamin",
+    "consensusRank": 93.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Devine Ozigbo",
+    "consensusRank": 71.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Travis Homer",
+    "consensusRank": 96.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Myles Gaskin",
+    "consensusRank": 98.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ty Montgomery",
+    "consensusRank": 94.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Mike Davis",
+    "consensusRank": 96.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Trayveon Williams",
+    "consensusRank": 102.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jeff Wilson",
+    "consensusRank": 98.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kyle Juszczyk",
+    "consensusRank": 94.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Corey Clement",
+    "consensusRank": 99.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kalen Ballage",
+    "consensusRank": 101.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ty Johnson",
+    "consensusRank": 104.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "J.D. McKissic",
+    "consensusRank": 88.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ryan Nall",
+    "consensusRank": 96.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dontrell Hilliard",
+    "consensusRank": 106.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dexter Williams",
+    "consensusRank": 108.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "JaMycal Hasty",
+    "consensusRank": 96.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Derrius Guice",
+    "consensusRank": 79.1,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Devontae Booker",
+    "consensusRank": 108.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kerrith Whyte Jr.",
+    "consensusRank": 114.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "James Robinson",
+    "consensusRank": 94.9,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Bilal Powell",
+    "consensusRank": 109.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Ameer Abdullah",
+    "consensusRank": 114.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "C.J. Anderson",
+    "consensusRank": 114.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Raymond Calais",
+    "consensusRank": 119.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "CJ Ham",
+    "consensusRank": 105.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Rodney Anderson",
+    "consensusRank": 107.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Buddy Howell",
+    "consensusRank": 116.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dwayne Washington",
+    "consensusRank": 124.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Khari Blasingame",
+    "consensusRank": 118.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Artavis Pierce",
+    "consensusRank": 101.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Michael Warren II",
+    "consensusRank": 120.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "J.J. Taylor",
+    "consensusRank": 133.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "John Kelly",
+    "consensusRank": 125.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Elijah Holyfield",
+    "consensusRank": 120.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Kenneth Dixon",
+    "consensusRank": 115.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Karan Higdon",
+    "consensusRank": 117.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jordan Scarlett",
+    "consensusRank": 117.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alec Ingold",
+    "consensusRank": 119.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jason Huntley",
+    "consensusRank": 132.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Theo Riddick",
+    "consensusRank": 114.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Trey Edmunds",
+    "consensusRank": 125.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Salvon Ahmed",
+    "consensusRank": 127.4,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Andy Janovich",
+    "consensusRank": 119.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Elijhaa Penny",
+    "consensusRank": 119.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "D'Ernest Johnson",
+    "consensusRank": 129.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "David Fluellen",
+    "consensusRank": 123.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jakob Johnson",
+    "consensusRank": 110.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Patrick DiMarco",
+    "consensusRank": 126.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Josh Adams",
+    "consensusRank": 133.8,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Tyler Ervin",
+    "consensusRank": 113.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Dalyn Dawkins",
+    "consensusRank": 117.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Darius Anderson",
+    "consensusRank": 117.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Alex Armah",
+    "consensusRank": 119.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Patrick Ricard",
+    "consensusRank": 97.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Anthony Sherman",
+    "consensusRank": 120.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jonathan Williams",
+    "consensusRank": 139.6,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Trenton Cannon",
+    "consensusRank": 143.2,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Samaje Perine",
+    "consensusRank": 137.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Derek Watt",
+    "consensusRank": 113.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Elijah McGuire",
+    "consensusRank": 131.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Keith Smith",
+    "consensusRank": 116.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Javon Leake",
+    "consensusRank": 135.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Michael Burton",
+    "consensusRank": 122.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Wendell Smallwood",
+    "consensusRank": 139.3,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Jeremy McNichols",
+    "consensusRank": 139.7,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Senorise Perry",
+    "consensusRank": 129.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Taquan Mizzell",
+    "consensusRank": 139.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Taiwan Jones",
+    "consensusRank": 149.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "D.J. Foster",
+    "consensusRank": 142.5,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Damarea Crockett",
+    "consensusRank": 144.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Craig Reynolds",
+    "consensusRank": 154.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Wes Hills",
+    "consensusRank": 160.0,
+    "pos": "RB"
+  },
+  {
+    "rawName": "Michael Thomas",
+    "consensusRank": 1.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Davante Adams",
+    "consensusRank": 2.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Julio Jones",
+    "consensusRank": 3.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyreek Hill",
+    "consensusRank": 4.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DeAndre Hopkins",
+    "consensusRank": 5.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Godwin",
+    "consensusRank": 6.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Allen Robinson",
+    "consensusRank": 8.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kenny Golladay",
+    "consensusRank": 9.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "D.J. Moore",
+    "consensusRank": 11.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "JuJu Smith-Schuster",
+    "consensusRank": 11.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mike Evans",
+    "consensusRank": 12.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Adam Thielen",
+    "consensusRank": 12.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Odell Beckham Jr.",
+    "consensusRank": 14.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Robert Woods",
+    "consensusRank": 14.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Amari Cooper",
+    "consensusRank": 14.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cooper Kupp",
+    "consensusRank": 15.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Calvin Ridley",
+    "consensusRank": 16.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "A.J. Brown",
+    "consensusRank": 18.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "D.J. Chark",
+    "consensusRank": 19.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Terry McLaurin",
+    "consensusRank": 20.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyler Lockett",
+    "consensusRank": 20.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keenan Allen",
+    "consensusRank": 20.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Courtland Sutton",
+    "consensusRank": 23.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "D.K. Metcalf",
+    "consensusRank": 23.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DeVante Parker",
+    "consensusRank": 25.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "T.Y. Hilton",
+    "consensusRank": 26.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Stefon Diggs",
+    "consensusRank": 27.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyler Boyd",
+    "consensusRank": 28.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jarvis Landry",
+    "consensusRank": 29.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Michael Gallup",
+    "consensusRank": 30.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marquise Brown",
+    "consensusRank": 31.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "A.J. Green",
+    "consensusRank": 31.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Julian Edelman",
+    "consensusRank": 32.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marvin Jones",
+    "consensusRank": 35.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Will Fuller",
+    "consensusRank": 35.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Brandin Cooks",
+    "consensusRank": 36.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jamison Crowder",
+    "consensusRank": 38.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Diontae Johnson",
+    "consensusRank": 39.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Christian Kirk",
+    "consensusRank": 39.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Sterling Shepard",
+    "consensusRank": 41.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "John Brown",
+    "consensusRank": 44.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Deebo Samuel",
+    "consensusRank": 45.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Anthony Miller",
+    "consensusRank": 45.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Emmanuel Sanders",
+    "consensusRank": 46.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "CeeDee Lamb",
+    "consensusRank": 46.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darius Slayton",
+    "consensusRank": 46.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Preston Williams",
+    "consensusRank": 47.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Golden Tate",
+    "consensusRank": 48.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jerry Jeudy",
+    "consensusRank": 50.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mike Williams",
+    "consensusRank": 50.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Henry Ruggs III",
+    "consensusRank": 52.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jalen Reagor",
+    "consensusRank": 53.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mecole Hardman",
+    "consensusRank": 55.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Justin Jefferson",
+    "consensusRank": 56.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "N'Keal Harry",
+    "consensusRank": 58.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Allen Lazard",
+    "consensusRank": 58.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Breshad Perriman",
+    "consensusRank": 59.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Brandon Aiyuk",
+    "consensusRank": 59.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DeSean Jackson",
+    "consensusRank": 60.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Curtis Samuel",
+    "consensusRank": 57.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Robby Anderson",
+    "consensusRank": 58.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Parris Campbell",
+    "consensusRank": 62.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Sammy Watkins",
+    "consensusRank": 60.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Larry Fitzgerald",
+    "consensusRank": 65.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Michael Pittman Jr.",
+    "consensusRank": 63.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Hunter Renfrow",
+    "consensusRank": 68.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Randall Cobb",
+    "consensusRank": 69.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Laviska Shenault Jr.",
+    "consensusRank": 72.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "James Washington",
+    "consensusRank": 69.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Corey Davis",
+    "consensusRank": 70.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Alshon Jeffery",
+    "consensusRank": 70.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dede Westbrook",
+    "consensusRank": 69.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Steven Sims",
+    "consensusRank": 73.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cole Beasley",
+    "consensusRank": 73.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Denzel Mims",
+    "consensusRank": 73.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "John Ross",
+    "consensusRank": 77.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tee Higgins",
+    "consensusRank": 81.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kenny Stills",
+    "consensusRank": 81.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Danny Amendola",
+    "consensusRank": 80.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Miles Boykin",
+    "consensusRank": 84.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Russell Gage",
+    "consensusRank": 83.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Reynolds",
+    "consensusRank": 85.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Bryan Edwards",
+    "consensusRank": 75.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chase Claypool",
+    "consensusRank": 88.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Andy Isabella",
+    "consensusRank": 90.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tre'Quan Smith",
+    "consensusRank": 87.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Conley",
+    "consensusRank": 85.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mohamed Sanu",
+    "consensusRank": 82.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Adam Humphries",
+    "consensusRank": 88.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "J.J. Arcega-Whiteside",
+    "consensusRank": 93.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marquez Valdes-Scantling",
+    "consensusRank": 92.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Van Jefferson",
+    "consensusRank": 93.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Phillip Dorsett",
+    "consensusRank": 94.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Auden Tate",
+    "consensusRank": 95.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "KJ Hamler",
+    "consensusRank": 91.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Zach Pascal",
+    "consensusRank": 96.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kendrick Bourne",
+    "consensusRank": 90.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Demarcus Robinson",
+    "consensusRank": 99.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Antonio Gandy-Golden",
+    "consensusRank": 95.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Nelson Agholor",
+    "consensusRank": 99.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Willie Snead",
+    "consensusRank": 101.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jakobi Meyers",
+    "consensusRank": 100.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Devin Duvernay",
+    "consensusRank": 100.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "David Moore",
+    "consensusRank": 104.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DaeSean Hamilton",
+    "consensusRank": 105.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Greg Ward",
+    "consensusRank": 101.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keke Coutee",
+    "consensusRank": 111.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ted Ginn",
+    "consensusRank": 107.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Olabisi Johnson",
+    "consensusRank": 97.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dante Pettis",
+    "consensusRank": 112.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keelan Cole",
+    "consensusRank": 112.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Scott Miller",
+    "consensusRank": 106.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Trent Taylor",
+    "consensusRank": 104.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Justin Watson",
+    "consensusRank": 114.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jakeem Grant",
+    "consensusRank": 108.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyler Johnson",
+    "consensusRank": 116.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tajae Sharpe",
+    "consensusRank": 115.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cordarrelle Patterson",
+    "consensusRank": 115.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Antonio Brown",
+    "consensusRank": 104.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "KeeSean Johnson",
+    "consensusRank": 122.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Rashard Higgins",
+    "consensusRank": 118.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Zay Jones",
+    "consensusRank": 125.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Quintez Cephus",
+    "consensusRank": 114.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaiah Ford",
+    "consensusRank": 108.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jake Kumerow",
+    "consensusRank": 121.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Damiere Byrd",
+    "consensusRank": 120.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Hakeem Butler",
+    "consensusRank": 124.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Gordon",
+    "consensusRank": 112.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Trey Quinn",
+    "consensusRank": 117.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Donovan Peoples-Jones",
+    "consensusRank": 129.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Equanimeous St. Brown",
+    "consensusRank": 117.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Javon Wims",
+    "consensusRank": 123.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Joe Reed",
+    "consensusRank": 127.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "K.J. Hill",
+    "consensusRank": 132.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Gabriel Davis",
+    "consensusRank": 133.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tim Patrick",
+    "consensusRank": 122.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dontrelle Inman",
+    "consensusRank": 115.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Laquon Treadwell",
+    "consensusRank": 129.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "John Hightower",
+    "consensusRank": 124.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kalif Raymond",
+    "consensusRank": 129.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Seth Roberts",
+    "consensusRank": 132.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Paul Richardson Jr.",
+    "consensusRank": 125.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Riley Ridley",
+    "consensusRank": 133.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Taylor Gabriel",
+    "consensusRank": 107.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Taywan Taylor",
+    "consensusRank": 150.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Byron Pringle",
+    "consensusRank": 145.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Demaryius Thomas",
+    "consensusRank": 121.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Alex Erickson",
+    "consensusRank": 136.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Corey Coleman",
+    "consensusRank": 145.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaiah McKenzie",
+    "consensusRank": 143.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ryan Switzer",
+    "consensusRank": 151.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaiah Coulter",
+    "consensusRank": 139.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Robert Foster",
+    "consensusRank": 146.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Damion Ratley",
+    "consensusRank": 147.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marvin Hall",
+    "consensusRank": 141.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Devin Smith",
+    "consensusRank": 139.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Christian Blake",
+    "consensusRank": 148.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "James Proche",
+    "consensusRank": 146.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Gary Jennings Jr.",
+    "consensusRank": 128.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Pharoh Cooper",
+    "consensusRank": 153.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darnell Mooney",
+    "consensusRank": 143.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Dezmon Patmon",
+    "consensusRank": 152.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Hogan",
+    "consensusRank": 138.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Vyncint Smith",
+    "consensusRank": 149.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mack Hollins",
+    "consensusRank": 138.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Quez Watkins",
+    "consensusRank": 157.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Collin Johnson",
+    "consensusRank": 161.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "K.J. Osborn",
+    "consensusRank": 152.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Olamide Zaccheaus",
+    "consensusRank": 146.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Deon Cain",
+    "consensusRank": 165.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "John Ursua",
+    "consensusRank": 158.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chester Rogers",
+    "consensusRank": 127.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chad Beebe",
+    "consensusRank": 152.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Deonte Harris",
+    "consensusRank": 153.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jalen Guyton",
+    "consensusRank": 134.9,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Moore",
+    "consensusRank": 171.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Duke Williams",
+    "consensusRank": 148.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Andre Patton",
+    "consensusRank": 161.1,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ventell Bryant",
+    "consensusRank": 154.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tavon Austin",
+    "consensusRank": 156.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Braxton Berrios",
+    "consensusRank": 145.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Reggie Begelton",
+    "consensusRank": 165.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Darius Jennings",
+    "consensusRank": 135.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cody Latimer",
+    "consensusRank": 135.6,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Gunner Olszewski",
+    "consensusRank": 136.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaiah Hodgins",
+    "consensusRank": 156.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keelan Doss",
+    "consensusRank": 173.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marcus Johnson",
+    "consensusRank": 167.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Keith Kirkwood",
+    "consensusRank": 171.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cam Batson",
+    "consensusRank": 160.4,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Travis Fulgham",
+    "consensusRank": 168.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jason Moore",
+    "consensusRank": 151.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Rashard Davis",
+    "consensusRank": 153.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Thompson",
+    "consensusRank": 127.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cam Sims",
+    "consensusRank": 156.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Noah Brown",
+    "consensusRank": 156.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jauan Jennings",
+    "consensusRank": 176.2,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cody Hollister",
+    "consensusRank": 162.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Richie James",
+    "consensusRank": 139.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cedrick Wilson",
+    "consensusRank": 140.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Rysen John",
+    "consensusRank": 93.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jeff Thomas",
+    "consensusRank": 169.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ashton Dulin",
+    "consensusRank": 167.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Bellamy",
+    "consensusRank": 153.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Khadarel Hodge",
+    "consensusRank": 177.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Mike Davis",
+    "consensusRank": 120.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jaleel Scott",
+    "consensusRank": 180.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Josh Malone",
+    "consensusRank": 132.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Austin Carr",
+    "consensusRank": 194.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cody Core",
+    "consensusRank": 169.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "C.J. Board",
+    "consensusRank": 171.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Freddie Swain",
+    "consensusRank": 188.8,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Aaron Parker",
+    "consensusRank": 142.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Victor Bolden Jr.",
+    "consensusRank": 146.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Malik Turner",
+    "consensusRank": 181.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Donte Moncrief",
+    "consensusRank": 160.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Greg Dortch",
+    "consensusRank": 160.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "DeAndre Carter",
+    "consensusRank": 186.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Andre Roberts",
+    "consensusRank": 189.7,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Diontae Spencer",
+    "consensusRank": 191.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tevin Jones",
+    "consensusRank": 169.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Daurice Fountain",
+    "consensusRank": 205.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Krishawn Hogan",
+    "consensusRank": 215.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Trent Sherfield",
+    "consensusRank": 172.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jeff Smith",
+    "consensusRank": 175.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marquez Callaway",
+    "consensusRank": 176.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Lawrence Cager",
+    "consensusRank": 180.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Isaac Whitney",
+    "consensusRank": 180.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chad Hansen",
+    "consensusRank": 181.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Chris Lacy",
+    "consensusRank": 182.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "David Sills",
+    "consensusRank": 186.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Deontay Burnett",
+    "consensusRank": 187.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Marcell Ateman",
+    "consensusRank": 219.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cam Phillips",
+    "consensusRank": 191.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Emmanuel Butler",
+    "consensusRank": 193.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Lil'Jordan Humphrey",
+    "consensusRank": 218.3,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Kevin White",
+    "consensusRank": 199.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Brandon Powell",
+    "consensusRank": 201.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "J'Mon Moore",
+    "consensusRank": 202.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Tyrie Cleveland",
+    "consensusRank": 229.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Amara Darboh",
+    "consensusRank": 217.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Nsimba Webster",
+    "consensusRank": 217.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Brandon Zylstra",
+    "consensusRank": 212.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Cyril Grayson",
+    "consensusRank": 213.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Omar Bayless",
+    "consensusRank": 233.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Jehu Chesson",
+    "consensusRank": 228.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Stanley Morgan Jr.",
+    "consensusRank": 236.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Ishmael Hyman",
+    "consensusRank": 231.5,
+    "pos": "WR"
+  },
+  {
+    "rawName": "JoJo Natson",
+    "consensusRank": 233.0,
+    "pos": "WR"
+  },
+  {
+    "rawName": "Travis Kelce",
+    "consensusRank": 1.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "George Kittle",
+    "consensusRank": 1.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Mark Andrews",
+    "consensusRank": 3.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Zach Ertz",
+    "consensusRank": 3.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Darren Waller",
+    "consensusRank": 5.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Evan Engram",
+    "consensusRank": 7.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Hunter Henry",
+    "consensusRank": 8.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tyler Higbee",
+    "consensusRank": 8.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Hayden Hurst",
+    "consensusRank": 9.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Austin Hooper",
+    "consensusRank": 12.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Mike Gesicki",
+    "consensusRank": 12.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jared Cook",
+    "consensusRank": 13.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Rob Gronkowski",
+    "consensusRank": 13.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "T.J. Hockenson",
+    "consensusRank": 14.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Noah Fant",
+    "consensusRank": 15.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jonnu Smith",
+    "consensusRank": 15.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dallas Goedert",
+    "consensusRank": 15.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Blake Jarwin",
+    "consensusRank": 17.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jack Doyle",
+    "consensusRank": 18.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Chris Herndon IV",
+    "consensusRank": 18.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Eric Ebron",
+    "consensusRank": 20.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ian Thomas",
+    "consensusRank": 22.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Irv Smith Jr.",
+    "consensusRank": 23.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Greg Olsen",
+    "consensusRank": 25.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "O.J. Howard",
+    "consensusRank": 26.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dawson Knox",
+    "consensusRank": 28.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Kyle Rudolph",
+    "consensusRank": 27.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jace Sternberger",
+    "consensusRank": 27.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Gerald Everett",
+    "consensusRank": 28.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jimmy Graham",
+    "consensusRank": 30.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Will Dissly",
+    "consensusRank": 30.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tyler Eifert",
+    "consensusRank": 30.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "David Njoku",
+    "consensusRank": 32.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Vance McDonald",
+    "consensusRank": 35.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Cameron Brate",
+    "consensusRank": 39.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "C.J. Uzomah",
+    "consensusRank": 35.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Darren Fells",
+    "consensusRank": 37.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jordan Akins",
+    "consensusRank": 36.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Trey Burton",
+    "consensusRank": 38.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dan Arnold",
+    "consensusRank": 36.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Devin Asiasi",
+    "consensusRank": 38.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jacob Hollister",
+    "consensusRank": 44.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Cole Kmet",
+    "consensusRank": 44.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Nick Boyle",
+    "consensusRank": 40.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ryan Griffin",
+    "consensusRank": 43.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Logan Thomas",
+    "consensusRank": 40.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jason Witten",
+    "consensusRank": 43.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jeremy Sprinkle",
+    "consensusRank": 46.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Adam Trautman",
+    "consensusRank": 51.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Drew Sample",
+    "consensusRank": 50.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dalton Keene",
+    "consensusRank": 53.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Foster Moreau",
+    "consensusRank": 52.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Kaden Smith",
+    "consensusRank": 48.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jordan Reed",
+    "consensusRank": 51.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Mo Alie-Cox",
+    "consensusRank": 54.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Anthony Firkser",
+    "consensusRank": 51.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Maxx Williams",
+    "consensusRank": 53.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Albert Okwuegbunam",
+    "consensusRank": 58.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Delanie Walker",
+    "consensusRank": 46.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Kahale Warring",
+    "consensusRank": 58.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ricky Seals-Jones",
+    "consensusRank": 56.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Robert Tonyan",
+    "consensusRank": 50.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jesse James",
+    "consensusRank": 56.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jaeden Graham",
+    "consensusRank": 56.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Josh Hill",
+    "consensusRank": 59.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Dalton Schultz",
+    "consensusRank": 62.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tyler Kroft",
+    "consensusRank": 63.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "James O'Shaughnessy",
+    "consensusRank": 62.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Thaddeus Moss",
+    "consensusRank": 58.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Adam Shaheen",
+    "consensusRank": 58.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Josiah Deguara",
+    "consensusRank": 67.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Harrison Bryant",
+    "consensusRank": 68.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Virgil Green",
+    "consensusRank": 67.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ross Dwelley",
+    "consensusRank": 67.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Marcedes Lewis",
+    "consensusRank": 62.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Brycen Hopkins",
+    "consensusRank": 64.9,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Hunter Bryant",
+    "consensusRank": 66.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Demetrius Harris",
+    "consensusRank": 70.1,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Nick Vannett",
+    "consensusRank": 68.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jordan Thomas",
+    "consensusRank": 69.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Durham Smythe",
+    "consensusRank": 76.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "MyCole Pruitt",
+    "consensusRank": 73.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Chris Manhertz",
+    "consensusRank": 77.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ryan Izzo",
+    "consensusRank": 75.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Richard Rodgers",
+    "consensusRank": 67.4,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Blake Bell",
+    "consensusRank": 75.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jeff Heuerman",
+    "consensusRank": 66.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Deon Yelder",
+    "consensusRank": 76.2,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Levine Toilolo",
+    "consensusRank": 81.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Colby Parkinson",
+    "consensusRank": 77.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Caleb Wilson",
+    "consensusRank": 57.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Khari Lee",
+    "consensusRank": 81.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tyler Conklin",
+    "consensusRank": 81.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Isaac Nauta",
+    "consensusRank": 89.6,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Darrell Daniels",
+    "consensusRank": 80.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Lee Smith",
+    "consensusRank": 86.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Derek Carrier",
+    "consensusRank": 87.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jacob Breeland",
+    "consensusRank": 77.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Hale Hentges",
+    "consensusRank": 94.8,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Trevon Wesco",
+    "consensusRank": 78.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Zach Gentry",
+    "consensusRank": 87.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Cethan Carter",
+    "consensusRank": 87.7,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Joshua Perkins",
+    "consensusRank": 83.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Jake Butt",
+    "consensusRank": 89.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Eric Tomlinson",
+    "consensusRank": 91.3,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Stephen Anderson",
+    "consensusRank": 96.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Troy Fumagalli",
+    "consensusRank": 88.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Tommy Sweeney",
+    "consensusRank": 90.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Donald Parham",
+    "consensusRank": 93.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Johnny Mundt",
+    "consensusRank": 95.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Ross Travis",
+    "consensusRank": 94.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Xavier Grimble",
+    "consensusRank": 101.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Charlie Woerner",
+    "consensusRank": 96.5,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Evan Baylis",
+    "consensusRank": 102.0,
+    "pos": "TE"
+  },
+  {
+    "rawName": "Temarrick Hemingway",
+    "consensusRank": 103.5,
+    "pos": "TE"
+  }
+]
