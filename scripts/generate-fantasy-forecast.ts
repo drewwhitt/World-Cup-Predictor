@@ -46,18 +46,22 @@ const SEASON = FANTASY_SEASON;
 const SIMULATIONS = 10000;
 
 // --- tiny .env loader, no new dependency ---
-function loadDotEnv() {
-  const path = join(__dirname, "../.env");
+// Checks .env.local first, then .env — same precedence Vite itself
+// uses, and this repo's .gitignore (`*.local`) strongly implies local
+// secrets live in .env.local specifically, not .env.
+function loadEnvFile(filename: string) {
+  const path = join(__dirname, `../${filename}`);
   if (!existsSync(path)) return;
   for (const line of readFileSync(path, "utf-8").split("\n")) {
     const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
     if (!match) continue;
     const [, key, rawValue = ""] = match;
     if (process.env[key] !== undefined) continue;
-    process.env[key] = rawValue.replace(/^["']|["']$/g, "");
+    process.env[key] = rawValue.trim().replace(/^["']|["']$/g, "");
   }
 }
-loadDotEnv();
+loadEnvFile(".env.local");
+loadEnvFile(".env");
 
 const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY;
@@ -65,7 +69,7 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABA
 async function main() {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error(
-      "Missing SUPABASE_URL / SUPABASE_ANON_KEY (checked process.env and a .env file in the repo root). " +
+      "Missing SUPABASE_URL / SUPABASE_ANON_KEY (checked process.env, .env.local, and .env in the repo root). " +
       "Nothing to do — this script needs to read the current rankings snapshot from Supabase.",
     );
     process.exit(1);
