@@ -31,9 +31,12 @@ interface ParsedRow {
   team: string;
   adp: number;
   matchStatus: MatchStatus;
+  /** Suggested candidate(s), if any — for "ambiguous" this is genuinely multiple real players; for the weak tiers (initial_only, lastname_unique) it's a single low-confidence suggestion, not a confirmed match (see handleParse's comment on why those tiers can't be trusted here). */
   candidates: string[];
-  /** The name that will actually be saved — auto-resolved for unambiguous matches, chosen by the admin for ambiguous ones, or left as typed for new/unmatched players (likely rookies with no prior-season record). */
+  /** The name that will actually be saved. */
   resolvedName: string;
+  /** True once this row needs no further input — confident auto-matches and unmatched/new rows start true; weak-tier and ambiguous rows start false until the admin explicitly picks (including explicitly choosing "keep as typed"). */
+  resolved: boolean;
   positionMismatch: boolean;
   rowError?: string;
 }
@@ -67,7 +70,7 @@ export function AdminFantasyRankingsPanel() {
       if (!FANTASY_POSITIONS.has(parsed.position as Position)) {
         parsedRows.push({
           rawName: parsed.name, position: parsed.position as Position, team: parsed.team, adp: parsed.adp,
-          matchStatus: "unmatched", candidates: [], resolvedName: parsed.name, positionMismatch: false,
+          matchStatus: "unmatched", candidates: [], resolvedName: parsed.name, resolved: true, positionMismatch: false,
           rowError: `Unrecognized position "${parsed.position}" — expected QB/RB/WR/TE.`,
         });
         continue;
@@ -75,7 +78,27 @@ export function AdminFantasyRankingsPanel() {
 
       const result = matchName(parsed.name, byLastName, (p) => p.name, KNOWN_ALIASES);
       const matchedPlayer = result.matched;
-      const positionMismatch = !!matchedPlayer && matchedPlayer.position !== parsed.position;
+
+      // Only the two strongest tiers get auto-accepted. "initial_only" and
+      // "lastname_unique" both mean "there happened to be only one
+      // candidate with this last name in the historical pool" — that's
+      // solid evidence in a same-season backtest (the true player is
+      // guaranteed to be in that season's own pool), but proves nothing
+      // here: the canonical pool spans 2021-2024 only, and a real rookie
+      // (or anyone who's simply never appeared in it) will have zero
+      // true matches, making "only one Love in four years" pure surname
+      // coincidence, not identity. Real bug caught on Jeremiyah Love
+      // (auto-matched to Jordan Love) and Tetairoa McMillan (auto-matched
+      // to Jalen McMillan) before this fix — both are actual rookies with
+      // no relation to the player they were silently resolved to.
+      const isConfidentTier = result.status === "exact" || result.status === "exact_first_token" || result.status === "fuzzy_first_token";
+      const isWeakSuggestion = result.status === "initial_only" || result.status === "lastname_unique";
+
+      const candidates = isWeakSuggestion && matchedPlayer
+        ? [matchedPlayer.name]
+        : result.candidates?.map((c) => c.name) ?? [];
+
+      const positionMismatch = isConfidentTier && !!matchedPlayer && matchedPlayer.position !== parsed.position;
 
       parsedRows.push({
         rawName: parsed.name,
@@ -83,8 +106,9 @@ export function AdminFantasyRankingsPanel() {
         team: parsed.team,
         adp: parsed.adp,
         matchStatus: result.status,
-        candidates: result.candidates?.map((c) => c.name) ?? [],
-        resolvedName: matchedPlayer ? matchedPlayer.name : parsed.name,
+        candidates,
+        resolvedName: isConfidentTier && matchedPlayer ? matchedPlayer.name : parsed.name,
+        resolved: isConfidentTier || result.status === "unmatched",
         positionMismatch,
       });
     }
@@ -98,7 +122,7 @@ export function AdminFantasyRankingsPanel() {
     setRows((prev) => {
       if (!prev) return prev;
       const next = [...prev];
-      next[index] = { ...next[index], resolvedName: name };
+      next[index] = { ...next[index], resolvedName: name, resolved: true };
       return next;
     });
   }
@@ -106,16 +130,14 @@ export function AdminFantasyRankingsPanel() {
   const summary = useMemo(() => {
     if (!rows) return null;
     const exact = rows.filter((r) => r.matchStatus === "exact" || r.matchStatus === "exact_first_token").length;
-    const renamed = rows.filter(
-      (r) => (r.matchStatus === "fuzzy_first_token" || r.matchStatus === "initial_only" || r.matchStatus === "lastname_unique") && r.resolvedName !== r.rawName,
-    ).length;
+    const renamed = rows.filter((r) => r.matchStatus === "fuzzy_first_token" && r.resolvedName !== r.rawName).length;
     const unmatched = rows.filter((r) => r.matchStatus === "unmatched" && !r.rowError).length;
-    const ambiguousUnresolved = rows.filter((r) => r.matchStatus === "ambiguous" && !r.candidates.includes(r.resolvedName)).length;
+    const needsConfirmation = rows.filter((r) => !r.resolved).length;
     const rowErrors = rows.filter((r) => r.rowError).length;
-    return { exact, renamed, unmatched, ambiguousUnresolved, rowErrors };
+    return { exact, renamed, unmatched, needsConfirmation, rowErrors };
   }, [rows]);
 
-  const canSave = !!rows && rows.length > 0 && summary!.ambiguousUnresolved === 0 && summary!.rowErrors === 0;
+  const canSave = !!rows && rows.length > 0 && summary!.needsConfirmation === 0 && summary!.rowErrors === 0;
 
   async function handleSave() {
     if (!rows || !canSave) return;
@@ -145,7 +167,7 @@ export function AdminFantasyRankingsPanel() {
         {summary && (
           <strong className={s.summary}>
             {summary.exact} exact · {summary.renamed} renamed to canonical spelling · {summary.unmatched} new (likely rookies)
-            {summary.ambiguousUnresolved > 0 && ` · ${summary.ambiguousUnresolved} ambiguous — needs your pick`}
+            {summary.needsConfirmation > 0 && ` · ${summary.needsConfirmation} need your confirmation`}
             {summary.rowErrors > 0 && ` · ${summary.rowErrors} row error(s)`}
           </strong>
         )}
@@ -186,12 +208,14 @@ export function AdminFantasyRankingsPanel() {
               </thead>
               <tbody>
                 {rows.map((r, i) => (
-                  <tr key={i} className={r.rowError ? s.rowInvalid : r.matchStatus === "ambiguous" && !r.candidates.includes(r.resolvedName) ? s.rowAmbiguous : undefined}>
+                  <tr key={i} className={r.rowError ? s.rowInvalid : !r.resolved ? s.rowAmbiguous : undefined}>
                     <td>{r.rawName}</td>
                     <td>
-                      {r.matchStatus === "ambiguous" ? (
-                        <select value={r.candidates.includes(r.resolvedName) ? r.resolvedName : ""} onChange={(e) => updateResolvedName(i, e.target.value)}>
-                          <option value="" disabled>Choose the correct player…</option>
+                      {!r.resolved ? (
+                        <select value="" onChange={(e) => updateResolvedName(i, e.target.value)}>
+                          <option value="" disabled>
+                            {r.candidates.length > 1 ? "Choose the correct player…" : "Confirm or reject this suggestion…"}
+                          </option>
                           {r.candidates.map((c) => <option key={c} value={c}>{c}</option>)}
                           <option value={r.rawName}>Keep as typed: "{r.rawName}"</option>
                         </select>
@@ -207,8 +231,14 @@ export function AdminFantasyRankingsPanel() {
                     <td>{r.adp}</td>
                     <td className={s.statusCell}>
                       {r.rowError ? <span className={s.badgeError}>{r.rowError}</span>
+                        : !r.resolved ? (
+                            r.matchStatus === "ambiguous"
+                              ? <span className={s.badgeAmbiguous}>Needs pick</span>
+                              : <span className={s.badgeAmbiguous}>Low-confidence — confirm</span>
+                          )
                         : r.matchStatus === "unmatched" ? <span className={s.badgeNew}>New / no history</span>
-                        : r.matchStatus === "ambiguous" ? <span className={s.badgeAmbiguous}>Needs pick</span>
+                        : (r.matchStatus === "ambiguous" || r.matchStatus === "initial_only" || r.matchStatus === "lastname_unique")
+                          ? <span className={s.badgeMatched}>Confirmed ✓</span>
                         : r.matchStatus === "exact" ? <span className={s.badgeExact}>Exact</span>
                         : <span className={s.badgeMatched}>Matched</span>}
                     </td>
