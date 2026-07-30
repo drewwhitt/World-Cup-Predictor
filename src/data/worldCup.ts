@@ -1,5 +1,5 @@
 export type Edition = "wire" | "desk";
-export type TabId = "home" | "forecasts" | "rankings" | "analytics" | "standings" | "bracket" | "match" | "sim" | "lab" | "insights" | "nflSchedule" | "nflRankings" | "nflStandings" | "nflForecasts";
+export type TabId = "home" | "forecasts" | "rankings" | "analytics" | "standings" | "bracket" | "match" | "sim" | "lab" | "insights" | "nflSchedule" | "nflRankings" | "nflStandings" | "nflForecasts" | "nflFantasy";
 export type SimOutcome = "home" | "draw" | "away";
 
 export type Team = {
@@ -127,6 +127,7 @@ export const SPORTS_NAV: SportNavConfig[] = [
       { id: "nflRankings", label: "Power Rankings" },
       { id: "nflStandings", label: "Standings" },
       { id: "nflForecasts", label: "Forecasts" },
+      { id: "nflFantasy", label: "Fantasy" },
     ],
   },
   { label: "NBA" },
