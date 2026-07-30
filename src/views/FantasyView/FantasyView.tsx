@@ -185,7 +185,7 @@ export function FantasyView() {
   }
 
   return (
-    <>
+    <div className={s.page}>
       <section className={s.masthead}>
         <div className={s.eyebrow}>FANTASY · PPR REDRAFT</div>
         <h1>{SEASON} Preseason Board</h1>
@@ -236,6 +236,10 @@ export function FantasyView() {
                       min={0}
                       max={field === "FLEX" ? 4 : 6}
                       value={roster[field]}
+                      onFocus={(e) => {
+                        const len = e.currentTarget.value.length;
+                        e.currentTarget.setSelectionRange(len, len);
+                      }}
                       onChange={(e) => handleRosterField(field, Number(e.target.value) || 0)}
                     />
                   </div>
@@ -256,11 +260,11 @@ export function FantasyView() {
             </div>
             <div className={s.glossaryItem}>
               <div className={s.glossaryTerm}>CONFIDENCE</div>
-              <div className={s.glossaryDef}>Derived from that same range. <b>High</b> = simulations cluster tightly. <b>Medium</b> = a moderate spread. <b>Volatile</b> = a wide spread — boom/bust profile. Click a player for the driver.</div>
+              <div className={s.glossaryDef}>How <b>predictable</b> the range of outcomes is — not whether it's a good pick. <b>High</b> = simulations cluster tightly. <b>Medium</b> = a moderate spread. <b>Volatile</b> = a wide spread — boom/bust profile. Click a player for the driver.</div>
             </div>
             <div className={s.glossaryItem}>
               <div className={s.glossaryTerm}>TAGS</div>
-              <div className={s.glossaryDef}><b>Sleeper</b> = Value Rank is at least 10 spots better than ADP. <b>Risk</b> = Value Rank is at least 10 spots worse than ADP.</div>
+              <div className={s.glossaryDef}><b>Sleeper</b> = Value Rank is at least 10 spots better than ADP. <b>Fade</b> = Value Rank is at least 10 spots worse than ADP — the market's overpaying for this ADP slot. This is about <b>value</b>, independent of Confidence — a High-confidence Fade means we're fairly sure they'll be solid, just not worth this early a pick.</div>
             </div>
           </div>
 
@@ -283,7 +287,7 @@ export function FantasyView() {
                 )}
                 {biggestRisk && (
                   <div className={`${s.callout} ${s.calloutRisk}`}>
-                    <div className={s.calloutLabel}>Biggest Risk</div>
+                    <div className={s.calloutLabel}>Biggest Fade</div>
                     <div className={s.calloutPlayer}>{biggestRisk.r.name}</div>
                     <div className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(biggestRisk.r.name)}</b> · Model rank <b>#{Math.round(biggestRisk.r.valueRank)}</b> for a {teams}-team league</div>
                   </div>
@@ -302,13 +306,12 @@ export function FantasyView() {
 
               <table className={s.table}>
                 <colgroup>
-                  <col style={{ width: "8%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "38%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "12%" }} />
-                  <col style={{ width: "12%" }} />
+                  <col className={s.colAdp} />
+                  <col className={s.colValueRk} />
+                  <col className={s.colPlayer} />
+                  <col className={s.colPos} />
+                  <col className={s.colVbd} />
+                  <col className={s.colConf} />
                 </colgroup>
                 <thead>
                   <tr>
@@ -318,7 +321,6 @@ export function FantasyView() {
                     <th className={s.right}>Pos</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => setSortBy("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>▾</span>}</th>
                     <th className={s.right}>Conf.</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -328,7 +330,7 @@ export function FantasyView() {
                     const conf = confidenceLabel(r.sd, r.meanPoints);
                     const isExpanded = expandedName === r.name;
                     const tag = delta >= 10 ? <span className={`${s.tag} ${s.tagSleeper}`}>SLEEPER</span>
-                      : delta <= -10 ? <span className={`${s.tag} ${s.tagBust}`}>RISK</span> : null;
+                      : delta <= -10 ? <span className={`${s.tag} ${s.tagBust}`}>FADE</span> : null;
 
                     return (
                       <FragmentRow
@@ -350,7 +352,7 @@ export function FantasyView() {
           )}
         </>
       )}
-    </>
+    </div>
   );
 }
 
@@ -374,12 +376,16 @@ function FragmentRow({
         <td><span className={s.playerName}>{result.name}</span></td>
         <td className={`${s.right} ${s.posCell}`}><span className={s.posChip}>{result.position}</span></td>
         <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
-        <td className={`${conf.cls} ${s.right}`}>{conf.label}</td>
-        <td>{tag}</td>
+        <td className={s.right}>
+          <div className={s.confCell}>
+            <span className={conf.cls}>{conf.label}</span>
+            {tag}
+          </div>
+        </td>
       </tr>
       {isExpanded && (
         <tr className={s.detailRow}>
-          <td colSpan={7}>
+          <td colSpan={6}>
             <div className={s.detailGrid}>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Why the model differs</div>
