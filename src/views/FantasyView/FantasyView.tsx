@@ -30,28 +30,28 @@ type PosFilter = "ALL" | Position;
 
 function confidenceLabel(sd: number, mean: number): { label: string; cls: string } {
   const ratio = mean > 0 ? sd / mean : 1;
-  // Thresholds are real tercile boundaries (p33≈0.378, p67≈0.479) computed
-  // from the actual 2026 board's sd/mean ratios, not arbitrary numbers —
-  // the original 0.12/0.16 cutoffs were placeholders from the very first
-  // mockup (built against fictional projections) and were never checked
-  // against real fitted data. They turned out to be badly wrong: every
-  // single real player had a ratio above 0.16, so everyone showed
-  // "Volatile" regardless of who they were. Worth re-checking these
-  // periodically as more real seasons/players feed the historical fit
-  // pool — see MODEL_HISTORY.md.
-  if (ratio < 0.38) return { label: "High", cls: s.confHigh };
-  if (ratio < 0.48) return { label: "Medium", cls: s.confMed };
+  // Thresholds are real tercile boundaries (p33≈0.210, p67≈0.322) computed
+  // from Drew's actual 2026 board's HEALTHY-MODE sd/mean ratios, after the
+  // mixture-model split (see curveFit.ts/simulate.ts docstrings). These
+  // replace the earlier 0.38/0.48 thresholds, which were calibrated to the
+  // old blended (injury-inclusive) ratios — healthy-mode ratios are
+  // considerably tighter (real range 0.135–0.449, not 0.184–0.701), so the
+  // old thresholds would now call almost everyone "High" confidence.
+  if (ratio < 0.21) return { label: "High", cls: s.confHigh };
+  if (ratio < 0.32) return { label: "Medium", cls: s.confMed };
   return { label: "Volatile", cls: s.confLow };
 }
 
-function confidenceDetail(cls: string): string {
+function confidenceDetail(cls: string, pHealthy: number): string {
+  const availabilityPct = Math.round(pHealthy * 100);
+  const availabilityNote = ` Based on similar historical players, about ${availabilityPct}% played a near-full season (14+ games) — the ${100 - availabilityPct}% who didn't is the biggest real risk to this range, and isn't part of the Confidence rating above.`;
   if (cls === s.confHigh) {
-    return "Simulations cluster tightly around the projection — an established, low-variance role with no major injury or situation flags.";
+    return "Simulations cluster tightly around the projection — an established, low-variance role with no major injury or situation flags." + availabilityNote;
   }
   if (cls === s.confMed) {
-    return "Moderate spread across simulations — some role or health uncertainty widens the range of likely outcomes.";
+    return "Moderate spread across simulations — some role or health uncertainty widens the range of likely outcomes." + availabilityNote;
   }
-  return "Wide spread between simulations — often tied to injury history, a contested backfield or target share, or an unproven/new role.";
+  return "Wide spread between simulations — often tied to a contested backfield or target share, or an unproven/new role." + availabilityNote;
 }
 
 function reasonFor(position: Position, positive: boolean): string {
@@ -256,7 +256,7 @@ export function FantasyView() {
             </div>
             <div className={s.glossaryItem}>
               <div className={s.glossaryTerm}>RANGE</div>
-              <div className={s.glossaryDef}>The <b>10th–90th percentile</b> of simulated season point totals across 10,000 Monte Carlo runs. Click any player to see it.</div>
+              <div className={s.glossaryDef}>The <b>10th–90th percentile</b> of simulated season point totals, <b>assuming a healthy/full season (14+ games)</b> — a blended range that mixes in real injury-shortened outcomes produces a misleadingly low floor for what a player scores when actually on the field. Each player's own availability risk (how often similarly-drafted players actually stayed healthy) is shown separately in their dropdown, not folded into this number. Click any player to see it.</div>
             </div>
             <div className={s.glossaryItem}>
               <div className={s.glossaryTerm}>CONFIDENCE</div>
@@ -327,7 +327,7 @@ export function FantasyView() {
                   {sorted.map((r) => {
                     const adpRank = adpRankByName.get(r.name)!;
                     const delta = adpRank - r.valueRank;
-                    const conf = confidenceLabel(r.sd, r.meanPoints);
+                    const conf = confidenceLabel(r.healthySd, r.healthyMeanPoints);
                     const isExpanded = expandedName === r.name;
                     const tag = delta >= 10 ? <span className={`${s.tag} ${s.tagSleeper}`}>SLEEPER</span>
                       : delta <= -10 ? <span className={`${s.tag} ${s.tagBust}`}>FADE</span> : null;
@@ -393,16 +393,16 @@ function FragmentRow({
               </div>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Range (10th–90th pctile)</div>
-                <div className={s.detailValue}>{Math.round(result.p10Points)}–{Math.round(result.p90Points)} pts</div>
-                <div className={s.detailText}>Projected mean: {Math.round(result.meanPoints)} pts.</div>
+                <div className={s.detailValue}>{Math.round(result.healthyP10Points)}–{Math.round(result.healthyP90Points)} pts</div>
+                <div className={s.detailText}>Projected mean if active: {Math.round(result.healthyMeanPoints)} pts.</div>
                 <div className={s.detailSubtext}>
-                  At {Math.round(result.p10Points)} pts, that season would rank around Value #{impliedValueRankFromPoints(result.p10Points, result, allResults)}.
-                  {" "}At {Math.round(result.p90Points)} pts, around Value #{impliedValueRankFromPoints(result.p90Points, result, allResults)}.
+                  At {Math.round(result.healthyP10Points)} pts, that season would rank around Value #{impliedValueRankFromPoints(result.healthyP10Points, result, allResults)}.
+                  {" "}At {Math.round(result.healthyP90Points)} pts, around Value #{impliedValueRankFromPoints(result.healthyP90Points, result, allResults)}.
                 </div>
               </div>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Confidence — {conf.label}</div>
-                <div className={s.detailText}>{confidenceDetail(conf.cls)}</div>
+                <div className={s.detailText}>{confidenceDetail(conf.cls, result.pHealthy)}</div>
               </div>
             </div>
           </td>

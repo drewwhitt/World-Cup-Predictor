@@ -7,7 +7,7 @@
  * rosters) — kept in one shared place specifically so those two paths
  * can't quietly drift apart from each other.
  */
-import { applyRiskAdjustments, fitPointsDistribution, type PlayerRiskFactors } from "./curveFit";
+import { applyRiskAdjustmentsToMixture, fitMixtureDistribution, type PlayerRiskFactors } from "./curveFit";
 import { runSimulation, type SimulationInput, type SimulationResult } from "./simulate";
 import type { AdpVsActualEntry, FantasyRankingEntry, RosterConfig } from "./types";
 
@@ -34,7 +34,7 @@ export function computeFantasyForecast(
   const inputs = buildSimulationInputs(entries, riskByName);
   return runSimulation(
     inputs,
-    (player) => applyRiskAdjustments(fitPointsDistribution(player.position, player.adp, fitPool), player.risk),
+    (player) => applyRiskAdjustmentsToMixture(fitMixtureDistribution(player.position, player.adp, fitPool), player.risk),
     teams,
     roster,
     simulations,

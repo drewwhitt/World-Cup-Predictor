@@ -9,10 +9,25 @@
  * season-to-season scarcity varies. Aggregating rank across draws (not
  * just averaging points) is what makes "Value Rank" a genuine
  * probability-weighted answer rather than a single point estimate.
+ *
+ * Each draw samples from a two-component mixture (see curveFit.ts's
+ * fitMixtureDistribution) rather than one blended Gaussian: with
+ * probability pHealthy, sample from the "healthy season" distribution;
+ * otherwise from the "shortened season" one. VBD/Value Rank/meanPoints
+ * are computed from these blended draws — that's real fantasy value,
+ * which should account for real injury risk, not pretend it away.
+ * Alongside that, healthyMeanPoints/healthyP10Points/healthyP90Points
+ * are computed ONLY from the subset of draws that landed in the healthy
+ * mode — "what does this player produce specifically when active,"
+ * which is what actually gets displayed as "Range" in the UI (the
+ * blended range mixes in real bust-season outcomes, which produces a
+ * misleadingly low floor for "if he plays a full season" — see
+ * MODEL_HISTORY.md for the real Trey McBride numbers that motivated
+ * this split).
  */
 import { computeReplacementLevel, computeVBD } from "./replacementLevel";
 import type { PlayerSeasonStat, Position, RosterConfig } from "./types";
-import type { PlayerRiskFactors } from "./curveFit";
+import type { MixtureDistribution, PlayerRiskFactors } from "./curveFit";
 
 export interface SimulationInput {
   name: string;
@@ -29,55 +44,62 @@ export interface SimulationResult {
   p10Points: number;
   p90Points: number;
   meanVbd: number;
-  /** Rank derived from meanVbd (1 = highest) — every player sorted once by their aggregate expected value over replacement, matching the glossary's "Value Rk is simply every player sorted by this same VBD number." NOT an average of each player's rank across individual draws — that was tried first and produced badly inflated numbers (the best player in the league showed as "Value Rank 24", not "1") because rank is floored at 1 but has no ceiling, so variance from any source — including the per-draw replacement level itself, which is a real sampled player's score, not a fixed baseline — pulls the arithmetic mean of ranks upward for everyone, worst for exactly the highest-variance players. */
   valueRank: number;
   sd: number;
+  pHealthy: number;
+  healthyMeanPoints: number;
+  healthyP10Points: number;
+  healthyP90Points: number;
+  healthySd: number;
 }
 
-/**
- * Box-Muller transform — standard normal sample, no external RNG
- * dependency. Fine for this use case: we're not doing anything
- * cryptographic, just need a reasonably-shaped random draw.
- */
 function sampleNormal(mean: number, sd: number): number {
-  const u1 = Math.random() || 1e-9; // avoid log(0)
+  const u1 = Math.random() || 1e-9;
   const u2 = Math.random();
   const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
   return mean + sd * z0;
 }
 
 function percentile(sorted: number[], p: number): number {
+  if (sorted.length === 0) return 0;
   const idx = Math.min(sorted.length - 1, Math.max(0, Math.round(p * (sorted.length - 1))));
   return sorted[idx];
 }
 
-/**
- * Runs the full Monte Carlo. `distributionOf` supplies the (mean, sd)
- * for a given player — the caller builds this from curveFit.ts (fitted
- * from real historical ADP-vs-actual data plus risk adjustments), kept
- * as an injected function here so simulate.ts itself has no dependency
- * on where the distribution came from and can be tested with synthetic
- * inputs.
- */
+function meanOf(values: number[]): number {
+  return values.length === 0 ? 0 : values.reduce((a, b) => a + b, 0) / values.length;
+}
+
+function sdOf(values: number[], mean: number): number {
+  if (values.length === 0) return 0;
+  const variance = values.reduce((a, b) => a + (b - mean) ** 2, 0) / values.length;
+  return Math.sqrt(variance);
+}
+
 export function runSimulation(
   players: SimulationInput[],
-  distributionOf: (player: SimulationInput) => { mean: number; sd: number },
+  mixtureOf: (player: SimulationInput) => MixtureDistribution,
   teams: number,
   roster: RosterConfig,
   simulations: number = 10000,
 ): SimulationResult[] {
-  const dists = players.map((p) => distributionOf(p));
+  const mixtures = players.map((p) => mixtureOf(p));
 
-  // Per-player accumulators across all draws.
   const pointsByPlayer: number[][] = players.map(() => []);
   const vbdByPlayer: number[][] = players.map(() => []);
+  const healthyPointsByPlayer: number[][] = players.map(() => []);
 
   for (let draw = 0; draw < simulations; draw++) {
-    const drawStats: PlayerSeasonStat[] = players.map((p, i) => ({
-      name: p.name,
-      position: p.position,
-      points: Math.max(0, sampleNormal(dists[i].mean, dists[i].sd)),
-    }));
+    const isHealthyThisDraw: boolean[] = players.map((_, i) => Math.random() < mixtures[i].pHealthy);
+
+    const drawStats: PlayerSeasonStat[] = players.map((p, i) => {
+      const dist = isHealthyThisDraw[i] ? mixtures[i].healthy : mixtures[i].shortened;
+      return {
+        name: p.name,
+        position: p.position,
+        points: Math.max(0, sampleNormal(dist.mean, dist.sd)),
+      };
+    });
 
     const replacementLevel = computeReplacementLevel(drawStats, teams, roster);
     const withVbd = computeVBD(drawStats, replacementLevel);
@@ -85,14 +107,16 @@ export function runSimulation(
     for (let i = 0; i < players.length; i++) {
       pointsByPlayer[i].push(drawStats[i].points);
       vbdByPlayer[i].push(withVbd[i].vbd);
+      if (isHealthyThisDraw[i]) healthyPointsByPlayer[i].push(drawStats[i].points);
     }
   }
 
   const aggregated = players.map((p, i) => {
     const points = [...pointsByPlayer[i]].sort((a, b) => a - b);
-    const mean = points.reduce((a, b) => a + b, 0) / points.length;
-    const variance = points.reduce((a, b) => a + (b - mean) ** 2, 0) / points.length;
-    const meanVbd = vbdByPlayer[i].reduce((a, b) => a + b, 0) / vbdByPlayer[i].length;
+    const mean = meanOf(points);
+    const healthyPoints = [...healthyPointsByPlayer[i]].sort((a, b) => a - b);
+    const healthyMean = meanOf(healthyPoints);
+    const meanVbd = meanOf(vbdByPlayer[i]);
 
     return {
       name: p.name,
@@ -102,14 +126,15 @@ export function runSimulation(
       p10Points: percentile(points, 0.10),
       p90Points: percentile(points, 0.90),
       meanVbd,
-      sd: Math.sqrt(variance),
+      sd: sdOf(points, mean),
+      pHealthy: mixtures[i].pHealthy,
+      healthyMeanPoints: healthyMean,
+      healthyP10Points: percentile(healthyPoints, 0.10),
+      healthyP90Points: percentile(healthyPoints, 0.90),
+      healthySd: sdOf(healthyPoints, healthyMean),
     };
   });
 
-  // Value Rank: sort once by aggregate meanVbd, rank 1 = highest. See the
-  // SimulationResult docstring for why this replaced averaging each
-  // player's per-draw rank. Ranked by index (not name) to avoid any risk
-  // of collision if two players ever share an exact name.
   const order = aggregated.map((r, i) => ({ i, vbd: r.meanVbd })).sort((a, b) => b.vbd - a.vbd);
   const valueRankByIndex = new Map(order.map(({ i }, idx) => [i, idx + 1]));
 

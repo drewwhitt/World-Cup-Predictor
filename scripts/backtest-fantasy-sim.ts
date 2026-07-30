@@ -17,7 +17,7 @@
 import adpVsActualData from "../src/data/fantasy/adp-vs-actual-2021-2024.json";
 import adpVsActual2020Data from "../src/data/fantasy/adp-vs-actual-2020.json";
 import historicalData from "../src/data/fantasy/historical-player-seasons.json";
-import { fitPointsDistribution, applyRiskAdjustments } from "../src/lib/fantasy/curveFit";
+import { fitMixtureDistribution, applyRiskAdjustmentsToMixture } from "../src/lib/fantasy/curveFit";
 import { runSimulation, type SimulationInput } from "../src/lib/fantasy/simulate";
 import { STANDARD_ROSTER } from "../src/lib/fantasy/types";
 import type { AdpVsActualEntry } from "../src/lib/fantasy/types";
@@ -50,10 +50,7 @@ console.log(`Fitting on ${fitPool.length} historical player-seasons (2020-2023).
 
 const results = runSimulation(
   players2024,
-  (player) => {
-    const base = fitPointsDistribution(player.position, player.adp, fitPool);
-    return applyRiskAdjustments(base, player.risk);
-  },
+  (player) => applyRiskAdjustmentsToMixture(fitMixtureDistribution(player.position, player.adp, fitPool), player.risk),
   12,
   STANDARD_ROSTER,
   10000,
@@ -61,6 +58,7 @@ const results = runSimulation(
 
 // Join simulated results back to real 2024 outcomes for comparison.
 const actualByName = new Map(data.seasons["2024"].map((p) => [p.name, p.actualPoints]));
+const games2024ByName = new Map(data.seasons["2024"].map((p) => [p.name, p.games]));
 
 let withinRangeCount = 0;
 const rows = results.map((r) => {
@@ -70,7 +68,15 @@ const rows = results.map((r) => {
   return { ...r, actual, withinRange };
 });
 
-console.log(`Calibration check: actual outcome fell within the simulated 10th-90th percentile band for ${withinRangeCount}/${rows.length} players (${((withinRangeCount / rows.length) * 100).toFixed(1)}%). Target: roughly 80% for a well-calibrated 10th-90th band.\n`);
+console.log(`Calibration check (blended, all outcomes): actual fell within the simulated 10th-90th band for ${withinRangeCount}/${rows.length} players (${((withinRangeCount / rows.length) * 100).toFixed(1)}%). Target: roughly 80%.\n`);
+
+// Healthy-mode-specific check: among players who ACTUALLY played a
+// healthy season in 2024, does their real outcome fall within the
+// healthy-only range? This validates the new split specifically, not
+// just the blended distribution.
+const healthyRows = rows.filter((r) => (games2024ByName.get(r.name) ?? 0) >= 14);
+const healthyWithinRange = healthyRows.filter((r) => r.actual >= r.healthyP10Points && r.actual <= r.healthyP90Points).length;
+console.log(`Calibration check (healthy-only, among the ${healthyRows.length} players who actually played 14+ games in 2024): actual fell within the healthy 10th-90th band for ${healthyWithinRange}/${healthyRows.length} (${((healthyWithinRange / healthyRows.length) * 100).toFixed(1)}%). Target: roughly 80%.\n`);
 
 console.log("Spot check — top 10 by ADP (real stars):");
 for (const r of [...rows].sort((a, b) => a.adp - b.adp).slice(0, 10)) {
