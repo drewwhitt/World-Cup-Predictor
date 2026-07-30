@@ -198,6 +198,7 @@
 .sortable:hover { color: var(--navy); }
 .arrow { margin-left: 3px; color: var(--gold); }
 .right { text-align: right; }
+.table thead th.right { text-align: right; }
 
 .table tbody td { padding: 11px 10px; border-bottom: 1px solid var(--hairline); font: 400 13.5px var(--font-sans); vertical-align: middle; }
 .num { font-family: var(--font-mono); }

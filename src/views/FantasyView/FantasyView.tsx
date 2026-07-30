@@ -74,6 +74,30 @@ function impliedValueRankFromPoints(points: number, subject: SimulationResult, a
   return rank;
 }
 
+/**
+ * Standard competition ranking ("1224") for ADP: players with the exact
+ * same raw ADP share the same displayed rank — the position of the
+ * FIRST entry in the tied group, not an average or an independently
+ * rounded value per player. Two players tied at raw ADP 1.5 both show
+ * "1", not "2" — rounding each one's own ADP separately (Math.round)
+ * could make a tied pair look like they're "2nd" when they're actually
+ * tied for 1st, which is what this replaces.
+ */
+function computeAdpRanks(results: SimulationResult[]): Map<string, number> {
+  const sortedByAdp = [...results].sort((a, b) => a.adp - b.adp);
+  const rankByName = new Map<string, number>();
+  let rank = 1;
+  sortedByAdp.forEach((r, idx) => {
+    if (idx > 0 && r.adp === sortedByAdp[idx - 1].adp) {
+      // tied with the previous entry — keep the same rank
+    } else {
+      rank = idx + 1;
+    }
+    rankByName.set(r.name, rank);
+  });
+  return rankByName;
+}
+
 export function FantasyView() {
   const [rankings, setRankings] = useState<{ date: string; payload: FantasyRankingsPayload } | "loading" | null>("loading");
   const [teams, setTeams] = useState<number>(12);
@@ -120,11 +144,13 @@ export function FantasyView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rankings, teams, JSON.stringify(roster)]);
 
+  const adpRankByName = useMemo(() => (results ? computeAdpRanks(results) : new Map<string, number>()), [results]);
+
   const sorted = useMemo(() => {
     if (!results) return [];
     const filtered = posFilter === "ALL" ? results : results.filter((r) => r.position === posFilter);
     return [...filtered].sort((a, b) => {
-      if (sortBy === "value") return a.meanValueRank - b.meanValueRank;
+      if (sortBy === "value") return a.valueRank - b.valueRank;
       if (sortBy === "vbd") return b.meanVbd - a.meanVbd;
       return a.adp - b.adp;
     });
@@ -132,11 +158,11 @@ export function FantasyView() {
 
   const { biggestValue, biggestRisk } = useMemo(() => {
     if (!results || results.length === 0) return { biggestValue: null, biggestRisk: null };
-    const withDelta = results.map((r) => ({ r, delta: r.adp - r.meanValueRank }));
+    const withDelta = results.map((r) => ({ r, delta: adpRankByName.get(r.name)! - r.valueRank }));
     const best = [...withDelta].sort((a, b) => b.delta - a.delta)[0];
     const worst = [...withDelta].sort((a, b) => a.delta - b.delta)[0];
     return { biggestValue: best, biggestRisk: worst };
-  }, [results]);
+  }, [results, adpRankByName]);
 
   function handleTeamPill(newTeams: number) {
     setTeams(newTeams);
@@ -241,14 +267,14 @@ export function FantasyView() {
                   <div className={`${s.callout} ${s.calloutValue}`}>
                     <div className={s.calloutLabel}>Biggest Value</div>
                     <div className={s.calloutPlayer}>{biggestValue.r.name}</div>
-                    <div className={s.calloutDetail}>Drafted <b>#{Math.round(biggestValue.r.adp)}</b> · Model rank <b>#{Math.round(biggestValue.r.meanValueRank)}</b> for a {teams}-team league</div>
+                    <div className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(biggestValue.r.name)}</b> · Model rank <b>#{Math.round(biggestValue.r.valueRank)}</b> for a {teams}-team league</div>
                   </div>
                 )}
                 {biggestRisk && (
                   <div className={`${s.callout} ${s.calloutRisk}`}>
                     <div className={s.calloutLabel}>Biggest Risk</div>
                     <div className={s.calloutPlayer}>{biggestRisk.r.name}</div>
-                    <div className={s.calloutDetail}>Drafted <b>#{Math.round(biggestRisk.r.adp)}</b> · Model rank <b>#{Math.round(biggestRisk.r.meanValueRank)}</b> for a {teams}-team league</div>
+                    <div className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(biggestRisk.r.name)}</b> · Model rank <b>#{Math.round(biggestRisk.r.valueRank)}</b> for a {teams}-team league</div>
                   </div>
                 )}
               </div>
@@ -286,7 +312,8 @@ export function FantasyView() {
                 </thead>
                 <tbody>
                   {sorted.map((r) => {
-                    const delta = r.adp - r.meanValueRank;
+                    const adpRank = adpRankByName.get(r.name)!;
+                    const delta = adpRank - r.valueRank;
                     const conf = confidenceLabel(r.sd, r.meanPoints);
                     const isExpanded = expandedName === r.name;
                     const tag = delta >= 10 ? <span className={`${s.tag} ${s.tagSleeper}`}>SLEEPER</span>
@@ -296,6 +323,7 @@ export function FantasyView() {
                       <FragmentRow
                         key={r.name}
                         result={r}
+                        adpRank={adpRank}
                         delta={delta}
                         conf={conf}
                         tag={tag}
@@ -316,9 +344,10 @@ export function FantasyView() {
 }
 
 function FragmentRow({
-  result, delta, conf, tag, isExpanded, allResults, onClick,
+  result, adpRank, delta, conf, tag, isExpanded, allResults, onClick,
 }: {
   result: SimulationResult;
+  adpRank: number;
   delta: number;
   conf: { label: string; cls: string };
   tag: React.ReactNode;
@@ -329,8 +358,8 @@ function FragmentRow({
   return (
     <>
       <tr className={isExpanded ? `${s.playerRow} ${s.playerRowExpanded}` : s.playerRow} onClick={onClick}>
-        <td className={s.num}>{Math.round(result.adp)}</td>
-        <td className={`${s.num} ${s.rk}`}>{Math.round(result.meanValueRank)}</td>
+        <td className={s.num}>{adpRank}</td>
+        <td className={`${s.num} ${s.rk}`}>{Math.round(result.valueRank)}</td>
         <td><span className={s.playerName}>{result.name}</span></td>
         <td className={`${s.right} ${s.posCell}`}><span className={s.posChip}>{result.position}</span></td>
         <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
