@@ -28,7 +28,7 @@ export function NFLStandingsView() {
               {div.rows.map((row) => (
                 <div className={s.groupRow} key={row.code}>
                   <span className={s.groupTeamCol}>
-                    <span className={s.groupTeamName}>{row.name}</span>
+                    <span className={s.groupTeamName}>{row.code}</span>
                   </span>
                   <span>{row.wins}</span>
                   <span>{row.losses}</span>

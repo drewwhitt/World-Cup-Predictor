@@ -71,7 +71,7 @@ function AccuracySummary({ stored }: { stored: StoredResults }) {
 }
 
 export function AnalyticsView({ stored, teams }: { stored: StoredResults; teams: Team[] }) {
-  const [sortKey, setSortKey] = useState<SortKey>("oddsShift");
+  const [sortKey, setSortKey] = useState<SortKey>("baselineOdds");
 
   const rows = useMemo(() => {
     const playedMatches = GROUP_MATCHES.map((m) => {
