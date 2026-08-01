@@ -231,19 +231,19 @@
 .right { text-align: right; }
 .table thead th.right { text-align: right; }
 
-.colAdp { width: 10%; }
-.colValueRk { width: 12%; }
+.colAdp { width: 8%; }
+.colAdpRange { width: 10%; }
+.colValueRk { width: 10%; }
 .colPlayer { width: 40%; }
-.colPos { width: 10%; }
 .colVbd { width: 10%; }
-.colTag { width: 14%; }
+.colTag { width: 22%; }
 
 .table tbody td { padding: 11px 10px; border-bottom: 1px solid var(--hairline); font: 400 13.5px var(--font-sans); vertical-align: middle; overflow: hidden; }
 .num { font-family: var(--font-mono); }
 .rk { font-weight: 700; color: var(--navy); }
 .playerName { font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
-.posCell { padding-left: 28px; }
-.posChip { font: 500 10.5px var(--font-mono); padding: 1px 6px; border: 1px solid var(--navy); color: var(--navy); }
+.posChip { font: 500 10.5px var(--font-mono); padding: 1px 6px; border: 1px solid var(--navy); color: var(--navy); margin-left: 10px; }
+.teamAbbrev { font: 500 11px var(--font-mono); color: var(--ink-3); margin-left: 8px; }
 
 
 .tag { font: 600 10px var(--font-mono); padding: 2px 7px; letter-spacing: 0.04em; white-space: nowrap; }
@@ -283,15 +283,15 @@
 
   .table thead th { font-size: 9px; padding: 8px 5px; }
   .table tbody td { padding: 9px 5px; font-size: 12px; }
-  .posCell { padding-left: 10px; }
   .playerName { font-size: 12.5px; }
+  .teamAbbrev { display: none; } /* trimmed on mobile for space; position chip stays */
 
-  .colAdp { width: 11%; }
-  .colValueRk { width: 13%; }
-  .colPlayer { width: 34%; }
-  .colPos { width: 11%; }
+  .colAdp { width: 9%; }
+  .colAdpRange { width: 11%; }
+  .colValueRk { width: 11%; }
+  .colPlayer { width: 32%; }
   .colVbd { width: 11%; }
-  .colTag { width: 22%; }
+  .colTag { width: 26%; }
 
   .tag { font-size: 8.5px; padding: 1px 5px; }
 }

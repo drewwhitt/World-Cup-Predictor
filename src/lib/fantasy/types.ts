@@ -62,6 +62,8 @@ export interface FantasyRankingEntry {
   position: Position;
   team?: string;
   adp: number;
+  /** Best-to-worst rank spread across platform sources, as a plain display string (e.g. "1 - 4") — not parsed into numbers since it's display-only, never used in the simulation. */
+  adpRange?: string;
   platformRanks?: number[];
 }
 

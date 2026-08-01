@@ -170,6 +170,24 @@ export function FantasyView() {
   }, [rankings, teams, JSON.stringify(roster)]);
 
   const adpRankByName = useMemo(() => (results ? computeAdpRanks(results) : new Map<string, number>()), [results]);
+  const adpRangeByName = useMemo(() => {
+    const map = new Map<string, string>();
+    if (rankings !== "loading" && rankings !== null) {
+      for (const e of rankings.payload.entries) {
+        if (e.adpRange) map.set(e.name, e.adpRange);
+      }
+    }
+    return map;
+  }, [rankings]);
+  const teamByName = useMemo(() => {
+    const map = new Map<string, string>();
+    if (rankings !== "loading" && rankings !== null) {
+      for (const e of rankings.payload.entries) {
+        if (e.team) map.set(e.name, e.team);
+      }
+    }
+    return map;
+  }, [rankings]);
 
   const sorted = useMemo(() => {
     if (!results) return [];
@@ -323,18 +341,18 @@ export function FantasyView() {
               <table className={s.table}>
                 <colgroup>
                   <col className={s.colAdp} />
-                  <col className={s.colValueRk} />
+                  <col className={s.colAdpRange} />
                   <col className={s.colPlayer} />
-                  <col className={s.colPos} />
+                  <col className={s.colValueRk} />
                   <col className={s.colVbd} />
                   <col className={s.colTag} />
                 </colgroup>
                 <thead>
                   <tr>
                     <th className={s.sortable} onClick={() => handleSortClick("adp")}>ADP{sortBy === "adp" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
-                    <th className={s.sortable} onClick={() => handleSortClick("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
+                    <th>Range</th>
                     <th>Player</th>
-                    <th className={s.right}>Pos</th>
+                    <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th></th>
                   </tr>
@@ -352,6 +370,8 @@ export function FantasyView() {
                         key={r.name}
                         result={r}
                         adpRank={adpRank}
+                        adpRange={adpRangeByName.get(r.name)}
+                        team={teamByName.get(r.name)}
                         delta={delta}
                         tag={tag}
                         isExpanded={isExpanded}
@@ -371,10 +391,12 @@ export function FantasyView() {
 }
 
 function FragmentRow({
-  result, adpRank, delta, tag, isExpanded, allResults, onClick,
+  result, adpRank, adpRange, team, delta, tag, isExpanded, allResults, onClick,
 }: {
   result: SimulationResult;
   adpRank: number;
+  adpRange?: string;
+  team?: string;
   delta: number;
   tag: React.ReactNode;
   isExpanded: boolean;
@@ -385,9 +407,13 @@ function FragmentRow({
     <>
       <tr className={isExpanded ? `${s.playerRow} ${s.playerRowExpanded}` : s.playerRow} onClick={onClick}>
         <td className={s.num}>{adpRank}</td>
-        <td className={`${s.num} ${s.rk}`}>{Math.round(result.valueRank)}</td>
-        <td><span className={s.playerName}>{result.name}</span></td>
-        <td className={`${s.right} ${s.posCell}`}><span className={s.posChip}>{result.position}</span></td>
+        <td className={s.num}>{adpRange ?? "—"}</td>
+        <td>
+          <span className={s.playerName}>{result.name}</span>
+          <span className={s.posChip}>{result.position}</span>
+          {team && <span className={s.teamAbbrev}>{team}</span>}
+        </td>
+        <td className={`${s.num} ${s.rk} ${s.right}`}>{Math.round(result.valueRank)}</td>
         <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
         <td className={s.right}>{tag}</td>
       </tr>

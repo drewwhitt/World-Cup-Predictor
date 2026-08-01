@@ -30,6 +30,8 @@ interface ParsedRow {
   position: Position;
   team: string;
   adp: number;
+  /** Best-to-worst platform rank spread, e.g. "1 - 4" — optional, only present if the pasted row includes it (6-column format: Name, Position, Team, ADP, StdDev, Range). StdDev itself is parsed past but not stored — not displayed anywhere per Drew's call. */
+  adpRange?: string;
   matchStatus: MatchStatus;
   /** Suggested candidate(s), if any — for "ambiguous" this is genuinely multiple real players; for the weak tiers (initial_only, lastname_unique) it's a single low-confidence suggestion, not a confirmed match (see handleParse's comment on why those tiers can't be trusted here). */
   candidates: string[];
@@ -41,14 +43,23 @@ interface ParsedRow {
   rowError?: string;
 }
 
-function parseLine(line: string): { name: string; position: string; team: string; adp: number } | null {
+/**
+ * Accepts either the original 4-column format (Name, Position, Team,
+ * ADP) or the extended 6-column format (Name, Position, Team, ADP,
+ * StdDev, Range) — StdDev (column 5) is parsed past but discarded, not
+ * stored or displayed; Range (column 6) is kept as a plain display
+ * string, never parsed into numbers since it's informational only and
+ * never feeds the simulation.
+ */
+function parseLine(line: string): { name: string; position: string; team: string; adp: number; adpRange?: string } | null {
   const delim = line.includes("\t") ? "\t" : ",";
   const parts = line.split(delim).map((p) => p.trim());
   if (parts.length < 4) return null;
-  const [name, position, team, adpStr] = parts;
+  const [name, position, team, adpStr, , rangeStr] = parts;
   const adp = Number(adpStr);
   if (!name || Number.isNaN(adp)) return null;
-  return { name, position: position.toUpperCase(), team: team.toUpperCase(), adp };
+  const adpRange = parts.length >= 6 && rangeStr ? rangeStr : undefined;
+  return { name, position: position.toUpperCase(), team: team.toUpperCase(), adp, adpRange };
 }
 
 export function AdminFantasyRankingsPanel() {
@@ -69,7 +80,7 @@ export function AdminFantasyRankingsPanel() {
       if (!parsed) { bad.push(line); continue; }
       if (!FANTASY_POSITIONS.has(parsed.position as Position)) {
         parsedRows.push({
-          rawName: parsed.name, position: parsed.position as Position, team: parsed.team, adp: parsed.adp,
+          rawName: parsed.name, position: parsed.position as Position, team: parsed.team, adp: parsed.adp, adpRange: parsed.adpRange,
           matchStatus: "unmatched", candidates: [], resolvedName: parsed.name, resolved: true, positionMismatch: false,
           rowError: `Unrecognized position "${parsed.position}" — expected QB/RB/WR/TE.`,
         });
@@ -105,6 +116,7 @@ export function AdminFantasyRankingsPanel() {
         position: parsed.position as Position,
         team: parsed.team,
         adp: parsed.adp,
+        adpRange: parsed.adpRange,
         matchStatus: result.status,
         candidates,
         resolvedName: isConfidentTier && matchedPlayer ? matchedPlayer.name : parsed.name,
@@ -148,6 +160,7 @@ export function AdminFantasyRankingsPanel() {
         position: r.position,
         team: r.team,
         adp: r.adp,
+        adpRange: r.adpRange,
       }));
       await saveFantasyRankingsSnapshot(FANTASY_SEASON, { entries, scoringFormat: "PPR" });
       setStatus("saved");
@@ -175,13 +188,13 @@ export function AdminFantasyRankingsPanel() {
 
       <div className={s.body}>
         <label className={s.textareaLabel}>
-          Paste rows as <code>Name, Position, Team, ADP</code> (comma or tab separated), one player per line.
+          Paste rows as <code>Name, Position, Team, ADP</code>, or with your Std Dev and Range columns included: <code>Name, Position, Team, ADP, StdDev, Range</code> (comma or tab separated), one player per line. Std Dev is parsed but not stored — only Range gets shown, in the player's dropdown.
           <textarea
             className={s.textarea}
             rows={8}
             value={rawText}
             onChange={(e) => setRawText(e.target.value)}
-            placeholder={"Christian McCaffrey, RB, SF, 1\nJa'Marr Chase, WR, CIN, 2.67\n..."}
+            placeholder={"Christian McCaffrey, RB, SF, 1, 0.3, 1 - 2\nJa'Marr Chase, WR, CIN, 2.67, 1.1, 1 - 4\n..."}
           />
         </label>
         <button type="button" onClick={handleParse}>Parse</button>
@@ -203,6 +216,7 @@ export function AdminFantasyRankingsPanel() {
                   <th>Pos</th>
                   <th>Team</th>
                   <th>ADP</th>
+                  <th>Range</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -229,6 +243,7 @@ export function AdminFantasyRankingsPanel() {
                     <td>{r.position}{r.positionMismatch && <span className={s.warnTag} title="Historical record shows a different position — could be a real position change, or a typo.">⚠</span>}</td>
                     <td>{r.team}</td>
                     <td>{r.adp}</td>
+                    <td>{r.adpRange ?? "—"}</td>
                     <td className={s.statusCell}>
                       {r.rowError ? <span className={s.badgeError}>{r.rowError}</span>
                         : !r.resolved ? (
