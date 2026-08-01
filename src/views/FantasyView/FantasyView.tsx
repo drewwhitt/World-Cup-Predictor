@@ -28,8 +28,8 @@ const FIT_POOL: AdpVsActualEntry[] = [
 type SortKey = "adp" | "value" | "vbd";
 type PosFilter = "ALL" | Position;
 
-function availabilityDetail(pHealthy: number): string {
-  const pct = Math.round(pHealthy * 100);
+function availabilityDetail(availabilityPct: number): string {
+  const pct = Math.round(availabilityPct * 100);
   return `Based on similar historical players, about ${pct}% played a near-full season (14+ games). The ${100 - pct}% who didn't is the real risk behind this range — a season-ending or extended injury, not normal week-to-week variance.`;
 }
 
@@ -200,7 +200,7 @@ export function FantasyView() {
           )}
         </div>
         <div className={s.methodNote}>
-          Every projection here is fit from real historical outcomes (nflverse box scores back to 2020, matched against real consensus draft rankings) using a Monte Carlo simulation, not a hand-tuned guess — and checked against real held-out seasons the model never saw before it's trusted here. Assumes a healthy/full season; each player's own real injury-risk history is shown separately in their dropdown, not hidden inside one blended number.
+          Every projection here is fit from real historical outcomes (nflverse box scores back to 2020, matched against real consensus draft rankings), resampled directly from what similarly-drafted players actually did rather than assumed to follow a symmetric bell curve — and checked against real held-out seasons the model never saw before it's trusted here. The Range shown weights toward fuller seasons continuously, not a hard cutoff; each player's own real availability history is shown separately in their dropdown, not hidden inside one blended number.
         </div>
       </section>
 
@@ -267,7 +267,7 @@ export function FantasyView() {
               </div>
               <div className={s.glossaryItem}>
                 <div className={s.glossaryTerm}>RANGE</div>
-                <div className={s.glossaryDef}>Each player's dropdown shows the <b>10th–90th percentile</b> of their simulated season point totals as a range bar, with the mean marked, <b>assuming a healthy/full season (14+ games)</b> — a blended range that mixes in real injury-shortened outcomes produces a misleadingly low floor for what a player scores when actually on the field. Availability risk (how often similarly-drafted players actually stayed healthy) is shown as its own separate stat, not folded into the range.</div>
+                <div className={s.glossaryDef}>Each player's dropdown shows the <b>10th–90th percentile</b> of their simulated season point totals as a range bar, with the mean marked. Resampled from real historical outcomes and weighted toward fuller seasons, rather than a blended range that mixes in real injury-shortened outcomes and produces a misleadingly low floor for what a player scores when actually on the field. Availability (how often similarly-drafted players actually stayed healthy) is shown as its own separate stat, not folded into the range.</div>
               </div>
               <div className={s.glossaryItem}>
                 <div className={s.glossaryTerm}>TAGS</div>
@@ -395,18 +395,18 @@ function FragmentRow({
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Range (10th–90th pctile)</div>
                 <RangeBar
-                  p10={result.healthyP10Points}
-                  mean={result.healthyMeanPoints}
-                  p90={result.healthyP90Points}
+                  p10={result.displayP10Points}
+                  mean={result.displayMeanPoints}
+                  p90={result.displayP90Points}
                 />
                 <div className={s.detailSubtext}>
-                  At {Math.round(result.healthyP10Points)} pts, that season would rank around Value #{impliedValueRankFromPoints(result.healthyP10Points, result, allResults)}.
-                  {" "}At {Math.round(result.healthyP90Points)} pts, around Value #{impliedValueRankFromPoints(result.healthyP90Points, result, allResults)}.
+                  At {Math.round(result.displayP10Points)} pts, that season would rank around Value #{impliedValueRankFromPoints(result.displayP10Points, result, allResults)}.
+                  {" "}At {Math.round(result.displayP90Points)} pts, around Value #{impliedValueRankFromPoints(result.displayP90Points, result, allResults)}.
                 </div>
               </div>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Availability</div>
-                <div className={s.detailText}>{availabilityDetail(result.pHealthy)}</div>
+                <div className={s.detailText}>{availabilityDetail(result.availabilityPct)}</div>
               </div>
             </div>
             </div>

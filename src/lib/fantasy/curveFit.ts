@@ -1,127 +1,45 @@
 /**
  * curveFit.ts
- * Turns real historical (consensus ADP, actual season points) pairs into
- * a per-player projected distribution: "a player drafted around this
- * rank, at this position, historically scored about X points with Y
- * spread." This is the prior every current player's projection starts
- * from, before the adjustment layer in this file nudges it for known
- * risk factors, and before simulate.ts draws from it.
+ * Turns real historical (consensus ADP, actual season points, games
+ * played) data into a per-player resampling pool: "a player drafted
+ * around this rank, at this position — here are the K real historical
+ * players closest to that rank, and what they actually scored." Instead
+ * of fitting a parametric distribution (mean, sd, or a healthy/shortened
+ * mixture of two Gaussians) and sampling from the formula, we sample
+ * directly from these real (games, points) pairs — bootstrap resampling.
  *
- * Uses k-nearest-neighbor by rank distance rather than a smooth
- * parametric regression — with only ~5 seasons of real data (~100-176
- * players/season), a fitted curve with real coefficients would be
- * fitting noise as much as signal. Nearest-neighbor is simpler, doesn't
- * pretend to more precision than the data supports, and naturally
- * adapts to how sparse the data is at different ranks (fewer results
- * at the extremes just means the neighbors span a wider rank range).
+ * Why: real skewness checked against actual historical data (see
+ * MODEL_HISTORY.md) showed meaningful, position-specific skew that a
+ * symmetric Normal can't represent — and critically, it doesn't even
+ * point the same direction for every position (healthy-season QBs skew
+ * LEFT at -0.66, while RB/WR/TE skew right). No single parametric
+ * correction handles that; resampling real outcomes captures whatever
+ * shape actually exists, automatically, per position.
  *
- * MIXTURE MODEL: a player's real season outcome isn't one smooth bell
- * curve — it's closer to two different scenarios: plays a real season,
- * or misses meaningful time. Fitting one Normal(mean, sd) to a pool that
- * blends both smears them together into a distribution that doesn't
- * look like either actual outcome — real data check on a TE at ADP ~22
- * showed a blended fit of mean=112/sd=93, while splitting by games
- * played gave mean=181/sd=64 for full seasons (14+ games) and
- * mean=79/sd=42 for shortened ones — two clearly different clusters,
- * not one wide bell curve. fitMixtureDistribution fits both halves
- * separately, plus the real historical fraction of similarly-drafted
- * players who stayed healthy, rather than fitting one smeared-together
- * distribution and calling it a percentile range.
+ * This also replaces the earlier binary "healthy = 14+ games" cutoff
+ * with continuous games-based weighting (see sampleDisplayPoints) — a
+ * 13-game season and a 2-game season used to be lumped into the same
+ * "shortened" bucket and averaged together, which is exactly the kind
+ * of arbitrary-cutoff flattening we're moving away from. There is no
+ * hard threshold anywhere in this file; 14 games only survives as a
+ * plain-language reporting convention in estimateAvailabilityPct, not
+ * as a modeling boundary.
  */
 import type { AdpVsActualEntry, Position } from "./types";
 
-export interface FittedDistribution {
-  mean: number;
-  sd: number;
-  /** How many real historical data points this fit was based on — surfaced so callers/tests can sanity-check thin fits (e.g. very few historical players near this rank/position). */
-  sampleSize: number;
-}
-
-const DEFAULT_K = 15;
-
-/** Games (of 17) at or above which a season counts as "healthy/full" for splitting the mixture — a real games-played number, not a percentage or a guess. */
-export const HEALTHY_SEASON_GAMES_THRESHOLD = 14;
-
-/** Neighbor sample size used specifically for estimating the healthy-season probability — larger than DEFAULT_K because a stable percentage needs more data than a mean/sd fit does. */
-const AVAILABILITY_SAMPLE_K = 30;
-
-export interface MixtureDistribution {
-  /** Probability (0-1) of a healthy/full season, from the real historical fraction of similarly-drafted same-position players who played HEALTHY_SEASON_GAMES_THRESHOLD+ games. */
-  pHealthy: number;
-  healthy: FittedDistribution;
-  shortened: FittedDistribution;
-}
-
-function knnFit(candidates: AdpVsActualEntry[], consensusRank: number, k: number): FittedDistribution {
-  if (candidates.length === 0) return { mean: 0, sd: 0, sampleSize: 0 };
-  const sorted = [...candidates].sort(
-    (a, b) => Math.abs(a.consensusRank - consensusRank) - Math.abs(b.consensusRank - consensusRank),
-  );
-  const neighbors = sorted.slice(0, Math.min(k, sorted.length));
-  const points = neighbors.map((n) => n.actualPoints);
-  const mean = points.reduce((a, b) => a + b, 0) / points.length;
-  const variance = points.reduce((a, b) => a + (b - mean) ** 2, 0) / points.length;
-  return { mean, sd: Math.sqrt(variance), sampleSize: neighbors.length };
+/** Real historical (games, points) pair used as a resampling candidate. */
+export interface ResampleNeighbor {
+  games: number;
+  points: number;
 }
 
 /**
- * Fits a (mean, sd) for a hypothetical player at `position` drafted
- * around `consensusRank`, using the K real historical players (pooled
- * across however many seasons the caller passes in) closest to that
- * rank at that position. Blended across both healthy and shortened
- * seasons — kept for callers that specifically want the single-mode
- * historical fit rather than the mixture (e.g. quick sanity checks).
+ * Larger than the old k=15 single-Gaussian fit — bootstrap resampling
+ * needs more real data points to avoid an overly lumpy empirical
+ * distribution (too few distinct values to draw from).
  */
-export function fitPointsDistribution(
-  position: Position,
-  consensusRank: number,
-  pool: AdpVsActualEntry[],
-  k: number = DEFAULT_K,
-): FittedDistribution {
-  return knnFit(pool.filter((p) => p.position === position), consensusRank, k);
-}
+const RESAMPLE_K = 25;
 
-/**
- * Fits the full two-component mixture: separate healthy/shortened
- * distributions plus a real historically-derived probability of which
- * one applies. This is what simulate.ts actually draws from — sampling
- * from the correct sub-distribution per draw is a materially better
- * approximation of a real season's outcome than one blended Gaussian.
- */
-export function fitMixtureDistribution(
-  position: Position,
-  consensusRank: number,
-  pool: AdpVsActualEntry[],
-  k: number = DEFAULT_K,
-): MixtureDistribution {
-  const positionPool = pool.filter((p) => p.position === position);
-
-  const availabilityNeighbors = [...positionPool]
-    .sort((a, b) => Math.abs(a.consensusRank - consensusRank) - Math.abs(b.consensusRank - consensusRank))
-    .slice(0, Math.min(AVAILABILITY_SAMPLE_K, positionPool.length));
-  const pHealthy = availabilityNeighbors.length > 0
-    ? availabilityNeighbors.filter((n) => n.games >= HEALTHY_SEASON_GAMES_THRESHOLD).length / availabilityNeighbors.length
-    : 0.5; // no data at all — genuinely uninformative, coin flip rather than a fabricated number
-
-  const healthyPool = positionPool.filter((p) => p.games >= HEALTHY_SEASON_GAMES_THRESHOLD);
-  const shortenedPool = positionPool.filter((p) => p.games < HEALTHY_SEASON_GAMES_THRESHOLD);
-
-  return {
-    pHealthy,
-    healthy: knnFit(healthyPool, consensusRank, k),
-    shortened: knnFit(shortenedPool, consensusRank, k),
-  };
-}
-
-/**
- * Known risk factors that widen (or shift) a player's projected
- * distribution beyond what their draft-rank neighbors alone would
- * suggest. Each is a simple, named, conservative multiplier — not a fit
- * to any real data (there isn't enough of it yet to fit these
- * separately), so the values here are a deliberately modest starting
- * point pending real feedback once the app is live. See MODEL_HISTORY.md
- * before changing these — prefer the smallest justified adjustment.
- */
 export interface PlayerRiskFactors {
   /** Games missed last season, if known. */
   gamesMissedLastSeason?: number;
@@ -131,50 +49,117 @@ export interface PlayerRiskFactors {
   limitedHistory?: boolean;
 }
 
-const INJURY_SD_MULT_PER_MISSED_GAME = 0.03; // widen sd 3% per game missed last season, capped below
-const MAX_INJURY_SD_MULT = 0.30;
-const SITUATION_CHANGE_SD_MULT = 0.12;
-const LIMITED_HISTORY_SD_MULT = 0.15;
-
-/** How much pHealthy drops per game missed last season, capped — recent missed time is real evidence of elevated recurrence risk, not just "more uncertainty" in general, so this adjusts the availability probability directly rather than only widening variance. Deliberately modest; see MODEL_HISTORY.md. */
-const PHEALTHY_PENALTY_PER_MISSED_GAME = 0.015;
-const MAX_PHEALTHY_PENALTY = 0.20;
+const RISK_PENALTY_PER_MISSED_GAME = 0.03; // continuous, no cutoff — scales with games missed, not a threshold
+const MAX_RISK_PENALTY = 0.6;
+const SITUATION_CHANGE_K_BUMP = 8; // widen the neighbor search for more real comparables when there's genuine role uncertainty
+const LIMITED_HISTORY_K_BUMP = 10;
 
 /**
- * Applies the risk-factor adjustments to a single fitted distribution.
- * Only widens variance (never shifts mean) — there isn't a defensible
- * basis yet for asserting these factors predict a *direction* of
- * over/under performance, only that they predict *less certainty* about
- * the outcome, which a Monte Carlo naturally represents as a wider
- * spread.
+ * The K real historical players (pooled across however many seasons the
+ * caller passes in) closest in draft rank to a hypothetical player at
+ * `consensusRank` and `position`. situationChange/limitedHistory widen
+ * the search (more neighbors = more heterogeneous real outcomes pulled
+ * in = naturally more spread), replacing the old "widen sd by a fixed
+ * multiplier" approach with something that stays grounded in real data
+ * rather than an arbitrary variance bump.
  */
-export function applyRiskAdjustments(base: FittedDistribution, risk: PlayerRiskFactors = {}): FittedDistribution {
-  let sdMultiplier = 1;
-  if (risk.gamesMissedLastSeason) {
-    sdMultiplier += Math.min(risk.gamesMissedLastSeason * INJURY_SD_MULT_PER_MISSED_GAME, MAX_INJURY_SD_MULT);
-  }
-  if (risk.situationChange) sdMultiplier += SITUATION_CHANGE_SD_MULT;
-  if (risk.limitedHistory) sdMultiplier += LIMITED_HISTORY_SD_MULT;
+export function buildResamplePool(
+  position: Position,
+  consensusRank: number,
+  pool: AdpVsActualEntry[],
+  risk?: PlayerRiskFactors,
+): ResampleNeighbor[] {
+  let k = RESAMPLE_K;
+  if (risk?.situationChange) k += SITUATION_CHANGE_K_BUMP;
+  if (risk?.limitedHistory) k += LIMITED_HISTORY_K_BUMP;
 
-  return { ...base, sd: base.sd * sdMultiplier };
+  const candidates = pool.filter((p) => p.position === position);
+  if (candidates.length === 0) return [];
+  const sorted = [...candidates].sort(
+    (a, b) => Math.abs(a.consensusRank - consensusRank) - Math.abs(b.consensusRank - consensusRank),
+  );
+  return sorted.slice(0, Math.min(k, sorted.length)).map((n) => ({ games: n.games, points: n.actualPoints }));
 }
 
 /**
- * Applies risk adjustments to a full mixture: widens both sub-distributions'
- * variance the same way applyRiskAdjustments does, and additionally nudges
- * pHealthy down for real recent missed-time history — the one factor with
- * a defensible basis for predicting *direction* here (recent injury is
- * real evidence of elevated recurrence risk), not just added uncertainty.
+ * How much a specific neighbor's outcome should count for a player with
+ * known recent injury history — continuous, scaling with both the
+ * player's own risk (games missed last season) and the neighbor's own
+ * games played, not a cutoff. A player coming off missed time gets
+ * full-health neighbor outcomes discounted somewhat (they're less
+ * likely to replicate a clean 17-game season than a generic same-rank
+ * player would be), while lower-games neighbors are barely discounted
+ * at all. No risk factor supplied → uniform weight (1) for everyone,
+ * which is correct: real risk is already reflected by which neighbors
+ * exist in the pool (if a position/rank tier has lots of real injuries,
+ * the pool naturally contains lots of low-games neighbors already).
  */
-export function applyRiskAdjustmentsToMixture(base: MixtureDistribution, risk: PlayerRiskFactors = {}): MixtureDistribution {
-  let pHealthyPenalty = 0;
-  if (risk.gamesMissedLastSeason) {
-    pHealthyPenalty = Math.min(risk.gamesMissedLastSeason * PHEALTHY_PENALTY_PER_MISSED_GAME, MAX_PHEALTHY_PENALTY);
-  }
+function riskWeight(neighbor: ResampleNeighbor, risk?: PlayerRiskFactors): number {
+  if (!risk?.gamesMissedLastSeason) return 1;
+  const penalty = Math.min(risk.gamesMissedLastSeason * RISK_PENALTY_PER_MISSED_GAME, MAX_RISK_PENALTY);
+  return Math.max(0.05, 1 - penalty * (neighbor.games / 17));
+}
 
-  return {
-    pHealthy: Math.max(0, Math.min(1, base.pHealthy - pHealthyPenalty)),
-    healthy: applyRiskAdjustments(base.healthy, risk),
-    shortened: applyRiskAdjustments(base.shortened, risk),
-  };
+function weightedPick(neighbors: ResampleNeighbor[], weightOf: (n: ResampleNeighbor) => number): ResampleNeighbor {
+  const weights = neighbors.map(weightOf);
+  const total = weights.reduce((a, b) => a + b, 0);
+  if (total <= 0) return neighbors[Math.floor(Math.random() * neighbors.length)];
+  let r = Math.random() * total;
+  for (let i = 0; i < neighbors.length; i++) {
+    r -= weights[i];
+    if (r <= 0) return neighbors[i];
+  }
+  return neighbors[neighbors.length - 1];
+}
+
+/**
+ * Samples one real historical outcome for the TRUE, risk-inclusive
+ * value calculation (VBD/Value Rank/replacement level) — uniform weight
+ * by default (every real neighbor equally likely), only reweighted for
+ * a player's own known recent injury history. This is what "real
+ * fantasy value" should reflect: the actual unconditional risk a
+ * similarly-drafted player historically faced.
+ */
+export function sampleValuePoints(neighbors: ResampleNeighbor[], risk?: PlayerRiskFactors): number {
+  if (neighbors.length === 0) return 0;
+  return weightedPick(neighbors, (n) => riskWeight(n, risk)).points;
+}
+
+/**
+ * Samples one real historical outcome for the DISPLAYED range —
+ * weighted continuously by games played (a 17-game season counts much
+ * more than a 3-game one, but nothing is fully excluded the way the old
+ * "games >= 14" cutoff excluded everything below it). This answers "what
+ * should I expect from this player when they're actually on the field,"
+ * without pretending real partial-season data doesn't exist.
+ */
+export function sampleDisplayPoints(neighbors: ResampleNeighbor[], risk?: PlayerRiskFactors): number {
+  if (neighbors.length === 0) return 0;
+  return weightedPick(neighbors, (n) => n.games * riskWeight(n, risk)).points;
+}
+
+/**
+ * Risk-weighted mean of the pool — a smooth, deterministic "expected
+ * points" number per player, used to build a stable replacement-level
+ * baseline (see replacementLevel.ts) rather than re-deriving it from
+ * noisy per-draw samples.
+ */
+export function expectedValuePoints(neighbors: ResampleNeighbor[], risk?: PlayerRiskFactors): number {
+  if (neighbors.length === 0) return 0;
+  const weights = neighbors.map((n) => riskWeight(n, risk));
+  const totalWeight = weights.reduce((a, b) => a + b, 0);
+  if (totalWeight <= 0) return neighbors.reduce((a, n) => a + n.points, 0) / neighbors.length;
+  const weightedSum = neighbors.reduce((sum, n, i) => sum + n.points * weights[i], 0);
+  return weightedSum / totalWeight;
+}
+
+/**
+ * Real historical fraction of the pool that played 14+ games — a plain,
+ * intuitive number for the Availability stat shown in each player's
+ * dropdown. Purely descriptive/reporting; 14 has no role in how points
+ * actually get sampled anywhere else in this file.
+ */
+export function estimateAvailabilityPct(neighbors: ResampleNeighbor[], threshold: number = 14): number {
+  if (neighbors.length === 0) return 0.5;
+  return neighbors.filter((n) => n.games >= threshold).length / neighbors.length;
 }

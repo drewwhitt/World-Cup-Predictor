@@ -1,37 +1,31 @@
 /**
  * simulate.ts
  * The Monte Carlo core: draws a full season of outcomes for every player
- * `simulations` times. Replacement level is computed ONCE, from a stable
- * pHealthy-weighted baseline (see computeMixtureReplacementLevel) — an
- * earlier version re-derived it fresh from each draw's own noisy sampled
- * points, which sounded appealing ("scarcity itself is uncertain") but
- * had a real, confirmed bug: independent per-player injury coin-flips
- * could cluster within a draw, systematically depressing replacement
- * level for positions where replacement-tier players have low pHealthy
- * (RB, confirmed on real data — see computeMixtureReplacementLevel's
- * docstring for the numbers). Each player's OWN points still come from
- * their own real per-draw mixture sample, so individual boom/bust risk
- * is unaffected — only the subtracted baseline is now stable rather than
- * itself being noisy.
+ * `simulations` times by resampling real historical outcomes (see
+ * curveFit.ts) rather than sampling from a fitted parametric
+ * distribution. Two independent resamples happen per player per draw:
+ *  - VALUE points (uniform-weighted, risk-adjusted) feed VBD/Value
+ *    Rank/replacement level — the true, risk-inclusive fantasy value.
+ *  - DISPLAY points (continuously games-weighted) feed the Range shown
+ *    in the UI — "what to expect when this player is actually playing,"
+ *    without a hard healthy/shortened cutoff anywhere.
+ * These are independent draws of the same underlying real population,
+ * not paired per-draw — they're answering two different questions about
+ * the same historical data, not requiring shared randomness.
  *
- * Each draw samples from a two-component mixture (see curveFit.ts's
- * fitMixtureDistribution) rather than one blended Gaussian: with
- * probability pHealthy, sample from the "healthy season" distribution;
- * otherwise from the "shortened season" one. VBD/Value Rank/meanPoints
- * are computed from these blended draws — that's real fantasy value,
- * which should account for real injury risk, not pretend it away.
- * Alongside that, healthyMeanPoints/healthyP10-25-75-90Points
- * are computed ONLY from the subset of draws that landed in the healthy
- * mode — "what does this player produce specifically when active,"
- * which is what actually gets displayed as "Range" in the UI (the
- * blended range mixes in real bust-season outcomes, which produces a
- * misleadingly low floor for "if he plays a full season" — see
- * MODEL_HISTORY.md for the real Trey McBride numbers that motivated
- * this split).
+ * Replacement level is computed ONCE, from each player's stable
+ * risk-weighted expected value (see curveFit.ts's expectedValuePoints),
+ * not re-derived from noisy per-draw samples — re-deriving it per draw
+ * had a real, confirmed bug: independent per-player sampling could
+ * cluster within a draw, systematically depressing replacement level
+ * for positions where replacement-tier players skew toward more
+ * variable/lower-games historical outcomes (confirmed on real RB data —
+ * see MODEL_HISTORY.md and replacementLevel.ts).
  */
-import { computeMixtureReplacementLevel, computeVBD } from "./replacementLevel";
+import { computeReplacementLevel, computeVBD } from "./replacementLevel";
 import type { PlayerSeasonStat, Position, RosterConfig } from "./types";
-import type { MixtureDistribution, PlayerRiskFactors } from "./curveFit";
+import type { PlayerRiskFactors, ResampleNeighbor } from "./curveFit";
+import { estimateAvailabilityPct, expectedValuePoints, sampleDisplayPoints, sampleValuePoints } from "./curveFit";
 
 export interface SimulationInput {
   name: string;
@@ -50,20 +44,10 @@ export interface SimulationResult {
   meanVbd: number;
   valueRank: number;
   sd: number;
-  pHealthy: number;
-  healthyMeanPoints: number;
-  healthyP10Points: number;
-  healthyP25Points: number;
-  healthyP75Points: number;
-  healthyP90Points: number;
-  healthySd: number;
-}
-
-function sampleNormal(mean: number, sd: number): number {
-  const u1 = Math.random() || 1e-9;
-  const u2 = Math.random();
-  const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-  return mean + sd * z0;
+  availabilityPct: number;
+  displayMeanPoints: number;
+  displayP10Points: number;
+  displayP90Points: number;
 }
 
 function percentile(sorted: number[], p: number): number {
@@ -84,60 +68,44 @@ function sdOf(values: number[], mean: number): number {
 
 export function runSimulation(
   players: SimulationInput[],
-  mixtureOf: (player: SimulationInput) => MixtureDistribution,
+  poolOf: (player: SimulationInput) => ResampleNeighbor[],
   teams: number,
   roster: RosterConfig,
   simulations: number = 10000,
 ): SimulationResult[] {
-  const mixtures = players.map((p) => mixtureOf(p));
+  const pools = players.map((p) => poolOf(p));
 
-  // Stable, deterministic replacement-level baseline — computed ONCE from
-  // each player's pHealthy-weighted expected points, not re-derived from
-  // noisy per-draw samples. See computeMixtureReplacementLevel's docstring
-  // for the real bug this fixes (RB replacement level was getting
-  // systematically depressed by simultaneous-bad-luck clustering across
-  // low-pHealthy replacement-tier players).
-  const replacementLevel = computeMixtureReplacementLevel(
-    players.map((p, i) => ({
-      position: p.position,
-      pHealthy: mixtures[i].pHealthy,
-      healthyMean: mixtures[i].healthy.mean,
-      shortenedMean: mixtures[i].shortened.mean,
-    })),
-    teams,
-    roster,
-  );
+  const replacementInputs: PlayerSeasonStat[] = players.map((p, i) => ({
+    name: p.name,
+    position: p.position,
+    points: expectedValuePoints(pools[i], p.risk),
+  }));
+  const replacementLevel = computeReplacementLevel(replacementInputs, teams, roster);
 
   const pointsByPlayer: number[][] = players.map(() => []);
   const vbdByPlayer: number[][] = players.map(() => []);
-  const healthyPointsByPlayer: number[][] = players.map(() => []);
+  const displayPointsByPlayer: number[][] = players.map(() => []);
 
   for (let draw = 0; draw < simulations; draw++) {
-    const isHealthyThisDraw: boolean[] = players.map((_, i) => Math.random() < mixtures[i].pHealthy);
-
-    const drawStats: PlayerSeasonStat[] = players.map((p, i) => {
-      const dist = isHealthyThisDraw[i] ? mixtures[i].healthy : mixtures[i].shortened;
-      return {
-        name: p.name,
-        position: p.position,
-        points: Math.max(0, sampleNormal(dist.mean, dist.sd)),
-      };
-    });
+    const drawStats: PlayerSeasonStat[] = players.map((p, i) => ({
+      name: p.name,
+      position: p.position,
+      points: Math.max(0, sampleValuePoints(pools[i], p.risk)),
+    }));
 
     const withVbd = computeVBD(drawStats, replacementLevel);
 
     for (let i = 0; i < players.length; i++) {
       pointsByPlayer[i].push(drawStats[i].points);
       vbdByPlayer[i].push(withVbd[i].vbd);
-      if (isHealthyThisDraw[i]) healthyPointsByPlayer[i].push(drawStats[i].points);
+      displayPointsByPlayer[i].push(Math.max(0, sampleDisplayPoints(pools[i], players[i].risk)));
     }
   }
 
   const aggregated = players.map((p, i) => {
     const points = [...pointsByPlayer[i]].sort((a, b) => a - b);
     const mean = meanOf(points);
-    const healthyPoints = [...healthyPointsByPlayer[i]].sort((a, b) => a - b);
-    const healthyMean = meanOf(healthyPoints);
+    const displayPoints = [...displayPointsByPlayer[i]].sort((a, b) => a - b);
     const meanVbd = meanOf(vbdByPlayer[i]);
 
     return {
@@ -149,13 +117,10 @@ export function runSimulation(
       p90Points: percentile(points, 0.90),
       meanVbd,
       sd: sdOf(points, mean),
-      pHealthy: mixtures[i].pHealthy,
-      healthyMeanPoints: healthyMean,
-      healthyP10Points: percentile(healthyPoints, 0.10),
-      healthyP25Points: percentile(healthyPoints, 0.25),
-      healthyP75Points: percentile(healthyPoints, 0.75),
-      healthyP90Points: percentile(healthyPoints, 0.90),
-      healthySd: sdOf(healthyPoints, healthyMean),
+      availabilityPct: estimateAvailabilityPct(pools[i]),
+      displayMeanPoints: meanOf(displayPoints),
+      displayP10Points: percentile(displayPoints, 0.10),
+      displayP90Points: percentile(displayPoints, 0.90),
     };
   });
 

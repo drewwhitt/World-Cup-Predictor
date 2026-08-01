@@ -97,50 +97,6 @@ export function computeVBD(
 }
 
 /**
- * Computes a STABLE replacement-level baseline from each player's
- * pHealthy-weighted expected points (mixture.pHealthy * healthy.mean +
- * (1-pHealthy) * shortened.mean) — a smooth, deterministic number per
- * position, not re-derived per simulated draw.
- *
- * This exists because the naive approach (re-running computeReplacementLevel
- * on each draw's raw simulated points) has a real, confirmed bug: it
- * systematically depresses replacement level for positions where
- * near-replacement-tier players have low pHealthy, because independent
- * per-player injury coin-flips can cluster — in any given draw, an
- * unusually large share of a shallow-pHealthy position's replacement-tier
- * pool can simultaneously land in their "shortened" mode together, pulling
- * that draw's Nth-order-statistic down further than any single real season
- * ever shows. Confirmed on real data: simulated RB replacement level came
- * out to 72, while the real historical RB34 value never dropped below 132
- * across five actual seasons (2020-2024) — and a genuine out-of-sample
- * test (fit 2020-2023, blind to 2024) produced an 11/11 RB sweep of the
- * simulated Value Rank top-11, more extreme than the real 2024 outcome
- * (9 RB / 1 WR / 1 QB), which is itself the most RB-heavy year on record.
- * Root cause: RB's replacement-tier pHealthy (0.42) sits well below WR's
- * (0.57) — RBs are more genuinely injury-prone at replacement depth, and
- * that real effect was getting amplified by the per-draw order statistic
- * rather than reflected proportionately. See MODEL_HISTORY.md.
- *
- * Trade-off: this gives up the "replacement level itself is uncertain,
- * varies draw to draw" feature in favor of a stable baseline — each
- * player's OWN points still come from their real per-draw mixture sample
- * (so individual boom/bust risk is unaffected), only the subtracted
- * baseline is now fixed rather than also being a noisy per-draw sample.
- */
-export function computeMixtureReplacementLevel(
-  players: Array<{ position: Position; pHealthy: number; healthyMean: number; shortenedMean: number }>,
-  teams: number,
-  roster: RosterConfig,
-): Record<Position, number> {
-  const blended: PlayerSeasonStat[] = players.map((p, i) => ({
-    name: `_replacement_baseline_input_${i}`,
-    position: p.position,
-    points: p.pHealthy * p.healthyMean + (1 - p.pHealthy) * p.shortenedMean,
-  }));
-  return computeReplacementLevel(blended, teams, roster);
-}
-
-/**
  * Where a hypothetical point total would rank, in Value terms, among an
  * already-VBD-scored player pool — used for "if this player scored X,
  * where would that season have ranked" (the Fantasy tab's expanded-row
