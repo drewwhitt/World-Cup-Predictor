@@ -119,6 +119,16 @@ export function FantasyView() {
   const [roster, setRoster] = useState<RosterConfig>({ ...STANDARD_ROSTER });
   const [posFilter, setPosFilter] = useState<PosFilter>("ALL");
   const [sortBy, setSortBy] = useState<SortKey>("adp");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  function handleSortClick(key: SortKey) {
+    if (sortBy === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(key);
+      setSortDir(key === "vbd" ? "desc" : "asc"); // VBD: higher is better, show best first by default; ADP/Value Rk: rank 1 is best, ascending shows it first
+    }
+  }
   const [expandedName, setExpandedName] = useState<string | null>(null);
   const [results, setResults] = useState<SimulationResult[] | null>(null);
   const [computing, setComputing] = useState(false);
@@ -164,12 +174,10 @@ export function FantasyView() {
   const sorted = useMemo(() => {
     if (!results) return [];
     const filtered = posFilter === "ALL" ? results : results.filter((r) => r.position === posFilter);
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "value") return a.valueRank - b.valueRank;
-      if (sortBy === "vbd") return b.meanVbd - a.meanVbd;
-      return a.adp - b.adp;
-    });
-  }, [results, posFilter, sortBy]);
+    const dirMult = sortDir === "asc" ? 1 : -1;
+    const keyOf = (r: SimulationResult) => (sortBy === "value" ? r.valueRank : sortBy === "vbd" ? r.meanVbd : r.adp);
+    return [...filtered].sort((a, b) => (keyOf(a) - keyOf(b)) * dirMult);
+  }, [results, posFilter, sortBy, sortDir]);
 
   const { biggestValue, biggestRisk } = useMemo(() => {
     if (!results || results.length === 0) return { biggestValue: null, biggestRisk: null };
@@ -323,11 +331,11 @@ export function FantasyView() {
                 </colgroup>
                 <thead>
                   <tr>
-                    <th className={s.sortable} onClick={() => setSortBy("adp")}>ADP{sortBy === "adp" && <span className={s.arrow}>▾</span>}</th>
-                    <th className={s.sortable} onClick={() => setSortBy("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>▾</span>}</th>
+                    <th className={s.sortable} onClick={() => handleSortClick("adp")}>ADP{sortBy === "adp" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
+                    <th className={s.sortable} onClick={() => handleSortClick("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th>Player</th>
                     <th className={s.right}>Pos</th>
-                    <th className={`${s.right} ${s.sortable}`} onClick={() => setSortBy("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>▾</span>}</th>
+                    <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th></th>
                   </tr>
                 </thead>
