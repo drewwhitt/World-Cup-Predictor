@@ -11,7 +11,7 @@ Veridex is a "Bloomberg Terminal for sports" — a predictive analytics platform
 
 **Stack:** React / TypeScript / Vite / Supabase / Vercel  
 **Repo:** `drewwhitt/World-Cup-Predictor`  
-**Live:** `world-cup-predictor-inky-two.vercel.app`
+**Live:** `veridex-sports.vercel.app`
 
 ---
 

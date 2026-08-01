@@ -2,7 +2,7 @@ import type { ReactElement } from "react";
 import { SPORTS_NAV } from "../data/worldCup";
 
 const SITE_NAME = "Veridex";
-const SITE_URL = "https://world-cup-predictor-inky-two.vercel.app"; // update if/when you move to a custom domain
+const SITE_URL = "https://veridex-sports.vercel.app"; // update if/when you move to a custom domain
 
 function buildDate(): string {
   return new Date()
