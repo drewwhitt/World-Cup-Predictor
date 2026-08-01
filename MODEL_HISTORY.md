@@ -271,7 +271,45 @@ If accuracy warrants, calibrate **v1.10** before R16 with:
 
 ---
 
-## Architecture Notes for Future Sports
+## Fantasy Football Engine
+
+A second, largely independent prediction engine — player-level value rather than team-vs-team simulation, so it doesn't share `elo.ts`/`bracketTree.ts`/`SportConfig` with the World Cup/NFL matchup engine. Lives entirely under `src/lib/fantasy/`.
+
+**What it is:** a PPR redraft pre-draft board (`src/views/FantasyView/`). Consensus ADP is manually compiled by the admin (paste → validated name-matching → versioned Supabase snapshot), then a Monte Carlo engine turns that into Value-Based Drafting (VBD) rankings, a projected point range, and Sleeper/Fade tags — for any league size (8/10/12/14 standard, or fully custom roster).
+
+### Data pipeline
+- **Historical outcomes** (`scripts/generate-fantasy-historical.ts`): real nflverse `fantasy_points_ppr`, REG season only, QB/RB/WR/TE, currently 2020–2024 (2019 checked and excluded — earliest real data in the source is Dec 27 2019, in-season, not pre-draft).
+- **Historical ADP-vs-actual join** (`scripts/generate-fantasy-adp-backtest.ts`, `scripts/generate-fantasy-adp-2020.ts`): Drew's own manually-compiled 2021–2024 rankings, plus 2020 sourced from `dynastyprocess/data` (GPL-3.0, open community dataset built from FantasyPros ECR) — only the derived join is committed, never the raw third-party file, to keep provenance clean. Joined via the same name-matching pipeline used for live admin imports (see below).
+- **Live rankings** (`src/lib/fantasy/rankings.ts` + `AdminFantasyRankingsPanel.tsx`): versioned Supabase snapshots, one per `(season, snapshot_date)`.
+- **Precomputed forecasts** (`scripts/generate-fantasy-forecast.ts`): standard 8/10/12/14-team presets computed offline (~1.5–3s for a ~150-player board at 10,000 draws — squarely in "don't do this on every UI interaction" territory, same reasoning as the shelved Trends chart). Custom rosters compute live in-browser with a spinner.
+
+### Name matching (`nameMatching.ts`)
+Tiered matcher (exact → exact-token → fuzzy-token → initial-only → last-name-only). The two weak tiers are NOT auto-accepted for live admin imports — real bug caught: "Jeremiyah Love" (a genuine rookie) auto-matched to "Jordan Love," and "Tetairoa McMillan" to "Jalen McMillan," because the historical pool has only one real player at each surname across 2020–2024, and "only one candidate" was being treated as confident evidence. It isn't — a rookie who's never appeared in the pool at all will always produce "only one candidate," which is surname coincidence, not identity. Fixed: only exact/exact-token/fuzzy-token tiers auto-resolve; initial-only and last-name-only require explicit admin confirmation. (Safe to auto-resolve for the *historical backtest* join specifically, since that pool is scoped to players who actually played that exact season — the true match is guaranteed to exist there.)
+
+### Value-Based Drafting (`replacementLevel.ts`)
+Every player's value = points above a replacement-level baseline at their own position (given league size/roster) — not raw points, which would just crown whoever plays the highest-scoring position (QB). Validated against real 2020–2024 data for 8/10/12/14-team standard, a 2-QB league, and a 3RB/3WR/0-FLEX league.
+
+**Real bug found and fixed — RB replacement level was systematically too low.** Original design computed replacement level fresh from each Monte Carlo draw's own simulated points (intended to let scarcity itself be uncertain). Confirmed bug: RB's replacement-tier players have real, meaningfully lower pHealthy/availability than WR's (0.42 vs 0.57 at the respective replacement ranks) — so independent per-player injury variance could cluster within a single draw, pulling that draw's Nth-order-statistic down further than any real season ever showed. Simulated RB34 replacement level came out to 72; the real historical RB34 never dropped below 132 across five actual seasons. A genuine blind out-of-sample test (fit 2020–2023, predict 2024) produced an 11/11 RB sweep of the simulated Value Rank top-11 — more extreme than the real 2024 outcome (9 RB/1 WR/1 QB), itself the most RB-heavy year on record. **Fix:** replacement level is now computed once, deterministically, from each player's stable expected value — not re-derived from noisy per-draw samples. Re-verified on the same blind test: 10 RB/1 WR, real improvement, though still not a perfect match to history (no QB cracked the simulated top-11 either version).
+
+**Real bug found and fixed — Value Rank was an average of per-draw ranks, not a rank of the average.** Averaging each player's per-draw integer rank across 10,000 draws is right-skewed (rank has a floor at 1, no ceiling), so the actual best player in the league was showing "Value Rank 24," not "1." Fixed: Value Rank is now the rank of aggregate `meanVbd`, computed once — matches what the UI already told users ("every player sorted by this same VBD number").
+
+### Projection distribution — evolved twice
+1. **v1 (single Gaussian):** one `Normal(mean, sd)` per player, fit via k-nearest-neighbor on ADP rank. Simple, but blended real injury-shortened seasons into the displayed range, producing misleadingly low floors (a real TE's blended fit showed p10=17 pts — not a plausible healthy-season outcome).
+2. **v2 (two-component mixture):** split into "healthy" (14+ games) and "shortened" (<14 games) sub-distributions with a coin-flip per draw. Fixed the blended-floor problem, but real skewness check on actual historical residuals (normalized per rank, not just "big names skew things") showed meaningful, **position-specific** skew a symmetric Normal can't represent — and it doesn't even point the same direction for every position (healthy-season QB residuals skew **left** at −0.66, while RB/WR/TE skew right). A parametric mixture of two symmetric Gaussians can't capture that regardless of tuning.
+3. **v3 (current — bootstrap resampling, no parametric distribution at all):** every draw resamples directly from real historical (games, points) pairs. VALUE points (feeding VBD/Value Rank) use uniform-weighted resampling — real risk is already reflected by which neighbors exist in the pool. DISPLAY points (feeding the Range shown in the UI) use continuous games-weighting — no hard cutoff anywhere; a 13-game season and a 2-game season are no longer flattened into the same bucket and averaged together. The old binary 14-game threshold survives only as a plain-language reporting number in the Availability stat, never as a sampling boundary. Real result: out-of-sample calibration improved on both metrics (blended 71.4%→76.4%, display range 69.4%→75.5%, both closer to the 80% target for a well-calibrated 10th–90th band) — a genuine accuracy gain from the rewrite, not just a philosophical improvement.
+
+### UI decisions worth remembering
+- **Confidence (High/Medium/Volatile) was removed entirely**, replaced with a candlestick-style range bar showing the actual computed spread. Reasoning: a qualitative label can be *confidently wrong* in a way that erodes trust more than an honest raw number ever could — especially given the real calibration gaps found above. The bar itself was simplified once more (dropped a 25th–75th "box" that visually dominated but didn't match its own "10th–90th" label — real user confusion caught in review, not a hypothetical).
+- **"Risk" tag renamed to "Fade."** "Risk" implies volatility, which can directly contradict "High confidence" even when the two are legitimately independent (a low-variance player can still be a bad value pick at their ADP). Confirmed on real data that all combinations of confidence-level × value-tag genuinely occur.
+- **Board defaults to ADP sort, not Value Rank sort.** VBD/Value Rank measures *how good* a season is, not *when* you need to draft someone to get it — it doesn't account for positional-scarcity timing (how many comparable options remain, how fast they're disappearing). Treating pure Value Rank as literal pick order was flagged early and never shipped as the default.
+- **Standard competition ranking for tied ADP** (not independently-rounded per-player values) — two players tied at raw ADP 1.5 both show "1," not one showing "1" and the other "2."
+
+### Deferred / not built
+- Positional scarcity/tier-cliff detection for a genuine "Suggested Draft Rank" distinct from Value Rank (the real fix for the ADP-vs-Value-Rank timing gap above) — discussed, not built.
+- Weekly sit/start product — the static pre-draft board was built first; weekly needs an in-season data pipeline (opponent defense strength, injury news, snap counts) closer to the daily-briefing cron than a one-time admin entry.
+- Format flexibility (half-PPR, superflex, dynasty) — PPR redraft only for now.
+
+---
 
 The Veridex engine is sport-agnostic. For NFL/NBA/NHL expansion:
 
@@ -306,7 +344,16 @@ The Veridex engine is sport-agnostic. For NFL/NBA/NHL expansion:
 | `src/views/HomeView/` | Morning Forecast, Daily Movers, Upset Feed, Leaderboard |
 | `src/components/admin/AdminResultsPanel.tsx` | Manual result entry + snapshot button |
 | `scripts/generate-baseline.ts` | Regenerates `baseline.json` — imports K_FACTOR/HOST_ADVANTAGE from `elo.ts` |
+| `src/lib/fantasy/curveFit.ts` | Bootstrap resampling from real historical (games, points) pairs — no parametric distribution |
+| `src/lib/fantasy/simulate.ts` | Fantasy Monte Carlo — value-weighted + display-weighted resampling per draw |
+| `src/lib/fantasy/replacementLevel.ts` | VBD replacement level, computed once from stable expected values |
+| `src/lib/fantasy/nameMatching.ts` | Tiered name matcher — exact/token/fuzzy auto-resolve, initial/lastname require confirmation |
+| `src/lib/fantasy/rankings.ts` | Load/save versioned consensus ranking snapshots |
+| `src/views/FantasyView/FantasyView.tsx` | The live board — league config, sortable table, per-player breakdown |
+| `src/components/admin/AdminFantasyRankingsPanel.tsx` | Admin rankings import with name-match confirmation |
+| `scripts/generate-fantasy-forecast.ts` | Regenerates precomputed 8/10/12/14-team standard forecasts |
+| `scripts/backtest-fantasy-sim.ts` | Out-of-sample calibration check — re-run after any curveFit.ts/simulate.ts change |
 
 ---
 
-*Last updated: July 4, 2026 — draw probability under-prediction diagnosed post-group-stage (v1.11 candidate, not yet actioned)*
+*Last updated: July 31, 2026*
