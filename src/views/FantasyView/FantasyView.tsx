@@ -25,7 +25,7 @@ const FIT_POOL: AdpVsActualEntry[] = [
   ...(adpVsActual2020Data as { entries: AdpVsActualEntry[] }).entries,
 ];
 
-type SortKey = "adp" | "value" | "vbd";
+type SortKey = "adp" | "value";
 type PosFilter = "ALL" | Position;
 
 function availabilityDetail(availabilityPct: number): string {
@@ -73,10 +73,10 @@ function reasonFor(position: Position, positive: boolean): string {
 function whyDiffers(delta: number, position: Position): string {
   const ad = Math.round(Math.abs(delta));
   const direction = delta > 0 ? "higher" : "lower";
-  if (ad === 0) return "ADP and Value Rank are aligned — the model doesn't differ from consensus here.";
-  if (ad <= 3) return `ADP is ${direction} than Value Rank by ${ad} — the model is roughly aligned with consensus here.`;
-  if (ad <= 9) return `ADP is ${direction} than Value Rank by ${ad}, a moderate difference — ${reasonFor(position, delta > 0)}.`;
-  return `ADP is ${direction} than Value Rank by ${ad}, a large discrepancy — ${reasonFor(position, delta > 0)}.`;
+  if (ad === 0) return "ADP and Model Rank are aligned — the model doesn't differ from consensus here.";
+  if (ad <= 3) return `ADP is ${direction} than Model Rank by ${ad} — the model is roughly aligned with consensus here.`;
+  if (ad <= 9) return `ADP is ${direction} than Model Rank by ${ad}, a moderate difference — ${reasonFor(position, delta > 0)}.`;
+  return `ADP is ${direction} than Model Rank by ${ad}, a large discrepancy — ${reasonFor(position, delta > 0)}.`;
 }
 
 /** Approximates "where would this point total have ranked" using each player's own implied replacement level (backed out from meanPoints - meanVbd), against the full result set's meanVbd distribution. An approximation built from already-computed aggregate output, not a new simulation run. */
@@ -127,7 +127,7 @@ export function FantasyView() {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     } else {
       setSortBy(key);
-      setSortDir(key === "vbd" ? "desc" : "asc"); // VBD: higher is better, show best first by default; ADP/Value Rk: rank 1 is best, ascending shows it first
+      setSortDir("asc"); // ADP/Model Rank: rank 1 is best, ascending shows it first
     }
   }
   const [expandedName, setExpandedName] = useState<string | null>(null);
@@ -194,7 +194,7 @@ export function FantasyView() {
     if (!results) return [];
     const filtered = posFilter === "ALL" ? results : results.filter((r) => r.position === posFilter);
     const dirMult = sortDir === "asc" ? 1 : -1;
-    const keyOf = (r: SimulationResult) => (sortBy === "value" ? r.valueRank : sortBy === "vbd" ? r.meanVbd : r.adp);
+    const keyOf = (r: SimulationResult) => (sortBy === "value" ? r.valueRank : r.adp);
     return [...filtered].sort((a, b) => (keyOf(a) - keyOf(b)) * dirMult);
   }, [results, posFilter, sortBy, sortDir]);
 
@@ -289,8 +289,8 @@ export function FantasyView() {
           {glossaryOpen && (
             <div className={s.glossary}>
               <div className={s.glossaryItem}>
-                <div className={s.glossaryTerm}>VALUE (VBD)</div>
-                <div className={s.glossaryDef}><b>Points above a replacement-level player</b> at the same position, given your league settings — the standard way real drafters compare value across positions rather than just raw stats. High VBD means a real talent gap over your bench/waiver options. <b>Value Rank sorts every player by this number, and it's the best single signal for spotting who's underpriced or overpriced at their current ADP slot</b> — the one thing it doesn't capture is how fast a position is being drafted around you, so a good value can still disappear if a run starts before your next pick.</div>
+                <div className={s.glossaryTerm}>MODEL RANK</div>
+                <div className={s.glossaryDef}>The model's own <b>independent</b> ranking — not calculated from ADP, not a comparison to anything. It's every player sorted purely by projected points above a replacement-level player at their position (their "VBD"), the standard way real drafters compare value across positions rather than just raw stats. <b>ADP and Model Rank are two separate opinions sitting side by side</b> — the market's and the model's. Where they disagree by a lot is what drives the Sleeper/Fade tags and each player's "Why the model differs" note.</div>
               </div>
               <div className={s.glossaryItem}>
                 <div className={s.glossaryTerm}>ADP RANGE</div>
@@ -302,7 +302,7 @@ export function FantasyView() {
               </div>
               <div className={s.glossaryItem}>
                 <div className={s.glossaryTerm}>TAGS</div>
-                <div className={s.glossaryDef}><b>Sleeper</b> = Value Rank is at least 10 spots better than ADP. <b>Fade</b> = Value Rank is at least 10 spots worse than ADP — the market's overpaying for this ADP slot.</div>
+                <div className={s.glossaryDef}><b>Sleeper</b> = Model Rank is at least 10 spots better than ADP. <b>Fade</b> = Model Rank is at least 10 spots worse than ADP — the market's overpaying for this ADP slot.</div>
               </div>
             </div>
           )}
@@ -347,7 +347,7 @@ export function FantasyView() {
               )}
 
               <div className={s.boardNote}>
-                Board is ordered by consensus ADP — the realistic order players actually come off the board. Click ADP, Value Rk, or VBD to sort by that column instead, or click a player for the full breakdown.
+                Board is ordered by consensus ADP — the realistic order players actually come off the board. Click ADP or Model Rank to sort by that column instead, or click a player for the full breakdown.
               </div>
 
               <div className={s.tabs}>
@@ -363,7 +363,6 @@ export function FantasyView() {
                   <col className={s.colPlayer} />
                   <col className={s.colPos} />
                   <col className={s.colValueRk} />
-                  <col className={s.colVbd} />
                 </colgroup>
                 <thead>
                   <tr>
@@ -371,8 +370,7 @@ export function FantasyView() {
                     <th>ADP Range</th>
                     <th>Player</th>
                     <th className={s.right}>Pos</th>
-                    <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
-                    <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
+                    <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("value")}>Model Rank{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -433,16 +431,16 @@ function FragmentRow({
         </td>
         <td className={s.right}><span className={s.posChip}>{result.position}</span></td>
         <td className={`${s.num} ${s.rk} ${s.right}`}>{Math.round(result.valueRank)}</td>
-        <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
       </tr>
       {isExpanded && (
         <tr className={s.detailRow}>
-          <td colSpan={6}>
+          <td colSpan={5}>
             <div className={s.detailBox}>
             <div className={s.detailGrid}>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Why the model differs</div>
                 <div className={s.detailText}>{whyDiffers(delta, result.position)}</div>
+                <div className={s.detailSubtext}>{Math.round(result.meanVbd)} points above a replacement-level {result.position} at your league settings — the number Model Rank is sorted by.</div>
               </div>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Range (10th–90th pctile)</div>
@@ -452,8 +450,8 @@ function FragmentRow({
                   p90={result.displayP90Points}
                 />
                 <div className={s.detailSubtext}>
-                  At {Math.round(result.displayP10Points)} pts, that season would rank around Value #{impliedValueRankFromPoints(result.displayP10Points, result, allResults)}.
-                  {" "}At {Math.round(result.displayP90Points)} pts, around Value #{impliedValueRankFromPoints(result.displayP90Points, result, allResults)}.
+                  At {Math.round(result.displayP10Points)} pts, that season would rank around Model Rank #{impliedValueRankFromPoints(result.displayP10Points, result, allResults)}.
+                  {" "}At {Math.round(result.displayP90Points)} pts, around Model Rank #{impliedValueRankFromPoints(result.displayP90Points, result, allResults)}.
                 </div>
               </div>
               <div className={s.detailBlock}>
