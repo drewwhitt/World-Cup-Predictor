@@ -33,27 +33,26 @@ function availabilityDetail(pHealthy: number): string {
   return `Based on similar historical players, about ${pct}% played a near-full season (14+ games). The ${100 - pct}% who didn't is the real risk behind this range — a season-ending or extended injury, not normal week-to-week variance.`;
 }
 
-/** A simple candlestick-style range chart: whisker spans the 10th-90th percentile, the box spans 25th-75th, and a center tick marks the mean. Shows the actual computed spread rather than a qualitative "Confidence" label — a label can be confidently wrong in a way that erodes trust; the raw distribution just is what it is. */
-function RangeCandlestick({ p10, p25, mean, p75, p90 }: { p10: number; p25: number; mean: number; p75: number; p90: number }) {
+/** A plain range bar: whisker spans the 10th-90th percentile with a center tick marking the mean — matches its own label exactly, unlike the earlier candlestick version (which showed a 25th-75th box that visually dominated but didn't match the "10th-90th" text next to it). Also worth being honest about: every distribution here is a symmetric Normal by construction (see curveFit.ts), so this bar is necessarily symmetric too — it doesn't yet capture any real skew in how fantasy points are actually distributed (a real floor at 0, and boom weeks pushing the right tail further than busts push the left one). That's a modeling limitation, not a display one — see MODEL_HISTORY.md. */
+function RangeBar({ p10, mean, p90 }: { p10: number; mean: number; p90: number }) {
   const width = 320;
-  const height = 56;
+  const height = 46;
   const pad = 40;
   const min = p10;
   const max = p90;
   const span = Math.max(1, max - min);
   const scale = (v: number) => pad + ((v - min) / span) * (width - pad * 2);
-  const midY = height / 2;
+  const midY = height / 2 + 4;
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} className={s.candlestick} role="img" aria-label={`Projected range ${Math.round(p10)} to ${Math.round(p90)} points, mean ${Math.round(mean)}`}>
       <line x1={scale(p10)} y1={midY} x2={scale(p90)} y2={midY} stroke="var(--ink-3)" strokeWidth={1.5} />
       <line x1={scale(p10)} y1={midY - 6} x2={scale(p10)} y2={midY + 6} stroke="var(--ink-3)" strokeWidth={1.5} />
       <line x1={scale(p90)} y1={midY - 6} x2={scale(p90)} y2={midY + 6} stroke="var(--ink-3)" strokeWidth={1.5} />
-      <rect x={scale(p25)} y={midY - 12} width={Math.max(2, scale(p75) - scale(p25))} height={24} fill="var(--gold)" fillOpacity={0.25} stroke="var(--gold)" strokeWidth={1.5} />
-      <line x1={scale(mean)} y1={midY - 16} x2={scale(mean)} y2={midY + 16} stroke="var(--navy)" strokeWidth={2} />
+      <line x1={scale(mean)} y1={midY - 12} x2={scale(mean)} y2={midY + 12} stroke="var(--navy)" strokeWidth={2} />
       <text x={scale(p10)} y={height - 2} fontSize="10" textAnchor="middle" fill="var(--ink-3)" fontFamily="var(--font-mono)">{Math.round(p10)}</text>
       <text x={scale(p90)} y={height - 2} fontSize="10" textAnchor="middle" fill="var(--ink-3)" fontFamily="var(--font-mono)">{Math.round(p90)}</text>
-      <text x={scale(mean)} y={11} fontSize="10" textAnchor="middle" fill="var(--navy)" fontWeight={700} fontFamily="var(--font-mono)">{Math.round(mean)}</text>
+      <text x={scale(mean)} y={11} fontSize="10" textAnchor="middle" fill="var(--navy)" fontWeight={700} fontFamily="var(--font-mono)">{Math.round(mean)} mean</text>
     </svg>
   );
 }
@@ -268,7 +267,7 @@ export function FantasyView() {
               </div>
               <div className={s.glossaryItem}>
                 <div className={s.glossaryTerm}>RANGE</div>
-                <div className={s.glossaryDef}>Each player's dropdown shows a <b>candlestick</b> of their simulated season point totals, <b>assuming a healthy/full season (14+ games)</b> — a blended range that mixes in real injury-shortened outcomes produces a misleadingly low floor for what a player scores when actually on the field. Availability risk (how often similarly-drafted players actually stayed healthy) is shown as its own separate stat, not folded into the range.</div>
+                <div className={s.glossaryDef}>Each player's dropdown shows the <b>10th–90th percentile</b> of their simulated season point totals as a range bar, with the mean marked, <b>assuming a healthy/full season (14+ games)</b> — a blended range that mixes in real injury-shortened outcomes produces a misleadingly low floor for what a player scores when actually on the field. Availability risk (how often similarly-drafted players actually stayed healthy) is shown as its own separate stat, not folded into the range.</div>
               </div>
               <div className={s.glossaryItem}>
                 <div className={s.glossaryTerm}>TAGS</div>
@@ -395,11 +394,9 @@ function FragmentRow({
               </div>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Range (10th–90th pctile)</div>
-                <RangeCandlestick
+                <RangeBar
                   p10={result.healthyP10Points}
-                  p25={result.healthyP25Points}
                   mean={result.healthyMeanPoints}
-                  p75={result.healthyP75Points}
                   p90={result.healthyP90Points}
                 />
                 <div className={s.detailSubtext}>
