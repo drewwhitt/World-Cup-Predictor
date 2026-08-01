@@ -114,6 +114,7 @@ function computeAdpRanks(results: SimulationResult[]): Map<string, number> {
 
 export function FantasyView() {
   const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const [calloutsOpen, setCalloutsOpen] = useState(false);
   const [rankings, setRankings] = useState<{ date: string; payload: FantasyRankingsPayload } | "loading" | null>("loading");
   const [teams, setTeams] = useState<number>(12);
   const [roster, setRoster] = useState<RosterConfig>({ ...STANDARD_ROSTER });
@@ -197,12 +198,12 @@ export function FantasyView() {
     return [...filtered].sort((a, b) => (keyOf(a) - keyOf(b)) * dirMult);
   }, [results, posFilter, sortBy, sortDir]);
 
-  const { biggestValue, biggestRisk } = useMemo(() => {
-    if (!results || results.length === 0) return { biggestValue: null, biggestRisk: null };
+  const { topValues, topFades } = useMemo(() => {
+    if (!results || results.length === 0) return { topValues: [], topFades: [] };
     const withDelta = results.map((r) => ({ r, delta: adpRankByName.get(r.name)! - r.valueRank }));
-    const best = [...withDelta].sort((a, b) => b.delta - a.delta)[0];
-    const worst = [...withDelta].sort((a, b) => a.delta - b.delta)[0];
-    return { biggestValue: best, biggestRisk: worst };
+    const topValues = [...withDelta].sort((a, b) => b.delta - a.delta).slice(0, 5);
+    const topFades = [...withDelta].sort((a, b) => a.delta - b.delta).slice(0, 5);
+    return { topValues, topFades };
   }, [results, adpRankByName]);
 
   function handleTeamPill(newTeams: number) {
@@ -311,22 +312,35 @@ export function FantasyView() {
 
           {!computing && results && (
             <>
-              <div className={s.callouts}>
-                {biggestValue && (
+              <button type="button" className={s.glossaryToggle} onClick={() => setCalloutsOpen((v) => !v)}>
+                {calloutsOpen ? "▾" : "▸"} Biggest values & fades
+              </button>
+              {calloutsOpen && (
+                <div className={s.callouts}>
                   <div className={`${s.callout} ${s.calloutValue}`}>
-                    <div className={s.calloutLabel}>Biggest Value</div>
-                    <div className={s.calloutPlayer}>{biggestValue.r.name}</div>
-                    <div className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(biggestValue.r.name)}</b> · Model rank <b>#{Math.round(biggestValue.r.valueRank)}</b> for a {teams}-team league</div>
+                    <div className={s.calloutLabel}>Biggest Values</div>
+                    <ol className={s.calloutList}>
+                      {topValues.map(({ r }) => (
+                        <li key={r.name}>
+                          <span className={s.calloutPlayer}>{r.name}</span>
+                          <span className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(r.name)}</b> · Model rank <b>#{Math.round(r.valueRank)}</b></span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                )}
-                {biggestRisk && (
                   <div className={`${s.callout} ${s.calloutRisk}`}>
-                    <div className={s.calloutLabel}>Biggest Fade</div>
-                    <div className={s.calloutPlayer}>{biggestRisk.r.name}</div>
-                    <div className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(biggestRisk.r.name)}</b> · Model rank <b>#{Math.round(biggestRisk.r.valueRank)}</b> for a {teams}-team league</div>
+                    <div className={s.calloutLabel}>Biggest Fades</div>
+                    <ol className={s.calloutList}>
+                      {topFades.map(({ r }) => (
+                        <li key={r.name}>
+                          <span className={s.calloutPlayer}>{r.name}</span>
+                          <span className={s.calloutDetail}>Drafted <b>#{adpRankByName.get(r.name)}</b> · Model rank <b>#{Math.round(r.valueRank)}</b></span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               <div className={s.boardNote}>
                 Board is ordered by consensus ADP — the realistic order players actually come off the board. Click any column header to sort by it instead, or click a player for the full breakdown.
@@ -343,6 +357,7 @@ export function FantasyView() {
                   <col className={s.colAdp} />
                   <col className={s.colAdpRange} />
                   <col className={s.colPlayer} />
+                  <col className={s.colPos} />
                   <col className={s.colValueRk} />
                   <col className={s.colVbd} />
                   <col className={s.colTag} />
@@ -352,6 +367,7 @@ export function FantasyView() {
                     <th className={s.sortable} onClick={() => handleSortClick("adp")}>ADP{sortBy === "adp" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th>Range</th>
                     <th>Player</th>
+                    <th className={s.right}>Pos</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th></th>
@@ -410,16 +426,16 @@ function FragmentRow({
         <td className={s.num}>{adpRange ?? "—"}</td>
         <td>
           <span className={s.playerName}>{result.name}</span>
-          <span className={s.posChip}>{result.position}</span>
           {team && <span className={s.teamAbbrev}>{team}</span>}
         </td>
+        <td className={s.right}><span className={s.posChip}>{result.position}</span></td>
         <td className={`${s.num} ${s.rk} ${s.right}`}>{Math.round(result.valueRank)}</td>
         <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
         <td className={s.right}>{tag}</td>
       </tr>
       {isExpanded && (
         <tr className={s.detailRow}>
-          <td colSpan={6}>
+          <td colSpan={7}>
             <div className={s.detailBox}>
             <div className={s.detailGrid}>
               <div className={s.detailBlock}>

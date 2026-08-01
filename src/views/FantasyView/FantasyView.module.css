@@ -180,10 +180,13 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-3);
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
-.calloutPlayer { font: 700 20px var(--font-display); color: var(--navy); }
-.calloutDetail { font: 400 13px var(--font-sans); color: var(--ink-2); margin-top: 4px; }
+.calloutList { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.calloutList li { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--hairline); padding-bottom: 8px; }
+.calloutList li:last-child { border-bottom: none; padding-bottom: 0; }
+.calloutPlayer { font: 700 15px var(--font-display); color: var(--navy); white-space: nowrap; }
+.calloutDetail { font: 400 12px var(--font-sans); color: var(--ink-2); text-align: right; white-space: nowrap; }
 .calloutDetail b { color: var(--ink); }
 
 .boardNote {
@@ -232,9 +235,10 @@
 .table thead th.right { text-align: right; }
 
 .colAdp { width: 8%; }
-.colAdpRange { width: 10%; }
-.colValueRk { width: 10%; }
-.colPlayer { width: 40%; }
+.colAdpRange { width: 9%; }
+.colValueRk { width: 9%; }
+.colPlayer { width: 33%; }
+.colPos { width: 8%; }
 .colVbd { width: 10%; }
 .colTag { width: 22%; }
 
@@ -242,7 +246,7 @@
 .num { font-family: var(--font-mono); }
 .rk { font-weight: 700; color: var(--navy); }
 .playerName { font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
-.posChip { font: 500 10.5px var(--font-mono); padding: 1px 6px; border: 1px solid var(--navy); color: var(--navy); margin-left: 10px; }
+.posChip { font: 500 10.5px var(--font-mono); padding: 1px 6px; border: 1px solid var(--navy); color: var(--navy); }
 .teamAbbrev { font: 500 11px var(--font-mono); color: var(--ink-3); margin-left: 8px; }
 
 
@@ -288,10 +292,11 @@
 
   .colAdp { width: 9%; }
   .colAdpRange { width: 11%; }
-  .colValueRk { width: 11%; }
-  .colPlayer { width: 32%; }
-  .colVbd { width: 11%; }
-  .colTag { width: 26%; }
+  .colValueRk { width: 10%; }
+  .colPlayer { width: 27%; }
+  .colPos { width: 9%; }
+  .colVbd { width: 10%; }
+  .colTag { width: 24%; }
 
   .tag { font-size: 8.5px; padding: 1px 5px; }
 }
