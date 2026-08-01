@@ -103,6 +103,22 @@
 .field input:focus { outline: 2px solid var(--gold); border-color: var(--gold); }
 .rosterNote { font: 400 12px var(--font-sans); color: var(--ink-3); font-style: italic; }
 
+.glossaryToggle {
+  display: block;
+  font: 500 12.5px var(--font-sans);
+  color: var(--ink-2);
+  background: none;
+  border: none;
+  border-bottom: 1px dashed var(--hairline);
+  padding: 6px 0 10px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+.glossaryToggle:hover { color: var(--navy); }
+
+.candlestick { display: block; margin: 4px 0 2px; }
+
 .glossary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -220,7 +236,7 @@
 .colPlayer { width: 40%; }
 .colPos { width: 10%; }
 .colVbd { width: 10%; }
-.colConf { width: 18%; }
+.colTag { width: 14%; }
 
 .table tbody td { padding: 11px 10px; border-bottom: 1px solid var(--hairline); font: 400 13.5px var(--font-sans); vertical-align: middle; overflow: hidden; }
 .num { font-family: var(--font-mono); }
@@ -229,10 +245,6 @@
 .posCell { padding-left: 28px; }
 .posChip { font: 500 10.5px var(--font-mono); padding: 1px 6px; border: 1px solid var(--navy); color: var(--navy); }
 
-.confCell { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-.confHigh { color: var(--positive); }
-.confMed { color: #96772A; }
-.confLow { color: var(--negative); }
 
 .tag { font: 600 10px var(--font-mono); padding: 2px 7px; letter-spacing: 0.04em; white-space: nowrap; }
 .tagSleeper { background: rgba(46, 125, 79, 0.12); color: var(--positive); }
@@ -279,7 +291,7 @@
   .colPlayer { width: 34%; }
   .colPos { width: 11%; }
   .colVbd { width: 11%; }
-  .colConf { width: 20%; }
+  .colTag { width: 22%; }
 
   .tag { font-size: 8.5px; padding: 1px 5px; }
 }

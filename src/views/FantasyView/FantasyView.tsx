@@ -28,30 +28,34 @@ const FIT_POOL: AdpVsActualEntry[] = [
 type SortKey = "adp" | "value" | "vbd";
 type PosFilter = "ALL" | Position;
 
-function confidenceLabel(sd: number, mean: number): { label: string; cls: string } {
-  const ratio = mean > 0 ? sd / mean : 1;
-  // Thresholds are real tercile boundaries (p33≈0.210, p67≈0.322) computed
-  // from Drew's actual 2026 board's HEALTHY-MODE sd/mean ratios, after the
-  // mixture-model split (see curveFit.ts/simulate.ts docstrings). These
-  // replace the earlier 0.38/0.48 thresholds, which were calibrated to the
-  // old blended (injury-inclusive) ratios — healthy-mode ratios are
-  // considerably tighter (real range 0.135–0.449, not 0.184–0.701), so the
-  // old thresholds would now call almost everyone "High" confidence.
-  if (ratio < 0.21) return { label: "High", cls: s.confHigh };
-  if (ratio < 0.32) return { label: "Medium", cls: s.confMed };
-  return { label: "Volatile", cls: s.confLow };
+function availabilityDetail(pHealthy: number): string {
+  const pct = Math.round(pHealthy * 100);
+  return `Based on similar historical players, about ${pct}% played a near-full season (14+ games). The ${100 - pct}% who didn't is the real risk behind this range — a season-ending or extended injury, not normal week-to-week variance.`;
 }
 
-function confidenceDetail(cls: string, pHealthy: number): string {
-  const availabilityPct = Math.round(pHealthy * 100);
-  const availabilityNote = ` Based on similar historical players, about ${availabilityPct}% played a near-full season (14+ games) — the ${100 - availabilityPct}% who didn't is the biggest real risk to this range, and isn't part of the Confidence rating above.`;
-  if (cls === s.confHigh) {
-    return "Simulations cluster tightly around the projection — an established, low-variance role with no major injury or situation flags." + availabilityNote;
-  }
-  if (cls === s.confMed) {
-    return "Moderate spread across simulations — some role or health uncertainty widens the range of likely outcomes." + availabilityNote;
-  }
-  return "Wide spread between simulations — often tied to a contested backfield or target share, or an unproven/new role." + availabilityNote;
+/** A simple candlestick-style range chart: whisker spans the 10th-90th percentile, the box spans 25th-75th, and a center tick marks the mean. Shows the actual computed spread rather than a qualitative "Confidence" label — a label can be confidently wrong in a way that erodes trust; the raw distribution just is what it is. */
+function RangeCandlestick({ p10, p25, mean, p75, p90 }: { p10: number; p25: number; mean: number; p75: number; p90: number }) {
+  const width = 320;
+  const height = 56;
+  const pad = 40;
+  const min = p10;
+  const max = p90;
+  const span = Math.max(1, max - min);
+  const scale = (v: number) => pad + ((v - min) / span) * (width - pad * 2);
+  const midY = height / 2;
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} className={s.candlestick} role="img" aria-label={`Projected range ${Math.round(p10)} to ${Math.round(p90)} points, mean ${Math.round(mean)}`}>
+      <line x1={scale(p10)} y1={midY} x2={scale(p90)} y2={midY} stroke="var(--ink-3)" strokeWidth={1.5} />
+      <line x1={scale(p10)} y1={midY - 6} x2={scale(p10)} y2={midY + 6} stroke="var(--ink-3)" strokeWidth={1.5} />
+      <line x1={scale(p90)} y1={midY - 6} x2={scale(p90)} y2={midY + 6} stroke="var(--ink-3)" strokeWidth={1.5} />
+      <rect x={scale(p25)} y={midY - 12} width={Math.max(2, scale(p75) - scale(p25))} height={24} fill="var(--gold)" fillOpacity={0.25} stroke="var(--gold)" strokeWidth={1.5} />
+      <line x1={scale(mean)} y1={midY - 16} x2={scale(mean)} y2={midY + 16} stroke="var(--navy)" strokeWidth={2} />
+      <text x={scale(p10)} y={height - 2} fontSize="10" textAnchor="middle" fill="var(--ink-3)" fontFamily="var(--font-mono)">{Math.round(p10)}</text>
+      <text x={scale(p90)} y={height - 2} fontSize="10" textAnchor="middle" fill="var(--ink-3)" fontFamily="var(--font-mono)">{Math.round(p90)}</text>
+      <text x={scale(mean)} y={11} fontSize="10" textAnchor="middle" fill="var(--navy)" fontWeight={700} fontFamily="var(--font-mono)">{Math.round(mean)}</text>
+    </svg>
+  );
 }
 
 function reasonFor(position: Position, positive: boolean): string {
@@ -110,6 +114,7 @@ function computeAdpRanks(results: SimulationResult[]): Map<string, number> {
 }
 
 export function FantasyView() {
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
   const [rankings, setRankings] = useState<{ date: string; payload: FantasyRankingsPayload } | "loading" | null>("loading");
   const [teams, setTeams] = useState<number>(12);
   const [roster, setRoster] = useState<RosterConfig>({ ...STANDARD_ROSTER });
@@ -252,24 +257,25 @@ export function FantasyView() {
             </div>
           </div>
 
-          <div className={s.glossary}>
-            <div className={s.glossaryItem}>
-              <div className={s.glossaryTerm}>VALUE (VBD)</div>
-              <div className={s.glossaryDef}><b>Points above a replacement-level player</b> at the same position, given your league settings. High VBD means a big talent gap over what's freely available late or on waivers — it measures <b>how good</b> a season is, not <b>when</b> you need to draft them to get it. "Value Rk" is simply every player sorted by this same VBD number — the two always move together.</div>
+          <button type="button" className={s.glossaryToggle} onClick={() => setGlossaryOpen((v) => !v)}>
+            {glossaryOpen ? "▾" : "▸"} What do Value / Range / Tags mean?
+          </button>
+          {glossaryOpen && (
+            <div className={s.glossary}>
+              <div className={s.glossaryItem}>
+                <div className={s.glossaryTerm}>VALUE (VBD)</div>
+                <div className={s.glossaryDef}><b>Points above a replacement-level player</b> at the same position, given your league settings — the standard way real drafters compare value across positions rather than just raw stats. High VBD means a real talent gap over your bench/waiver options. <b>Value Rank sorts every player by this number, and it's the best single signal for spotting who's underpriced or overpriced at their current ADP slot</b> — the one thing it doesn't capture is how fast a position is being drafted around you, so a good value can still disappear if a run starts before your next pick.</div>
+              </div>
+              <div className={s.glossaryItem}>
+                <div className={s.glossaryTerm}>RANGE</div>
+                <div className={s.glossaryDef}>Each player's dropdown shows a <b>candlestick</b> of their simulated season point totals, <b>assuming a healthy/full season (14+ games)</b> — a blended range that mixes in real injury-shortened outcomes produces a misleadingly low floor for what a player scores when actually on the field. Availability risk (how often similarly-drafted players actually stayed healthy) is shown as its own separate stat, not folded into the range.</div>
+              </div>
+              <div className={s.glossaryItem}>
+                <div className={s.glossaryTerm}>TAGS</div>
+                <div className={s.glossaryDef}><b>Sleeper</b> = Value Rank is at least 10 spots better than ADP. <b>Fade</b> = Value Rank is at least 10 spots worse than ADP — the market's overpaying for this ADP slot.</div>
+              </div>
             </div>
-            <div className={s.glossaryItem}>
-              <div className={s.glossaryTerm}>RANGE</div>
-              <div className={s.glossaryDef}>The <b>10th–90th percentile</b> of simulated season point totals, <b>assuming a healthy/full season (14+ games)</b> — a blended range that mixes in real injury-shortened outcomes produces a misleadingly low floor for what a player scores when actually on the field. Each player's own availability risk (how often similarly-drafted players actually stayed healthy) is shown separately in their dropdown, not folded into this number. Click any player to see it.</div>
-            </div>
-            <div className={s.glossaryItem}>
-              <div className={s.glossaryTerm}>CONFIDENCE</div>
-              <div className={s.glossaryDef}>How <b>predictable</b> the range of outcomes is — not whether it's a good pick. <b>High</b> = simulations cluster tightly. <b>Medium</b> = a moderate spread. <b>Volatile</b> = a wide spread — boom/bust profile. Click a player for the driver.</div>
-            </div>
-            <div className={s.glossaryItem}>
-              <div className={s.glossaryTerm}>TAGS</div>
-              <div className={s.glossaryDef}><b>Sleeper</b> = Value Rank is at least 10 spots better than ADP. <b>Fade</b> = Value Rank is at least 10 spots worse than ADP — the market's overpaying for this ADP slot. This is about <b>value</b>, independent of Confidence — a High-confidence Fade means we're fairly sure they'll be solid, just not worth this early a pick.</div>
-            </div>
-          </div>
+          )}
 
           {computing && (
             <div className={s.computingState}>
@@ -314,7 +320,7 @@ export function FantasyView() {
                   <col className={s.colPlayer} />
                   <col className={s.colPos} />
                   <col className={s.colVbd} />
-                  <col className={s.colConf} />
+                  <col className={s.colTag} />
                 </colgroup>
                 <thead>
                   <tr>
@@ -323,14 +329,13 @@ export function FantasyView() {
                     <th>Player</th>
                     <th className={s.right}>Pos</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => setSortBy("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>▾</span>}</th>
-                    <th className={s.right}>Conf.</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {sorted.map((r) => {
                     const adpRank = adpRankByName.get(r.name)!;
                     const delta = adpRank - r.valueRank;
-                    const conf = confidenceLabel(r.healthySd, r.healthyMeanPoints);
                     const isExpanded = expandedName === r.name;
                     const tag = delta >= 10 ? <span className={`${s.tag} ${s.tagSleeper}`}>SLEEPER</span>
                       : delta <= -10 ? <span className={`${s.tag} ${s.tagBust}`}>FADE</span> : null;
@@ -341,7 +346,6 @@ export function FantasyView() {
                         result={r}
                         adpRank={adpRank}
                         delta={delta}
-                        conf={conf}
                         tag={tag}
                         isExpanded={isExpanded}
                         allResults={results}
@@ -360,12 +364,11 @@ export function FantasyView() {
 }
 
 function FragmentRow({
-  result, adpRank, delta, conf, tag, isExpanded, allResults, onClick,
+  result, adpRank, delta, tag, isExpanded, allResults, onClick,
 }: {
   result: SimulationResult;
   adpRank: number;
   delta: number;
-  conf: { label: string; cls: string };
   tag: React.ReactNode;
   isExpanded: boolean;
   allResults: SimulationResult[];
@@ -379,12 +382,7 @@ function FragmentRow({
         <td><span className={s.playerName}>{result.name}</span></td>
         <td className={`${s.right} ${s.posCell}`}><span className={s.posChip}>{result.position}</span></td>
         <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
-        <td className={s.right}>
-          <div className={s.confCell}>
-            <span className={conf.cls}>{conf.label}</span>
-            {tag}
-          </div>
-        </td>
+        <td className={s.right}>{tag}</td>
       </tr>
       {isExpanded && (
         <tr className={s.detailRow}>
@@ -397,16 +395,21 @@ function FragmentRow({
               </div>
               <div className={s.detailBlock}>
                 <div className={s.detailLabel}>Range (10th–90th pctile)</div>
-                <div className={s.detailValue}>{Math.round(result.healthyP10Points)}–{Math.round(result.healthyP90Points)} pts</div>
-                <div className={s.detailText}>Projected mean if active: {Math.round(result.healthyMeanPoints)} pts.</div>
+                <RangeCandlestick
+                  p10={result.healthyP10Points}
+                  p25={result.healthyP25Points}
+                  mean={result.healthyMeanPoints}
+                  p75={result.healthyP75Points}
+                  p90={result.healthyP90Points}
+                />
                 <div className={s.detailSubtext}>
                   At {Math.round(result.healthyP10Points)} pts, that season would rank around Value #{impliedValueRankFromPoints(result.healthyP10Points, result, allResults)}.
                   {" "}At {Math.round(result.healthyP90Points)} pts, around Value #{impliedValueRankFromPoints(result.healthyP90Points, result, allResults)}.
                 </div>
               </div>
               <div className={s.detailBlock}>
-                <div className={s.detailLabel}>Confidence — {conf.label}</div>
-                <div className={s.detailText}>{confidenceDetail(conf.cls, result.pHealthy)}</div>
+                <div className={s.detailLabel}>Availability</div>
+                <div className={s.detailText}>{availabilityDetail(result.pHealthy)}</div>
               </div>
             </div>
             </div>

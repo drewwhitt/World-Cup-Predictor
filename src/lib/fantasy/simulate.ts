@@ -16,7 +16,7 @@
  * otherwise from the "shortened season" one. VBD/Value Rank/meanPoints
  * are computed from these blended draws — that's real fantasy value,
  * which should account for real injury risk, not pretend it away.
- * Alongside that, healthyMeanPoints/healthyP10Points/healthyP90Points
+ * Alongside that, healthyMeanPoints/healthyP10-25-75-90Points
  * are computed ONLY from the subset of draws that landed in the healthy
  * mode — "what does this player produce specifically when active,"
  * which is what actually gets displayed as "Range" in the UI (the
@@ -49,6 +49,8 @@ export interface SimulationResult {
   pHealthy: number;
   healthyMeanPoints: number;
   healthyP10Points: number;
+  healthyP25Points: number;
+  healthyP75Points: number;
   healthyP90Points: number;
   healthySd: number;
 }
@@ -130,6 +132,8 @@ export function runSimulation(
       pHealthy: mixtures[i].pHealthy,
       healthyMeanPoints: healthyMean,
       healthyP10Points: percentile(healthyPoints, 0.10),
+      healthyP25Points: percentile(healthyPoints, 0.25),
+      healthyP75Points: percentile(healthyPoints, 0.75),
       healthyP90Points: percentile(healthyPoints, 0.90),
       healthySd: sdOf(healthyPoints, healthyMean),
     };
