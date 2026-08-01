@@ -1,14 +1,18 @@
 /**
  * simulate.ts
  * The Monte Carlo core: draws a full season of outcomes for every player
- * `simulations` times, and for each draw computes replacement level and
- * VBD fresh from that draw's own numbers — not once against a fixed
- * baseline. This matters because it lets positional scarcity itself be
- * uncertain: if a draw happens to be a bad year for RB depth, that
- * draw's RB replacement level shifts down with it, exactly the way real
- * season-to-season scarcity varies. Aggregating rank across draws (not
- * just averaging points) is what makes "Value Rank" a genuine
- * probability-weighted answer rather than a single point estimate.
+ * `simulations` times. Replacement level is computed ONCE, from a stable
+ * pHealthy-weighted baseline (see computeMixtureReplacementLevel) — an
+ * earlier version re-derived it fresh from each draw's own noisy sampled
+ * points, which sounded appealing ("scarcity itself is uncertain") but
+ * had a real, confirmed bug: independent per-player injury coin-flips
+ * could cluster within a draw, systematically depressing replacement
+ * level for positions where replacement-tier players have low pHealthy
+ * (RB, confirmed on real data — see computeMixtureReplacementLevel's
+ * docstring for the numbers). Each player's OWN points still come from
+ * their own real per-draw mixture sample, so individual boom/bust risk
+ * is unaffected — only the subtracted baseline is now stable rather than
+ * itself being noisy.
  *
  * Each draw samples from a two-component mixture (see curveFit.ts's
  * fitMixtureDistribution) rather than one blended Gaussian: with
@@ -25,7 +29,7 @@
  * MODEL_HISTORY.md for the real Trey McBride numbers that motivated
  * this split).
  */
-import { computeReplacementLevel, computeVBD } from "./replacementLevel";
+import { computeMixtureReplacementLevel, computeVBD } from "./replacementLevel";
 import type { PlayerSeasonStat, Position, RosterConfig } from "./types";
 import type { MixtureDistribution, PlayerRiskFactors } from "./curveFit";
 
@@ -87,6 +91,23 @@ export function runSimulation(
 ): SimulationResult[] {
   const mixtures = players.map((p) => mixtureOf(p));
 
+  // Stable, deterministic replacement-level baseline — computed ONCE from
+  // each player's pHealthy-weighted expected points, not re-derived from
+  // noisy per-draw samples. See computeMixtureReplacementLevel's docstring
+  // for the real bug this fixes (RB replacement level was getting
+  // systematically depressed by simultaneous-bad-luck clustering across
+  // low-pHealthy replacement-tier players).
+  const replacementLevel = computeMixtureReplacementLevel(
+    players.map((p, i) => ({
+      position: p.position,
+      pHealthy: mixtures[i].pHealthy,
+      healthyMean: mixtures[i].healthy.mean,
+      shortenedMean: mixtures[i].shortened.mean,
+    })),
+    teams,
+    roster,
+  );
+
   const pointsByPlayer: number[][] = players.map(() => []);
   const vbdByPlayer: number[][] = players.map(() => []);
   const healthyPointsByPlayer: number[][] = players.map(() => []);
@@ -103,7 +124,6 @@ export function runSimulation(
       };
     });
 
-    const replacementLevel = computeReplacementLevel(drawStats, teams, roster);
     const withVbd = computeVBD(drawStats, replacementLevel);
 
     for (let i = 0; i < players.length; i++) {
