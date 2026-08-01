@@ -234,13 +234,12 @@
 .right { text-align: right; }
 .table thead th.right { text-align: right; }
 
-.colAdp { width: 8%; }
-.colAdpRange { width: 9%; }
-.colValueRk { width: 9%; }
-.colPlayer { width: 33%; }
-.colPos { width: 8%; }
-.colVbd { width: 10%; }
-.colTag { width: 22%; }
+.colAdp { width: 9%; }
+.colAdpRange { width: 11%; }
+.colValueRk { width: 12%; }
+.colPlayer { width: 45%; }
+.colPos { width: 10%; }
+.colVbd { width: 13%; }
 
 .table tbody td { padding: 11px 10px; border-bottom: 1px solid var(--hairline); font: 400 13.5px var(--font-sans); vertical-align: middle; overflow: hidden; }
 .num { font-family: var(--font-mono); }
@@ -250,7 +249,7 @@
 .teamAbbrev { font: 500 11px var(--font-mono); color: var(--ink-3); margin-left: 8px; }
 
 
-.tag { font: 600 10px var(--font-mono); padding: 2px 7px; letter-spacing: 0.04em; white-space: nowrap; }
+.tag { font: 600 10px var(--font-mono); padding: 2px 7px; letter-spacing: 0.04em; white-space: nowrap; margin-left: 8px; }
 .tagSleeper { background: rgba(46, 125, 79, 0.12); color: var(--positive); }
 .tagBust { background: rgba(176, 65, 42, 0.1); color: var(--negative); }
 
@@ -290,13 +289,12 @@
   .playerName { font-size: 12.5px; }
   .teamAbbrev { display: none; } /* trimmed on mobile for space; position chip stays */
 
-  .colAdp { width: 9%; }
-  .colAdpRange { width: 11%; }
-  .colValueRk { width: 10%; }
-  .colPlayer { width: 27%; }
-  .colPos { width: 9%; }
-  .colVbd { width: 10%; }
-  .colTag { width: 24%; }
+  .colAdp { width: 10%; }
+  .colAdpRange { width: 13%; }
+  .colValueRk { width: 13%; }
+  .colPlayer { width: 37%; }
+  .colPos { width: 11%; }
+  .colVbd { width: 16%; }
 
   .tag { font-size: 8.5px; padding: 1px 5px; }
 }

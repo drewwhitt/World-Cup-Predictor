@@ -284,7 +284,7 @@ export function FantasyView() {
           </div>
 
           <button type="button" className={s.glossaryToggle} onClick={() => setGlossaryOpen((v) => !v)}>
-            {glossaryOpen ? "▾" : "▸"} What do Value / Range / Tags mean?
+            {glossaryOpen ? "▾" : "▸"} What do these columns mean?
           </button>
           {glossaryOpen && (
             <div className={s.glossary}>
@@ -293,7 +293,11 @@ export function FantasyView() {
                 <div className={s.glossaryDef}><b>Points above a replacement-level player</b> at the same position, given your league settings — the standard way real drafters compare value across positions rather than just raw stats. High VBD means a real talent gap over your bench/waiver options. <b>Value Rank sorts every player by this number, and it's the best single signal for spotting who's underpriced or overpriced at their current ADP slot</b> — the one thing it doesn't capture is how fast a position is being drafted around you, so a good value can still disappear if a run starts before your next pick.</div>
               </div>
               <div className={s.glossaryItem}>
-                <div className={s.glossaryTerm}>RANGE</div>
+                <div className={s.glossaryTerm}>ADP RANGE</div>
+                <div className={s.glossaryDef}>The <b>best-to-worst rank</b> this player got across the individual platforms (ESPN, CBS, FantasyPros, etc.) that went into the consensus ADP. A tight range ("1 - 4") means the experts agree; a wide one ("5 - 17") means real disagreement about this player's value — worth knowing on its own, separate from what the model thinks.</div>
+              </div>
+              <div className={s.glossaryItem}>
+                <div className={s.glossaryTerm}>PROJECTED RANGE</div>
                 <div className={s.glossaryDef}>Each player's dropdown shows the <b>10th–90th percentile</b> of their simulated season point totals as a range bar, with the mean marked. Resampled from real historical outcomes and weighted toward fuller seasons, rather than a blended range that mixes in real injury-shortened outcomes and produces a misleadingly low floor for what a player scores when actually on the field. Availability (how often similarly-drafted players actually stayed healthy) is shown as its own separate stat, not folded into the range.</div>
               </div>
               <div className={s.glossaryItem}>
@@ -343,7 +347,7 @@ export function FantasyView() {
               )}
 
               <div className={s.boardNote}>
-                Board is ordered by consensus ADP — the realistic order players actually come off the board. Click any column header to sort by it instead, or click a player for the full breakdown.
+                Board is ordered by consensus ADP — the realistic order players actually come off the board. Click ADP, Value Rk, or VBD to sort by that column instead, or click a player for the full breakdown.
               </div>
 
               <div className={s.tabs}>
@@ -360,17 +364,15 @@ export function FantasyView() {
                   <col className={s.colPos} />
                   <col className={s.colValueRk} />
                   <col className={s.colVbd} />
-                  <col className={s.colTag} />
                 </colgroup>
                 <thead>
                   <tr>
                     <th className={s.sortable} onClick={() => handleSortClick("adp")}>ADP{sortBy === "adp" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
-                    <th>Range</th>
+                    <th>ADP Range</th>
                     <th>Player</th>
                     <th className={s.right}>Pos</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("value")}>Value Rk{sortBy === "value" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
                     <th className={`${s.right} ${s.sortable}`} onClick={() => handleSortClick("vbd")}>VBD{sortBy === "vbd" && <span className={s.arrow}>{sortDir === "asc" ? "▴" : "▾"}</span>}</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -427,15 +429,15 @@ function FragmentRow({
         <td>
           <span className={s.playerName}>{result.name}</span>
           {team && <span className={s.teamAbbrev}>{team}</span>}
+          {tag}
         </td>
         <td className={s.right}><span className={s.posChip}>{result.position}</span></td>
         <td className={`${s.num} ${s.rk} ${s.right}`}>{Math.round(result.valueRank)}</td>
         <td className={`${s.num} ${s.right}`}>{Math.round(result.meanVbd)}</td>
-        <td className={s.right}>{tag}</td>
       </tr>
       {isExpanded && (
         <tr className={s.detailRow}>
-          <td colSpan={7}>
+          <td colSpan={6}>
             <div className={s.detailBox}>
             <div className={s.detailGrid}>
               <div className={s.detailBlock}>
